@@ -1,0 +1,1461 @@
+ Network baize_ui_2982_19042_default  Creating
+ Network baize_ui_2982_19042_default  Created
+ Container baize_ui_2982_19042-postgres-1  Creating
+ Container baize_ui_2982_19042-redis-1  Creating
+ Container baize_ui_2982_19042-clickhouse-1  Creating
+ Container baize_ui_2982_19042-clickhouse-1  Created
+ Container baize_ui_2982_19042-redis-1  Created
+ Container baize_ui_2982_19042-postgres-1  Created
+ Container baize_ui_2982_19042-postgres-1  Starting
+ Container baize_ui_2982_19042-redis-1  Starting
+ Container baize_ui_2982_19042-clickhouse-1  Starting
+ Container baize_ui_2982_19042-postgres-1  Started
+ Container baize_ui_2982_19042-redis-1  Started
+ Container baize_ui_2982_19042-clickhouse-1  Started
+ Container baize_ui_2982_19042-redis-1  Waiting
+ Container baize_ui_2982_19042-postgres-1  Waiting
+ Container baize_ui_2982_19042-clickhouse-1  Waiting
+ Container baize_ui_2982_19042-postgres-1  Healthy
+ Container baize_ui_2982_19042-clickhouse-1  Healthy
+ Container baize_ui_2982_19042-redis-1  Healthy
+
+> baize-analytics@0.1.0 build
+> npm run build:tracker && vite build && tsc -p tsconfig.server.json
+
+
+> baize-analytics@0.1.0 build:tracker
+> tsx scripts/build-tracker.ts
+
+tracker: Zopfli gzip 5087; default zlib gzip 5282
+tracker-min: Zopfli gzip 4506; default zlib gzip 4690
+tracker-vitals: Zopfli gzip 5316; default zlib gzip 5503
+tracker-replay: Zopfli gzip 57320; default zlib gzip 59511
+tracker-heatmap: Zopfli gzip 1173; default zlib gzip 1197
+tracker-consent: Zopfli gzip 1327; default zlib gzip 1395
+{
+  tracker: 5087,
+  'tracker-min': 4506,
+  'tracker-vitals': 5316,
+  'tracker-replay': 57320,
+  'tracker-heatmap': 1173,
+  'tracker-consent': 1327
+}
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 789 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/web/index.html                          0.41 kB │ gzip:   0.31 kB
+dist/web/assets/index-BDy6ccUn.css           9.96 kB │ gzip:   2.80 kB
+dist/web/assets/aomen-DXLsqBrz.js            1.78 kB │ gzip:   0.72 kB
+dist/web/assets/xianggang-B-GwqNoD.js       11.67 kB │ gzip:   4.78 kB
+dist/web/assets/shanghai-D5fADUyQ.js        11.94 kB │ gzip:   5.88 kB
+dist/web/assets/ningxia-Bpe_w3T9.js         12.15 kB │ gzip:   7.40 kB
+dist/web/assets/tianjin-BIND3J0Y.js         12.34 kB │ gzip:   6.51 kB
+dist/web/assets/beijing-6J6D0v26.js         21.11 kB │ gzip:  10.70 kB
+dist/web/assets/shanxi-sF6r9BMA.js          22.38 kB │ gzip:  13.82 kB
+dist/web/assets/jiangsu-CfAV2ncg.js         22.88 kB │ gzip:  13.91 kB
+dist/web/assets/hainan-ByIDMKTK.js          28.66 kB │ gzip:  16.29 kB
+dist/web/assets/taiwan-DuhSbPaK.js          29.36 kB │ gzip:   8.04 kB
+dist/web/assets/anhui-BSaniTrc.js           30.61 kB │ gzip:  18.31 kB
+dist/web/assets/shanxi1-B0i8biAP.js         30.90 kB │ gzip:  18.59 kB
+dist/web/assets/jiangxi-CMNmFB4L.js         31.85 kB │ gzip:  18.52 kB
+dist/web/assets/guizhou-BUdXZdgN.js         31.94 kB │ gzip:  19.18 kB
+dist/web/assets/henan-ByBj5SKi.js           35.56 kB │ gzip:  21.02 kB
+dist/web/assets/hubei-CbKDql3J.js           38.20 kB │ gzip:  22.44 kB
+dist/web/assets/hebei-T7l9OzzS.js           39.20 kB │ gzip:  22.67 kB
+dist/web/assets/jilin-i0ZAtsll.js           41.10 kB │ gzip:  23.34 kB
+dist/web/assets/fujian-CnXpqkhe.js          42.82 kB │ gzip:  22.41 kB
+dist/web/assets/qinghai-Bql4kmYY.js         43.59 kB │ gzip:  26.52 kB
+dist/web/assets/hunan-CWxspgVh.js           45.15 kB │ gzip:  26.21 kB
+dist/web/assets/guangxi-B63_XU_1.js         46.52 kB │ gzip:  26.82 kB
+dist/web/assets/gansu-Bi_VQQwS.js           46.94 kB │ gzip:  28.39 kB
+dist/web/assets/chongqing-Cl1EA9FX.js       47.72 kB │ gzip:  25.78 kB
+dist/web/assets/liaoning-CQP2PqVX.js        49.47 kB │ gzip:  27.61 kB
+dist/web/assets/shandong-G1nzS6sL.js        49.98 kB │ gzip:  28.33 kB
+dist/web/assets/zhejiang-DSbk7J7A.js        50.65 kB │ gzip:  25.95 kB
+dist/web/assets/neimenggu-CwzZW05h.js       57.11 kB │ gzip:  35.95 kB
+dist/web/assets/yunnan-z_D5KTxc.js          62.07 kB │ gzip:  35.74 kB
+dist/web/assets/guangdong-CX_QD5Pr.js       71.46 kB │ gzip:  38.25 kB
+dist/web/assets/heilongjiang-BpPsHrM9.js    78.21 kB │ gzip:  44.62 kB
+dist/web/assets/sichuan-BiKg7TEf.js         83.55 kB │ gzip:  47.33 kB
+dist/web/assets/xinjiang-CVqQoyx6.js        87.53 kB │ gzip:  54.44 kB
+dist/web/assets/Charts-adhRKcFG.js         121.08 kB │ gzip:  41.68 kB
+dist/web/assets/GeographicMap-yZQC2ZFk.js  127.02 kB │ gzip:  67.34 kB
+dist/web/assets/ReplayViewer-C06YeG2Z.js   262.04 kB │ gzip:  80.99 kB
+dist/web/assets/install-CRb18jJA.js        436.12 kB │ gzip: 147.88 kB
+dist/web/assets/index-aHaAsVS0.js          567.83 kB │ gzip: 179.91 kB
+dist/web/assets/xizang-C9xTaVmy.js         686.05 kB │ gzip: 127.65 kB
+
+✓ built in 461ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 db:migrate
+> tsx scripts/migrate.ts
+
+Database migrations applied
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+Running 29 tests using 1 worker
+
+(node:687009) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/ai-evidence-language.spec.ts:10:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (8.0s)
+  ✓   2 tests/e2e/connector-settings.spec.ts:10:1 › real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider (3.0s)
+  ✓   3 tests/e2e/extended-analysis.spec.ts:4:1 › real retained content, global campaign filter, repair CSV and advanced English controls (5.5s)
+  ✓   4 tests/e2e/funnel-dropoff.spec.ts:6:1 › actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries (5.0s)
+  ✓   5 tests/e2e/ga4-history.spec.ts:9:1 › real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors (4.1s)
+  ✓   6 tests/e2e/manual-search-import.spec.ts:7:1 › actual custom CSV upload, column mapping, preview and idempotent independent import (2.0s)
+  ✓   7 tests/e2e/multilingual-errors.spec.ts:4:1 › real English login, revoked permission, share and unconfigured connector errors use stable safe messages (2.6s)
+  ✓   8 tests/e2e/realtime-retention.spec.ts:4:1 › complete realtime Top exceeds 200-row preview and retention never renders immature days as zero (4.0s)
+  ✓   9 tests/e2e/report-members.spec.ts:4:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls (3.6s)
+  ✘  10 tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status (11.3s)
+(node:689756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 tests/e2e/revenue-identity.spec.ts:18:1 › actual tracker revenue keeps currencies separate and event-time account switches isolated (3.7s)
+  ✓  12 tests/e2e/revenue-identity.spec.ts:46:1 › actual consented experiment assignment and tracker conversion survive stop and resume (2.0s)
+  ✓  13 tests/e2e/seo-gsc-evidence.spec.ts:11:1 › real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT (2.8s)
+  ✓  14 tests/e2e/strict-storage.spec.ts:17:1 › strict real CH facts show verified source and clear stale values after authoritative body loss (6.5s)
+  ✓  15 tests/e2e/time.spec.ts:3:1 › Chinese date picker uses the selected site timezone rather than browser UTC (2ms)
+  ✓  16 tests/e2e/time.spec.ts:4:1 › date range includes the whole civil day across US daylight saving transition (2ms)
+  ✓  17 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Decline and private heatmap exclusions (798ms)
+  ✓  18 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Accept and private heatmap exclusions (1.3s)
+  ✓  19 tests/e2e/workflow.spec.ts:4:1 › product landing is the default, login is an explicit action (569ms)
+  ✓  20 tests/e2e/workflow.spec.ts:5:1 › real administrator → site → durable collection → aggregate → Chinese dashboard (2.0s)
+  ✓  21 tests/e2e/workflow.spec.ts:57:1 › tracker consent does not identify or transmit before grant and stops after revoke (7.1s)
+  ✓  22 tests/e2e/workflow.spec.ts:101:1 › real goal, funnel, saved report, protected share and revocation workflows (3.0s)
+  ✓  23 tests/e2e/workflow.spec.ts:142:1 › core English interface preference and Chinese reset (506ms)
+  ✓  24 tests/e2e/workflow.spec.ts:143:1 › invited viewer registration is scoped and cannot administer other sites (904ms)
+  ✓  25 tests/e2e/workflow.spec.ts:148:1 › opened realtime view receives a newly persisted event and heartbeat online count without refresh (3.4s)
+  ✓  26 tests/e2e/workflow.spec.ts:150:1 › local immutable evidence → suggestion states → actual recheck → verified without a paid model (1.9s)
+  ✓  27 tests/e2e/workflow.spec.ts:153:1 › Chinese dashboard remains usable at mobile width without page overflow (673ms)
+  ✓  28 tests/e2e/workflow.spec.ts:155:1 › actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap (4.3s)
+  ✓  29 tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope (5.1s)
+
+
+  1) tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByLabel('Playback position')
+    Expected: focused
+    Received: inactive
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeFocused" getByLabel('Playback position') with timeout 5000ms
+      - waiting for getByLabel('Playback position')
+        3 × locator resolved to <input min="0" max="183" type="range" aria-label="Playback position" aria-valuetext="0.1 / 0.2 seconds"/>
+          - unexpected value "inactive"
+        11 × locator resolved to <input min="0" max="183" type="range" aria-label="Playback position" aria-valuetext="0.2 / 0.2 seconds"/>
+           - unexpected value "inactive"
+
+
+      12 |  // Element-only resizing proves ResizeObserver, rather than window.resize, updates the canvas.
+      13 |  const chart=page.locator('.chart').first();await chart.evaluate(element=>(element as HTMLElement).style.width='300px');await expect.poll(()=>chart.evaluate(element=>Math.round(element.querySelector('canvas')!.getBoundingClientRect().width))).toBe(300);await chart.evaluate(element=>(element as HTMLElement).style.removeProperty('width'));
+    > 14 |  await navigateWorkspace(page, "Replay");for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});const play=page.getByRole('button',{name:'Play',exact:true}),pause=page.getByRole('button',{name:'Pause',exact:true});await expect(play).toBeVisible();await play.focus();await page.keyboard.press('Enter');await pause.focus();await page.keyboard.press('Enter');await page.getByLabel('Playback speed').selectOption('2');const range=page.getByLabel('Playback position');await range.focus();await page.keyboard.press('ArrowRight');await expect(range).toHaveAttribute('aria-valuetext',/seconds/);const frame=page.locator('.baize-replay-viewport iframe');await expect(frame).toHaveCount(1);expect(await frame.getAttribute('sandbox')).toBe('allow-same-origin');await expect.poll(()=>frame.evaluate(element=>{const frameBounds=element.getBoundingClientRect(),viewportBounds=element.closest('.baize-replay-viewport')!.getBoundingClientRect();return frameBounds.width>0&&frameBounds.width<=viewportBounds.width+1;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator('.baize-replay-player').innerText()).not.toContain(secret);await expect(range).toBeFocused();await page.screenshot({path:testInfo.outputPath(`replay-${width}.png`)});}
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^
+      15 |  await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
+      16 |  }finally{await hostContext.close();}
+      17 | });
+        at /tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts:14:1247
+
+    Error Context: test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+  28 passed (1.7m)
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/tmp/baize-main-1e39942.nt_at1nl/node_modules/@playwright/test/cli.js",
+      "test",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/baize-main-1e39942.nt_at1nl/playwright.config.ts",
+    "rootDir": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/baize-main-1e39942.nt_at1nl/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/tmp/baize-main-1e39942.nt_at1nl/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e",
+        "snapshotDir": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "storageState": "/tmp/baize-e2e-owner-bc986755c2c06f2e.json",
+          "baseURL": "http://127.0.0.1:3391",
+          "headless": true,
+          "launchOptions": {
+            "executablePath": "/usr/bin/chromium"
+          },
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "ai-evidence-language.spec.ts",
+      "file": "ai-evidence-language.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7988,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:18.899Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c517db3d24baea860422-c19e99718329227ffb9f",
+          "file": "ai-evidence-language.spec.ts",
+          "line": 10,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "connector-settings.spec.ts",
+      "file": "connector-settings.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2984,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:27.453Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e05f4462147381515aa3-6d88192f138259f6e601",
+          "file": "connector-settings.spec.ts",
+          "line": 10,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "extended-analysis.spec.ts",
+      "file": "extended-analysis.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real retained content, global campaign filter, repair CSV and advanced English controls",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5470,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:30.459Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e2313d0c7a2228408a0e-80bfcbd11bb54d352d72",
+          "file": "extended-analysis.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "funnel-dropoff.spec.ts",
+      "file": "funnel-dropoff.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4975,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:35.964Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e6e1ce83c058ba3aa6dd-a2760ce2d5c34d97b71c",
+          "file": "funnel-dropoff.spec.ts",
+          "line": 6,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ga4-history.spec.ts",
+      "file": "ga4-history.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4104,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:40.966Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "456f9f71ccf2ba13e536-f20d29bfd2d54fa8759c",
+          "file": "ga4-history.spec.ts",
+          "line": 9,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "manual-search-import.spec.ts",
+      "file": "manual-search-import.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual custom CSV upload, column mapping, preview and idempotent independent import",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1953,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:45.084Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b49da47792c738ea3810-4851d888a079fcf0f8ce",
+          "file": "manual-search-import.spec.ts",
+          "line": 7,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "multilingual-errors.spec.ts",
+      "file": "multilingual-errors.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real English login, revoked permission, share and unconfigured connector errors use stable safe messages",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2569,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:47.050Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbe8118fabf59a272868-ccb36c30bd5391aee8a0",
+          "file": "multilingual-errors.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "realtime-retention.spec.ts",
+      "file": "realtime-retention.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "complete realtime Top exceeds 200-row preview and retention never renders immature days as zero",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3978,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:49.637Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "962f8df567aab8ea3ac4-381b898e6f6c6d95594c",
+          "file": "realtime-retention.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "report-members.spec.ts",
+      "file": "report-members.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3559,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:53.629Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11f22688e79851cc8314-92e7294e24517464814e",
+          "file": "report-members.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "responsive-replay.spec.ts",
+      "file": "responsive-replay.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11346,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Playback position')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Playback position') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Playback position')\u001b[22m\n\u001b[2m    3 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.1 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m      - unexpected value \"inactive\"\u001b[22m\n\u001b[2m    11 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.2 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Playback position')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Playback position') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Playback position')\u001b[22m\n\u001b[2m    3 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.1 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m      - unexpected value \"inactive\"\u001b[22m\n\u001b[2m    11 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.2 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at /tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts:14:1247",
+                    "location": {
+                      "file": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts",
+                      "column": 1247,
+                      "line": 14
+                    },
+                    "snippet": "  12 |  // Element-only resizing proves ResizeObserver, rather than window.resize, updates the canvas.\n  13 |  const chart=page.locator('.chart').first();await chart.evaluate(element=>(element as HTMLElement).style.width='300px');await expect.poll(()=>chart.evaluate(element=>Math.round(element.querySelector('canvas')!.getBoundingClientRect().width))).toBe(300);await chart.evaluate(element=>(element as HTMLElement).style.removeProperty('width'));\n> 14 |  await navigateWorkspace(page, \"Replay\");for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});const play=page.getByRole('button',{name:'Play',exact:true}),pause=page.getByRole('button',{name:'Pause',exact:true});await expect(play).toBeVisible();await play.focus();await page.keyboard.press('Enter');await pause.focus();await page.keyboard.press('Enter');await page.getByLabel('Playback speed').selectOption('2');const range=page.getByLabel('Playback position');await range.focus();await page.keyboard.press('ArrowRight');await expect(range).toHaveAttribute('aria-valuetext',/seconds/);const frame=page.locator('.baize-replay-viewport iframe');await expect(frame).toHaveCount(1);expect(await frame.getAttribute('sandbox')).toBe('allow-same-origin');await expect.poll(()=>frame.evaluate(element=>{const frameBounds=element.getBoundingClientRect(),viewportBounds=element.closest('.baize-replay-viewport')!.getBoundingClientRect();return frameBounds.width>0&&frameBounds.width<=viewportBounds.width+1;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator('.baize-replay-player').innerText()).not.toContain(secret);await expect(range).toBeFocused();await page.screenshot({path:testInfo.outputPath(`replay-${width}.png`)});}\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^\n  15 |  await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');\n  16 |  }finally{await hostContext.close();}\n  17 | });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts",
+                        "column": 1247,
+                        "line": 14
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Playback position')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Playback position') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Playback position')\u001b[22m\n\u001b[2m    3 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.1 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m      - unexpected value \"inactive\"\u001b[22m\n\u001b[2m    11 × locator resolved to <input min=\"0\" max=\"183\" type=\"range\" aria-label=\"Playback position\" aria-valuetext=\"0.2 / 0.2 seconds\"/>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  12 |  // Element-only resizing proves ResizeObserver, rather than window.resize, updates the canvas.\n  13 |  const chart=page.locator('.chart').first();await chart.evaluate(element=>(element as HTMLElement).style.width='300px');await expect.poll(()=>chart.evaluate(element=>Math.round(element.querySelector('canvas')!.getBoundingClientRect().width))).toBe(300);await chart.evaluate(element=>(element as HTMLElement).style.removeProperty('width'));\n> 14 |  await navigateWorkspace(page, \"Replay\");for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});const play=page.getByRole('button',{name:'Play',exact:true}),pause=page.getByRole('button',{name:'Pause',exact:true});await expect(play).toBeVisible();await play.focus();await page.keyboard.press('Enter');await pause.focus();await page.keyboard.press('Enter');await page.getByLabel('Playback speed').selectOption('2');const range=page.getByLabel('Playback position');await range.focus();await page.keyboard.press('ArrowRight');await expect(range).toHaveAttribute('aria-valuetext',/seconds/);const frame=page.locator('.baize-replay-viewport iframe');await expect(frame).toHaveCount(1);expect(await frame.getAttribute('sandbox')).toBe('allow-same-origin');await expect.poll(()=>frame.evaluate(element=>{const frameBounds=element.getBoundingClientRect(),viewportBounds=element.closest('.baize-replay-viewport')!.getBoundingClientRect();return frameBounds.width>0&&frameBounds.width<=viewportBounds.width+1;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator('.baize-replay-player').innerText()).not.toContain(secret);await expect(range).toBeFocused();await page.screenshot({path:testInfo.outputPath(`replay-${width}.png`)});}\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^\n  15 |  await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');\n  16 |  }finally{await hostContext.close();}\n  17 | });\n    at /tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts:14:1247"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:21:57.212Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/baize-main-1e39942.nt_at1nl/test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/baize-main-1e39942.nt_at1nl/test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/baize-main-1e39942.nt_at1nl/tests/e2e/responsive-replay.spec.ts",
+                    "column": 1247,
+                    "line": 14
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "708f186296bdfdb6f281-7cca1ddf89a8bd929cb7",
+          "file": "responsive-replay.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "revenue-identity.spec.ts",
+      "file": "revenue-identity.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual tracker revenue keeps currencies separate and event-time account switches isolated",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3733,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:09.208Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "64594f5f906715bb653e-54f85266c5e849322015",
+          "file": "revenue-identity.spec.ts",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "actual consented experiment assignment and tracker conversion survive stop and resume",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1996,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:13.493Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "64594f5f906715bb653e-67965897aaf9d37e1c58",
+          "file": "revenue-identity.spec.ts",
+          "line": 46,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "seo-gsc-evidence.spec.ts",
+      "file": "seo-gsc-evidence.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2791,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:15.910Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa054475f6502a42edd1-f95034e7d29f327a99a4",
+          "file": "seo-gsc-evidence.spec.ts",
+          "line": 11,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "strict-storage.spec.ts",
+      "file": "strict-storage.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "strict real CH facts show verified source and clear stale values after authoritative body loss",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6480,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:18.720Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "2783a866e1752f6c040c-2ec05095cb573544f915",
+          "file": "strict-storage.spec.ts",
+          "line": 17,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "time.spec.ts",
+      "file": "time.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Chinese date picker uses the selected site timezone rather than browser UTC",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:25.211Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25a4a51ee02522244856-7dbafd0028a153c07b83",
+          "file": "time.spec.ts",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "date range includes the whole civil day across US daylight saving transition",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:25.221Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25a4a51ee02522244856-c460b2944ca079d4db34",
+          "file": "time.spec.ts",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "tracker-addon-privacy.spec.ts",
+      "file": "tracker-addon-privacy.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "ordered English consent addon Decline and private heatmap exclusions",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 798,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:25.237Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24121e1714a8bc9826a7-28f43d637183a521bd17",
+          "file": "tracker-addon-privacy.spec.ts",
+          "line": 8,
+          "column": 51
+        },
+        {
+          "title": "ordered English consent addon Accept and private heatmap exclusions",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1297,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:26.048Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24121e1714a8bc9826a7-7a9c1341fa47e612ea5e",
+          "file": "tracker-addon-privacy.spec.ts",
+          "line": 8,
+          "column": 51
+        }
+      ]
+    },
+    {
+      "title": "workflow.spec.ts",
+      "file": "workflow.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "product landing is the default, login is an explicit action",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 569,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:27.372Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-001c3859ed6d16a25d5e",
+          "file": "workflow.spec.ts",
+          "line": 4,
+          "column": 1
+        },
+        {
+          "title": "real administrator → site → durable collection → aggregate → Chinese dashboard",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2014,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:27.958Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-8b8af66527a0ab8f50aa",
+          "file": "workflow.spec.ts",
+          "line": 5,
+          "column": 1
+        },
+        {
+          "title": "tracker consent does not identify or transmit before grant and stops after revoke",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7090,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:29.987Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-1911fc61fa95b43d3325",
+          "file": "workflow.spec.ts",
+          "line": 57,
+          "column": 1
+        },
+        {
+          "title": "real goal, funnel, saved report, protected share and revocation workflows",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2972,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:37.104Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-c963ca2f18b96c2f81cb",
+          "file": "workflow.spec.ts",
+          "line": 101,
+          "column": 1
+        },
+        {
+          "title": "core English interface preference and Chinese reset",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 506,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:40.097Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-79fd31bbb00990c4ca84",
+          "file": "workflow.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "invited viewer registration is scoped and cannot administer other sites",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 904,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:40.616Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-934b9df8905cd00575cc",
+          "file": "workflow.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "opened realtime view receives a newly persisted event and heartbeat online count without refresh",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3392,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:41.532Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-6f125247402fb701ce66",
+          "file": "workflow.spec.ts",
+          "line": 148,
+          "column": 1
+        },
+        {
+          "title": "local immutable evidence → suggestion states → actual recheck → verified without a paid model",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1935,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:44.940Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-0f0347d35742feaaae1f",
+          "file": "workflow.spec.ts",
+          "line": 150,
+          "column": 1
+        },
+        {
+          "title": "Chinese dashboard remains usable at mobile width without page overflow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 673,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:46.884Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-6bb09ab75088626e567c",
+          "file": "workflow.spec.ts",
+          "line": 153,
+          "column": 1
+        },
+        {
+          "title": "actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4313,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:47.566Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c601ceb5ecfc8efa4a14-a1a52c35946c4bad926a",
+          "file": "workflow.spec.ts",
+          "line": 155,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "workspace-navigation.spec.ts",
+      "file": "workspace-navigation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5051,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T19:22:51.902Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "workspace-computed-style-and-keyboard-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJ2aWV3cG9ydCI6IHsKICAgICJ3aWR0aCI6IDM5MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJzb3VyY2VTaGEiOiAiMWUzOTk0MjA3NjljMDQzODhjNGIwYzBiOTFiZjI4ZGMwMzEzYWUzMyIsCiAgInNpdGVJZCI6ICJmOGRhNjE2N2ViZGM0NjBjZGMxYmIyOTQiLAogICJkb21haW4iOiAibmF2aWdhdGlvbi5leGFtcGxlLnRlc3QiLAogICJ0aW1lem9uZSI6ICJBc2lhL1NoYW5naGFpIiwKICAiZXhwZWN0ZWRBY3R1YWxQdiI6IDIsCiAgImZyb20iOiAiMjAyNi0xMC0xMSIsCiAgInRvIjogIjIwMjYtMTAtMTEiLAogICJjb250cmFzdFNhbXBsZXMiOiBbCiAgICB7CiAgICAgICJzZWxlY3RvciI6ICIuc2NvcGUtY29udGV4dCIsCiAgICAgICJ0ZXh0IjogIuaXpeacn+aXtuWMujogQXNpYS9TaGFuZ2hhaSDCtyAyMDI2LTEwLTExIOKAlCAyMDI2LTEwLTExIMK3IOavlOi+g+WPo+W+hO+8muS4iuS4gOetiemVv+WMuumXtO+8jOS7heWujOaVtOimhuebluaXtuWPr+avlOi+g+OAgiIsCiAgICAgICJmb250U2l6ZSI6ICIxM3B4IiwKICAgICAgImNvbG9yIjogInJnYig4MCwgMTAyLCA4OCkiLAogICAgICAiYmFja2dyb3VuZCI6IFsKICAgICAgICAyNDUsCiAgICAgICAgMjQ4LAogICAgICAgIDI0NSwKICAgICAgICAxCiAgICAgIF0sCiAgICAgICJyYXRpbyI6IDUuODAyNjk4MTg2MzU3MzMzNQogICAgfSwKICAgIHsKICAgICAgInNlbGVjdG9yIjogIi5vdmVydmlldy1tZXRyaWNzIHNwYW4iLAogICAgICAidGV4dCI6ICLmtY/op4jph48iLAogICAgICAiZm9udFNpemUiOiAiMTNweCIsCiAgICAgICJjb2xvciI6ICJyZ2IoODAsIDEwMiwgODgpIiwKICAgICAgImJhY2tncm91bmQiOiBbCiAgICAgICAgMjU1LAogICAgICAgIDI1NSwKICAgICAgICAyNTUsCiAgICAgICAgMQogICAgICBdLAogICAgICAicmF0aW8iOiA2LjIwODMxNjkyMjcyNDAwOQogICAgfSwKICAgIHsKICAgICAgInNlbGVjdG9yIjogIi5vdmVydmlldy1tZXRyaWNzIHNtYWxsIiwKICAgICAgInRleHQiOiAi5qyh5rWP6KeIIiwKICAgICAgImZvbnRTaXplIjogIjEycHgiLAogICAgICAiY29sb3IiOiAicmdiKDgwLCAxMDIsIDg4KSIsCiAgICAgICJiYWNrZ3JvdW5kIjogWwogICAgICAgIDI1NSwKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDEKICAgICAgXSwKICAgICAgInJhdGlvIjogNi4yMDgzMTY5MjI3MjQwMDkKICAgIH0sCiAgICB7CiAgICAgICJzZWxlY3RvciI6ICIuZGF0ZS1yYW5nZSBsYWJlbCIsCiAgICAgICJ0ZXh0IjogIuW8gOWniyIsCiAgICAgICJmb250U2l6ZSI6ICIxMXB4IiwKICAgICAgImNvbG9yIjogInJnYigyMywgNTYsIDQ3KSIsCiAgICAgICJiYWNrZ3JvdW5kIjogWwogICAgICAgIDI0NSwKICAgICAgICAyNDgsCiAgICAgICAgMjQ1LAogICAgICAgIDEKICAgICAgXSwKICAgICAgInJhdGlvIjogMTEuOTQ1MzQzOTA0MzEyMjU1CiAgICB9LAogICAgewogICAgICAic2VsZWN0b3IiOiAiLmRhdGUtcmFuZ2UgaW5wdXQiLAogICAgICAidGV4dCI6ICIiLAogICAgICAiZm9udFNpemUiOiAiMTFweCIsCiAgICAgICJjb2xvciI6ICJyZ2IoMjUsIDYyLCA0OSkiLAogICAgICAiYmFja2dyb3VuZCI6IFsKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDI1NSwKICAgICAgICAxCiAgICAgIF0sCiAgICAgICJyYXRpbyI6IDExLjgzMjc1NTE0NTQ1OTAxMwogICAgfSwKICAgIHsKICAgICAgInNlbGVjdG9yIjogIi5vdmVydmlldy1tZXRyaWNzIC5tZXRyaWMtY29tcGFyaXNvbiIsCiAgICAgICJ0ZXh0IjogIuaXoOWPr+avlOi+g+Wfuue6vyIsCiAgICAgICJmb250U2l6ZSI6ICIxMnB4IiwKICAgICAgImNvbG9yIjogInJnYig4MCwgMTAyLCA4OCkiLAogICAgICAiYmFja2dyb3VuZCI6IFsKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDI1NSwKICAgICAgICAxCiAgICAgIF0sCiAgICAgICJyYXRpbyI6IDYuMjA4MzE2OTIyNzI0MDA5CiAgICB9LAogICAgewogICAgICAic2VsZWN0b3IiOiAibWFpbiBsYWJlbDpoYXMoc2VsZWN0KSIsCiAgICAgICJ0ZXh0IjogIui2i+WKv+aMh+agh+a1j+iniOmHj+iuv+WuouS8muivnSIsCiAgICAgICJmb250U2l6ZSI6ICIxNHB4IiwKICAgICAgImNvbG9yIjogInJnYigyMywgNTYsIDQ3KSIsCiAgICAgICJiYWNrZ3JvdW5kIjogWwogICAgICAgIDI1NSwKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDEKICAgICAgXSwKICAgICAgInJhdGlvIjogMTIuNzgwMzQ0MzAzMTQ4MTE4CiAgICB9LAogICAgewogICAgICAic2VsZWN0b3IiOiAibWFpbiBzZWxlY3QiLAogICAgICAidGV4dCI6ICLmtY/op4jph4/orr/lrqLkvJror50iLAogICAgICAiZm9udFNpemUiOiAiMTRweCIsCiAgICAgICJjb2xvciI6ICJyZ2IoMjUsIDYyLCA0OSkiLAogICAgICAiYmFja2dyb3VuZCI6IFsKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDI1NSwKICAgICAgICAxCiAgICAgIF0sCiAgICAgICJyYXRpbyI6IDExLjgzMjc1NTE0NTQ1OTAxMwogICAgfSwKICAgIHsKICAgICAgInNlbGVjdG9yIjogIm1haW4gc3VtbWFyeSIsCiAgICAgICJ0ZXh0IjogIuermeWGheWIhuaekOWFqOWxgOetm+mAiSIsCiAgICAgICJmb250U2l6ZSI6ICIxNHB4IiwKICAgICAgImNvbG9yIjogInJnYigyMywgNTYsIDQ3KSIsCiAgICAgICJiYWNrZ3JvdW5kIjogWwogICAgICAgIDI1NSwKICAgICAgICAyNTUsCiAgICAgICAgMjU1LAogICAgICAgIDEKICAgICAgXSwKICAgICAgInJhdGlvIjogMTIuNzgwMzQ0MzAzMTQ4MTE4CiAgICB9CiAgXSwKICAiZm9jdXNPdXRsaW5lIjogewogICAgIndpZHRoIjogMywKICAgICJzdHlsZSI6ICJzb2xpZCIsCiAgICAiY29sb3IiOiAicmdiKDIyLCAxMDgsIDgyKSIsCiAgICAiZm9jdXNWaXNpYmxlIjogdHJ1ZQogIH0sCiAgIm1ldGhvZCI6ICJDb21wdXRlZCBzUkdCIGZvcmVncm91bmQgYW5kIGFuY2VzdG9yIGFscGhhIGJhY2tncm91bmRzLCByZXByZXNlbnRhdGl2ZSBub3JtYWwgdGV4dDsgbm90IGZ1bGwgV0NBRyBvciBzY3JlZW4tcmVhZGVyIGNlcnRpZmljYXRpb24iCn0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "62ee0100868f01d700c4-75dac345dd0e5d3c7de8",
+          "file": "workspace-navigation.spec.ts",
+          "line": 5,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-10T19:21:13.833Z",
+    "duration": 103240.357,
+    "expected": 28,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
+Full browser exit=1; evidence=/tmp/baize-ui-browser.BJgY34

@@ -35,3 +35,11 @@ bootstrap 现向实际 createApp 传入同步有界 `serverPhases.sink`，消费
 纯单元新增3项：20000事件验证固定空间/上限、坏事件不污染汇总、真实ALS阶段回调与同步/异步observer异常不改变业务结果。连同原4项，**7 PASS**：`/tmp/baize-server-phase-metrics-unit.json`；ownedlint及全仓typecheck EXIT0，`/tmp/baize-server-phase-metrics-types.log`。尚未验证真实createApp PG/CH阶段数或实际性能；这属于后续父代理串行负载结果，未运行DB/browser/build。
 
 最后轻量 hook 复核：递归扫描不可变 `src/server`，仅固定stage白名单的字面 `measurePerformanceStage` 调用计为已配置。新增纯函数测试直接读取 relational-stats/fact-numeric-query/fact-member-query 三个当前源码，均发现 aggregate_sql；只有json_serialize枚举不视为hook。组合 **8 PASS**（`/tmp/baize-server-phase-hooks-final-unit.json`），lint/typecheck EXIT0（`/tmp/baize-server-phase-hooks-final-types.log`）。这些SQL计时包括实际参数化读取/metadata SQL，不称CPU归约时间。没有启动DB或负载。
+
+## 4ee 原始结果的采样窗口勘误与下一轮
+
+父代理实际不可变 4ee strict1000 结果 `/tmp/baize-independent-4eead97-strict-1000.json` 已通过完整性、cleanup、sourceunchanged；20批均202，最大backlog650。但该版本仅采集期间查询（2个样本，约177ms的P95），约60秒drain没有继续查询。因此该分位不能代表later processed state，更不能作为性能改善结论；原结果与原脚本不改。
+
+新调度器让独立单在途10秒查询定时器在intake和drain持续工作（probe await不会阻塞定时器），没有请求补偿队列；忙时明确querySkippedBusy。每个query sample记录发出时所属窗口，分别给sample count/P95、各窗口相对起止时刻。drain deadline后不再开始新的查询，越过deadline才完成的probe不算drainReached；已在途查询等待结束后才运行fresh final。final assertion总时长独立记录，bootstrap metadata另记录实际fresh final HTTP时长，不混入周期查询P95。
+
+新增2个纯fake-monotonic-clock调度测试：drain中确实继续查询、单在途/无残留定时器，以及晚到drain probe不能把deadline算成通过。组合 **10 PASS**：`/tmp/baize-independent-drain-deadline-unit.json`。尚未执行这次窗口修复的任何负载；父代理后续不可变测量才是实际性能证据。

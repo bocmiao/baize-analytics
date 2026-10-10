@@ -21,3 +21,7 @@ UI 已接入分组真链接、白名单 URL 与历史恢复、移动抽屉、核
 4eead97 全浏览器首轮 29 项中 25 PASS、4 FAIL（23 Chromium +2日期函数通过）；五视口与200%文本新用例通过，代表性 computed contrast 扩展尚未运行。失败含 scoped revoke 期望、刷新导航 helper、GA4超时及辅助分析503隐藏成功定义表（真实UI问题）。已准备严格断言/加载等待与独立 analysisError 产品修复，旧FAIL保留。
 
 4eead97 独立严格1000：20计划/20发送/20 HTTP202、1000接受、0失败/延迟/未发送，最大积压650，最终HTTP PV1000/coverage1、认证canonical1001PV/21UV含bootstrap、9张PG正文表0、1001 outbox done/queued0、水位追平。仅2次入库阶段查询样本，p95 176.987ms 不代表最终或稳态查询延迟；排空后新HTTP完整校验没有单独时长，下一测量补齐。Node app+harness采样内存intake586145792B/drain668774400B，不含存储服务。完整Git913blob前后一致，独立schema/CHnamespace/temp/app cleanup全true。阶段为inclusive/部分接口观察，不相加当CPU或改写旧5000失败。
+
+1e39942 完整浏览器复验28/29 PASS（26真实Chromium+2日期）、1回放focus FAIL。此前4失败均通过；9代表真实computed颜色ratio5.803–12.78，skip-main/筛选键盘/可见焦点通过。关闭rrweb录制focus触发已准备，原焦点断言保留；新地域提示仅受众/设置且admin才有配置入口尚未浏览器复验。
+
+恢复路径头记录复用只在同RR事务内完整认证后SQL TEMP读取，不靠metadata假设CH物理正文可用，常规路径不变；真实PG/CH三文件3 PASS +独立partial-deletion四场景4 PASS，包含旧B、迟到/删除恢复及缺正文失效、max1。未据此声称常规5000提升。独立查询计时新增drain窗口/finalHTTP时长源码和纯单元已准备，旧4ee两样本结果不改写。

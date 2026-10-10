@@ -1,0 +1,139 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "sourceSha": "1e399420769c04388c4b0c0b91bf28dc0313ae33",
+  "siteId": "f8da6167ebdc460cdc1bb294",
+  "domain": "navigation.example.test",
+  "timezone": "Asia/Shanghai",
+  "expectedActualPv": 2,
+  "from": "2026-10-11",
+  "to": "2026-10-11",
+  "contrastSamples": [
+    {
+      "selector": ".scope-context",
+      "text": "日期时区: Asia/Shanghai · 2026-10-11 — 2026-10-11 · 比较口径：上一等长区间，仅完整覆盖时可比较。",
+      "fontSize": "13px",
+      "color": "rgb(80, 102, 88)",
+      "background": [
+        245,
+        248,
+        245,
+        1
+      ],
+      "ratio": 5.8026981863573335
+    },
+    {
+      "selector": ".overview-metrics span",
+      "text": "浏览量",
+      "fontSize": "13px",
+      "color": "rgb(80, 102, 88)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 6.208316922724009
+    },
+    {
+      "selector": ".overview-metrics small",
+      "text": "次浏览",
+      "fontSize": "12px",
+      "color": "rgb(80, 102, 88)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 6.208316922724009
+    },
+    {
+      "selector": ".date-range label",
+      "text": "开始",
+      "fontSize": "11px",
+      "color": "rgb(23, 56, 47)",
+      "background": [
+        245,
+        248,
+        245,
+        1
+      ],
+      "ratio": 11.945343904312255
+    },
+    {
+      "selector": ".date-range input",
+      "text": "",
+      "fontSize": "11px",
+      "color": "rgb(25, 62, 49)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 11.832755145459013
+    },
+    {
+      "selector": ".overview-metrics .metric-comparison",
+      "text": "无可比较基线",
+      "fontSize": "12px",
+      "color": "rgb(80, 102, 88)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 6.208316922724009
+    },
+    {
+      "selector": "main label:has(select)",
+      "text": "趋势指标浏览量访客会话",
+      "fontSize": "14px",
+      "color": "rgb(23, 56, 47)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 12.780344303148118
+    },
+    {
+      "selector": "main select",
+      "text": "浏览量访客会话",
+      "fontSize": "14px",
+      "color": "rgb(25, 62, 49)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 11.832755145459013
+    },
+    {
+      "selector": "main summary",
+      "text": "站内分析全局筛选",
+      "fontSize": "14px",
+      "color": "rgb(23, 56, 47)",
+      "background": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "ratio": 12.780344303148118
+    }
+  ],
+  "focusOutline": {
+    "width": 3,
+    "style": "solid",
+    "color": "rgb(22, 108, 82)",
+    "focusVisible": true
+  },
+  "method": "Computed sRGB foreground and ancestor alpha backgrounds, representative normal text; not full WCAG or screen-reader certification"
+}

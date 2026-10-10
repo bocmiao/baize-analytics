@@ -56,3 +56,20 @@ export async function* streamSelectedHeaders(client:PoolClient,pool:Pool,siteId:
   await client.query(`DROP TABLE IF EXISTS ${table}`).catch(()=>undefined);
  }
 }
+
+/** Recovery-only, same-transaction reuse. Every source body is fully authenticated
+ * once before either consumer receives rows. No metadata-only availability claim. */
+export async function materializeSelectedHeaderSource(client:PoolClient,pool:Pool,siteId:string,options:{mode?:'postgres'|'clickhouse'}={}){
+ const table=`header_reuse_${randomUUID().replaceAll('-','')}`;
+ await client.query(`CREATE TEMP TABLE ${table}(seq bigserial,body jsonb NOT NULL) ON COMMIT DROP`);
+ try{for await(const batch of streamSelectedHeaders(client,pool,siteId,options)){
+  if(batch.length>100)throw Error('SESSION_HEADER_BATCH_LIMIT');
+  if(batch.length)await client.query(`INSERT INTO ${table}(body) SELECT value FROM jsonb_array_elements($1::jsonb)`,[JSON.stringify(batch)]);
+ }}catch(error){await client.query(`DROP TABLE IF EXISTS ${table}`).catch(()=>undefined);throw error;}
+ async function* stream(options:{before?:Date;from?:Date}={}):AsyncIterable<AnalyticsEvent[]>{
+  const cursor=`header_reuse_cursor_${randomUUID().replaceAll('-','')}`;
+  await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT body FROM ${table} WHERE ($1::timestamptz IS NULL OR (body->>'ts')::timestamptz<$1) AND ($2::timestamptz IS NULL OR (body->>'ts')::timestamptz>=$2) ORDER BY seq`,[options.before??null,options.from??null]);
+  try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!rows.length)break;yield rows.map(row=>row.body as AnalyticsEvent);}}finally{await client.query(`CLOSE ${cursor}`).catch(()=>undefined);}
+ }
+ return {stream,cleanup:async()=>{await client.query(`DROP TABLE IF EXISTS ${table}`);}};
+}
