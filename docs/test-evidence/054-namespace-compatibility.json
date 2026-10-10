@@ -1,0 +1,9 @@
+{
+  "scope": "known054two-nonunique lookup indexes only; signed body protocol unchanged",
+  "unitPassed": 2,
+  "lintExit": 0,
+  "typecheckExit": 0,
+  "runnerBashSyntaxExit": 0,
+  "realDatabaseOrImageRun": false,
+  "unknownFutureMigration": "still rejected"
+}
