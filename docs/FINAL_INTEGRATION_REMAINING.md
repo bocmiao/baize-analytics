@@ -2,7 +2,7 @@
 
 核对时间：2026-10-10。依据 `PROJECT_SPEC.md` 全部 F01–F66/P2、`IMPLEMENTATION_NOTES.md`、逐项清单和各模块实际验收记录。此文件只整合状态，不修改规格目标，不把专项计数累加为全量，也不替代共享主清单。未运行新的 CI、Docker、负载或外部请求。
 
-当前不可变本地已验源为 **3e052d816c48a701fb82ce137436c30a770cf080**。036/038/039/041/043–048严格读写、删除、缓存、签名独立恢复主体已纳主线，核心activation guard已true，逐站证明/水位/删除屏障仍强制。全新测试Compose空卷本地入口与清理EXIT0：**491应用=100单元+391集成，0失败/0跳过；22 E2E=20真实Chromium+2日期函数**，见[不可变证据](test-evidence/main-3e052d8-local-final.json)。新应用镜像和5000严格负载尚待；两条新窄修与收入FK核查不计入已发布491。
+当前不可变本地已验源为 **7fbb5612cee6121df23425ff14274316e43a4bca**。036–049相关严格读写、删除、缓存、签名恢复及收入alias回执/raw-prune签名proof/收入FK与保留期窄修已验；coreguardtrue，逐站证明仍强制。全新Compose shared EXIT0/cleanup complete：**494应用=100单元+394集成，0失败/0跳过；22 E2E=20真实Chromium+2日期函数**，见[第十验收](VALIDATION_TENTH.md)。新镜像和5000严格负载仍待。3e052d8原491/22及701真实392/394集成失败、无浏览器记录保留。
 
 ## 已闭合的 main 功能，不重复列为待开发
 
@@ -17,13 +17,13 @@
 
 | 编号 | 原目标与当前状态 | 完成条件 / 具体剩余 |
 |---|---|---|
-| R1 | canonical主迁移已闭合并启用guard | 原producer/reader/worker/正文迁出/证明与恢复主体已纳3e052d8。本轮窄修：收入alias回执与raw-prune签名proof仍在制，不能说已经验收。 |
-| R2 | 043–048事实/缓存读取主体已闭合 | sameclient认证来源、缺正文失败关闭及current exact导出已验；保持来源/epoch/coverage契约，不重新列为未接线。新增窄修结果须新源验收。 |
+| R1 | canonical主迁移已闭合并启用guard | 原producer/reader/worker/正文迁出/证明与恢复主体已纳3e052d8。收入alias回执与raw-prune签名proof已纳7fbb561实际联合验收。 |
+| R2 | 043–048事实/缓存读取主体已闭合 | sameclient认证来源、缺正文失败关闭及current exact导出已验；保持来源/epoch/coverage契约，不重新列为未接线。本次窄修已纳不可变7fbb561验收。 |
 | R3 | 精确删除/journal/独立restore主体已闭合 | 实际删A保B、ACK回滚重试、独立最新journal、cache物理清理/不可恢复legacy负coverage已通过。旧失败保留在历史段。 |
-| R4 | carry/header/fact/cache生命周期主体已闭合 | 当前严格worker、保留/删除/签名恢复已测。真实strict新收入FK缺口由A核查049，仍在制；不据旧测试宣称该窄修完成。 |
+| R4 | carry/header/fact/cache生命周期主体已闭合 | 当前严格worker、保留/删除/签名恢复已测。049真实strict收入FK及保留期窄修已纳当前源验收。 |
 | R5 | daily受控拓扑与操作证明主体已闭合 | 原038/039/041受控证明进入main，guardtrue；未知pre014 daily不制造proof，旧安全report/export仍可用，coverage缺口明确。 |
 | R6 | F52自定义手动搜索导入已闭合 | 042已主线且本地验收；官方公开读取API未证实，原生CSV兼容无样本，不冒充官方连接器。 |
-| R7 | 不可变完整本地应用/浏览器已PASS；新镜像待 | 3e052d8实际491+22，全新Compose清理EXIT0；新应用镜像安装升级备份恢复矩阵待。新增窄修必须固定新源验证，不修改已发布计数。 |
+| R7 | 不可变完整本地应用/浏览器已PASS；新镜像待 | 7fbb561实际494+22，全新Compose清理EXIT0；新应用镜像安装升级备份恢复矩阵待。新增窄修必须固定新源验证，不修改已发布计数。 |
 | R8 | 1000严格CH完整性PASS，性能未达SLO | 查询p95 9.41秒、滞后p95 63.71秒，不宣称SLO通过；5000集中负载/新源性能仍待。旧1M PG-only与77d持续PG证据保留但不替代CH容量或1C2G承诺。 |
 | R9 | 最新托管按用户要求暂停 | 全部自主开发收工后才由父手动同步验收；不阶段触发CNB，自动事件/定时/NPC关闭，GitHub Actions停用。旧托管成功与失败保留，本地通过不代表最新托管通过。 |
 

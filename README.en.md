@@ -21,3 +21,6 @@ Data flows from the MIT tracker through Fastify validation and in-memory anonymi
 | P2 | Incremental CH replicas and signed history copy/isolated restore are locally validated; PG remains canonical, full storage/query migration is unfinished. Full UI localization additions await the next immutable acceptance batch |
 
 [Dashboard screenshot](docs/screenshots/dashboard-acceptance.png) uses acceptance events persisted to a real database, not production traffic. Daily-salt mode disables identify, cross-day distinct visitors and retention analysis. The design specifications and detailed development audit reports remain authoritative in Chinese; the English user and operations guides are linked above.
+
+
+[Latest immutable local acceptance](docs/VALIDATION_TENTH.md): main `7fbb561` passed494 application tests and22 E2E (20 real Chromium+2 date checks), fresh Compose cleanupEXIT0. New application-image and5000 strict-load checks remain pending; no hosted run is claimed.

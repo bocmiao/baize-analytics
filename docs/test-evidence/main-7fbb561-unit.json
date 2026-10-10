@@ -1,0 +1,673 @@
+{
+  "sourceSha": "7fbb5612cee6121df23425ff14274316e43a4bca",
+  "originalSha256": "202134a286cfb86beace049e9eda8dc9b58525ed727df7c34292901aacbdf357",
+  "files": 27,
+  "tests": 100,
+  "passed": 100,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "file": "unit/ai-evidence.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "F60 provider orchestration explicitly simulated; deterministic evidence contract rejects content-only answers despite provider ignoring required tool choice",
+          "status": "passed",
+          "durationMs": 6.518654000000026
+        },
+        {
+          "name": "F60 provider orchestration explicitly simulated; deterministic evidence contract rejects SQL/foreign site/unknown filters/out-of-range and unsupported-only answers",
+          "status": "passed",
+          "durationMs": 4.087349000000017
+        },
+        {
+          "name": "F60 provider orchestration explicitly simulated; deterministic evidence contract retains actual server numbers and rejects duplicate tool IDs",
+          "status": "passed",
+          "durationMs": 6.359484000000009
+        },
+        {
+          "name": "F60 provider orchestration explicitly simulated; deterministic evidence contract never completes after permission revocation and bounds inclusive dates",
+          "status": "passed",
+          "durationMs": 0.9575869999999895
+        },
+        {
+          "name": "F60 provider orchestration explicitly simulated; deterministic evidence contract requires exact distinct-cohort ratio semantics and mathematical numerator/denominator",
+          "status": "passed",
+          "durationMs": 0.5689499999999725
+        }
+      ]
+    },
+    {
+      "file": "unit/analytics.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "event-time analytics correctness matches fixture A despite arrival disorder and late bridging",
+          "status": "passed",
+          "durationMs": 4.37236900000002
+        },
+        {
+          "name": "event-time analytics correctness uses event gaps and joins late events rather than arrival time",
+          "status": "passed",
+          "durationMs": 0.3471749999999929
+        },
+        {
+          "name": "event-time analytics correctness splits at timezone midnight only for daily privacy identifiers",
+          "status": "passed",
+          "durationMs": 13.339384999999993
+        },
+        {
+          "name": "event-time analytics correctness deduplicates event and heartbeat segments per page instance, including multiple tabs",
+          "status": "passed",
+          "durationMs": 1.2243609999999876
+        },
+        {
+          "name": "event-time analytics correctness uses exact period distinct sets instead of summed daily UV",
+          "status": "passed",
+          "durationMs": 1.1113200000000347
+        },
+        {
+          "name": "event-time analytics correctness preserves unequal repeated point masses at the body and tail without centroid-centre interpolation",
+          "status": "passed",
+          "durationMs": 1.645296999999971
+        },
+        {
+          "name": "event-time analytics correctness merges unequal-size tdigest samples instead of averaging daily quantiles",
+          "status": "passed",
+          "durationMs": 1.567910999999981
+        },
+        {
+          "name": "event-time analytics correctness implements strict and loose ordered funnels",
+          "status": "passed",
+          "durationMs": 1.1798139999999648
+        },
+        {
+          "name": "event-time analytics correctness keeps boolean event property groups",
+          "status": "passed",
+          "durationMs": 0.8045160000000351
+        },
+        {
+          "name": "goal and heartbeat semantics counts each converted session once per goal rather than every custom event",
+          "status": "passed",
+          "durationMs": 0.6112439999999992
+        },
+        {
+          "name": "goal and heartbeat semantics deduplicates identical heartbeat intervals even with different event ids",
+          "status": "passed",
+          "durationMs": 0.3538350000000037
+        },
+        {
+          "name": "bucket boundary page instances keeps visible duration and completion in the heartbeat bucket across an hour",
+          "status": "passed",
+          "durationMs": 0.2583900000000199
+        },
+        {
+          "name": "untrusted dictionary names keeps prototype-looking event, property, dimension, goal and funnel keys as ordinary data across JSON persistence",
+          "status": "passed",
+          "durationMs": 1.5154210000000035
+        },
+        {
+          "name": "revenue currency and attribution keeps currencies independent, deduplicates orders, and attributes the latest page with last non-direct source",
+          "status": "passed",
+          "durationMs": 0.7006089999999858
+        },
+        {
+          "name": "revenue currency and attribution does not discard revenue without a preceding pageview",
+          "status": "passed",
+          "durationMs": 0.2420959999999468
+        },
+        {
+          "name": "revenue page instance across tabs keeps the purchase page linked to its own instance while retaining latest non-direct acquisition",
+          "status": "passed",
+          "durationMs": 0.2462319999999636
+        }
+      ]
+    },
+    {
+      "file": "unit/api-errors.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "fixed bilingual API error boundary does not expose dynamic internal or client exception text",
+          "status": "passed",
+          "durationMs": 2.1028789999999873
+        },
+        {
+          "name": "fixed bilingual API error boundary matches legacy messages only with the exact admitted status and keeps collection wire codes",
+          "status": "passed",
+          "durationMs": 0.4924740000000014
+        },
+        {
+          "name": "fixed bilingual API error boundary maps all trusted codes to fixed Chinese and English semantics without deriving text from errors",
+          "status": "passed",
+          "durationMs": 6.043115
+        }
+      ]
+    },
+    {
+      "file": "unit/backup-lines.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "rejects a oversized line and a truncated tail before parsing",
+          "status": "passed",
+          "durationMs": 9.530867999999998
+        }
+      ]
+    },
+    {
+      "file": "unit/bot-filter.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "sliding window detects request 21 but normal batches and tracker retries are requests rather than events",
+          "status": "passed",
+          "durationMs": 5.856121999999999
+        },
+        {
+          "name": "AI UA classification takes priority over generic bots; library is operator maintainable and rejects unsafe inputs",
+          "status": "passed",
+          "durationMs": 1.261166000000003
+        },
+        {
+          "name": "Redis receives only HMAC key and random request ID, never raw IP or user agent",
+          "status": "passed",
+          "durationMs": 0.8698949999999854
+        },
+        {
+          "name": "Redis outage falls back to the active bounded local request window",
+          "status": "passed",
+          "durationMs": 1.182346999999993
+        }
+      ]
+    },
+    {
+      "file": "unit/canonical-event-data.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "canonical export EAV preserves primitive types and numeric PG decimal representation",
+          "status": "passed",
+          "durationMs": 2.16093699999999
+        },
+        {
+          "name": "canonical export EAV rejects foreign-site bodies and malformed properties rather than claiming empty success",
+          "status": "passed",
+          "durationMs": 1.1272440000000188
+        },
+        {
+          "name": "canonical export EAV fails at the per-table limit without silently truncating",
+          "status": "passed",
+          "durationMs": 72.31278099999997
+        }
+      ]
+    },
+    {
+      "file": "unit/canonical-retry-receipt.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "canonical retry chain fails closed rejects a loop without reading any orphan body",
+          "status": "passed",
+          "durationMs": 3.9139170000000263
+        },
+        {
+          "name": "canonical retry chain fails closed caps a chain at 64 links instead of following unbounded metadata",
+          "status": "passed",
+          "durationMs": 0.7498640000000023
+        }
+      ]
+    },
+    {
+      "file": "unit/clickhouse.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "binds hostile identifiers and UTC date parameters without embedding credentials in URLs or SQL",
+          "status": "passed",
+          "durationMs": 28.356011000000024
+        },
+        {
+          "name": "rejects cross-site snapshot writes before transport and rejects credential URLs",
+          "status": "passed",
+          "durationMs": 1.5106839999999977
+        },
+        {
+          "name": "hides downstream response details on failure and never treats a failure as an empty successful replica",
+          "status": "passed",
+          "durationMs": 1.111108999999999
+        }
+      ]
+    },
+    {
+      "file": "unit/content-analytics.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "groups actual downloads by URL and extension, preserves 404 origins and safe prototype event trends",
+          "status": "passed",
+          "durationMs": 3.5247380000000135
+        },
+        {
+          "name": "counts funnel loss from ordered sessions and goal channels at actual completion times",
+          "status": "passed",
+          "durationMs": 7.846340999999995
+        }
+      ]
+    },
+    {
+      "file": "unit/cookie-domain.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "uses full ICANN/private PSL and explicit site hosts to reject public suffix, IP, deceptive parent and unregistered subdomains",
+          "status": "passed",
+          "durationMs": 2.892232000000007
+        }
+      ]
+    },
+    {
+      "file": "unit/daily-privacy-policy.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "daily known identifier policy cleans every known payload string and nested alias, preserving controlled protocol columns",
+          "status": "passed",
+          "durationMs": 3.8696350000000166
+        },
+        {
+          "name": "daily known identifier policy cleans dimension aliases/email while retaining device enum and business values",
+          "status": "passed",
+          "durationMs": 0.35405499999998824
+        }
+      ]
+    },
+    {
+      "file": "unit/dimensions.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "uses domain boundaries for search, AI and social instead of substring matches",
+          "status": "passed",
+          "durationMs": 23.07481200000001
+        },
+        {
+          "name": "applies ordered explicit host and UTM rule conjunctions and configurable AI hosts",
+          "status": "passed",
+          "durationMs": 4.670981000000012
+        },
+        {
+          "name": "keeps all UTM dimensions and removes directly identifying search terms",
+          "status": "passed",
+          "durationMs": 1.7306260000000009
+        },
+        {
+          "name": "parses actual terminal UA, CSS screen and density without inventing devices for unknown UA",
+          "status": "passed",
+          "durationMs": 0.9128300000000138
+        },
+        {
+          "name": "marks advertising origin without retaining click IDs",
+          "status": "passed",
+          "durationMs": 0.31577799999999456
+        }
+      ]
+    },
+    {
+      "file": "unit/external-errors.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "external API error contract uses bounded public messages and stable statuses without accepting provider payloads",
+          "status": "passed",
+          "durationMs": 7.686800000000019
+        }
+      ]
+    },
+    {
+      "file": "unit/external-geoip.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "GeoIP official download verification with explicitly invalid local artifact fixtures unknown remains unknown without a valid mmdb; never fabricates a region",
+          "status": "passed",
+          "durationMs": 2.3064760000000035
+        },
+        {
+          "name": "GeoIP official download verification with explicitly invalid local artifact fixtures valid archive checksum does not bypass mmdb format validation or overwrite prior artifact",
+          "status": "passed",
+          "durationMs": 21.84361100000001
+        },
+        {
+          "name": "GeoIP official download verification with explicitly invalid local artifact fixtures rejects an official-checksum-shaped response whose archive bytes do not match",
+          "status": "passed",
+          "durationMs": 1.0825470000000053
+        }
+      ]
+    },
+    {
+      "file": "unit/external.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "external secrets and outbound guardrails encrypts with fresh nonce and rejects tampering and wrong key",
+          "status": "passed",
+          "durationMs": 3.743479000000036
+        },
+        {
+          "name": "external secrets and outbound guardrails blocks private, metadata, IPv4-mapped IPv6 and loopback",
+          "status": "passed",
+          "durationMs": 2.1618180000000393
+        },
+        {
+          "name": "external secrets and outbound guardrails rejects private URL and non-HTTPS without connecting",
+          "status": "passed",
+          "durationMs": 2.176819999999964
+        },
+        {
+          "name": "external secrets and outbound guardrails real local HTTP transport pins DNS, bounds body/time and isolates Ollama exception",
+          "status": "passed",
+          "durationMs": 41.62468200000001
+        },
+        {
+          "name": "external secrets and outbound guardrails normalizes model base and full completion endpoint without duplication",
+          "status": "passed",
+          "durationMs": 0.26396900000003143
+        },
+        {
+          "name": "external secrets and outbound guardrails accepts only bounded semantic DSL, rejects SQL and unknown sites",
+          "status": "passed",
+          "durationMs": 3.2664080000000126
+        },
+        {
+          "name": "SEO and aggregate provider integration fixtures (not real accounts) detects health issues and obeys robots without crawling foreign domain",
+          "status": "passed",
+          "durationMs": 8.448149999999998
+        },
+        {
+          "name": "SEO and aggregate provider integration fixtures (not real accounts) paginates GSC aggregate reports preserving query/page dimensions",
+          "status": "passed",
+          "durationMs": 30.545643999999925
+        },
+        {
+          "name": "SEO and aggregate provider integration fixtures (not real accounts) GA4 requests aggregate metrics and rejects invalid property identifiers",
+          "status": "passed",
+          "durationMs": 0.9556049999999914
+        }
+      ]
+    },
+    {
+      "file": "unit/ga4-import.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "GA4 provider report validation with explicit simulated transport uses actual short-page length for offset, enforces stable rowCount and never adds distinct users",
+          "status": "passed",
+          "durationMs": 23.299562999999978
+        },
+        {
+          "name": "GA4 provider report validation with explicit simulated transport rejects early-empty pages, inconsistent headers, unsafe numeric metrics, invalid ISO weeks and timezone conflicts",
+          "status": "passed",
+          "durationMs": 5.227082000000024
+        },
+        {
+          "name": "GA4 provider report validation with explicit simulated transport bounds range and property before outbound calls and clips cross-year ISO weeks exactly",
+          "status": "passed",
+          "durationMs": 1.3340460000000007
+        }
+      ]
+    },
+    {
+      "file": "unit/geography-analytics.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "unions exact visitor sets when one visitor appears in multiple cities and normalizes only known provinces",
+          "status": "passed",
+          "durationMs": 3.8216770000000224
+        },
+        {
+          "name": "never invents locations for unknown and does not claim cross-day daily-salt UV",
+          "status": "passed",
+          "durationMs": 0.4168399999999792
+        }
+      ]
+    },
+    {
+      "file": "unit/geography-assets.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "verifies every original map checksum and renders genuine Chinese provinces in current ECharts",
+          "status": "passed",
+          "durationMs": 73.83757500000002
+        }
+      ]
+    },
+    {
+      "file": "unit/governance.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "governance security exports only typed portable configuration without unknown secret keys",
+          "status": "passed",
+          "durationMs": 4.489316000000031
+        },
+        {
+          "name": "governance security renders localized real metrics and escapes notification content",
+          "status": "passed",
+          "durationMs": 0.7993990000001077
+        },
+        {
+          "name": "governance security uses fixed-horizon significance and refuses small samples",
+          "status": "passed",
+          "durationMs": 1.022654999999986
+        },
+        {
+          "name": "governance security encrypts and authenticates channel credentials",
+          "status": "passed",
+          "durationMs": 1.8996609999999237
+        },
+        {
+          "name": "governance security hashes unique access tokens and verifies salted passwords",
+          "status": "passed",
+          "durationMs": 105.00192500000003
+        },
+        {
+          "name": "governance security escapes CSV formulas, quotes and newlines",
+          "status": "passed",
+          "durationMs": 0.47717099999999846
+        },
+        {
+          "name": "governance security requires exact CSP origins",
+          "status": "passed",
+          "durationMs": 0.8078209999998762
+        },
+        {
+          "name": "governance security rejects replay plaintext and sensitive names",
+          "status": "passed",
+          "durationMs": 0.6920459999998911
+        }
+      ]
+    },
+    {
+      "file": "unit/journal.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "recovery never creates a replacement for a missing independent deletion journal",
+          "status": "passed",
+          "durationMs": 5.05048400000004
+        },
+        {
+          "name": "rejects a reset journal and accepts only a complete crash extension of the acknowledged prefix",
+          "status": "passed",
+          "durationMs": 8.897419999999954
+        },
+        {
+          "name": "requires a pre-existing watermark for a nonempty legacy log and validates identity interval bounds",
+          "status": "passed",
+          "durationMs": 2.7961370000000443
+        }
+      ]
+    },
+    {
+      "file": "unit/link-text.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "minimizes visible public text to 50 Unicode codepoints after whitespace and obvious identity redaction",
+          "status": "passed",
+          "durationMs": 2.146285000000006
+        }
+      ]
+    },
+    {
+      "file": "unit/manual-search-parser.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "custom search CSV reads BOM, quoted multiline/comma/doubled quotes and deterministic digest",
+          "status": "passed",
+          "durationMs": 6.8099639999999795
+        },
+        {
+          "name": "custom search CSV rejects malformed CSV, dates, numbers and foreign/credential page URLs",
+          "status": "passed",
+          "durationMs": 1.9492659999999944
+        },
+        {
+          "name": "custom search CSV enforces decoded byte and row caps",
+          "status": "passed",
+          "durationMs": 31.14239699999999
+        },
+        {
+          "name": "custom search CSV neutralizes spreadsheet formula cells including leading spaces and escapes quotes",
+          "status": "passed",
+          "durationMs": 0.7442849999999908
+        }
+      ]
+    },
+    {
+      "file": "unit/remaining-fact-transport.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "remaining fact transport boundaries authenticates complete ownership and immutable source provenance",
+          "status": "passed",
+          "durationMs": 8.010087999999996
+        },
+        {
+          "name": "remaining fact transport boundaries rejects malformed responses and bounded oversized bodies without raw error disclosure",
+          "status": "passed",
+          "durationMs": 36.809202
+        }
+      ]
+    },
+    {
+      "file": "unit/site-hosts.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "explicit site host configuration accepts exact registered aliases only within the same public/private registrable domain",
+          "status": "passed",
+          "durationMs": 2.8053699999999964
+        },
+        {
+          "name": "explicit site host configuration preserves primary host semantics and requires exact HTTPS aliases without widening Origin defaults",
+          "status": "passed",
+          "durationMs": 0.5094399999999979
+        }
+      ]
+    },
+    {
+      "file": "unit/tracker.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "independent tracker protocol uses UUIDv7 timestamp and variant with unique random bits",
+          "status": "passed",
+          "durationMs": 5.297738999999979
+        },
+        {
+          "name": "independent tracker protocol keeps boolean properties and caps at twenty",
+          "status": "passed",
+          "durationMs": 1.5620210000000156
+        },
+        {
+          "name": "independent tracker protocol does not queue mini-program events before consent and retains ids after failure",
+          "status": "passed",
+          "durationMs": 2.0188970000000097
+        },
+        {
+          "name": "replay removes attributes, text and sensitive query metadata recursively",
+          "status": "passed",
+          "durationMs": 0.5662870000000169
+        },
+        {
+          "name": "mini SDK normalizes routes, preserves repeated grant and can disable stable IDs",
+          "status": "passed",
+          "durationMs": 0.7891630000000021
+        },
+        {
+          "name": "daily mini-program identify does not allocate identifiers or expose stable properties",
+          "status": "passed",
+          "durationMs": 1.2822480000000098
+        },
+        {
+          "name": "shared daily privacy rules cover normalized identifiers while preserving analytical values",
+          "status": "passed",
+          "durationMs": 0.5324349999999924
+        },
+        {
+          "name": "mini transport synchronous failure preserves immutable retry and releases busy state",
+          "status": "passed",
+          "durationMs": 0.5011570000000063
+        },
+        {
+          "name": "cookie domain syntax gate allows only explicit parent DNS scopes and rejects unrelated hosts and IPs",
+          "status": "passed",
+          "durationMs": 1.2376909999999839
+        }
+      ]
+    },
+    {
+      "file": "unit/web-errors.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "untrusted dictionary keys and public error localization does not resolve inherited constructor values",
+          "status": "passed",
+          "durationMs": 2.112864000000002
+        },
+        {
+          "name": "untrusted dictionary keys and public error localization does not resolve inherited toString values",
+          "status": "passed",
+          "durationMs": 0.3729140000000086
+        },
+        {
+          "name": "untrusted dictionary keys and public error localization does not resolve inherited __proto__ values",
+          "status": "passed",
+          "durationMs": 0.20056399999998575
+        },
+        {
+          "name": "untrusted dictionary keys and public error localization uses fixed messages in both languages and preserves HTTP status",
+          "status": "passed",
+          "durationMs": 0.28024399999998195
+        }
+      ]
+    },
+    {
+      "file": "unit/web-storage-evidence.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "labels only explicit storage sources without inferring authority or resolving inherited keys",
+          "status": "passed",
+          "durationMs": 1.611976999999996
+        }
+      ]
+    }
+  ]
+}
