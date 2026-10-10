@@ -1,0 +1,2822 @@
+{
+  "sourceSha": "3e052d816c48a701fb82ce137436c30a770cf080",
+  "originalReportSha256": "eb0286689006dfa6e7bb83a338f4784311b6a644d7afa53635668a1038508178",
+  "originalReport": "/tmp/baize-final-local.wsNLND/reports/integration.json",
+  "counts": {
+    "files": 142,
+    "total": 391,
+    "passed": 391,
+    "failed": 0,
+    "skipped": 0,
+    "success": true
+  },
+  "files": [
+    {
+      "file": "tests/integration/ai-budget.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "durable AI reservation ledger actual PG max1 and crashed child forward migration preserves legacy aggregate reserve as expired upper bound without inventing usage or retaining unfinished answer",
+          "status": "passed",
+          "durationMs": 37.78591300000005
+        },
+        {
+          "name": "durable AI reservation ledger actual PG max1 and crashed child concurrent reservations respect cap; settlement CAS consumes once without borrowing another connection",
+          "status": "passed",
+          "durationMs": 12.912480000000073
+        },
+        {
+          "name": "durable AI reservation ledger actual PG max1 and crashed child actual SIGKILL after committed reserve survives privacy call deletion; expiry/late settlement cannot charge twice or revive prose",
+          "status": "passed",
+          "durationMs": 207.62368200000003
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/ai-evidence.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "F60 independent question helper: real collector/PG/permission, explicit simulated provider builds numbers/charts from actual collected and reaggregated facts, not provider prose, with no identifiers",
+          "status": "passed",
+          "durationMs": 28.329103999999916
+        },
+        {
+          "name": "F60 independent question helper: real collector/PG/permission, explicit simulated provider unions exact UV across joint segments and dates, preserves filtered daily axes and explicit truncation",
+          "status": "passed",
+          "durationMs": 39.83126500000003
+        },
+        {
+          "name": "F60 independent question helper: real collector/PG/permission, explicit simulated provider checks actual viewer permissions for every request, rejects foreign/revoked sites, daily-salt UV and dirty epochs",
+          "status": "passed",
+          "durationMs": 38.50019099999986
+        },
+        {
+          "name": "F60 independent question helper: real collector/PG/permission, explicit simulated provider persists immutable final traces separately and rejects cross-site call references",
+          "status": "passed",
+          "durationMs": 52.799758999999995
+        },
+        {
+          "name": "F60 independent question helper: real collector/PG/permission, explicit simulated provider rejects wrong published authority/epochs without fabricated coverage; matching persisted facts do not require a CH network call",
+          "status": "passed",
+          "durationMs": 27.077610999999933
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/ai-fact-source.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "AI typed tools read real worker facts from CH after PG effect removal, never fake empty coverage",
+          "status": "passed",
+          "durationMs": 1407.0636189999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/ai-question-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model completes actual authorized tool with max1, atomically persists budget/final trace and retrieves immutable server chart",
+          "status": "passed",
+          "durationMs": 231.640897
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model content-only and injected foreign SQL cannot complete or create chart evidence; reserved budget always releases",
+          "status": "passed",
+          "durationMs": 633.0296699999999
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model rechecks actual revoked permissions inside the single finalization client and releases budget without completed status",
+          "status": "passed",
+          "durationMs": 172.1100660000002
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model erases old question/suggestion/prose and cached exports on actual visitor deletion; journal replay and restore purge cannot revive them while another site and quota remain",
+          "status": "passed",
+          "durationMs": 732.8157809999998
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model does not return old recheck evidence when actual deletion happens during the authorized crawler transport",
+          "status": "passed",
+          "durationMs": 479.02960600000006
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model late actual provider response after durable expiry cannot complete trace or double-settle max1 quota",
+          "status": "passed",
+          "durationMs": 320.4837899999998
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model oversized provider usage fails without leaving reserved quota or persisted model evidence",
+          "status": "passed",
+          "durationMs": 173.7287269999997
+        },
+        {
+          "name": "production F60 API: actual max=1 PG pool/collector/budget/evidence, explicitly simulated model saved legacy or malformed ratio cannot return a completed model answer as verified current evidence",
+          "status": "passed",
+          "durationMs": 6.44401199999993
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/analytics.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "analytics real PostgreSQL fences and replay does not replace the full period with the newest batch",
+          "status": "passed",
+          "durationMs": 209.17981600000007
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay claims exclusively, captures latest snapshot generation, and recovers expired lease",
+          "status": "passed",
+          "durationMs": 176.988922
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay rejects pre-restore epoch and excludes tombstoned visitors on worker rebuild",
+          "status": "passed",
+          "durationMs": 81.39487500000018
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay retains archived aggregates while applying each site retention independently",
+          "status": "passed",
+          "durationMs": 158.41024700000003
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay returns exact cross-day UV/cohorts and rejects privacy cross-day identity claims",
+          "status": "passed",
+          "durationMs": 195.999906
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay joins real typed event attributes and HMAC identity paths through authorized routes",
+          "status": "passed",
+          "durationMs": 119.7087959999999
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay computes exact retained minute boundaries instead of silently rounding to a whole hour",
+          "status": "passed",
+          "durationMs": 143.59745799999996
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay dead letters after three sanitized failures and admin replay invalidates the stale lease",
+          "status": "passed",
+          "durationMs": 130.3415789999999
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay persists and merges unequal-count t-digest summaries through PostgreSQL",
+          "status": "passed",
+          "durationMs": 305.3261870000001
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay persists and aggregates prototype-looking payload names without poisoning a site or entering DLQ",
+          "status": "passed",
+          "durationMs": 145.36163099999976
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay advances snapshot watermarks under sustained actual collection and never completes later outbox rows early",
+          "status": "passed",
+          "durationMs": 577.2899990000001
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay publishes separate currency totals and real last-click goal/revenue attribution; page filters retain exact counts",
+          "status": "passed",
+          "durationMs": 281.6478430000002
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay collects order receipts idempotently, rejects amount/currency conflicts, and isolates daily-salt orders by local day",
+          "status": "passed",
+          "durationMs": 79.7654620000003
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay streams late event-time arrivals through real HTTP ingestion cursors and closes after viewer membership revocation",
+          "status": "passed",
+          "durationMs": 4060.336381
+        },
+        {
+          "name": "analytics real PostgreSQL fences and replay marks legacy currencyless archived income unavailable and fences dirty retained reaggregation on upgrade",
+          "status": "passed",
+          "durationMs": 19.154747999999927
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/api-errors.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual application fixed error-code boundary returns language-neutral known auth/share/export/experiment codes with fixed public messages",
+          "status": "passed",
+          "durationMs": 14.266463000000158
+        },
+        {
+          "name": "actual application fixed error-code boundary hides unknown server and client exception text while preserving safe HTTP status",
+          "status": "passed",
+          "durationMs": 1.412185000000136
+        },
+        {
+          "name": "actual application fixed error-code boundary stores a fixed export failure code rather than a filesystem exception path",
+          "status": "passed",
+          "durationMs": 22.424379000000044
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/bot-collector.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual collector (Redis unavailable=false) excludes request bursts and AI crawlers, accepts normal event batches and immutable retries",
+          "status": "passed",
+          "durationMs": 1205.431138
+        },
+        {
+          "name": "actual collector (Redis unavailable=true) excludes request bursts and AI crawlers, accepts normal event batches and immutable retries",
+          "status": "passed",
+          "durationMs": 934.2802439999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/bot-filter-redis.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real Redis shared workers atomically classify the 21st HTTP request without persisting IP",
+          "status": "passed",
+          "durationMs": 1121.088062
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/bot-minute-failover.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real Redis minute limit retains 99-request history after this client disconnects",
+          "status": "passed",
+          "durationMs": 1192.668265
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/cache-body-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "cache signed sidecar with exact canonical batch coverage preserves covered and uncovered strata in independent target with no mixed batch or double count",
+          "status": "passed",
+          "durationMs": 1756.047638
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/cache-store.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "sealed legacy caches actual PG CH preserves per-bucket historical values, weighted centroid and typed heatmap without permanent PG bodies, fails closed and physically invalidates",
+          "status": "passed",
+          "durationMs": 1085.193489
+        },
+        {
+          "name": "isolated sealed cache restore preserves original producer seals across target epoch/namespace and rejects forged contents before writes",
+          "status": "passed",
+          "durationMs": 943.3487700000001
+        },
+        {
+          "name": "cache maintenance durable transport failure uses max-one pool, records exponential retry and recovers after actual TCP refusal",
+          "status": "passed",
+          "durationMs": 390.95587499999965
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-authority-flow.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "production native HTTP canonical authority: setup → verified cutover → raw prune → collection/AI/delete/cold failure uses actual HTTP administrative operations and committed CH bodies without manually assigning authority",
+          "status": "passed",
+          "durationMs": 3823.875081
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical independent target backup restore real PG CH same CH scope and missing latest journal fail closed before target metadata",
+          "status": "passed",
+          "durationMs": 5.794728999999961
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH valid but reset current journal fails backup-prefix proof",
+          "status": "passed",
+          "durationMs": 3.5012719999999717
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH tampered event archive rejects before CH restore",
+          "status": "passed",
+          "durationMs": 1.6741910000000644
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH signs the complete portable header and rejects a wrong key or altered signed epoch before target writes",
+          "status": "passed",
+          "durationMs": 32.50823500000001
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH daily source without validated provenance and unsigned daily target refuse before authority creation",
+          "status": "passed",
+          "durationMs": 7.372794999999996
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH rejects one authenticated daily body lacking its private column proof even with a typed validated header",
+          "status": "passed",
+          "durationMs": 24.61741200000006
+        },
+        {
+          "name": "canonical independent target backup restore real PG CH old backup + current fsynced A interval restores B into distinct CH database and source remains two",
+          "status": "passed",
+          "durationMs": 151.96877499999982
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-clickhouse.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical batch independent real PG CH PG rollback leaves invisible CH orphan; later committed batch exposes exactly one copy; retry conflict rejects",
+          "status": "passed",
+          "durationMs": 73.159088
+        },
+        {
+          "name": "canonical batch independent real PG CH common read/client and source stream prefer authority, globally order and filter exact fields",
+          "status": "passed",
+          "durationMs": 61.684651999999915
+        },
+        {
+          "name": "canonical batch independent real PG CH explicit epoch fence and CH unavailable never return successful empty PG fallback",
+          "status": "passed",
+          "durationMs": 3.374031000000059
+        },
+        {
+          "name": "canonical batch independent real PG CH shadow batches persist body checksum and late older arrivals are not lost behind a cursor",
+          "status": "passed",
+          "durationMs": 86.67426499999999
+        },
+        {
+          "name": "canonical batch independent real PG CH activation and pruning fail closed until all mandatory integrations are verified",
+          "status": "passed",
+          "durationMs": 4.047338999999965
+        },
+        {
+          "name": "canonical batch independent real PG CH fsync barrier precedes physical deletion; exact A interval preserves B and verifies rows",
+          "status": "passed",
+          "durationMs": 36.409241000000065
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-daily-authority-flow.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily-salt actual native canonical lifecycle with controlled collector proofs actual controlled daily cutover, CH-only collection, precise day deletion and unavailable-source rollback",
+          "status": "passed",
+          "durationMs": 3445.869232
+        },
+        {
+          "name": "daily-salt actual native canonical lifecycle with controlled collector proofs same actual flow including production startup body replacement and exact replacement proof lineage",
+          "status": "passed",
+          "durationMs": 3260.458944
+        },
+        {
+          "name": "daily-salt actual native canonical lifecycle with controlled collector proofs startup body replacement recovers durable CH ACK after actual PG proof rollback",
+          "status": "passed",
+          "durationMs": 3304.858771
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-daily-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "proved daily backup to an independent real CH target verifies source shadow, survives raw pruning, imports seals and sanitizes target before commit without changing source",
+          "status": "passed",
+          "durationMs": 1751.324356
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "application deletion with real canonical PG CH fsynced application journal deletes A without mirror-all or loss of B; replay remains exact and missing adapter fails closed",
+          "status": "passed",
+          "durationMs": 172.98319099999992
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-heatmap.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical heatmap bounded base and committed raw delta keeps expired legacy counts, adds late/new coordinates once, rejects unavailable evidence and never borrows the locked pool",
+          "status": "passed",
+          "durationMs": 878.363472
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-identity.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "immutable canonical body and temporal identity ledger real PG CH delayed identifies project event-time A/B without changing immutable body or requiring PG events",
+          "status": "passed",
+          "durationMs": 116.20700600000009
+        },
+        {
+          "name": "immutable canonical body and temporal identity ledger real PG CH requires physical ACK before identity proof purge; precise A deletion retains B body/identity/contribution",
+          "status": "passed",
+          "durationMs": 121.65187600000002
+        },
+        {
+          "name": "immutable canonical body and temporal identity ledger real PG CH daily-salt projection always strips any original or ledger user_id; wrongsite/batchlimit rejected",
+          "status": "passed",
+          "durationMs": 5.368055000000027
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-ingest.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical ingestion staged real PG CH, activation closed default PG collection unchanged, canonical authority refuses202 while integration unready",
+          "status": "passed",
+          "durationMs": 70.15992000000006
+        },
+        {
+          "name": "canonical ingestion staged real PG CH, activation closed CH unavailable rolls back keys/outbox/manifest, never key-only reliable ACK",
+          "status": "passed",
+          "durationMs": 10.50573200000008
+        },
+        {
+          "name": "canonical ingestion staged real PG CH, activation closed post-body PG rollback leaves invisible orphan; committed metadata reads actual CH body with PG body absent",
+          "status": "passed",
+          "durationMs": 66.41055100000017
+        },
+        {
+          "name": "canonical ingestion staged real PG CH, activation closed direct canonical daily producer stores column proof without PG body, unknown and changed columns fail closed",
+          "status": "passed",
+          "durationMs": 61.62048499999992
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-operations-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "explicit canonical operator API real PG/CH max1 requires admin and strict explicit action, preserves PG body when accepted intake makes cutover validation stale",
+          "status": "passed",
+          "durationMs": 154.87713499999995
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-privacy-cleanup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily privacy immutable cleanup real PG CH max1 physically removes known aliases, preserves safe business data and original retry hash, recovers orphan after ACK rollback and records verified policy",
+          "status": "passed",
+          "durationMs": 270.743384
+        },
+        {
+          "name": "daily privacy immutable cleanup real PG CH max1 removes forbidden daily identify and replay body content without erasing unrelated safe traffic",
+          "status": "passed",
+          "durationMs": 328.218395
+        },
+        {
+          "name": "daily privacy immutable cleanup real PG CH max1 refuses unknown single-day source despite an earlier privacy-only completion marker",
+          "status": "passed",
+          "durationMs": 130.92563400000017
+        },
+        {
+          "name": "daily privacy immutable cleanup real PG CH max1 refuses unreconstructable cross-day visitor columns before any body is touched",
+          "status": "passed",
+          "durationMs": 46.008931000000075
+        },
+        {
+          "name": "daily privacy immutable cleanup real PG CH max1 preserves original proof and authenticates the replacement first-event carry anchor, rejecting arbitrary transforms and tampered original bodies",
+          "status": "passed",
+          "durationMs": 235.429265
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-provenance-collect.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual collector controlled daily provenance (PG max1) records only same-transaction sanitized body proof and fails closed on tampering or missing legacy proof",
+          "status": "passed",
+          "durationMs": 97.10396100000003
+        },
+        {
+          "name": "actual collector controlled daily provenance (PG max1) proof persistence failure rolls back event key, raw body and outbox before HTTP acknowledgement",
+          "status": "passed",
+          "durationMs": 12.342998999999963
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-read-snapshot.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "waits for committed deletion before RR and preserves empty authoritative read/export metadata with max-one pool",
+          "status": "passed",
+          "durationMs": 503.439849
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-replay-collect.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual canonical masked replay collector preserves durable receipts, sequence identity and physical retention/deletion",
+          "status": "passed",
+          "durationMs": 3880.212429
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-replay-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "application deletion with real canonical PG CH replaces a mixed chunk immutably, physically erases A records and old copies while retaining B metadata and verified body",
+          "status": "passed",
+          "durationMs": 179.18421899999998
+        },
+        {
+          "name": "application deletion with real canonical PG CH recovers verified replacement orphan after physical ACK followed by PG rollback, then journal replay cannot resurrect A",
+          "status": "passed",
+          "durationMs": 271.80968300000006
+        },
+        {
+          "name": "application deletion with real canonical PG CH replays the newest independent journal against an old CH body and old metadata snapshot without resurrecting A or losing B",
+          "status": "passed",
+          "durationMs": 297.98255700000004
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-replay-history-retention.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "live PG-authority historical replay retention with real PG CH covers PG-only raw-history and active canonical sites with v2 proof, keeps seven-day authorization after90-day policy and physically retains newer record/derived facts",
+          "status": "passed",
+          "durationMs": 153.492521
+        },
+        {
+          "name": "live PG-authority historical replay retention with real PG CH retries a real history physicalACK followed by rollback while preserving mixed newer records",
+          "status": "passed",
+          "durationMs": 314.14914699999997
+        },
+        {
+          "name": "live PG-authority historical replay retention with real PG CH retains the authorization scope even after current raw manifests disappear, protecting old backup replay",
+          "status": "passed",
+          "durationMs": 7.272424000000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-replay-retention-proof.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "latest retention authorization against old backup actual PG CH rejects missing, incomplete, wrong-scope, tampered and stale proof before target body publication",
+          "status": "passed",
+          "durationMs": 12.127830000000017
+        },
+        {
+          "name": "latest retention authorization against old backup actual PG CH merges latest seven-day cutoff over old dump after seven-to90 policy change, physically filters before target commit and never changes source CH",
+          "status": "passed",
+          "durationMs": 168.310246
+        },
+        {
+          "name": "latest retention authorization against old backup actual PG CH checks latest source again without advancing cutoff and rejects subsequent authorization changes",
+          "status": "passed",
+          "durationMs": 14.313573000000133
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-replay-retention.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "physical replay retention with real canonical PG CH uses 30 days rather than longer site policy, physically replaces mixed old/new records and keeps new records",
+          "status": "passed",
+          "durationMs": 150.09999900000003
+        },
+        {
+          "name": "physical replay retention with real canonical PG CH honours a shorter site policy through the actual maintenance runner with max1 pool",
+          "status": "passed",
+          "durationMs": 143.62763300000006
+        },
+        {
+          "name": "physical replay retention with real canonical PG CH keeps retry pointer after physical ACK then PG rollback and recovers immutable replacement on retry",
+          "status": "passed",
+          "durationMs": 176.56604200000004
+        },
+        {
+          "name": "physical replay retention with real canonical PG CH persists bounded retry backoff and monotonic authorization despite policy lengthening",
+          "status": "passed",
+          "durationMs": 178.6196970000001
+        },
+        {
+          "name": "physical replay retention with real canonical PG CH physically removes a fully expired chunk and its committed index/member",
+          "status": "passed",
+          "durationMs": 167.2913920000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-retention.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "application deletion with real canonical PG CH expires only site-local old canonical rows and orphans after physical ACK, retaining boundary rows, keys, live outbox and tombstones",
+          "status": "passed",
+          "durationMs": 136.90555199999994
+        },
+        {
+          "name": "application deletion with real canonical PG CH keeps independent column proofs through physical ACK plus PG rollback, then removes only expired proof on retry",
+          "status": "passed",
+          "durationMs": 127.40107899999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-shadow-provenance.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "controlled PG provenance and real CH shadow preconditions proves two daily scopes from memory-only inputs, publishes verified actual CH bodies and preserves proof through timezone changes",
+          "status": "passed",
+          "durationMs": 84.00325700000008
+        },
+        {
+          "name": "controlled PG provenance and real CH shadow preconditions verifies portable column proof after raw/key pruning and immutable CH body/ID replacement, rejecting changed columns and unproven single-day rows",
+          "status": "passed",
+          "durationMs": 74.96249
+        },
+        {
+          "name": "controlled PG provenance and real CH shadow preconditions rejects unknown legacy, forged proofs, body/column mutation and guessed daily derivation",
+          "status": "passed",
+          "durationMs": 12.473476000000005
+        },
+        {
+          "name": "controlled PG provenance and real CH shadow preconditions fails closed when an old PG replay chunk has no retained raw source",
+          "status": "passed",
+          "durationMs": 4.38477899999998
+        },
+        {
+          "name": "controlled PG provenance and real CH shadow preconditions backfills only body-matched masked legacy replay and keeps missing first sequence explicit",
+          "status": "passed",
+          "durationMs": 12.697224000000006
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-shadow-validation.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "shadow verification actual PG/CH max1 checks body against committed PG, repairs identity rewrite, then records exact fenced validation",
+          "status": "passed",
+          "durationMs": 147.4494309999999
+        },
+        {
+          "name": "shadow verification actual PG/CH max1 does not let an uncommitted same-hash orphan authorize verification; shadow repairs the missing committed attempt",
+          "status": "passed",
+          "durationMs": 102.79650600000002
+        },
+        {
+          "name": "shadow verification actual PG/CH max1 removes expired shadow bodies with physical acknowledgement before accepting an empty verified snapshot",
+          "status": "passed",
+          "durationMs": 38.583664999999996
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-site-export.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical site export same-client EAV exports committed properties after PG raw absence using a max-one pool transaction",
+          "status": "passed",
+          "durationMs": 81.69198700000004
+        },
+        {
+          "name": "canonical site export same-client EAV honours exact identity deletion segments and fails without the authority registry",
+          "status": "passed",
+          "durationMs": 92.13943100000006
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/canonical-startup-privacy.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "canonical privacy startup real app PG/CH max1 boots without erasing authoritative raw, removes known aliases physically and stays valid on restart",
+          "status": "passed",
+          "durationMs": 284.1612849999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/carry-deletion-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "036 actual deletion and changedfalse journal carry erasure physically clears deleted A carry and exact keys while keeping B across epoch rotation and restored stale A",
+          "status": "passed",
+          "durationMs": 815.0024559999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/carry-provenance.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily carry controlled anchor and reducer lineage, real PG max1 retains sealed anchor after raw/key TTL, restores original metadata, and rejects missing or forged checkpoint lineage",
+          "status": "passed",
+          "durationMs": 1256.266678
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/clickhouse-app.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "full application ClickHouse startup and upgraded privacy barrier wires actual authenticated selection and preserves a standard-mode replica across app restarts",
+          "status": "passed",
+          "durationMs": 1137.418764
+        },
+        {
+          "name": "full application ClickHouse startup and upgraded privacy barrier fails closed on upgraded privacy replica cleanup errors, then removes expired legacy aliases before queries reopen",
+          "status": "passed",
+          "durationMs": 967.615566
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/clickhouse-incremental.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads streams bootstrap then uploads only deltas and returns exact hybrid results during real continuing collection",
+          "status": "passed",
+          "durationMs": 530.575144
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads forces a streamed rebuild for event-time identity rewrites and keeps direct paid typed fields intact",
+          "status": "passed",
+          "durationMs": 134.54840000000013
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads pins PG tail during actual continuing writes without falling back and rejects a deletion epoch changed mid-read",
+          "status": "passed",
+          "durationMs": 191.10344599999985
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads deletes behind an in-flight append barrier without reviving a deleted visitor and preserves other PG visitors",
+          "status": "passed",
+          "durationMs": 212.83367599999997
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads invalidates incremental pointers and physically erases retained-out rows even in postgres read mode",
+          "status": "passed",
+          "durationMs": 150.4188160000001
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads keeps partial physical bootstrap invisible, retries safely and durably cleans failed generations",
+          "status": "passed",
+          "durationMs": 1341.865257
+        },
+        {
+          "name": "actual incremental ClickHouse publication and continuous-write hybrid reads publishes incremental source and reads a consistent hybrid tail with a single-connection pool",
+          "status": "passed",
+          "durationMs": 113.234195
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/clickhouse.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch mirrors the full sanitized collector schema, preserves retry idempotency, and switches actual content/geo/filtered stats reads",
+          "status": "passed",
+          "durationMs": 334.0024410000001
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch publishes captured high-watermarks during sustained collection and explicitly falls back until fresh",
+          "status": "passed",
+          "durationMs": 258.71494200000006
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch uses bounded equivalent PG and CH filters with explicit truncation and typed-array bindings",
+          "status": "passed",
+          "durationMs": 115.48171200000002
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch switches real realtime, typed attributes and temporal identity view/path endpoints while streaming workers retain PG RR",
+          "status": "passed",
+          "durationMs": 218.98335700000007
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch takes exclusive claims, recovers expired leases, and rejects a pre-restore epoch pointer",
+          "status": "passed",
+          "durationMs": 187.5316670000002
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch stops a lost lease before uploading any rows and preserves the prior published pointer",
+          "status": "passed",
+          "durationMs": 94.6923139999999
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch blocks deletion behind an in-flight upload, then removes old snapshots before ACK and never republishes them",
+          "status": "passed",
+          "durationMs": 246.84727199999998
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps a failed deletion journal durable, fails the ACK, and recovers through a real replica restore barrier",
+          "status": "passed",
+          "durationMs": 181.73206000000027
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch falls back on transport failure, replica loss and a generation change during the actual CH read",
+          "status": "passed",
+          "durationMs": 144.70081600000003
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch persists bounded retry/DLQ without affecting collection, then administrator replay recovers actual CH writes",
+          "status": "passed",
+          "durationMs": 145.74292100000002
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch reliably removes old published and failed snapshots, retries cleanup, and never deletes the current pointer",
+          "status": "passed",
+          "durationMs": 176.75333899999987
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch enforces per-site retained event deletion in every snapshot even after switching back to PostgreSQL",
+          "status": "passed",
+          "durationMs": 153.9695270000002
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch fails safely when the bounded PG snapshot budget is exceeded, without publishing a partial replica",
+          "status": "passed",
+          "durationMs": 43.12117500000022
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch invalidates real Redis metadata on mode/replay and separates newly published snapshot cache keys",
+          "status": "passed",
+          "durationMs": 145.90011800000002
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps a durable mode change and its audit successful when Redis invalidation fails",
+          "status": "passed",
+          "durationMs": 1106.657788
+        },
+        {
+          "name": "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps PostgreSQL RR worker snapshots authoritative and preserves root metadata/deletion locks",
+          "status": "passed",
+          "durationMs": 162.10522599999967
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/content-analytics.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PostgreSQL content and funnel features reads exact raw downloads, 404 referring paths, goal channels and lost visitor dimensions through authorized HTTP",
+          "status": "passed",
+          "durationMs": 89.50347799999997
+        },
+        {
+          "name": "real PostgreSQL content and funnel features returns actual province/city drilldowns with exact UV and explicit unknown coverage",
+          "status": "passed",
+          "durationMs": 6.124597999999992
+        },
+        {
+          "name": "real PostgreSQL content and funnel features rejects expired repair evidence instead of exporting partial samples and rejects daily-salt cross-day retention claims",
+          "status": "passed",
+          "durationMs": 8.786682000000042
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/core-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PostgreSQL application API acceptance initializes exactly one admin atomically and protects authenticated management",
+          "status": "passed",
+          "durationMs": 105.82202100000018
+        },
+        {
+          "name": "real PostgreSQL application API acceptance persists before 202, keeps bool attributes, anonymizes IP/URL and rejects conflicting retry",
+          "status": "passed",
+          "durationMs": 56.78759600000012
+        },
+        {
+          "name": "real PostgreSQL application API acceptance collects page instances, reconstructs visible intervals, fences and reads real metrics",
+          "status": "passed",
+          "durationMs": 218.0249839999999
+        },
+        {
+          "name": "real PostgreSQL application API acceptance supports gzipped envelopes with a bounded decoder and real database transaction",
+          "status": "passed",
+          "durationMs": 13.298933999999917
+        },
+        {
+          "name": "real PostgreSQL application API acceptance accepts safelisted text/plain beacon JSON and keeps origin/body/schema safeguards",
+          "status": "passed",
+          "durationMs": 15.364867000000004
+        },
+        {
+          "name": "real PostgreSQL application API acceptance rechecks privacy configuration after acquiring the intake lock",
+          "status": "passed",
+          "durationMs": 31.98724600000014
+        },
+        {
+          "name": "real PostgreSQL application API acceptance persists editable source rules and all UTM dimensions on real collection",
+          "status": "passed",
+          "durationMs": 17.911206999999877
+        },
+        {
+          "name": "real PostgreSQL application API acceptance journals deletion durably, serializes intake races, rejects worker resurrection and restore replay",
+          "status": "passed",
+          "durationMs": 174.29203699999994
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/cutover-receipt.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "first-authority transition exact archived-owner receipt binds verified CH shadow to old PG head and surviving V1 archive, rejects mutation, stale state and deletion advancement",
+          "status": "passed",
+          "durationMs": 970.2509200000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/cutover-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "first rebuilding worker consumes the real processed PG head through a verified cutover receipt",
+          "status": "passed",
+          "durationMs": 3771.159872
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/deletion-authorization.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "47 recovery authorization binds real fsynced journal scope and refuses invented records or serialized current tokens",
+          "status": "passed",
+          "durationMs": 1656.8637760000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/deletion-same-transaction.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "restore journal replay shares max-one target transaction and rejects invented scopes",
+          "status": "passed",
+          "durationMs": 1806.722161
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/dirty-session-plan.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PG retained event-time dirty session closure planning follows an entire visitor chain across midnight rather than clipping a dirty day or timeout window",
+          "status": "passed",
+          "durationMs": 84.056532
+        },
+        {
+          "name": "real PG retained event-time dirty session closure planning includes old session contribution span when a late event bridges two existing sessions",
+          "status": "passed",
+          "durationMs": 12.800991999999951
+        },
+        {
+          "name": "real PG retained event-time dirty session closure planning keeps standard cross-day sessions but splits daily-salt local days and ignores orphan-only session counts",
+          "status": "passed",
+          "durationMs": 32.92743200000007
+        },
+        {
+          "name": "real PG retained event-time dirty session closure planning uses full rebuild for unknown mixed definition mutations and preserves uncertain retention carry metadata",
+          "status": "passed",
+          "durationMs": 12.850016000000096
+        },
+        {
+          "name": "real PG retained event-time dirty session closure planning pins source outbox during new writes, pages visitors, filters tombstones, and rejects a stale publication epoch in a fresh transaction",
+          "status": "passed",
+          "durationMs": 29.560277999999926
+        },
+        {
+          "name": "real PG retained event-time dirty session closure planning plans every old contribution hour even without remaining raw pages and uses full fallback when no outbox proves event-only work",
+          "status": "passed",
+          "durationMs": 12.139140999999995
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/distribution-license.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual HTTP serves the referenced full MIT text without exposing other source files",
+          "status": "passed",
+          "durationMs": 901.5138640000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/experiment-lifecycle.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "admin stop/resume serializes experiment state, preserves verified history/stable assignment and denies reader or cross-site mutation",
+          "status": "passed",
+          "durationMs": 112.6532749999999
+        },
+        {
+          "name": "real collector/worker merges unequal daily vital sample weights rather than averaging daily percentiles",
+          "status": "passed",
+          "durationMs": 378.9767559999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/external-alert.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "F38 actual collection/PG alert → opt-in F58 with injected LLM response binds a real two-hour alert, retries safely and preserves immutable aggregate-only evidence",
+          "status": "passed",
+          "durationMs": 3741.063989
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/external-error-contract.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual app returns stable localized connector codes and hides untrusted provider errors",
+          "status": "passed",
+          "durationMs": 725.809857
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/external-sso-keyring.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "SSO/key rotation isolated real PostgreSQL + provider fixture (external account untested) SSO maps only explicitly authorized members and binds one-use browser state",
+          "status": "passed",
+          "durationMs": 42.70554800000002
+        },
+        {
+          "name": "SSO/key rotation isolated real PostgreSQL + provider fixture (external account untested) GeoIP instance configuration requires admin cookie, encrypts/preserves credentials and refuses bad checksum without pretend ready",
+          "status": "passed",
+          "durationMs": 32.592795000000024
+        },
+        {
+          "name": "SSO/key rotation isolated real PostgreSQL + provider fixture (external account untested) rotation fsyncs version files, atomically reencrypts secrets, supports restart and old-backup decryption",
+          "status": "passed",
+          "durationMs": 18.79099599999995
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/external-suggestions.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "F59 real collection and PostgreSQL funnel evidence with fixture LLM only captures funnel losses and lowercase vitals, sorts explicitly labeled benefit proxies",
+          "status": "passed",
+          "durationMs": 1487.502551
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/external.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) rejects cross-site connectors and masks encrypted secret on read",
+          "status": "passed",
+          "durationMs": 14.968096999999943
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) opt-in disabled guarantees no provider request",
+          "status": "passed",
+          "durationMs": 5.115116999999827
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) OAuth binds user/session/state and PKCE, stores refreshed tokens encrypted, imports actual SQL aggregates",
+          "status": "passed",
+          "durationMs": 34.27999999999997
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) serialized partial config updates preserve encrypted secret and Google refresh token",
+          "status": "passed",
+          "durationMs": 13.221817000000101
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) AI uses validated semantic tool, settles budget atomically and preserves immutable evidence",
+          "status": "passed",
+          "durationMs": 468.403186
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) durable daily SEO/rank jobs execute once under concurrent schedulers",
+          "status": "passed",
+          "durationMs": 39.62331799999993
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) background daily generation retries with backoff and periodic GSC reimport is durable",
+          "status": "passed",
+          "durationMs": 531.967054
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) concurrent AI calls cannot exceed reserved monthly budget",
+          "status": "passed",
+          "durationMs": 434.27450499999986
+        },
+        {
+          "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) lowercase real PG lcp creates performance suggestion; local SEO evidence recheck uses newer crawl",
+          "status": "passed",
+          "durationMs": 712.2795289999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-body-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "sealed fact backup actual PG CH restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A",
+          "status": "passed",
+          "durationMs": 1219.1338230000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-deletion-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "044 actual deletion and changedfalse journal derived fact erasure physically erases A effects after failure/recovery and preserves B receipts, body and proof",
+          "status": "passed",
+          "durationMs": 1288.757448
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-deletion-hooks.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual deletion and replay retain B exact archive backing after all PG raw has expired",
+          "status": "passed",
+          "durationMs": 533.4969009999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-member-query.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PG exact event-time relational membership unions cross-day visitors and funnel steps in SQL, filters provenance and avoids large compatibility member arrays",
+          "status": "passed",
+          "durationMs": 4160.435235
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-store-source.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "bounded transaction-local fact source with actual PG CH unions CH effects and zero-kind receipts with legacy owned PG rows, filters identities and restores nested read context",
+          "status": "passed",
+          "durationMs": 969.1916239999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-store-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "production worker shadows immutable effects/vitals and exact queries survive deliberate PG body removal then partial deletion",
+          "status": "passed",
+          "durationMs": 3966.197465
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/fact-store.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "derived facts durable actual PG CH verified CH upload with PG rollback stays invisible; fresh exact attempts commit and publish bounded batches",
+          "status": "passed",
+          "durationMs": 181.24031100000002
+        },
+        {
+          "name": "derived facts durable actual PG CH bounded orphan sweep removes rollback attempts while preserving committed same-run bodies",
+          "status": "passed",
+          "durationMs": 62.97337499999992
+        },
+        {
+          "name": "derived facts durable actual PG CH maintenance persists safe failure and exponential backoff then recovers using one held client",
+          "status": "passed",
+          "durationMs": 23.17437099999995
+        },
+        {
+          "name": "derived facts durable actual PG CH producer seal rejects altered bodies and restore authenticates before remapping",
+          "status": "passed",
+          "durationMs": 29.24156400000004
+        },
+        {
+          "name": "derived facts durable actual PG CH isolated published restore preserves authenticated provenance and validates positive vital ownership",
+          "status": "passed",
+          "durationMs": 85.37311199999999
+        },
+        {
+          "name": "derived facts durable actual PG CH stale source epoch and unavailable committed body fail closed without PG fallback",
+          "status": "passed",
+          "durationMs": 4.875134000000003
+        },
+        {
+          "name": "derived facts durable actual PG CH published PG backfill compares exact original rows and physical completeness without restore permission",
+          "status": "passed",
+          "durationMs": 51.2561280000001
+        },
+        {
+          "name": "derived facts durable actual PG CH fresh independent RC callback rejects epoch change after CH upload without borrowing the held max-one pool",
+          "status": "passed",
+          "durationMs": 29.851254999999924
+        },
+        {
+          "name": "derived facts durable actual PG CH exact physical deletion removes rollback orphans and one interval, then rebases surviving receipts without resigning source",
+          "status": "passed",
+          "durationMs": 58.43692799999985
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/funnel-analysis.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual PG collector funnel loss analysis uses actual event-time/multi-page sessions, unique visitors and strict/loose progression with typed properties",
+          "status": "passed",
+          "durationMs": 54.48575200000005
+        },
+        {
+          "name": "actual PG collector funnel loss analysis enforces actual authentication/site scoping and blocks deleted visitors and identity time segments even with raw remnants",
+          "status": "passed",
+          "durationMs": 79.85038699999996
+        },
+        {
+          "name": "actual PG collector funnel loss analysis refuses actual PG oversized detail instead of claiming exact UV from a truncated sample",
+          "status": "passed",
+          "durationMs": 5275.488079
+        },
+        {
+          "name": "actual PG collector funnel loss analysis marks daily cross-day and expired/future/oversized ranges unavailable instead of returning historical zero",
+          "status": "passed",
+          "durationMs": 12.003816999999799
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/ga4-windows.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "GA4 exact provider windows: real isolated PostgreSQL, simulated Google transport stores independent period/daily/weekly distinct users, metadata and hostile source names; rejects unsupported ranges and unauthorized readers",
+          "status": "passed",
+          "durationMs": 61.686022999999864
+        },
+        {
+          "name": "GA4 exact provider windows: real isolated PostgreSQL, simulated Google transport fails malformed/outside/duplicate/provider responses atomically, retaining saved facts",
+          "status": "passed",
+          "durationMs": 18.471524000000045
+        },
+        {
+          "name": "GA4 exact provider windows: real isolated PostgreSQL, simulated Google transport serializes duplicate imports and rejects concurrent changed connector configuration without destructive replacement",
+          "status": "passed",
+          "durationMs": 31.79715400000009
+        },
+        {
+          "name": "GA4 exact provider windows: real isolated PostgreSQL, simulated Google transport does not schedule imports without explicit opt-in",
+          "status": "passed",
+          "durationMs": 5.39427499999988
+        },
+        {
+          "name": "GA4 exact provider windows: real isolated PostgreSQL, simulated Google transport schedules opt-in previous local day once with actual durable job/PG window under concurrent ticks",
+          "status": "passed",
+          "durationMs": 21.748333000000002
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-canonical.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed canonical ingest stores metadata only and real CH replay is reconstructed with max1 same-client reads",
+          "status": "passed",
+          "durationMs": 119.98019999999997
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed actual full export worker includes CH replay body and canonical manifest while PG body remains absent",
+          "status": "passed",
+          "durationMs": 98.902425
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed duplicate sequence chooses first accepted chunk and rejects unmasked or disabled input",
+          "status": "passed",
+          "durationMs": 41.05195000000003
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed canonical provider failure is unavailable even with empty filter, never a PG zero fallback",
+          "status": "passed",
+          "durationMs": 11.319703000000004
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed governance alerts fixes RR after a pending deletion gate, not before waiting",
+          "status": "passed",
+          "durationMs": 23.911508000000026
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed governance site fixes RR after a pending deletion gate, not before waiting",
+          "status": "passed",
+          "durationMs": 10.777542999999923
+        },
+        {
+          "name": "governance canonical authority real PG CH, activation remains closed whole-visitor tombstone suppresses canonical replay and usage without consulting empty PG events",
+          "status": "passed",
+          "durationMs": 63.10999699999991
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-event-store.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "governance actual event-store and retained rollups keeps actual archived rollups in shares and embed without adding hourly distinct counts",
+          "status": "passed",
+          "durationMs": 407.03897099999995
+        },
+        {
+          "name": "governance actual event-store and retained rollups reports actual dirty coverage before a new pending event is aggregated",
+          "status": "passed",
+          "durationMs": 174.43306600000005
+        },
+        {
+          "name": "governance actual event-store and retained rollups exports actual bounded transactional PG rows with truthful metadata and preserves deletion",
+          "status": "passed",
+          "durationMs": 282.7032869999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-experiment-migration.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "experiment conversion forward migration backfills retained facts and marks missing legacy histories unavailable",
+          "status": "passed",
+          "durationMs": 171.421614
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-file-cleanup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "durable deletion export file cleanup on actual PG and disk visitor deletion revokes download and unlinks JSON, CSV and unregistered crash tmp only for owned IDs",
+          "status": "passed",
+          "durationMs": 66.466001
+        },
+        {
+          "name": "durable deletion export file cleanup on actual PG and disk cleanup failures remain durable and retry after path null without deleting neighboring files",
+          "status": "passed",
+          "durationMs": 15.560032999999976
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-full-export.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "full-site allowed-fact export actual PostgreSQL and CSV readback exports every allowed populated table and reads back JSON/CSV facts with FK and secret isolation",
+          "status": "passed",
+          "durationMs": 126.073353
+        },
+        {
+          "name": "full-site allowed-fact export actual PostgreSQL and CSV readback scrubs daily-salt aliases in historic evidence and EAV and omits unsupported identity facts",
+          "status": "passed",
+          "durationMs": 48.93603600000006
+        },
+        {
+          "name": "full-site allowed-fact export actual PostgreSQL and CSV readback fails explicitly above the row cap without completing or silently truncating a long-fact table",
+          "status": "passed",
+          "durationMs": 1137.8025730000002
+        },
+        {
+          "name": "full-site allowed-fact export actual PostgreSQL and CSV readback rejects a cross-site evidence FK without exporting another site fact",
+          "status": "passed",
+          "durationMs": 22.97374099999979
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-notification-race.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "native HTTP report dispatch and real deletion gate re-reads cached claimed report after real deletion and sends no revoked private body",
+          "status": "passed",
+          "durationMs": 381.35683900000004
+        },
+        {
+          "name": "native HTTP report dispatch and real deletion gate holds real shared site gate through bounded local HTTP provider so deletion waits, then no post-ACK stale dispatch",
+          "status": "passed",
+          "durationMs": 319.37048000000004
+        },
+        {
+          "name": "native HTTP report dispatch and real deletion gate revokes a still-running report whose stored evidence epoch changed before dispatch",
+          "status": "passed",
+          "durationMs": 245.16711400000008
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-pool-race.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual max10 governance/DDL/eight HTTP pool coordination completes real filtered report with the same G client, DDL and eight HTTP intakes despite an exhausted pool",
+          "status": "passed",
+          "durationMs": 481.00969299999997
+        },
+        {
+          "name": "actual max10 governance/DDL/eight HTTP pool coordination rolls back an injected scheduling error and releases G/shared locks so real DDL and all HTTP collectors still finish",
+          "status": "passed",
+          "durationMs": 140.63427200000024
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-privacy.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily-salt actual collector and full-export privacy never stores or exports cross-day user/page/client-visitor identifiers",
+          "status": "passed",
+          "durationMs": 245.89562499999988
+        },
+        {
+          "name": "daily-salt actual collector and full-export privacy scheduled monthly privacy report matches unified preaggregates after raw expiry",
+          "status": "passed",
+          "durationMs": 208.27565499999992
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance-sharing-facts.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real V2 fact publication → native readonly share daily UV; legacy days and salt privacy remain exact with max1",
+          "status": "passed",
+          "durationMs": 2592.224787
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/governance.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "governance actual PostgreSQL isolation site authorization prevents cross-site access",
+          "status": "passed",
+          "durationMs": 16.66924800000004
+        },
+        {
+          "name": "governance actual PostgreSQL isolation share exposes aggregate only and revoke immediately denies",
+          "status": "passed",
+          "durationMs": 242.40105100000005
+        },
+        {
+          "name": "governance actual PostgreSQL isolation report DSL cannot accept SQL injection or unrecognized keys",
+          "status": "passed",
+          "durationMs": 3.9072060000000874
+        },
+        {
+          "name": "governance actual PostgreSQL isolation API token secret is stored only as hash and can be revoked",
+          "status": "passed",
+          "durationMs": 5.87216699999999
+        },
+        {
+          "name": "governance actual PostgreSQL isolation persists masked replay only behind opt-in and rejects plaintext attributes",
+          "status": "passed",
+          "durationMs": 3.9100899999998546
+        },
+        {
+          "name": "governance actual PostgreSQL isolation invite bearer permits one non-admin account and cannot be reused",
+          "status": "passed",
+          "durationMs": 101.17694400000005
+        },
+        {
+          "name": "governance actual PostgreSQL isolation durable export worker generates actual PG rows and authenticated download",
+          "status": "passed",
+          "durationMs": 28.813229999999976
+        },
+        {
+          "name": "governance actual PostgreSQL isolation notification transport fails closed and retries three times without leaking credentials",
+          "status": "passed",
+          "durationMs": 48.28662200000008
+        },
+        {
+          "name": "governance actual PostgreSQL isolation new sites do not invent missing twenty-eight-day historical zero samples",
+          "status": "passed",
+          "durationMs": 93.40347399999996
+        },
+        {
+          "name": "governance actual PostgreSQL isolation experiment create API persists a real JSON variant list",
+          "status": "passed",
+          "durationMs": 8.3303420000002
+        },
+        {
+          "name": "governance actual PostgreSQL isolation conversion event facts are idempotent and cached flags cannot fabricate API conversions",
+          "status": "passed",
+          "durationMs": 11.618073000000095
+        },
+        {
+          "name": "governance actual PostgreSQL isolation UV alert reads retained hourly archives after raw deletion and uses injected hours",
+          "status": "passed",
+          "durationMs": 292.954254
+        },
+        {
+          "name": "governance actual PostgreSQL isolation goal alert uses first completion day when a retained session crosses midnight",
+          "status": "passed",
+          "durationMs": 180.3868869999999
+        },
+        {
+          "name": "governance actual PostgreSQL isolation page goal alert counts real matching sessions once despite repeated pageviews",
+          "status": "passed",
+          "durationMs": 184.05628400000023
+        },
+        {
+          "name": "governance actual PostgreSQL isolation strict funnel completed-day step collapse queues a real notification",
+          "status": "passed",
+          "durationMs": 544.980755
+        },
+        {
+          "name": "governance actual PostgreSQL isolation goal thresholds and offline boundaries queue distinct notifications once",
+          "status": "passed",
+          "durationMs": 413.81550400000015
+        },
+        {
+          "name": "governance actual PostgreSQL isolation experiment statistical results derive from actual assigned visitor conversions",
+          "status": "passed",
+          "durationMs": 24.002304000000095
+        },
+        {
+          "name": "governance actual PostgreSQL isolation SERP rank changes durably enqueue scoped notifications without stale histories",
+          "status": "passed",
+          "durationMs": 10.753100999999788
+        },
+        {
+          "name": "governance actual PostgreSQL isolation traffic alert requires two abnormal complete hours and durably queues once",
+          "status": "passed",
+          "durationMs": 625.3410720000002
+        },
+        {
+          "name": "governance actual PostgreSQL isolation saved report runs real path/channel filters and distinct visitor union",
+          "status": "passed",
+          "durationMs": 488.2009089999997
+        },
+        {
+          "name": "governance actual PostgreSQL isolation claimed export cannot regenerate after deletion revokes under shared site lock",
+          "status": "passed",
+          "durationMs": 35.08673799999997
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/header-deletion-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "036 actual deletion and changedfalse journal carry erasure physically clears deleted A carry and exact keys while keeping B across epoch rotation and restored stale A",
+          "status": "passed",
+          "durationMs": 1247.080896
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-app.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "full application optional history startup and deletion closure activates through explicit option with actual setup/collector/authenticated storage routes",
+          "status": "passed",
+          "durationMs": 122.42692199999988
+        },
+        {
+          "name": "full application optional history startup and deletion closure failed history barrier leaves durable journal; startup replay erases physical snapshot before serving requests",
+          "status": "passed",
+          "durationMs": 209.14017400000012
+        },
+        {
+          "name": "full application optional history startup and deletion closure preserves a standard site unique safe history despite a synthetic privacy cleanup marker",
+          "status": "passed",
+          "durationMs": 199.24060899999995
+        },
+        {
+          "name": "full application optional history startup and deletion closure cleans known legacy daily aliases at startup while preserving real collected traffic and safe history aggregates",
+          "status": "passed",
+          "durationMs": 494.01532799999995
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-backup-snapshot.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "history backup fresh deletion snapshot waits for an actual deletion gate before RR and refuses to mint stale archived identity",
+          "status": "passed",
+          "durationMs": 584.6458
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-cache-store-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "selected history caches preserve producer seals and original owners in an isolated target with exact heatmap mapping",
+          "status": "passed",
+          "durationMs": 1331.226792
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-carry-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "nonempty carry in authenticated history backing preserves V1 prefix owners and all keys, maps the latest V2 head to zero, then erases A while preserving B",
+          "status": "passed",
+          "durationMs": 660.672595
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-carry-daily-package.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily carry controlled anchor and reducer lineage, real PG max1 packages daily carry after raw/key TTL, imports original anchor before publishing target heads, and preserves privacy refresh",
+          "status": "passed",
+          "durationMs": 1114.099863
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-fact-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PG history relational backing preserves exact archived A/B membership and unequal vital samples across remapped runs, then precisely removes A",
+          "status": "passed",
+          "durationMs": 551.5316619999999
+        },
+        {
+          "name": "real PG history relational backing rejects a malformed referenced carry checksum using an independent real 036 DDL fixture",
+          "status": "passed",
+          "durationMs": 334.405762
+        },
+        {
+          "name": "real PG history relational backing rejects missing relational backing rather than returning empty UV",
+          "status": "passed",
+          "durationMs": 0.543711999999914
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-replay-retention-restore.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual historical replay retention after isolated restore physically removes expired records from the target mixed chunk while source namespace and later record remain",
+          "status": "passed",
+          "durationMs": 592.715187
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-security.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers enforces real token/site/admin permissions, records audits, signs file and restores only isolated verified data",
+          "status": "passed",
+          "durationMs": 323.425918
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers persists journal before failed history deletion, blocks acknowledgement, and replay physically erases data with max1 pool",
+          "status": "passed",
+          "durationMs": 300.56838100000004
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers refuses missing or truncated independent journal instead of bypassing restore integrity checks",
+          "status": "passed",
+          "durationMs": 104.82634899999994
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers executes the operator CLI against isolated real PG/CH and reconciles signed file restore",
+          "status": "passed",
+          "durationMs": 2177.8540219999995
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers serializes an in-flight capture with fsynced deletion so late uploads are erased before acknowledgement",
+          "status": "passed",
+          "durationMs": 147.35539900000003
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers fails closed if a used history store is disabled and enforces site retention on signed backup restore",
+          "status": "passed",
+          "durationMs": 214.6496000000002
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers binds signed envelopes to explicit key versions and permits only retained trusted rotation keys",
+          "status": "passed",
+          "durationMs": 233.4157699999996
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers revokes local backup before real disk cleanup failure and durably retries its own file path",
+          "status": "passed",
+          "durationMs": 136.02367400000003
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers holds the mint barrier afterWrite and cannot publish a local raw backup after deletion acknowledgement",
+          "status": "passed",
+          "durationMs": 244.31890699999985
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers holds the mint barrier beforePublish and cannot publish a local raw backup after deletion acknowledgement",
+          "status": "passed",
+          "durationMs": 209.75804599999992
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers reaps a crashed writing record and its durably recorded temporary file without touching another file",
+          "status": "passed",
+          "durationMs": 54.761649000000034
+        },
+        {
+          "name": "actual authorized history APIs, signed backups, durable deletion barriers does not unlink an existing ready backup when a replacement fails before taking file ownership",
+          "status": "passed",
+          "durationMs": 107.72671799999989
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-store.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PG and ClickHouse historical manifests cleans daily unique historical aliases with physical ACK and reconciles metadata after rollback while retaining B facts",
+          "status": "passed",
+          "durationMs": 321.077547
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests rejects single-day legacy daily history without controlled column proof",
+          "status": "passed",
+          "durationMs": 29.132108000000017
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests copies retained actual events plus archived facts without inventing old raw events or reducing currencies and weighted vitals",
+          "status": "passed",
+          "durationMs": 52.44085199999995
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests restores into a distinct CH namespace and checks journal twice; corruption and stale deletion evidence cannot be accepted",
+          "status": "passed",
+          "durationMs": 100.20680300000004
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests captures a stable source high watermark while intake continues and refuses export after deletion epoch change",
+          "status": "passed",
+          "durationMs": 93.774811
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests fails safely after physical upload and epoch change; retry is isolated and does not duplicate data",
+          "status": "passed",
+          "durationMs": 112.21428300000002
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests persists transport failure and enforces an explicit backup row budget rather than silently truncating",
+          "status": "passed",
+          "durationMs": 68.664356
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests streams more than one source chunk, cleans a partial failed upload durably, and verifies retry shadow",
+          "status": "passed",
+          "durationMs": 251.00935400000003
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests enforces task expiry before uploading and recovers stale interrupted captures using a real replica lock",
+          "status": "passed",
+          "durationMs": 116.81667600000014
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests precisely deletes A identity interval while preserving B unique history after PG raw expires, and rebuilds manifest checksums at the new epoch",
+          "status": "passed",
+          "durationMs": 215.3550519999999
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests expires only old raw slices while preserving newer unique B and archived aggregates with refreshed physical checksums",
+          "status": "passed",
+          "durationMs": 155.034719
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests physically removes A records inside unique mixed replay history while retaining B and repairs metadata after a mutation followed by rollback",
+          "status": "passed",
+          "durationMs": 198.22850199999993
+        },
+        {
+          "name": "real PG and ClickHouse historical manifests captures actual canonical bodies with PG raw pruned, marks the real source, and refuses unavailable CH rather than exporting an empty PG snapshot",
+          "status": "passed",
+          "durationMs": 103.09045700000024
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/history-strict-fact-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "outer managed signed history restores strict 047/048 backing without mutation and denies a newer real deletion journal",
+          "status": "passed",
+          "durationMs": 8762.078517
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/identity-experiment-browser.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real shared-cookie browser A conversion deletion preserves B contributions and restore cannot revive A",
+          "status": "passed",
+          "durationMs": 1748.790734
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/identity-pressure.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "120 reverse/concurrent event-time identity episodes remain precise under late arrival, conflicts, deletion and immutable old retries",
+          "status": "passed",
+          "durationMs": 7328.9621130000005
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/identity-switch.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "event-time A -> B -> delete A preserves B, old A retries and restored A cannot revive",
+          "status": "passed",
+          "durationMs": 1237.87792
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/manual-search-import.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "custom manual search import real PG server validates preview/commit, additive idempotent batches, safe CSV and same-site read",
+          "status": "passed",
+          "durationMs": 102.71273900000006
+        },
+        {
+          "name": "custom manual search import real PG allows scoped readers to read but denies preview, commit and CSV download",
+          "status": "passed",
+          "durationMs": 106.23119400000019
+        },
+        {
+          "name": "custom manual search import real PG rejects invalid input even without preview and unauthenticated writes",
+          "status": "passed",
+          "durationMs": 5.153741000000082
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/mcp.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "standard MCP SDK over actual HTTP and PostgreSQL official standard Client initializes, lists read-only schema and obtains exact persisted aggregate via Streamable HTTP",
+          "status": "passed",
+          "durationMs": 47.30134299999986
+        },
+        {
+          "name": "standard MCP SDK over actual HTTP and PostgreSQL enforces JSON-RPC methods/version/schema and denies raw SQL, foreign sites, ranges and mutation tools",
+          "status": "passed",
+          "durationMs": 31.85756000000015
+        },
+        {
+          "name": "standard MCP SDK over actual HTTP and PostgreSQL daily-salt cross-day UV is explicitly unsupported and dirty aggregate is a tool error rather than invented zeros",
+          "status": "passed",
+          "durationMs": 14.963586000000078
+        },
+        {
+          "name": "standard MCP SDK over actual HTTP and PostgreSQL rechecks revocation after a real blocked aggregate read and never releases its result to a revoked caller",
+          "status": "passed",
+          "durationMs": 21.698282999999947
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/mini-runtime.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "independent SDK runs without DOM/WebCrypto in local wx callback runtime against actual collector/PG with lost response immutable retry and daily privacy",
+          "status": "passed",
+          "durationMs": 931.157082
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/notification-derived-privacy.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "legacy goal/funnel notification privacy: actual collection/delete/journal/export physically erases private snapshots while preserving ordinary jobs and other sites; restored old rows are not exported",
+          "status": "passed",
+          "durationMs": 618.3378010000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/partition-intake-race.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "schema partition gate actual HTTP/PG races holds DDL exclusive gate/relation locks, proves actual HTTP intake waits, then returns 202 after release",
+          "status": "passed",
+          "durationMs": 57.26347800000008
+        },
+        {
+          "name": "schema partition gate actual HTTP/PG races holds actual collector shared gate/site/FK locks; production partition drop waits and both intake/DDL complete",
+          "status": "passed",
+          "durationMs": 189.07410200000004
+        },
+        {
+          "name": "schema partition gate actual HTTP/PG races coordinates two production drops with the same stale catalog list; second rechecks missing partitions without deadlock",
+          "status": "passed",
+          "durationMs": 41.19494099999997
+        },
+        {
+          "name": "schema partition gate actual HTTP/PG races waits for DDL before pinning RR, then sees relocated default events and boolean EAV in the new partition",
+          "status": "passed",
+          "durationMs": 20.524461999999858
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/partition-replica-race.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real replica upload, journal-backed deletion and partition DROP finish without a three-way advisory cycle",
+          "status": "passed",
+          "durationMs": 743.5627199999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/partitions.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real partition relocation and per-site retention moves populated default rows and boolean EAV atomically, preserving partition PK semantics",
+          "status": "passed",
+          "durationMs": 24.717907000000082
+        },
+        {
+          "name": "real partition relocation and per-site retention retains another site in a shared partition and drops it only after the last site expires",
+          "status": "passed",
+          "durationMs": 63.964076999999975
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/privacy-aggregate-migration.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "upgrade scrubs real worker daily-salt archives after raw expiry, preserves safe counters and excludes aliases from reports/full exports",
+          "status": "passed",
+          "durationMs": 1637.8103359999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/privacy-alias.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "daily direct collector aliases cannot survive raw rows, EAV or real JSON/CSV exports",
+          "status": "passed",
+          "durationMs": 1198.109111
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/privacy-derived-hooks.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "replay clears restored AI and all fact projections even with existing tombstones and no remaining raw events, using a one-connection pool",
+          "status": "passed",
+          "durationMs": 49.16431899999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/privacy-migration.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "migration repairs retained daily identities/page linkage and startup physically removes revoked owned exports",
+          "status": "passed",
+          "durationMs": 803.749682
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/provenance-lifecycle.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "independent proof ledger privacy lifecycle actual PG CH max1 keeps proof after raw/key pruning and policy expiry while any canonical member remains",
+          "status": "passed",
+          "durationMs": 12.221003999999994
+        },
+        {
+          "name": "independent proof ledger privacy lifecycle actual PG CH max1 does not discard proof before failed physical ACK or rollback, retries precise A deletion and retains B proof on unchanged journal replay",
+          "status": "passed",
+          "durationMs": 222.36664500000006
+        },
+        {
+          "name": "independent proof ledger privacy lifecycle actual PG CH max1 can still verify an independently attested daily source when wire keys disappear",
+          "status": "passed",
+          "durationMs": 11.633588000000032
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/realtime-analysis.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real collector/PG realtime Top uses all 30-minute PV beyond the 200 preview and excludes bots, deleted visitors and stale heartbeats",
+          "status": "passed",
+          "durationMs": 1772.432104
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/realtime-stream.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real HTTP SSE drains over 200 ingestion cursors, resumes Last-Event-ID, admits late event time and suppresses deleted data",
+          "status": "passed",
+          "durationMs": 7712.181508000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/redis-cache.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real Redis cache with authoritative PostgreSQL deletion fencing publishes changed generations, deletes site cache and never serves cached deleted events",
+          "status": "passed",
+          "durationMs": 419.48435599999993
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/relational-continuous.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "033 real HTTP continuing intake and exact relational reads publishes captured prefixes while later batches stay dirty, reports RSS/lag, and fails closed on missing backing",
+          "status": "passed",
+          "durationMs": 3782.266229
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-body-backup-daily.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "whole signed remaining daily package restores real collector-derived lineage to independent CH target after raw/key pruning and erases only journal A",
+          "status": "passed",
+          "durationMs": 1836.597142
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-body-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "sealed fact backup actual PG CH restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A",
+          "status": "passed",
+          "durationMs": 2411.63033
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "remaining derived privacy native source fixture collects real A→B identities, keeps B after exact interval deletion and retries a post-ACK PG rollback",
+          "status": "passed",
+          "durationMs": 3075.194487
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-full-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "047 actual full visitor physical privacy deletion publishes real five-kind worker state, rolls back PG after CH ACK, retries and preserves the other visitor",
+          "status": "passed",
+          "durationMs": 3417.2368180000003
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-partial-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":false,\"emptyPrefix\":false,\"archivedB\":false} and survives physical ACK rollback and replay",
+          "status": "passed",
+          "durationMs": 5261.932618000001
+        },
+        {
+          "name": "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":false,\"archivedB\":false} and survives physical ACK rollback and replay",
+          "status": "passed",
+          "durationMs": 4012.0570159999997
+        },
+        {
+          "name": "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":true,\"archivedB\":false} and survives physical ACK rollback and replay",
+          "status": "passed",
+          "durationMs": 3741.523767999999
+        },
+        {
+          "name": "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":false,\"archivedB\":true} and survives physical ACK rollback and replay",
+          "status": "passed",
+          "durationMs": 5471.739701999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-source.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "remaining five-body bounded consumer actual PG CH reads CH-only bodies including owned carry after PG pruning, merges explicit legacy PG and refuses a missing sealed checkpoint",
+          "status": "passed",
+          "durationMs": 1280.310575
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-store.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "remaining derived body actual PG CH real session and numeric ownership stage with exact attempts; rollback stays invisible",
+          "status": "passed",
+          "durationMs": 131.69820699999997
+        },
+        {
+          "name": "remaining derived body actual PG CH final producer publishes all five original kinds including authenticated standard carry",
+          "status": "passed",
+          "durationMs": 181.98958500000003
+        },
+        {
+          "name": "remaining derived body actual PG CH trusted replacement physically removes old carry checkpoint body while retaining new sealed marker",
+          "status": "passed",
+          "durationMs": 110.66371300000003
+        },
+        {
+          "name": "remaining derived body actual PG CH bounded orphan GC preserves committed body and partial carry deletion fails closed",
+          "status": "passed",
+          "durationMs": 48.302097
+        },
+        {
+          "name": "remaining derived body actual PG CH published session backfill accepts only exact PG originals and rejects incomplete migration",
+          "status": "passed",
+          "durationMs": 75.00500799999986
+        },
+        {
+          "name": "remaining derived body actual PG CH maintenance durable backoff rejects real TCP failure and recovers without second pool lease",
+          "status": "passed",
+          "durationMs": 18.11275999999998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-unavailable.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "47 TCP refusal fails closed before metadata/proof trimming and actual durable journal recovery preserves B",
+          "status": "passed",
+          "durationMs": 3598.514665
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-fact-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "production worker publishes five remaining-body kinds from real session reducers without PG pruning",
+          "status": "passed",
+          "durationMs": 3566.029302
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/remaining-historical-identity.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "47 historical B checkpoint and exact archive remain available after later identity A deletion",
+          "status": "passed",
+          "durationMs": 6409.469456
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/replay-key-cleanup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "uses rrweb record bounds for identity overlap and returns mixed-boundary flags, explicitly without claiming physical erasure",
+          "status": "passed",
+          "durationMs": 17.573154999999986
+        },
+        {
+          "name": "caps replay metadata at 30 days, honours shorter site retention and removes visitor indices without a body-erasure claim",
+          "status": "passed",
+          "durationMs": 5.774499999999989
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/replica-pool-capacity.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=false)",
+          "status": "passed",
+          "durationMs": 1134.38698
+        },
+        {
+          "name": "default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=true)",
+          "status": "passed",
+          "durationMs": 887.700392
+        },
+        {
+          "name": "max1 failed replica cleanup records durable retry using its existing client",
+          "status": "passed",
+          "durationMs": 446.03528700000015
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/restore-rebuild.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "restore persisted rebuild gate (real PostgreSQL) rebuilds real dirty state and verifies equal generations with no errors or lease",
+          "status": "passed",
+          "durationMs": 100.23805800000002
+        },
+        {
+          "name": "restore persisted rebuild gate (real PostgreSQL) does not accept false-return dirty work or a lost lease as complete",
+          "status": "passed",
+          "durationMs": 3.767475999999988
+        },
+        {
+          "name": "restore persisted rebuild gate (real PostgreSQL) retries a persisted transient worker failure rather than treating false as success",
+          "status": "passed",
+          "durationMs": 60.88271300000008
+        },
+        {
+          "name": "restore persisted rebuild gate (real PostgreSQL) fails closed on actual worker SQL failures reaching dead-letter",
+          "status": "passed",
+          "durationMs": 48.04947900000002
+        },
+        {
+          "name": "restore persisted rebuild gate (real PostgreSQL) rejects dirty rows hidden behind an active lease",
+          "status": "passed",
+          "durationMs": 3.999496000000022
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/restore-replica.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "fresh restore replica isolation real PG/CH invalidates copied pointers/jobs only in target and leaves actual source snapshot and source metadata unchanged",
+          "status": "passed",
+          "durationMs": 44.09951699999999
+        },
+        {
+          "name": "fresh restore replica isolation real PG/CH rejects same-endpoint and nonexplicit fresh replica but retains sameDB upgrade config",
+          "status": "passed",
+          "durationMs": 1.4335980000000745
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/retention-analysis.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PostgreSQL mature exact cohort observations matches the three-visitor fixture, deduplicates return pageviews, excludes bots and shows immature/outside-window cells as null",
+          "status": "passed",
+          "durationMs": 221.738114
+        },
+        {
+          "name": "real PostgreSQL mature exact cohort observations keeps calendar-day boundaries across DST and marks dirty aggregation and privacy unsupported rather than false zeros",
+          "status": "passed",
+          "durationMs": 116.41977300000008
+        },
+        {
+          "name": "real PostgreSQL mature exact cohort observations removes deleted cohort members and refuses incomplete expired archives without inventing zero retention",
+          "status": "passed",
+          "durationMs": 110.46353900000008
+        },
+        {
+          "name": "real PostgreSQL mature exact cohort observations retains fully observed expired daily archives and excludes deleted identity contributions using exact relational membership",
+          "status": "passed",
+          "durationMs": 273.164276
+        },
+        {
+          "name": "real PostgreSQL mature exact cohort observations reuses the caller repeatable-read client with a one-connection pool under the partition gate",
+          "status": "passed",
+          "durationMs": 101.85295199999996
+        },
+        {
+          "name": "real PostgreSQL mature exact cohort observations reads exact archived cohort return members from real CH after PG effect bodies are removed",
+          "status": "passed",
+          "durationMs": 404.030988
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/revenue-identity.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real revenue and temporal identity views keeps independent currencies, true last-click and trend order counts",
+          "status": "passed",
+          "durationMs": 53.55813599999999
+        },
+        {
+          "name": "real revenue and temporal identity views isolates identity episodes, excludes anonymous and masks user identifiers",
+          "status": "passed",
+          "durationMs": 18.77262900000005
+        },
+        {
+          "name": "real revenue and temporal identity views does not infer cross-day identities in daily privacy mode or silently ignore filters",
+          "status": "passed",
+          "durationMs": 6.390760999999998
+        },
+        {
+          "name": "real revenue and temporal identity views counts real registration before payment across devices, excludes payment-only and prior payment",
+          "status": "passed",
+          "durationMs": 31.55256899999995
+        },
+        {
+          "name": "real revenue and temporal identity views clamps future trend buckets and clearly marks a future-only request",
+          "status": "passed",
+          "durationMs": 38.074464000000035
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/seo-local-runtime.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual local HTTP crawler/PG suggestion/recheck crawls actual robots/HTML at production cadence, stores issues, then fresh rechecks a repaired local site with immutable evidence",
+          "status": "passed",
+          "durationMs": 8162.040811000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-carry-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "production carry keeps a cross-retention session and unrelated archived B after raw pruning",
+          "status": "passed",
+          "durationMs": 681.8119429999999
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-carry.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "036 staged session carry persistence, not yet a production reducer keeps unpublished state invisible, streams exact keys, and isolates session contribution ownership",
+          "status": "passed",
+          "durationMs": 500.674738
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-contribution-selection.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "selects one complete A owner and keeps archived B including weighted vital samples",
+          "status": "passed",
+          "durationMs": 408.057294
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-facts.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence matches real event-time session and all hourly/daily facts across late inserts, multitab SPA, goal/funnel drops, currency orders and hostile dictionaries",
+          "status": "passed",
+          "durationMs": 113.3623070000001
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence keeps cross-midnight standard sessions, local DST daily-salt split and orphan heartbeats outside session duration",
+          "status": "passed",
+          "durationMs": 96.79586199999994
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence retains exact membership union across sessions and weighted vitals while bucket budget fails explicitly",
+          "status": "passed",
+          "durationMs": 71.30959200000007
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence spills a long multitab heartbeat component to actual PG disk and keeps exact visible time with one session summary",
+          "status": "passed",
+          "durationMs": 2282.925867
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence permits a captured generation while intake advances, rejects stale deletion epoch and physically cascades fact identity state",
+          "status": "passed",
+          "durationMs": 80.65120900000011
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence reduces global goal sessions and funnel visitor union across separate days without summing daily UV",
+          "status": "passed",
+          "durationMs": 48.31922899999972
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence atomically publishes streamed buckets and sessions, preserves archives, leaves later outbox dirty and rolls back budget failure",
+          "status": "passed",
+          "durationMs": 67.67620699999998
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence runs the production-compatible spill worker on max1, publishes captured intake and rejects deletion after snapshot",
+          "status": "passed",
+          "durationMs": 213.9214750000001
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence renews a one-second lease throughout real longer RR capture on max1 without blocking concurrent generation writes",
+          "status": "passed",
+          "durationMs": 2260.6867690000004
+        },
+        {
+          "name": "actual PG normalized session contributions and spill-backed reducer equivalence rejects a PG source if authority changes before publication, including an empty-source cutover",
+          "status": "passed",
+          "durationMs": 22.912468999999874
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-header-backup.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "signed CH topology package, real isolated PG and CH restores published receipts and bodies to an independent CH database, applies latest A journal, and never modifies source",
+          "status": "passed",
+          "durationMs": 1236.557774
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-header-canonical-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "manually selected CH authority publishes bounded sealed headers and repairs partial deletion without persistent PG header bodies",
+          "status": "passed",
+          "durationMs": 2556.126139
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-header-deletion.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "native collection and durable identity deletion split an expired session while preserving B, properties and vitals",
+          "status": "passed",
+          "durationMs": 1521.6698930000002
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-header-orphans.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "durable CH header orphan reclamation, actual PG/CH reclaims an uncommitted attempt in a still-live run, preserves its committed body and records retry failure",
+          "status": "passed",
+          "durationMs": 801.082435
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-header-source.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "transaction-local header consumer with actual PG and CH spills mixed published CH/legacy PG owners, verifies seals, filters tombstones and never borrows the max1 pool",
+          "status": "passed",
+          "durationMs": 1017.4082980000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/session-prefix-reducer.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "036 real prefix resumes cross-midnight lineage, exact heartbeat/goal/funnel state and timeout isolation with pool max1",
+          "status": "passed",
+          "durationMs": 1695.138627
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/single-client-error-path.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real max1 error-path client reuse expired publication fence returns false and clears owned lease without borrowing a second client",
+          "status": "passed",
+          "durationMs": 76.30902400000002
+        },
+        {
+          "name": "real max1 error-path client reuse actual export filesystem failure persists failed status and releases the sole client",
+          "status": "passed",
+          "durationMs": 26.948912000000064
+        },
+        {
+          "name": "real max1 error-path client reuse actual max1 invite register and accept persist audit with membership, and audit failure rolls all writes back",
+          "status": "passed",
+          "durationMs": 536.333144
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/site-export-notification-epoch.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "site facts export notification epoch fence exports only current derived evidence and preserves nonanalytics notifications in max-one client",
+          "status": "passed",
+          "durationMs": 55.56483400000002
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/site-fact-config.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real authenticated site configuration after raw pruning blocks privacy-mode mixing despite empty PG keys/raw, and marks changed archived semantics unavailable while preserving unique B backing",
+          "status": "passed",
+          "durationMs": 153.758194
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/strict-fact-worker.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real sealed backup activates strict facts and subsequent workers retain no persistent PG body",
+          "status": "passed",
+          "durationMs": 4935.4555550000005
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/strict-identity-api.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual native identity sessions remain sourced from CH after sealed strict activation",
+          "status": "passed",
+          "durationMs": 4724.680805
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/strict-identity-restore.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual signed child backup and independent strict restore preserves B identity after A deletion",
+          "status": "passed",
+          "durationMs": 13748.594998
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-browser.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "tracker in Chromium consent gates IDs and events, SPA owns a distinct page and retries identical bodies",
+          "status": "passed",
+          "durationMs": 1525.130519
+        },
+        {
+          "name": "rrweb records masked browser structure only and heatmap requires opt-in",
+          "status": "passed",
+          "durationMs": 1079.367141
+        },
+        {
+          "name": "pre-render does not allocate IDs and activation emits exactly one PV",
+          "status": "passed",
+          "durationMs": 815.8872689999998
+        },
+        {
+          "name": "daily_salt identify consumes no IDs and stable properties cannot escape a cleaning hook",
+          "status": "passed",
+          "durationMs": 824.2340020000001
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-collector.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real browser tracker -> Fastify persisted PG -> governance -> session/rollup -> query",
+          "status": "passed",
+          "durationMs": 2953.065114
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-hooks.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real collector accepts four scroll thresholds, private form metadata and 404 while native links/download/form work after banner consent",
+          "status": "passed",
+          "durationMs": 3128.735605
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-outbound-text.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual Chromium outbound labels persist sanitized public text to PG/EAV/stats/JSONCSV but exclude private links and daily labels",
+          "status": "passed",
+          "durationMs": 3123.928467
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-replay-heatmap.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real SPA and shared-cookie tabs have independent complete masked replay snapshots; responsive heatmap retry is idempotent and private controls are excluded",
+          "status": "passed",
+          "durationMs": 3757.9042489999997
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/tracker-subdomain.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "actual two-subdomain Chromium tracker uses explicit parent first-party cookie through real collector/PG and revokes that same scope",
+          "status": "passed",
+          "durationMs": 2637.583137
+        }
+      ]
+    },
+    {
+      "file": "tests/integration/worker-fairness.test.ts",
+      "status": "passed",
+      "tests": [
+        {
+          "name": "real PG fairly advances every persistently dirty site independent of late event watermarks",
+          "status": "passed",
+          "durationMs": 1052.242011
+        }
+      ]
+    }
+  ]
+}
