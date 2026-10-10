@@ -19,5 +19,6 @@
     "new immutable whole-suite CI",
     "new production Docker image/matrix"
   ],
-  "schema": "049 revenue namespace scope implemented with revenue_orders and event_keys streaming fingerprint; independent-target revenue receipt regression pending external owned fixture"
+  "schema": "049 signed revenue namespace scope includes revenue_orders and event_keys streaming fingerprint. Independent-target actual B revenue receipt restore separately passed; see strict-identity-raw-backup-proof.json.",
+  "relatedEvidence": "strict-identity-raw-backup-proof.json"
 }
