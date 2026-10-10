@@ -1,6 +1,6 @@
 # 有限容量探索：PG与strict短时场景
 
-2026-10-10 UTC。实际source87e，应用src与d67相同。此为用户新授权的有限容量探索，不替代原固定5000验收，不改规格或既有FAIL。两模式执行均EXIT0；原始JSON、精确运行入口与摘要已归档：[摘要](../../test-evidence/main-87e1f64-capacity-summary.json)、[PG](../../test-evidence/main-87e1f64-capacity-postgres-1000.json)、[strict](../../test-evidence/main-87e1f64-capacity-strict-clickhouse-1000.json)、[无环境变量运行入口](../../test-evidence/main-87e1f64-capacity-runner.mts.safe.txt)。完整1300个Git blob前后摘要相同；总runner实际EXIT0。
+2026-10-10 UTC。实际source87e，应用src与d67相同。此为用户新授权的有限容量探索，不替代原固定5000高到达率基准，不改规格或既有FAIL。两模式执行均EXIT0；原始JSON、精确运行入口与摘要已归档：[摘要](../../test-evidence/main-87e1f64-capacity-summary.json)、[PG](../../test-evidence/main-87e1f64-capacity-postgres-1000.json)、[strict](../../test-evidence/main-87e1f64-capacity-strict-clickhouse-1000.json)、[无环境变量运行入口](../../test-evidence/main-87e1f64-capacity-runner.mts.safe.txt)。完整1300个Git blob前后摘要相同；总runner实际EXIT0。
 
 场景：单站20批×50事件=1000，固定每5秒一批，真实查询每30秒；queue8/concurrency2/drain120秒均保持，使用生产后台聚合，不手动worker、不放宽规则。
 

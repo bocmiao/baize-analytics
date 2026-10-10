@@ -8,7 +8,7 @@
 | ce42c9f browser |30 checks(28 real Chromium+2 date)PASS,EXIT0;src/db/packages/sdk/scripts unchanged from d67;no claimed backend rerun|
 | d67 image |Actual EXIT0:55DDL/391 manifest/strict independent restore;transient62MiB disk-low risk recorded,not concealed|
 | d67 fixed1000/5000 |Actual EXIT1:1000PASS4.537660079s;5000overallFAIL4700accepted/6unsent/38delayed/queryfail0;draintrue/sixfinalassertionsPASS,finalHTTP23.714184648s;Nodepeak714698752B excludesDB.Performance gap remains,not5000/SLO acceptance|
-| Git/hosted |Remotee441 verified,push blocked,no more authentication attempts.Checkpoint manifest /workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json:e441..87e sixcommits,bundleverify0,Gitobjects/trackedsource only,no runtimekeys.No CI/completion claim|
+| Git/hosted |Remotee441 verified,push blocked,no more authentication attempts.Latest local checkpoint: /workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json;Gitobjects/trackedsource only,no runtimekeys;87e sixcommits is historical verified evidence.No CI/completion claim|
 
 Historical661 ENOSPC and d67 first29/30 full EXIT1 remain below with original source evidence.
 

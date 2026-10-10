@@ -8,7 +8,7 @@
 | ce42c9f浏览器 |30检查（28真实Chromium+2日期）PASS、EXIT0；与d67 src/db/packages/sdk/scripts EMPTYdiff，不称后端重跑|
 | d67镜像 |实际EXIT0：55DDL/391manifest/严格独立恢复；瞬时可用盘低62MiB风险已归档，不隐去|
 | d67固定1000/5000 |实际EXIT1结束：1000PASS4.537660079秒；5000整体FAIL4700accepted/6unsent/38delayed/queryfail0，但draintrue、六final断言PASS，finalHTTP23.714184648秒；Node峰714698752B不含DB。性能仍欠，不称5000/SLO通过|
-| Git/托管 |remotee441已核、push blocked，不再认证尝试；checkpoint manifest /workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json、e441..87e六commit bundleverify0，仅Git对象/已跟踪source不含runtime keys。不称收工，不触发CI|
+| Git/托管 |remotee441已核、push blocked，不再认证尝试；最新local检查点以/workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json为准，仅Git对象/已跟踪source不含runtime keys；87e六commit为历史verified记录。不称收工，不触发CI|
 
 原661ENOSPC及d67首轮29/30整体EXIT1按原SHA证据保留在历史节。
 

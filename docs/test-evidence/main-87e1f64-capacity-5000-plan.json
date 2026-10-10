@@ -1,0 +1,23 @@
+{
+  "snapshot": "/tmp/baize-capacity-87e1f64-g1y7u4ti",
+  "sourceCommit": "87e1f64531d0d25b193fc2982726170179aea52f",
+  "runner": "/tmp/baize-capacity-exploration-87e1f64-5000.sh",
+  "script": "/tmp/baize-capacity-exploration-87e1f64-5000.mts",
+  "scriptSha256": "d97b992d5db88400abafc213dc21f00062cd9f4d2cdddfa66939940284b127d8",
+  "shellSha256": "b792aa6ad16b6752d6450f92062e459d1e3718a3b3bb95c0792ff67030682d42",
+  "executed": true,
+  "schedule": {
+    "batches": 100,
+    "intervalMs": 5000,
+    "queryIntervalMs": 30000,
+    "durationLimitMs": 620000,
+    "drainLimitMs": 120000,
+    "maxQueued": 8,
+    "maxConcurrent": 2
+  },
+  "budgetOverrides": false,
+  "diskGateBytes": 6442450944,
+  "expectedServiceCount": 3,
+  "completion": "running; no final result recorded",
+  "rootSession": 90908
+}
