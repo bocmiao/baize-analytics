@@ -1,0 +1,456 @@
+{
+  "status": "failed",
+  "sourceSha": "9cd7cd0745cc0bf0440fcfbd8af9822f91e2f1f1",
+  "appRoot": "/tmp/baize-third-yjpyeems",
+  "sourceDigestBefore": "ca2db756f1c48a72227c2b2f56369bbc88970f4ae38a4c803637818c35c26888",
+  "events": 4000,
+  "sites": 4,
+  "batchSize": 50,
+  "background": true,
+  "manualWorker": false,
+  "storage": "PostgreSQL only; clickhouse:null",
+  "startedAt": "2026-10-10T07:26:48.742Z",
+  "limits": "Production limits unchanged; one batch/site/second",
+  "relationOidNames": [
+    {
+      "oid": "671820",
+      "relname": "schema_migrations"
+    },
+    {
+      "oid": "671828",
+      "relname": "users"
+    },
+    {
+      "oid": "671840",
+      "relname": "auth_sessions"
+    },
+    {
+      "oid": "671853",
+      "relname": "sites"
+    },
+    {
+      "oid": "671868",
+      "relname": "site_members"
+    },
+    {
+      "oid": "671886",
+      "relname": "events"
+    },
+    {
+      "oid": "671898",
+      "relname": "events_default"
+    },
+    {
+      "oid": "671914",
+      "relname": "event_data"
+    },
+    {
+      "oid": "671928",
+      "relname": "event_data_default"
+    },
+    {
+      "oid": "671939",
+      "relname": "event_keys"
+    },
+    {
+      "oid": "671951",
+      "relname": "identity_map"
+    },
+    {
+      "oid": "671965",
+      "relname": "visitor_first_seen"
+    },
+    {
+      "oid": "671977",
+      "relname": "tombstones"
+    },
+    {
+      "oid": "671987",
+      "relname": "audit_logs"
+    },
+    {
+      "oid": "671998",
+      "relname": "aggregation_state"
+    },
+    {
+      "oid": "672014",
+      "relname": "outbox"
+    },
+    {
+      "oid": "672030",
+      "relname": "bot_counts"
+    },
+    {
+      "oid": "672043",
+      "relname": "sessions"
+    },
+    {
+      "oid": "672057",
+      "relname": "stats_hourly"
+    },
+    {
+      "oid": "672069",
+      "relname": "stats_daily"
+    },
+    {
+      "oid": "672081",
+      "relname": "page_vitals"
+    },
+    {
+      "oid": "672093",
+      "relname": "goals"
+    },
+    {
+      "oid": "672107",
+      "relname": "funnels"
+    },
+    {
+      "oid": "672121",
+      "relname": "analytics_definitions"
+    },
+    {
+      "oid": "672134",
+      "relname": "api_tokens"
+    },
+    {
+      "oid": "672155",
+      "relname": "reports"
+    },
+    {
+      "oid": "672168",
+      "relname": "notification_channels"
+    },
+    {
+      "oid": "672180",
+      "relname": "report_schedules"
+    },
+    {
+      "oid": "672203",
+      "relname": "notification_jobs"
+    },
+    {
+      "oid": "672216",
+      "relname": "notification_logs"
+    },
+    {
+      "oid": "672225",
+      "relname": "share_links"
+    },
+    {
+      "oid": "672242",
+      "relname": "alert_rules"
+    },
+    {
+      "oid": "672256",
+      "relname": "site_invites"
+    },
+    {
+      "oid": "672270",
+      "relname": "export_jobs"
+    },
+    {
+      "oid": "672285",
+      "relname": "replay_chunks"
+    },
+    {
+      "oid": "672298",
+      "relname": "heatmap_points"
+    },
+    {
+      "oid": "672311",
+      "relname": "experiments"
+    },
+    {
+      "oid": "672324",
+      "relname": "experiment_assignments"
+    },
+    {
+      "oid": "672337",
+      "relname": "external_connections"
+    },
+    {
+      "oid": "672351",
+      "relname": "oauth_states"
+    },
+    {
+      "oid": "672363",
+      "relname": "gsc_stats"
+    },
+    {
+      "oid": "672375",
+      "relname": "ga_import"
+    },
+    {
+      "oid": "672388",
+      "relname": "seo_scans"
+    },
+    {
+      "oid": "672401",
+      "relname": "rank_history"
+    },
+    {
+      "oid": "672413",
+      "relname": "ai_budget"
+    },
+    {
+      "oid": "672427",
+      "relname": "ai_calls"
+    },
+    {
+      "oid": "672441",
+      "relname": "ai_suggestions"
+    },
+    {
+      "oid": "672461",
+      "relname": "instance_keyring"
+    },
+    {
+      "oid": "672470",
+      "relname": "sso_config"
+    },
+    {
+      "oid": "672480",
+      "relname": "sso_mappings"
+    },
+    {
+      "oid": "672492",
+      "relname": "sso_states"
+    },
+    {
+      "oid": "672500",
+      "relname": "identity_bindings"
+    },
+    {
+      "oid": "672515",
+      "relname": "identity_tombstones"
+    },
+    {
+      "oid": "672527",
+      "relname": "external_jobs"
+    },
+    {
+      "oid": "672546",
+      "relname": "export_file_cleanup"
+    },
+    {
+      "oid": "672565",
+      "relname": "revenue_orders"
+    },
+    {
+      "oid": "672592",
+      "relname": "instance_settings"
+    },
+    {
+      "oid": "672606",
+      "relname": "experiment_contributions"
+    },
+    {
+      "oid": "672624",
+      "relname": "event_store_state"
+    },
+    {
+      "oid": "672643",
+      "relname": "event_store_uploads"
+    },
+    {
+      "oid": "672661",
+      "relname": "event_store_maintenance"
+    },
+    {
+      "oid": "672686",
+      "relname": "events_2025_10"
+    },
+    {
+      "oid": "672706",
+      "relname": "event_data_2025_10"
+    },
+    {
+      "oid": "672727",
+      "relname": "events_2025_11"
+    },
+    {
+      "oid": "672747",
+      "relname": "event_data_2025_11"
+    },
+    {
+      "oid": "672768",
+      "relname": "events_2025_12"
+    },
+    {
+      "oid": "672788",
+      "relname": "event_data_2025_12"
+    },
+    {
+      "oid": "672809",
+      "relname": "events_2026_01"
+    },
+    {
+      "oid": "672829",
+      "relname": "event_data_2026_01"
+    },
+    {
+      "oid": "672850",
+      "relname": "events_2026_02"
+    },
+    {
+      "oid": "672870",
+      "relname": "event_data_2026_02"
+    },
+    {
+      "oid": "672891",
+      "relname": "events_2026_03"
+    },
+    {
+      "oid": "672911",
+      "relname": "event_data_2026_03"
+    },
+    {
+      "oid": "672932",
+      "relname": "events_2026_04"
+    },
+    {
+      "oid": "672952",
+      "relname": "event_data_2026_04"
+    },
+    {
+      "oid": "672973",
+      "relname": "events_2026_05"
+    },
+    {
+      "oid": "672993",
+      "relname": "event_data_2026_05"
+    },
+    {
+      "oid": "673014",
+      "relname": "events_2026_06"
+    },
+    {
+      "oid": "673034",
+      "relname": "event_data_2026_06"
+    },
+    {
+      "oid": "673055",
+      "relname": "events_2026_07"
+    },
+    {
+      "oid": "673075",
+      "relname": "event_data_2026_07"
+    },
+    {
+      "oid": "673096",
+      "relname": "events_2026_08"
+    },
+    {
+      "oid": "673116",
+      "relname": "event_data_2026_08"
+    },
+    {
+      "oid": "673137",
+      "relname": "events_2026_09"
+    },
+    {
+      "oid": "673157",
+      "relname": "event_data_2026_09"
+    },
+    {
+      "oid": "673178",
+      "relname": "events_2026_10"
+    },
+    {
+      "oid": "673198",
+      "relname": "event_data_2026_10"
+    },
+    {
+      "oid": "673219",
+      "relname": "events_2026_11"
+    },
+    {
+      "oid": "673239",
+      "relname": "event_data_2026_11"
+    },
+    {
+      "oid": "673260",
+      "relname": "events_2026_12"
+    },
+    {
+      "oid": "673280",
+      "relname": "event_data_2026_12"
+    }
+  ],
+  "observedErrors": [
+    {
+      "name": "error",
+      "code": "40P01",
+      "message": "deadlock detected"
+    },
+    {
+      "name": "error",
+      "code": "40P01",
+      "message": "deadlock detected"
+    },
+    {
+      "name": "error",
+      "code": "40P01",
+      "message": "deadlock detected"
+    },
+    {
+      "name": "error",
+      "code": "40P01",
+      "message": "deadlock detected"
+    }
+  ],
+  "error": "Collector HTTP 500",
+  "samples": [
+    {
+      "at": "2026-10-10T07:26:49.628Z",
+      "site": "069d663130ea21123878298f",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:26:49.637Z",
+      "site": "13e99dfed6c6be88abe3483e",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:26:49.646Z",
+      "site": "ebbeb5c4996339c56a828f8b",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:26:49.654Z",
+      "site": "88187ec59626e79c40b728fe",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "attempts": 0
+    }
+  ],
+  "uncoveredSampleCount": 4,
+  "observedWorkerFailureSampleCount": 0,
+  "lagMaxMs": null,
+  "lagP95Ms": null,
+  "batchP95Ms": 1020.4218579999997,
+  "queryP95Ms": 18.331170000000157,
+  "peakNodeRssBytes": 186044416,
+  "finishedAt": "2026-10-10T07:26:51.380Z",
+  "isolatedSchemaRemoved": true,
+  "cliExitCode": 1,
+  "runnerSha256": "0654185e73b48798ffe2a4ce669cc3a20277faaa69bca65d51db4cdc5f9ab14b"
+}

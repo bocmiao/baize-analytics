@@ -1,0 +1,61 @@
+/** Run only against an explicit immutable source snapshot; production background worker only. */
+import {randomBytes,randomUUID,createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {mkdtemp,readdir,readFile,mkdir,writeFile,rm} from 'node:fs/promises';
+import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {tmpdir} from 'node:os';
+import {performance} from 'node:perf_hooks';
+import pg from 'pg';
+import Redis from 'ioredis';
+const arg=(name:string,fallback:string)=>process.argv.find(a=>a.startsWith(`--${name}=`))?.slice(name.length+3)??fallback;
+const appRoot=resolve(process.env.APP_ROOT??arg('app-root',''));
+const sourceSha=process.env.SOURCE_SHA??arg('source-sha','');
+if(!sourceSha||!process.env.APP_ROOT&&!process.argv.some(a=>a.startsWith('--app-root=')))throw new Error('Require explicit APP_ROOT snapshot and SOURCE_SHA; do not benchmark a mutable development tree');
+const events=Number(arg('events','10000')),sites=Number(arg('sites','1'));
+if(!Number.isInteger(sites)||sites<1||sites>4||!Number.isInteger(events)||events<1000||events>20000||events%(50*sites))throw new Error('Require 1–4 sites, 1000–20000 events divisible by 50*sites');
+const digest=async()=>{const hash=createHash('sha256');const walk=async(dir:string)=>{for(const item of (await readdir(dir,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){const path=join(dir,item.name);if(item.isDirectory())await walk(path);else if(item.isFile()){hash.update(path.slice(appRoot.length));hash.update(await readFile(path));}}};for(const directory of ['src/server','packages/contracts','packages/tracker/src','db/migrations'])await walk(join(appRoot,directory));return hash.digest('hex');};
+const beforeDigest=await digest();
+// Verify exported snapshots against the immutable commit too, not merely a caller-provided label.
+const tree=execFileSync('git',['-C',process.env.SOURCE_REPOSITORY??process.cwd(),'ls-tree','-r','--full-tree',sourceSha,'--','src/server','packages/contracts','packages/tracker/src','db/migrations'],{encoding:'utf8'}).trim();
+if(!tree)throw new Error('Source revision has no application tree');
+for(const line of tree.split('\n')){const [metadata,path]=line.split('\t');const expected=metadata.split(' ')[2];const bytes=await readFile(join(appRoot,path));const actual=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');if(actual!==expected)throw new Error(`Snapshot differs from immutable source: ${path}`);}
+
+// Git-backed checkouts must be clean and match the requested revision; exported artifacts use hashes.
+try{const head=execFileSync('git',['-C',appRoot,'rev-parse','HEAD'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();if(head!==sourceSha&&!head.startsWith(sourceSha))throw new Error('Snapshot HEAD differs from SOURCE_SHA');const changes=execFileSync('git',['-C',appRoot,'status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim();if(changes)throw new Error('Snapshot tracked files are dirty');}catch(error){if((error as {status?:number}).status===undefined)throw error;}
+const {createApp}=await import(pathToFileURL(join(appRoot,'src/server/app.ts')).href) as typeof import('../src/server/app.js');
+const schema=`continuous_${randomBytes(8).toString('hex')}`,connectionString=process.env.TEST_DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev';
+const admin=new pg.Pool({connectionString,max:1}),pool=new pg.Pool({connectionString,options:`-c search_path=${schema},public`,max:10});
+const redis=new Redis(process.env.REDIS_URL??'redis://127.0.0.1:6379',{maxRetriesPerRequest:1});redis.on('error',()=>{});
+const temporary=await mkdtemp(join(tmpdir(),'baize-continuous-'));const output=resolve(arg('output',`docs/test-evidence/continuous-${sites}site-${events}.json`));
+const result:Record<string,unknown>={status:'running',sourceSha,appRoot,sourceDigestBefore:beforeDigest,events,sites,batchSize:50,background:true,manualWorker:false,storage:'PostgreSQL only; clickhouse:null',startedAt:new Date().toISOString(),limits:'Production limits unchanged; one batch/site/second'};
+let instance:Awaited<ReturnType<typeof createApp>>|undefined,peakRss=process.memoryUsage().rss;
+const samples:Record<string,unknown>[]=[];const queryLatency:number[]=[],batchLatency:number[]=[],lags:number[]=[];const check=(v:unknown,m:string)=>{if(!v)throw new Error(m);};
+const timer=setInterval(()=>{peakRss=Math.max(peakRss,process.memoryUsage().rss);},100);timer.unref();
+const percentile=(values:number[],p:number)=>{const sorted=[...values].sort((a,b)=>a-b);return sorted[Math.min(sorted.length-1,Math.floor(sorted.length*p))]??null;};
+try{
+ await redis.ping();await admin.query(`CREATE SCHEMA ${schema}`);
+ instance=await createApp({pool,redis,background:true,clickhouse:null,dataDir:join(temporary,'data'),keyDir:join(temporary,'keys'),masterKey:randomBytes(32),publicUrl:'http://127.0.0.1'});
+ result.relationOidNames=(await pool.query("SELECT c.oid::text,c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind IN('r','p') ORDER BY c.oid",[schema])).rows;
+ instance.app.addHook('onError',async(_request,_reply,error)=>{const errors=(result.observedErrors??[]) as {name:string;code?:string;message:string}[];errors.push({name:error.name,code:(error as {code?:string}).code,message:error.message});result.observedErrors=errors;});
+ const address=await instance.app.listen({host:'127.0.0.1',port:0});
+ const setup=await fetch(`${address}/api/setup`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:'continuous@example.invalid',password:randomBytes(24).toString('hex')})});check(setup.ok,'Setup failed');const cookie=setup.headers.get('set-cookie')!.split(';')[0];
+ const ids:string[]=[];for(let i=0;i<sites;i++){const response=await fetch(`${address}/api/v1/sites`,{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({name:`Continuous ${i}`,domain:'continuous.example.invalid',timezone:'UTC'})});check(response.status===201,'Site creation failed');ids.push((await response.json() as {site:{id:string}}).site.id);}
+ const started=performance.now(),from=new Date(Date.now()-1000).toISOString();let accepted=0;const latest=new Map<string,number>();
+ const query=async()=>{for(const id of ids){const qStart=performance.now();const response=await fetch(`${address}/api/v1/sites/${id}/stats?from=${encodeURIComponent(from)}&to=${encodeURIComponent(new Date().toISOString())}`,{headers:{cookie}});queryLatency.push(performance.now()-qStart);check(response.ok,`Stats HTTP ${response.status}`);const body=await response.json() as {coverage:number;totals:{pv:number}};const state=(await pool.query('SELECT generation::text,processed_generation::text,watermark,attempts FROM aggregation_state WHERE site_id=$1',[id])).rows[0];const lag=state.watermark?Math.max(0,(latest.get(id)??0)-+new Date(state.watermark)):null;if(lag!==null)lags.push(lag);samples.push({at:new Date().toISOString(),site:id,coverage:body.coverage,pv:body.totals.pv,generation:state.generation,processedGeneration:state.processed_generation,lagMs:lag,attempts:state.attempts});}};
+ for(let round=0;round<events/(50*sites);round++){
+  const roundStart=performance.now();await Promise.all(ids.map(async id=>{const visitor=randomUUID(),ts=Date.now()-50;const batch=Array.from({length:50},(_,i)=>({event_id:randomUUID(),visitor_id:visitor,page_id:randomUUID(),ts:ts+i,type:'pageview',url:`https://continuous.example.invalid/p/${i%5}`,path:`/p/${i%5}`}));const sent=performance.now();const response=await fetch(`${address}/api/collect`,{method:'POST',headers:{'content-type':'application/json',origin:'https://continuous.example.invalid','user-agent':'Mozilla/5.0 Chrome/145.0.0.0'},body:JSON.stringify({protocol_version:1,site_id:id,sdk:'continuous-acceptance',sent_at:Date.now(),events:batch})});batchLatency.push(performance.now()-sent);check(response.status===202,`Collector HTTP ${response.status}`);const body=await response.json() as {accepted:number;duplicates:number;rejected:unknown[]};check(body.accepted===50&&body.duplicates===0&&!body.rejected.length,'Collector acceptance mismatch');accepted+=50;latest.set(id,ts+49);}));
+  await query();if((round+1)%20===0)process.stdout.write(JSON.stringify({phase:'continuous',round:round+1,accepted,elapsedMs:performance.now()-started,lastSamples:samples.slice(-sites)})+'\n');await new Promise(r=>setTimeout(r,Math.max(0,1000-(performance.now()-roundStart))));
+ }
+ result.accepted=accepted;result.intakeWithQueriesMs=performance.now()-started;
+ const drainStart=performance.now();let settled=false;
+ while(performance.now()-drainStart<120000){await query();const state=(await pool.query('SELECT count(*) FILTER(WHERE generation<>processed_generation OR processed_generation=0)::int AS dirty,coalesce(sum(attempts),0)::int AS attempts FROM aggregation_state')).rows[0];check(state.attempts===0,'Background worker recorded failure');if(state.dirty===0){settled=true;break;}await new Promise(r=>setTimeout(r,1000));}
+ check(settled,'Background worker did not drain within 120 seconds');result.drainMs=performance.now()-drainStart;
+ const sql=(await pool.query('SELECT count(*)::int AS pv,count(DISTINCT(site_id,visitor_id))::int AS uv FROM events')).rows[0];const sessionCount=Number((await pool.query('SELECT count(*) FROM sessions')).rows[0].count);check(sql.pv===events&&sql.uv===events/50&&sessionCount===events/50,'Final SQL mismatch');result.sql={...sql,sessions:sessionCount};
+ const finalState=(await pool.query('SELECT site_id,generation::text,processed_generation::text,watermark,attempts FROM aggregation_state ORDER BY site_id')).rows;for(const state of finalState)check(state.watermark&&+new Date(state.watermark)>=(latest.get(state.site_id)??Infinity),'Final background watermark incomplete');result.finalAggregationState=finalState;
+ result.schemaBytes=Number((await pool.query("SELECT coalesce(sum(pg_total_relation_size(c.oid)),0)::text AS bytes FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind IN('r','m')",[schema])).rows[0].bytes);
+ const outbox=(await pool.query("SELECT count(*)::int AS total,count(*) FILTER(WHERE status='queued')::int AS queued,count(*) FILTER(WHERE status='done')::int AS done FROM outbox")).rows[0];check(outbox.total===events&&outbox.done===events&&outbox.queued===0,'Durable outbox did not drain');result.outbox=outbox;
+ for(const sample of samples.slice(-sites))check(sample.coverage===1&&sample.pv===events/sites,'Final HTTP stats mismatch');
+ result.sourceDigestAfter=await digest();check(result.sourceDigestAfter===beforeDigest,'Source changed during run');result.status='passed';
+}catch(error){result.status='failed';result.error=error instanceof Error?error.message:'Continuous benchmark failed';process.exitCode=1;}
+finally{clearInterval(timer);result.samples=samples;result.uncoveredSampleCount=samples.filter(sample=>sample.coverage!==1).length;result.observedWorkerFailureSampleCount=samples.filter(sample=>Number(sample.attempts)>0).length;result.lagMaxMs=lags.length?Math.max(...lags):null;result.lagP95Ms=percentile(lags,.95);result.batchP95Ms=percentile(batchLatency,.95);result.queryP95Ms=percentile(queryLatency,.95);result.peakNodeRssBytes=peakRss;result.finishedAt=new Date().toISOString();await instance?.app.close();redis.disconnect();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(temporary,{recursive:true,force:true});result.isolatedSchemaRemoved=true;await mkdir(resolve(output,'..'),{recursive:true});await writeFile(output,JSON.stringify(result,null,2)+'\n');process.stdout.write(JSON.stringify({output,status:result.status,lagP95Ms:result.lagP95Ms,peakNodeRssBytes:peakRss,error:result.error})+'\n');}

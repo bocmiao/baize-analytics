@@ -26,5 +26,18 @@ export async function migrate(pool:Pool, directory=resolve('db/migrations')) {
     }
   } finally {await client.query('SELECT pg_advisory_unlock(92834101)');client.release();}
 }
-export async function lockSite(client:PoolClient,siteId:string){await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[siteId]);}
+/** Acquire before relation/site locks: partition DDL must not invert intake's FK lock order. */
+export async function lockPartitionWrites(client:PoolClient,exclusive=false){
+  const operation=exclusive?'pg_advisory_xact_lock':'pg_advisory_xact_lock_shared';
+  await client.query(`SELECT ${operation}(hashtextextended(current_schema()||':baize:partition-writes',92834110))`);
+}
+/** Pin RR only after partition DDL completes; waiting inside RR would pin a pre-relocation snapshot. */
+export async function beginPartitionSnapshot(client:PoolClient){
+  const key="hashtextextended(current_schema()||':baize:partition-writes',92834110)";
+  await client.query(`SELECT pg_advisory_lock_shared(${key})`);
+  try {await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ');await lockPartitionWrites(client);}
+  catch(error){await client.query('ROLLBACK');throw error;}
+  finally {await client.query(`SELECT pg_advisory_unlock_shared(${key})`);}
+}
+export async function lockSite(client:PoolClient,siteId:string){await lockPartitionWrites(client);await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[siteId]);}
 export async function dirtySite(client:PoolClient,siteId:string){await client.query('INSERT INTO aggregation_state(site_id,generation) VALUES($1,1) ON CONFLICT(site_id) DO UPDATE SET generation=aggregation_state.generation+1',[siteId]);}

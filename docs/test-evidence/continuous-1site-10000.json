@@ -1,0 +1,2103 @@
+{
+  "status": "passed",
+  "sourceSha": "9cd7cd0745cc0bf0440fcfbd8af9822f91e2f1f1",
+  "appRoot": "/tmp/baize-third-yjpyeems",
+  "sourceDigestBefore": "ca2db756f1c48a72227c2b2f56369bbc88970f4ae38a4c803637818c35c26888",
+  "events": 10000,
+  "sites": 1,
+  "batchSize": 50,
+  "background": true,
+  "manualWorker": false,
+  "storage": "PostgreSQL only; clickhouse:null",
+  "startedAt": "2026-10-10T07:18:26.356Z",
+  "limits": "Production limits unchanged; one batch/site/second",
+  "accepted": 10000,
+  "intakeWithQueriesMs": 290383.18104500003,
+  "drainMs": 5620.866250000021,
+  "sql": {
+    "pv": 10000,
+    "uv": 200,
+    "sessions": 200
+  },
+  "finalAggregationState": [
+    {
+      "site_id": "95d4e5e7df57f9eaa2dd49db",
+      "generation": "200",
+      "processed_generation": "200",
+      "watermark": "2026-10-10T07:23:13.901Z",
+      "attempts": 0
+    }
+  ],
+  "schemaBytes": 44089344,
+  "outbox": {
+    "total": 10000,
+    "queued": 0,
+    "done": 10000
+  },
+  "sourceDigestAfter": "ca2db756f1c48a72227c2b2f56369bbc88970f4ae38a4c803637818c35c26888",
+  "samples": [
+    {
+      "at": "2026-10-10T07:18:27.158Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:29.108Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "2",
+      "processedGeneration": "1",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:29.220Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "3",
+      "processedGeneration": "1",
+      "lagMs": 2123,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:30.212Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "4",
+      "processedGeneration": "3",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:31.217Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "5",
+      "processedGeneration": "4",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:32.223Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 300,
+      "generation": "6",
+      "processedGeneration": "5",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:33.222Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "7",
+      "processedGeneration": "6",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:34.237Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 400,
+      "generation": "8",
+      "processedGeneration": "7",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:35.208Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "9",
+      "processedGeneration": "8",
+      "lagMs": 1001,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:36.258Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 500,
+      "generation": "10",
+      "processedGeneration": "9",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:37.239Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "11",
+      "processedGeneration": "10",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:38.242Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 600,
+      "generation": "12",
+      "processedGeneration": "11",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:39.231Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 650,
+      "generation": "13",
+      "processedGeneration": "12",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:40.260Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "14",
+      "processedGeneration": "13",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:41.342Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 750,
+      "generation": "15",
+      "processedGeneration": "14",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:42.236Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 800,
+      "generation": "16",
+      "processedGeneration": "15",
+      "lagMs": 998,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:43.315Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "17",
+      "processedGeneration": "16",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:44.264Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 900,
+      "generation": "18",
+      "processedGeneration": "17",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:45.310Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 950,
+      "generation": "19",
+      "processedGeneration": "18",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:46.320Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1000,
+      "generation": "20",
+      "processedGeneration": "19",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:47.374Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "21",
+      "processedGeneration": "20",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:48.422Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1100,
+      "generation": "22",
+      "processedGeneration": "21",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:49.363Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1150,
+      "generation": "23",
+      "processedGeneration": "22",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:50.435Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1200,
+      "generation": "24",
+      "processedGeneration": "23",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:51.381Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1250,
+      "generation": "25",
+      "processedGeneration": "24",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:52.541Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "26",
+      "processedGeneration": "25",
+      "lagMs": 1028,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:53.518Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1350,
+      "generation": "27",
+      "processedGeneration": "26",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:54.509Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1400,
+      "generation": "28",
+      "processedGeneration": "27",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:55.480Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1450,
+      "generation": "29",
+      "processedGeneration": "28",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:56.559Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1500,
+      "generation": "30",
+      "processedGeneration": "29",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:57.578Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1550,
+      "generation": "31",
+      "processedGeneration": "30",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:58.635Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "32",
+      "processedGeneration": "31",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:18:59.619Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1650,
+      "generation": "33",
+      "processedGeneration": "32",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:00.645Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1700,
+      "generation": "34",
+      "processedGeneration": "33",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:01.646Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1750,
+      "generation": "35",
+      "processedGeneration": "34",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:02.647Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1800,
+      "generation": "36",
+      "processedGeneration": "35",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:03.616Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1850,
+      "generation": "37",
+      "processedGeneration": "36",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:04.659Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1900,
+      "generation": "38",
+      "processedGeneration": "37",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:05.627Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "39",
+      "processedGeneration": "38",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:06.778Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2000,
+      "generation": "40",
+      "processedGeneration": "39",
+      "lagMs": 1016,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:07.799Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2050,
+      "generation": "41",
+      "processedGeneration": "40",
+      "lagMs": 1006,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:08.746Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2100,
+      "generation": "42",
+      "processedGeneration": "41",
+      "lagMs": 1033,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:09.859Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2150,
+      "generation": "43",
+      "processedGeneration": "42",
+      "lagMs": 1026,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:10.860Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2200,
+      "generation": "44",
+      "processedGeneration": "43",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:12.093Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2250,
+      "generation": "45",
+      "processedGeneration": "44",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:12.386Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2300,
+      "generation": "46",
+      "processedGeneration": "44",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:14.169Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2350,
+      "generation": "47",
+      "processedGeneration": "46",
+      "lagMs": 1088,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:14.475Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2400,
+      "generation": "48",
+      "processedGeneration": "46",
+      "lagMs": 2088,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:16.128Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "49",
+      "processedGeneration": "48",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:16.457Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2500,
+      "generation": "50",
+      "processedGeneration": "48",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:18.306Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2550,
+      "generation": "51",
+      "processedGeneration": "50",
+      "lagMs": 1018,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:18.515Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2600,
+      "generation": "52",
+      "processedGeneration": "50",
+      "lagMs": 2028,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:20.121Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2650,
+      "generation": "53",
+      "processedGeneration": "52",
+      "lagMs": 998,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:20.469Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2700,
+      "generation": "54",
+      "processedGeneration": "52",
+      "lagMs": 1998,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:22.099Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2750,
+      "generation": "55",
+      "processedGeneration": "54",
+      "lagMs": 1004,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:22.533Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2800,
+      "generation": "56",
+      "processedGeneration": "54",
+      "lagMs": 2004,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:24.038Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2850,
+      "generation": "57",
+      "processedGeneration": "56",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:24.476Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2900,
+      "generation": "58",
+      "processedGeneration": "56",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:26.094Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 2950,
+      "generation": "59",
+      "processedGeneration": "58",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:26.469Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "60",
+      "processedGeneration": "58",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:28.193Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3050,
+      "generation": "61",
+      "processedGeneration": "60",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:28.471Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3100,
+      "generation": "62",
+      "processedGeneration": "60",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:30.150Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3150,
+      "generation": "63",
+      "processedGeneration": "62",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:30.484Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3200,
+      "generation": "64",
+      "processedGeneration": "62",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:32.491Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3250,
+      "generation": "65",
+      "processedGeneration": "64",
+      "lagMs": 1040,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:32.675Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3300,
+      "generation": "66",
+      "processedGeneration": "64",
+      "lagMs": 2186,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:34.350Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3350,
+      "generation": "67",
+      "processedGeneration": "66",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:34.681Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3400,
+      "generation": "68",
+      "processedGeneration": "66",
+      "lagMs": 1998,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:36.397Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3450,
+      "generation": "69",
+      "processedGeneration": "68",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:36.663Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3500,
+      "generation": "70",
+      "processedGeneration": "68",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:38.334Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3550,
+      "generation": "71",
+      "processedGeneration": "70",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:38.646Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3600,
+      "generation": "72",
+      "processedGeneration": "70",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:40.353Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "73",
+      "processedGeneration": "72",
+      "lagMs": 1001,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:40.654Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3700,
+      "generation": "74",
+      "processedGeneration": "72",
+      "lagMs": 2001,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:42.331Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3750,
+      "generation": "75",
+      "processedGeneration": "74",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:42.683Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3800,
+      "generation": "76",
+      "processedGeneration": "74",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:44.579Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3850,
+      "generation": "77",
+      "processedGeneration": "76",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:44.757Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3900,
+      "generation": "78",
+      "processedGeneration": "76",
+      "lagMs": 2092,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:46.581Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 3950,
+      "generation": "79",
+      "processedGeneration": "78",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:46.761Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4000,
+      "generation": "80",
+      "processedGeneration": "78",
+      "lagMs": 2002,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:48.667Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4050,
+      "generation": "81",
+      "processedGeneration": "80",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:48.817Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4100,
+      "generation": "82",
+      "processedGeneration": "80",
+      "lagMs": 2085,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:50.541Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4150,
+      "generation": "83",
+      "processedGeneration": "82",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:50.830Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4200,
+      "generation": "84",
+      "processedGeneration": "82",
+      "lagMs": 2000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:52.588Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4250,
+      "generation": "85",
+      "processedGeneration": "84",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:52.816Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4300,
+      "generation": "86",
+      "processedGeneration": "84",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:54.592Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4350,
+      "generation": "87",
+      "processedGeneration": "86",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:54.822Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4400,
+      "generation": "88",
+      "processedGeneration": "86",
+      "lagMs": 1999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:56.685Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4450,
+      "generation": "89",
+      "processedGeneration": "88",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:56.883Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4500,
+      "generation": "90",
+      "processedGeneration": "88",
+      "lagMs": 2021,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:58.798Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4550,
+      "generation": "91",
+      "processedGeneration": "90",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:19:59.727Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4600,
+      "generation": "92",
+      "processedGeneration": "90",
+      "lagMs": 2113,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:01.424Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "93",
+      "processedGeneration": "91",
+      "lagMs": 2114,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:01.663Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4700,
+      "generation": "94",
+      "processedGeneration": "91",
+      "lagMs": 3740,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:04.091Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4750,
+      "generation": "95",
+      "processedGeneration": "94",
+      "lagMs": 1116,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:04.257Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4800,
+      "generation": "96",
+      "processedGeneration": "94",
+      "lagMs": 2667,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:06.748Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4850,
+      "generation": "97",
+      "processedGeneration": "96",
+      "lagMs": 1303,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:06.926Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4900,
+      "generation": "98",
+      "processedGeneration": "96",
+      "lagMs": 2657,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:08.913Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 4950,
+      "generation": "99",
+      "processedGeneration": "98",
+      "lagMs": 1000,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:09.678Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 2165,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:10.914Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5050,
+      "generation": "101",
+      "processedGeneration": "99",
+      "lagMs": 2164,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:11.700Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5100,
+      "generation": "102",
+      "processedGeneration": "99",
+      "lagMs": 3166,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:13.019Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5150,
+      "generation": "103",
+      "processedGeneration": "101",
+      "lagMs": 2002,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:13.884Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5200,
+      "generation": "104",
+      "processedGeneration": "101",
+      "lagMs": 3106,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:15.254Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5250,
+      "generation": "105",
+      "processedGeneration": "103",
+      "lagMs": 2104,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:15.431Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5300,
+      "generation": "106",
+      "processedGeneration": "103",
+      "lagMs": 3340,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:18.057Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5350,
+      "generation": "107",
+      "processedGeneration": "106",
+      "lagMs": 1215,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:20.054Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5400,
+      "generation": "108",
+      "processedGeneration": "107",
+      "lagMs": 1588,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:22.267Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5450,
+      "generation": "109",
+      "processedGeneration": "108",
+      "lagMs": 1997,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:22.494Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5500,
+      "generation": "110",
+      "processedGeneration": "108",
+      "lagMs": 4210,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:25.888Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5550,
+      "generation": "111",
+      "processedGeneration": "110",
+      "lagMs": 1546,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:26.074Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5600,
+      "generation": "112",
+      "processedGeneration": "110",
+      "lagMs": 3622,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:28.698Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5650,
+      "generation": "113",
+      "processedGeneration": "112",
+      "lagMs": 999,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:28.920Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5700,
+      "generation": "114",
+      "processedGeneration": "112",
+      "lagMs": 2809,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:31.426Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5750,
+      "generation": "115",
+      "processedGeneration": "114",
+      "lagMs": 1072,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:31.636Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5800,
+      "generation": "116",
+      "processedGeneration": "114",
+      "lagMs": 2729,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:34.321Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5850,
+      "generation": "117",
+      "processedGeneration": "116",
+      "lagMs": 1317,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:34.509Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5900,
+      "generation": "118",
+      "processedGeneration": "116",
+      "lagMs": 2894,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:37.537Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 5950,
+      "generation": "119",
+      "processedGeneration": "118",
+      "lagMs": 1457,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:37.717Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6000,
+      "generation": "120",
+      "processedGeneration": "118",
+      "lagMs": 3216,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:40.463Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6050,
+      "generation": "121",
+      "processedGeneration": "120",
+      "lagMs": 1219,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:40.673Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6100,
+      "generation": "122",
+      "processedGeneration": "120",
+      "lagMs": 2926,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:43.493Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6150,
+      "generation": "123",
+      "processedGeneration": "122",
+      "lagMs": 1349,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:43.677Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6200,
+      "generation": "124",
+      "processedGeneration": "122",
+      "lagMs": 3030,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:46.407Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6250,
+      "generation": "125",
+      "processedGeneration": "124",
+      "lagMs": 1270,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:46.615Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6300,
+      "generation": "126",
+      "processedGeneration": "124",
+      "lagMs": 2915,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:49.771Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6350,
+      "generation": "127",
+      "processedGeneration": "126",
+      "lagMs": 1413,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:49.995Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6400,
+      "generation": "128",
+      "processedGeneration": "126",
+      "lagMs": 3363,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:52.647Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6450,
+      "generation": "129",
+      "processedGeneration": "128",
+      "lagMs": 1040,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:52.888Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6500,
+      "generation": "130",
+      "processedGeneration": "128",
+      "lagMs": 2876,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:55.690Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6550,
+      "generation": "131",
+      "processedGeneration": "130",
+      "lagMs": 1171,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:55.885Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6600,
+      "generation": "132",
+      "processedGeneration": "130",
+      "lagMs": 3043,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:58.871Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6650,
+      "generation": "133",
+      "processedGeneration": "132",
+      "lagMs": 1174,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:20:59.096Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6700,
+      "generation": "134",
+      "processedGeneration": "132",
+      "lagMs": 3181,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:01.748Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6750,
+      "generation": "135",
+      "processedGeneration": "134",
+      "lagMs": 1010,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:01.940Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6800,
+      "generation": "136",
+      "processedGeneration": "134",
+      "lagMs": 2877,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:04.833Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6850,
+      "generation": "137",
+      "processedGeneration": "136",
+      "lagMs": 1113,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:05.045Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6900,
+      "generation": "138",
+      "processedGeneration": "136",
+      "lagMs": 3085,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:07.775Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 6950,
+      "generation": "139",
+      "processedGeneration": "138",
+      "lagMs": 1066,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:07.974Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7000,
+      "generation": "140",
+      "processedGeneration": "138",
+      "lagMs": 2941,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:10.745Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7050,
+      "generation": "141",
+      "processedGeneration": "140",
+      "lagMs": 1066,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:10.954Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7100,
+      "generation": "142",
+      "processedGeneration": "140",
+      "lagMs": 2971,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:13.829Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7150,
+      "generation": "143",
+      "processedGeneration": "142",
+      "lagMs": 1164,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:14.054Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7200,
+      "generation": "144",
+      "processedGeneration": "142",
+      "lagMs": 3084,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:16.927Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7250,
+      "generation": "145",
+      "processedGeneration": "144",
+      "lagMs": 1060,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:17.170Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7300,
+      "generation": "146",
+      "processedGeneration": "144",
+      "lagMs": 3098,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:19.966Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7350,
+      "generation": "147",
+      "processedGeneration": "146",
+      "lagMs": 1045,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:20.220Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7400,
+      "generation": "148",
+      "processedGeneration": "146",
+      "lagMs": 3039,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:23.080Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7450,
+      "generation": "149",
+      "processedGeneration": "148",
+      "lagMs": 1119,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:23.329Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7500,
+      "generation": "150",
+      "processedGeneration": "148",
+      "lagMs": 3114,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:26.178Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7550,
+      "generation": "151",
+      "processedGeneration": "150",
+      "lagMs": 1049,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:27.339Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7600,
+      "generation": "152",
+      "processedGeneration": "150",
+      "lagMs": 3098,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:30.515Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7650,
+      "generation": "153",
+      "processedGeneration": "151",
+      "lagMs": 3210,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:32.444Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7700,
+      "generation": "154",
+      "processedGeneration": "152",
+      "lagMs": 4337,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:33.592Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7750,
+      "generation": "155",
+      "processedGeneration": "152",
+      "lagMs": 6266,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:35.611Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7800,
+      "generation": "156",
+      "processedGeneration": "154",
+      "lagMs": 3077,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:35.841Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7850,
+      "generation": "157",
+      "processedGeneration": "154",
+      "lagMs": 5096,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:39.612Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7900,
+      "generation": "158",
+      "processedGeneration": "157",
+      "lagMs": 1678,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:39.887Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 7950,
+      "generation": "159",
+      "processedGeneration": "157",
+      "lagMs": 4001,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:44.015Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8000,
+      "generation": "160",
+      "processedGeneration": "159",
+      "lagMs": 1711,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:44.292Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8050,
+      "generation": "161",
+      "processedGeneration": "159",
+      "lagMs": 4403,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:47.705Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8100,
+      "generation": "162",
+      "processedGeneration": "161",
+      "lagMs": 1356,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:47.921Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8150,
+      "generation": "163",
+      "processedGeneration": "161",
+      "lagMs": 3690,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:51.678Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8200,
+      "generation": "164",
+      "processedGeneration": "163",
+      "lagMs": 1648,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:54.933Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8250,
+      "generation": "165",
+      "processedGeneration": "164",
+      "lagMs": 3095,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:55.180Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8300,
+      "generation": "166",
+      "processedGeneration": "164",
+      "lagMs": 5580,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:58.908Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8350,
+      "generation": "167",
+      "processedGeneration": "166",
+      "lagMs": 1485,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:21:59.119Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8400,
+      "generation": "168",
+      "processedGeneration": "166",
+      "lagMs": 3975,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:02.749Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8450,
+      "generation": "169",
+      "processedGeneration": "168",
+      "lagMs": 1554,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:02.981Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8500,
+      "generation": "170",
+      "processedGeneration": "168",
+      "lagMs": 3841,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:10.211Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8550,
+      "generation": "171",
+      "processedGeneration": "170",
+      "lagMs": 1703,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:10.764Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8600,
+      "generation": "172",
+      "processedGeneration": "170",
+      "lagMs": 7463,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:15.757Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8650,
+      "generation": "173",
+      "processedGeneration": "172",
+      "lagMs": 1761,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:17.647Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8700,
+      "generation": "174",
+      "processedGeneration": "172",
+      "lagMs": 5545,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:21.561Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8750,
+      "generation": "175",
+      "processedGeneration": "173",
+      "lagMs": 5680,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:23.747Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8800,
+      "generation": "176",
+      "processedGeneration": "174",
+      "lagMs": 5804,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:23.999Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8850,
+      "generation": "177",
+      "processedGeneration": "174",
+      "lagMs": 7990,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:27.711Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8900,
+      "generation": "178",
+      "processedGeneration": "177",
+      "lagMs": 1401,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:28.003Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 8950,
+      "generation": "179",
+      "processedGeneration": "177",
+      "lagMs": 3965,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:31.839Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9000,
+      "generation": "180",
+      "processedGeneration": "179",
+      "lagMs": 1492,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:32.156Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9050,
+      "generation": "181",
+      "processedGeneration": "179",
+      "lagMs": 4127,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:36.059Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9100,
+      "generation": "182",
+      "processedGeneration": "181",
+      "lagMs": 1570,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:36.299Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9150,
+      "generation": "183",
+      "processedGeneration": "181",
+      "lagMs": 4220,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:40.807Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9200,
+      "generation": "184",
+      "processedGeneration": "183",
+      "lagMs": 1436,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:41.062Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9250,
+      "generation": "185",
+      "processedGeneration": "183",
+      "lagMs": 4748,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:45.027Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9300,
+      "generation": "186",
+      "processedGeneration": "185",
+      "lagMs": 1725,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:45.285Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9350,
+      "generation": "187",
+      "processedGeneration": "185",
+      "lagMs": 4220,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:48.929Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9400,
+      "generation": "188",
+      "processedGeneration": "187",
+      "lagMs": 1490,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:49.169Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9450,
+      "generation": "189",
+      "processedGeneration": "187",
+      "lagMs": 3902,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:53.139Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9500,
+      "generation": "190",
+      "processedGeneration": "189",
+      "lagMs": 1683,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:53.367Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9550,
+      "generation": "191",
+      "processedGeneration": "189",
+      "lagMs": 4210,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:57.130Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9600,
+      "generation": "192",
+      "processedGeneration": "191",
+      "lagMs": 1445,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:22:57.380Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9650,
+      "generation": "193",
+      "processedGeneration": "191",
+      "lagMs": 3991,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:01.379Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9700,
+      "generation": "194",
+      "processedGeneration": "193",
+      "lagMs": 1550,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:01.635Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9750,
+      "generation": "195",
+      "processedGeneration": "193",
+      "lagMs": 4249,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:05.479Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9800,
+      "generation": "196",
+      "processedGeneration": "195",
+      "lagMs": 1348,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:05.812Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9850,
+      "generation": "197",
+      "processedGeneration": "195",
+      "lagMs": 4100,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:12.393Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9900,
+      "generation": "198",
+      "processedGeneration": "197",
+      "lagMs": 2114,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:12.733Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 9950,
+      "generation": "199",
+      "processedGeneration": "197",
+      "lagMs": 6914,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:17.368Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "199",
+      "lagMs": 1508,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:17.586Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "199",
+      "lagMs": 1508,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:19.400Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "199",
+      "lagMs": 1508,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:20.601Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "199",
+      "lagMs": 1508,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:21.810Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 0,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "199",
+      "lagMs": 1508,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:23:22.990Z",
+      "site": "95d4e5e7df57f9eaa2dd49db",
+      "coverage": 1,
+      "pv": 10000,
+      "generation": "200",
+      "processedGeneration": "200",
+      "lagMs": 0,
+      "attempts": 0
+    }
+  ],
+  "uncoveredSampleCount": 204,
+  "observedWorkerFailureSampleCount": 0,
+  "lagMaxMs": 7990,
+  "lagP95Ms": 4403,
+  "batchP95Ms": 2471.7260909999895,
+  "queryP95Ms": 231.18353700003354,
+  "peakNodeRssBytes": 1035026432,
+  "finishedAt": "2026-10-10T07:23:23.032Z",
+  "isolatedSchemaRemoved": true,
+  "cliExitCode": 0,
+  "runnerSha256": "60105ede90f31f7c7de642d90746ebd2f3be86daef6259571888fecd2ba1be2b",
+  "priorFailureEvidence": "continuous-initial-deadlock.json",
+  "acceptanceBoundary": "This retry passed but immutable source9cd had an independently verified first-maintenance collector40P01 failure; does not erase that failure or prove the race fixed."
+}

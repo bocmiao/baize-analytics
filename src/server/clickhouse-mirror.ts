@@ -5,7 +5,7 @@ import {z} from 'zod';
 import {ClickHouseStore, type StoredEvent} from './clickhouse-store.js';
 import {invalidateSiteCache} from './deletion.js';
 import {runReplicaCleanup} from './clickhouse-cleanup.js';
-import {lockSite, transaction} from './db.js';
+import {lockSite,beginPartitionSnapshot, transaction} from './db.js';
 import type {AppContext} from './context.js';
 export type ReplicaMode = 'postgres' | 'mirror' | 'prefer_clickhouse';
 export interface MirrorHooks {afterSnapshot?: () => Promise<void>; beforePublish?: () => Promise<void>}
@@ -32,7 +32,7 @@ export class ClickHouseMirror {
   const renew = setInterval(() => {void this.pool.query("UPDATE event_store_state SET lease_until=now()+interval '60 seconds' WHERE site_id=$1 AND lease_owner=$2 AND lease_until>now()", [siteId, owner]).catch(() => {});}, 15000); renew.unref();
   try {
    await connection.query('SELECT pg_advisory_lock(hashtextextended($1,0))', [replicaLock(siteId)]); replicaHeld = true;
-   await connection.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
+   await beginPartitionSnapshot(connection);
    captured = (await connection.query('SELECT generation::text,epoch::text FROM aggregation_state WHERE site_id=$1', [siteId])).rows[0];
    const site = (await connection.query('SELECT retention_days FROM sites WHERE id=$1', [siteId])).rows[0];
    if (!captured || !site) {await connection.query('ROLLBACK'); return false;}
