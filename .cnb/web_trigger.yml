@@ -1,6 +1,9 @@
 branch:
   - reg: '^main$'
     buttons:
-      - name: 同步 GitHub main
-        description: 仅快进同步私有 GitHub main；相同 SHA 不推送。复用现有同步事件。
+      - name: 最终手动验证
+        description: 全部自主开发及本地检查收工后由负责人触发；不读取 GitHub 密钥。
+        event: web_trigger_validate
+      - name: 最终手动同步 GitHub main
+        description: 收工后由负责人快进同步私有 main；同步本身也是流水线，阶段中禁止触发。
         event: web_trigger

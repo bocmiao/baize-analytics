@@ -1,3 +1,5 @@
+> 当前规则（2026-10-10，覆盖下文历史接入步骤）：全部可自主开发、集成和本地检查收工之前，不运行任何托管流水线，包括同步。父线程已在 CNB 设置关闭事件自动、定时自动、NPC 自动触发并确认无运行中任务。`.cnb.yml` 仅保留负责人最终手动 `web_trigger` 同步和不导入密钥的 `web_trigger_validate` 验证；无 push/crontab 事件。正常 GitHub main 提交允许，GitHub Actions 永久保持本任务禁用。最终由父线程同步并手动验收，失败修复后再手动验收；本地开发不得自行同步/触发/rebuild。历史定时注册与授权记录不代表当前启用，无需立即修改 cron 密钥授权。
+
 # PRIVATE CNB mirror and shared CI template
 
 GitHub PRIVATE `bocmiao/baize-analytics` main remains authoritative. CNB is a PRIVATE, one-direction mirror and optional CI runner. Repository creation, private visibility, login and existing credentials are handled by the integration owner. No new keys, paid services, network policies or billing settings are created by these files. The former GitHub Actions workflow is archived at `docs/ci-reference/github-actions-ci.yml`, outside active `.github/workflows`; it is not a synchronization trigger. Automatic GitHub Actions are intentionally removed because the owner requested no further failed quota/billing notifications. The page-level workflow disable is handled by the parent before the removal commit is pushed.

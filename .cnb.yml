@@ -1,12 +1,12 @@
-# CNB template: YAML syntax checked; provider schema/runtime is not yet verified.
-# GitHub main remains authoritative. Configure PRIVATE CNB and credentials in its console.
+# Manual only: owner requires all autonomous work/local checks finished before hosted CI.
+# GitHub private main remains authoritative. No push, cron or NPC pipeline.
 main:
-  push:
+  web_trigger_validate:
     - docker:
         image: node:24-bookworm
       services: [docker]
       stages:
-        - name: regular-application-validation
+        - name: final-manual-application-validation
           script: CI_RUNNER_IN_COMPOSE=1 bash scripts/ci-common.sh regular
   web_trigger:
     - imports:
@@ -16,19 +16,5 @@ main:
       env:
         CNB_MIRROR_URL: https://cnb.cool/bankermiao/baize-analytics
       stages:
-        - name: pull-authoritative-private-main-only-when-new
+        - name: final-manual-private-main-sync
           script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
-  "crontab: 0 */6 * * *":
-    - imports:
-        - https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml
-      docker:
-        image: node:24-bookworm
-      env:
-        CNB_MIRROR_URL: https://cnb.cool/bankermiao/baize-analytics
-      stages:
-        - name: scheduled-light-main-sync-only-when-new
-          script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
-# web_trigger is manual. Official cron uses Asia/Shanghai every six hours.
-# Secret allow_events save confirmation and hosted execution are still pending.
-# Heavy modes: run ci-common.sh heavy-ops or heavy-million manually in an
-# authorized Docker-capable isolated job; they are not default push stages.
