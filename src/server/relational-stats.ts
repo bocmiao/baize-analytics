@@ -1,3 +1,5 @@
+import {withStatsReadBudget,withBudgetedPgClient} from './stats-read-budget.js';
+import {withStatsReadSnapshot} from './stats-read-snapshot.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {withRemainingFactReadSource} from './remaining-fact-source.js';
 import {withCacheReadSource} from './cache-store-source.js';
@@ -17,6 +19,9 @@ import {queryPublishedNumericBuckets} from './fact-numeric-query.js';
 
 /** Uses one captured DB client for all exact set operations, and checks deletion epoch after an owned snapshot. */
 export async function queryStatsRelational(ctx:AppContext,siteId:string,from:string,to:string,filters:ContentFilters={},options:{client?:PoolClient}={}){
+ return withStatsReadBudget(async()=>{if(!options.client){return (await withStatsReadSnapshot(ctx,siteId,from,to,client=>queryStatsRelationalInternal(ctx,siteId,from,to,filters,{client}))).value;}return withBudgetedPgClient(options.client,()=>queryStatsRelationalInternal(ctx,siteId,from,to,filters,options));});
+}
+async function queryStatsRelationalInternal(ctx:AppContext,siteId:string,from:string,to:string,filters:ContentFilters={},options:{client?:PoolClient}={}){
  const owned=!options.client,client=options.client??await measurePerformanceStage('pool_acquire',()=>ctx.pool.connect());
  try{
  if(owned)await beginSiteSnapshot(client,siteId);

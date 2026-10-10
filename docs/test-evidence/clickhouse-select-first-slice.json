@@ -1,0 +1,26 @@
+{
+  "sourceCommit": null,
+  "scope": "Uncommitted explicit SELECT first slice; no real CH run yet",
+  "files": {
+    "src/server/clickhouse-select-budget.ts": "052ba6fc19fbdd4cd6db3bf20bc3c4c35968ffc7d872dd5b0dca23c7aaa15995",
+    "src/server/canonical-clickhouse.ts": "8395210889cb0c4e8564adb1f9aede8100c0c22544717ee69250808047ca08db",
+    "src/server/clickhouse-store.ts": "659b3750f363e75ffeae4ab1f4fc4aeea30bc7fd70583fa8e14f117412dd8e19",
+    "src/server/fact-store.ts": "a3cd1dc90cc9cd492289f42d1aee5b15163fccb23ef34ff73703ec477e00ecfa",
+    "src/server/cache-store.ts": "b50830a5ce9973ceae97c18ad133f0a0d1cbf8605d62b866ffa54bc3d9e2f215",
+    "src/server/session-header-store.ts": "a30b9546dd0454f618e521895ff91ee95f4544c3fbdb1babbef62bd2674c0283",
+    "src/server/remaining-fact-store.ts": "d435e77f8f346467ad99ac37ed7515c2e457cd4299c11354473ba22fc6d64f0a",
+    "src/server/remaining-fact-transport.ts": "200ff850ad9a2fd51b8bb765b885ae3b39eff03827a24b94c3c3d70b6cb5ade0",
+    "tests/unit/clickhouse-select-budget.test.ts": "4c3779367afb7cc477cd85a360efa2ebe7e590cde217d4909c13a6f16b01f84e"
+  },
+  "firstRun": {
+    "tests": 8,
+    "passed": 2,
+    "failed": 6,
+    "rawRunnerReportSaved": false,
+    "evidence": "Original tool output reports 2 pass/6 fail: fixture returned JSON for mutation commands requiring empty EOF; mirror fixture used nonexistent countBefore. No production weakening."
+  },
+  "finalReport": "/tmp/baize-select-first-unit-final.json",
+  "finalLog": "/tmp/baize-select-first-unit-final.log",
+  "lintLog": "/tmp/baize-select-first-lint.log",
+  "typesLog": "/tmp/baize-select-first-types.log"
+}

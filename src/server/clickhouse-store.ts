@@ -1,4 +1,5 @@
-import {configureClickHouseSelect} from './clickhouse-select-budget.js';
+import {statsReadSignal,budgetStatsSelectResponse} from './stats-read-budget.js';
+import {configureClickHouseSelect,parseClickHouseSelectJson} from './clickhouse-select-budget.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {readObservedClickHouseBody} from './clickhouse-observed-body.js';
 import {consumeClickHouseCommand} from './clickhouse-command-response.js';
@@ -19,9 +20,9 @@ export class ClickHouseStore {
   const endpoint = new URL(this.endpoint);
   endpoint.searchParams.set('query', query);if(operation==='select')configureClickHouseSelect(endpoint,Math.max(1000, Math.min(this.config.timeoutMs || 15000, 30000))); endpoint.searchParams.set('date_time_input_format', 'best_effort');
   for (const [name, value] of Object.entries(params)) endpoint.searchParams.set(`param_${name}`, value);
-  const response = await (this.config.fetch || fetch)(endpoint, {method: 'POST', headers: {'X-ClickHouse-User': this.config.username, 'X-ClickHouse-Key': this.config.password, 'Content-Type': 'application/x-ndjson'}, body, signal: AbortSignal.timeout(Math.max(1000, Math.min(this.config.timeoutMs || 15000, 30000)))});
+  const response = await (this.config.fetch || fetch)(endpoint, {method: 'POST', headers: {'X-ClickHouse-User': this.config.username, 'X-ClickHouse-Key': this.config.password, 'Content-Type': 'application/x-ndjson'}, body, signal:statsReadSignal(AbortSignal.timeout(Math.max(1000, Math.min(this.config.timeoutMs || 15000, 30000))))});
   if (!response.ok) {await response.body?.cancel(); throw Error('CLICKHOUSE_HTTP_FAILURE');}
-  return response;
+  return operation==='select'?budgetStatsSelectResponse(response):response;
  }
  private selectRequest(query:string,params:Record<string,string>={}){return this.request(query,params,undefined,'select');}
  private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'CLICKHOUSE_HTTP_FAILURE');},{batches:1,adapter:'mirror'});}
@@ -55,7 +56,7 @@ export class ClickHouseStore {
  async readSnapshot(identity: SnapshotIdentity, options:SnapshotReadOptions = {}): Promise<StoredEvent[]> {
   const {clauses,params}=this.selection(identity,options);
   const text=await readObservedClickHouseBody(()=>this.selectRequest(`SELECT site_id,toString(event_id) AS event_id,formatDateTime(ts,'%Y-%m-%dT%H:%i:%S.%fZ','UTC') AS event_ts,visitor_id,toString(page_id) AS page_id,type,path,payload,dimensions,is_bot FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} ORDER BY ts ${options.order==='desc'?'DESC':'ASC'},event_id ${options.order==='desc'?'DESC':'ASC'} ${options.limit!==undefined?'LIMIT {limit:UInt32}':''} FORMAT JSONEachRow`, params),128*1024*1024,'CLICKHOUSE_EMPTY_RESPONSE','CLICKHOUSE_RESULT_LIMIT','mirror');
-  return text.trim() ? text.trim().split('\n').map(line => {const {event_ts, ...row} = JSON.parse(line); return {...row, ts: event_ts, payload: JSON.parse(row.payload), dimensions: JSON.parse(row.dimensions)} as StoredEvent;}) : [];
+  return text.trim() ? text.trim().split('\n').map(line => {const {event_ts, ...row} = parseClickHouseSelectJson<{event_ts:string;payload:string;dimensions:string}>(line); return {...row, ts: event_ts, payload: JSON.parse(row.payload), dimensions: JSON.parse(row.dimensions)} as StoredEvent;}) : [];
  }
  async countSnapshot(identity: SnapshotIdentity): Promise<number> {
   const response = await this.selectRequest('SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE site_id={site:String} AND snapshot_id={snapshot:UUID} AND epoch={epoch:UUID} AND generation'+(identity.versionMode==='at_most'?'<=':'=')+'{generation:UInt64} FORMAT JSON', {site: identity.siteId, snapshot: identity.snapshotId, epoch: identity.epoch, generation: identity.generation});

@@ -1,5 +1,6 @@
 // Fixed public error messages only. Never add provider payloads or dynamic exceptions here.
 export const API_ERRORS = {
+  stats_read_budget_exceeded: {statusCode:503,zh:"统计读取超过操作预算，请缩小范围或重试",en:"The analytics read exceeded its operation budget. Narrow the range or retry."},
   canonical_backup_required: { statusCode: 409, zh: "裁剪须先验证签名备份，请使用本地运维命令", en: "Pruning requires a verified signed backup. Use the local operations command." },
   historical_coverage_unavailable: { statusCode: 409, zh: "历史数据覆盖不足，无法精确重建", en: "Historical coverage is incomplete and cannot be reconstructed exactly." },
   aggregate_members_unavailable: { statusCode: 503, zh: "精确统计成员暂时不可用，请重试", en: "Exact aggregate members are unavailable. Try again later." },

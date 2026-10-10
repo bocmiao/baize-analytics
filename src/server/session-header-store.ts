@@ -1,4 +1,5 @@
-import {configureClickHouseSelect} from './clickhouse-select-budget.js';
+import {statsReadSignal,budgetStatsSelectResponse} from './stats-read-budget.js';
+import {configureClickHouseSelect,parseClickHouseSelectJson} from './clickhouse-select-budget.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {readObservedClickHouseBody} from './clickhouse-observed-body.js';
 import {consumeClickHouseCommand} from './clickhouse-command-response.js';
@@ -38,14 +39,14 @@ export class ClickHouseSessionHeaderStore {
  private async request(query:string,params:Record<string,string>={},body?:string,operation?:'select'){
   const url=new URL(this.config.url);if(!['http:','https:'].includes(url.protocol)||url.username||url.password)throw Error('SESSION_HEADER_ENDPOINT_INVALID');
   url.searchParams.set('query',query);if(operation==='select')configureClickHouseSelect(url,this.config.timeoutMs??30000);for(const [key,value]of Object.entries(params))url.searchParams.set('param_'+key,value);
-  const response=await(this.config.fetch??fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:AbortSignal.timeout(this.config.timeoutMs??30000)});
-  if(!response.ok){await response.body?.cancel();throw Error('SESSION_HEADER_CH_UNAVAILABLE');}return response;
+  const response=await(this.config.fetch??fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:statsReadSignal(AbortSignal.timeout(this.config.timeoutMs??30000))});
+  if(!response.ok){await response.body?.cancel();throw Error('SESSION_HEADER_CH_UNAVAILABLE');}return operation==='select'?budgetStatsSelectResponse(response):response;
  }
  private selectRequest(query:string,params:Record<string,string>={}){return this.request(query,params,undefined,'select');}
  private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'SESSION_HEADER_CH_UNAVAILABLE');},{batches:1,adapter:'session_headers'});}
  private async rows(query:string,params:Record<string,string>={}){
   const text=await readObservedClickHouseBody(()=>this.selectRequest(query+' FORMAT JSON',params),16*1024*1024,'SESSION_HEADER_CH_UNAVAILABLE','SESSION_HEADER_READ_LIMIT','session_headers');
-  return (JSON.parse(text) as {data:{body:string;body_hash:string;event_id:string}[]}).data;
+  return (parseClickHouseSelectJson(text) as {data:{body:string;body_hash:string;event_id:string}[]}).data;
  }
  async assertEmptyRun(siteId:string,runId:string){
   const response=await this.selectRequest('SELECT count() n FROM baize_session_headers_v1 WHERE site_id={site:String} AND run_id={run:UUID} FORMAT JSON',{site:siteId,run:runId});

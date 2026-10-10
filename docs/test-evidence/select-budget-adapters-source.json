@@ -1,0 +1,10 @@
+{
+  "sourceCommit": null,
+  "execution": "precommit WIP",
+  "sha256": {
+    "tests/integration/clickhouse-select-budget.test.ts": "19c436da8f6ce5d603b0cd2d09c7167a68324fff7ad7ae39f46f2898e2e14dd1",
+    "src/server/clickhouse-select-budget.ts": "01cd57287499cfab07a2fc2da824babf7c4c2bb54fd6daf3f71db52c40d503f3",
+    "src/server/clickhouse-observed-body.ts": "24a1a0bd4a250fb21922945b830dcb8a5bd69ebc40232adccb49872728af5efb",
+    "src/server/stats-read-budget.ts": "42b8a570fd0163f989cc1a63b41243e69a879070df3a956e979ba9ee0e1c2bac"
+  }
+}
