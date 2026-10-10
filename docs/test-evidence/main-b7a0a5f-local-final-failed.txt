@@ -1,0 +1,585 @@
+
+> baize-analytics@0.1.0 lint
+> eslint .
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 test:unit
+> vitest run tests/unit --reporter=default --reporter=json --outputFile.json=/tmp/baize-final-local.mD9Ra2/reports/unit.json
+
+
+ RUN  v4.1.11 /tmp/baize-main-restore-order.yoemc5m1
+
+ ✓ tests/unit/canonical-event-data.test.ts (3 tests) 84ms
+ ✓ tests/unit/geography-assets.test.ts (1 test) 71ms
+ ✓ tests/unit/remaining-fact-transport.test.ts (2 tests) 55ms
+ ✓ tests/unit/governance.test.ts (8 tests) 126ms
+ ✓ tests/unit/manual-search-parser.test.ts (4 tests) 40ms
+ ✓ tests/unit/external.test.ts (9 tests) 87ms
+ ✓ tests/unit/external-geoip.test.ts (3 tests) 27ms
+ ✓ tests/unit/clickhouse.test.ts (3 tests) 26ms
+ ✓ tests/unit/analytics.test.ts (16 tests) 30ms
+ ✓ tests/unit/ga4-import.test.ts (3 tests) 28ms
+ ✓ tests/unit/dimensions.test.ts (5 tests) 24ms
+ ✓ tests/unit/journal.test.ts (3 tests) 15ms
+ ✓ tests/unit/ai-evidence.test.ts (5 tests) 17ms
+ ✓ tests/unit/api-errors.test.ts (3 tests) 9ms
+ ✓ tests/unit/tracker.test.ts (9 tests) 12ms
+ ✓ tests/unit/content-analytics.test.ts (2 tests) 18ms
+ ✓ tests/unit/backup-lines.test.ts (1 test) 11ms
+ ✓ tests/unit/tracker-heatmap-exclusions.test.ts (1 test) 8ms
+ ✓ tests/unit/site-hosts.test.ts (2 tests) 6ms
+ ✓ tests/unit/remaining-owner-batch.test.ts (4 tests) 8ms
+ ✓ tests/unit/web-responsive.test.ts (2 tests) 6ms
+ ✓ tests/unit/bot-filter.test.ts (4 tests) 8ms
+ ✓ tests/unit/daily-privacy-policy.test.ts (2 tests) 4ms
+ ✓ tests/unit/external-errors.test.ts (1 test) 7ms
+ ✓ tests/unit/canonical-retry-receipt.test.ts (2 tests) 6ms
+ ✓ tests/unit/tracker-installation.test.ts (3 tests) 4ms
+ ✓ tests/unit/web-errors.test.ts (4 tests) 4ms
+ ✓ tests/unit/report-definition.test.ts (2 tests) 7ms
+ ✓ tests/unit/tracker-consent-banner.test.ts (2 tests) 4ms
+ ✓ tests/unit/link-text.test.ts (1 test) 4ms
+ ✓ tests/unit/geography-analytics.test.ts (2 tests) 7ms
+ ✓ tests/unit/cookie-domain.test.ts (1 test) 5ms
+ ✓ tests/unit/web-storage-evidence.test.ts (1 test) 4ms
+
+ Test Files  33 passed (33)
+      Tests  114 passed (114)
+   Start at  18:30:21
+   Duration  8.61s (transform 951ms, setup 0ms, import 4.03s, tests 770ms, environment 3ms)
+
+JSON report written to /tmp/baize-final-local.mD9Ra2/reports/unit.json
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+SDK consent, event-id retry and typed ClickHouse parameter checks passed.
+Deletion journal missing/reset/truncation/older-than-snapshot checks passed.
+
+> baize-analytics@0.1.0 build
+> npm run build:tracker && vite build && tsc -p tsconfig.server.json
+
+
+> baize-analytics@0.1.0 build:tracker
+> tsx scripts/build-tracker.ts
+
+tracker: Zopfli gzip 5087; default zlib gzip 5282
+tracker-min: Zopfli gzip 4506; default zlib gzip 4690
+tracker-vitals: Zopfli gzip 5316; default zlib gzip 5503
+tracker-replay: Zopfli gzip 57320; default zlib gzip 59511
+tracker-heatmap: Zopfli gzip 1173; default zlib gzip 1197
+tracker-consent: Zopfli gzip 1327; default zlib gzip 1395
+{
+  tracker: 5087,
+  'tracker-min': 4506,
+  'tracker-vitals': 5316,
+  'tracker-replay': 57320,
+  'tracker-heatmap': 1173,
+  'tracker-consent': 1327
+}
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 773 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/web/index.html                          0.41 kB │ gzip:   0.31 kB
+dist/web/assets/index-Cn-vGY4_.css           6.21 kB │ gzip:   2.00 kB
+dist/web/assets/aomen-DXLsqBrz.js            1.78 kB │ gzip:   0.72 kB
+dist/web/assets/xianggang-B-GwqNoD.js       11.67 kB │ gzip:   4.78 kB
+dist/web/assets/shanghai-D5fADUyQ.js        11.94 kB │ gzip:   5.88 kB
+dist/web/assets/ningxia-Bpe_w3T9.js         12.15 kB │ gzip:   7.40 kB
+dist/web/assets/tianjin-BIND3J0Y.js         12.34 kB │ gzip:   6.51 kB
+dist/web/assets/beijing-6J6D0v26.js         21.11 kB │ gzip:  10.70 kB
+dist/web/assets/shanxi-sF6r9BMA.js          22.38 kB │ gzip:  13.82 kB
+dist/web/assets/jiangsu-CfAV2ncg.js         22.88 kB │ gzip:  13.91 kB
+dist/web/assets/hainan-ByIDMKTK.js          28.66 kB │ gzip:  16.29 kB
+dist/web/assets/taiwan-DuhSbPaK.js          29.36 kB │ gzip:   8.04 kB
+dist/web/assets/anhui-BSaniTrc.js           30.61 kB │ gzip:  18.31 kB
+dist/web/assets/shanxi1-B0i8biAP.js         30.90 kB │ gzip:  18.59 kB
+dist/web/assets/jiangxi-CMNmFB4L.js         31.85 kB │ gzip:  18.52 kB
+dist/web/assets/guizhou-BUdXZdgN.js         31.94 kB │ gzip:  19.18 kB
+dist/web/assets/henan-ByBj5SKi.js           35.56 kB │ gzip:  21.02 kB
+dist/web/assets/hubei-CbKDql3J.js           38.20 kB │ gzip:  22.44 kB
+dist/web/assets/hebei-T7l9OzzS.js           39.20 kB │ gzip:  22.67 kB
+dist/web/assets/jilin-i0ZAtsll.js           41.10 kB │ gzip:  23.34 kB
+dist/web/assets/fujian-CnXpqkhe.js          42.82 kB │ gzip:  22.41 kB
+dist/web/assets/qinghai-Bql4kmYY.js         43.59 kB │ gzip:  26.52 kB
+dist/web/assets/hunan-CWxspgVh.js           45.15 kB │ gzip:  26.21 kB
+dist/web/assets/guangxi-B63_XU_1.js         46.52 kB │ gzip:  26.82 kB
+dist/web/assets/gansu-Bi_VQQwS.js           46.94 kB │ gzip:  28.39 kB
+dist/web/assets/chongqing-Cl1EA9FX.js       47.72 kB │ gzip:  25.78 kB
+dist/web/assets/liaoning-CQP2PqVX.js        49.47 kB │ gzip:  27.61 kB
+dist/web/assets/shandong-G1nzS6sL.js        49.98 kB │ gzip:  28.33 kB
+dist/web/assets/zhejiang-DSbk7J7A.js        50.65 kB │ gzip:  25.95 kB
+dist/web/assets/neimenggu-CwzZW05h.js       57.11 kB │ gzip:  35.95 kB
+dist/web/assets/yunnan-z_D5KTxc.js          62.07 kB │ gzip:  35.74 kB
+dist/web/assets/guangdong-CX_QD5Pr.js       71.46 kB │ gzip:  38.25 kB
+dist/web/assets/heilongjiang-BpPsHrM9.js    78.21 kB │ gzip:  44.62 kB
+dist/web/assets/sichuan-BiKg7TEf.js         83.55 kB │ gzip:  47.33 kB
+dist/web/assets/xinjiang-CVqQoyx6.js        87.53 kB │ gzip:  54.44 kB
+dist/web/assets/Charts-BCulo4V8.js         121.09 kB │ gzip:  41.69 kB
+dist/web/assets/GeographicMap-DLqNtban.js  127.03 kB │ gzip:  67.34 kB
+dist/web/assets/ReplayViewer-VLLROBg-.js   262.04 kB │ gzip:  80.99 kB
+dist/web/assets/install-Bt9jRaXf.js        436.12 kB │ gzip: 147.88 kB
+dist/web/assets/index-DBRhw8Ph.js          526.24 kB │ gzip: 167.42 kB
+dist/web/assets/xizang-C9xTaVmy.js         686.05 kB │ gzip: 127.65 kB
+
+✓ built in 407ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 test:integration
+> vitest run tests/integration --reporter=default --reporter=json --outputFile.json=/tmp/baize-final-local.mD9Ra2/reports/integration.json
+
+
+ RUN  v4.1.11 /tmp/baize-main-restore-order.yoemc5m1
+
+ ✓ tests/integration/remaining-fact-partial-deletion.test.ts (4 tests) 20046ms
+     ✓ rebuilds shared-cookie carry {"deletedAnchor":false,"emptyPrefix":false,"archivedB":false} and survives physical ACK rollback and replay  5923ms
+     ✓ rebuilds shared-cookie carry {"deletedAnchor":true,"emptyPrefix":false,"archivedB":false} and survives physical ACK rollback and replay  4432ms
+     ✓ rebuilds shared-cookie carry {"deletedAnchor":true,"emptyPrefix":true,"archivedB":false} and survives physical ACK rollback and replay  3871ms
+     ✓ rebuilds shared-cookie carry {"deletedAnchor":true,"emptyPrefix":false,"archivedB":true} and survives physical ACK rollback and replay  5817ms
+ ✓ tests/integration/strict-identity-restore.test.ts (1 test) 13607ms
+   ✓ actual signed child backup and independent strict restore preserves B identity after A deletion  13606ms
+ ✓ tests/integration/canonical-daily-authority-flow.test.ts (3 tests) 11815ms
+     ✓ actual controlled daily cutover, CH-only collection, precise day deletion and unavailable-source rollback  3755ms
+     ✓ same actual flow including production startup body replacement and exact replacement proof lineage  3719ms
+     ✓ startup body replacement recovers durable CH ACK after actual PG proof rollback  4339ms
+ ✓ tests/integration/history-strict-fact-backup.test.ts (1 test) 8800ms
+   ✓ outer managed signed history restores strict 047/048 backing without mutation and denies a newer real deletion journal  8799ms
+ ✓ tests/integration/seo-local-runtime.test.ts (1 test) 8664ms
+     ✓ crawls actual robots/HTML at production cadence, stores issues, then fresh rechecks a repaired local site with immutable evidence  8149ms
+ ✓ tests/integration/realtime-stream.test.ts (1 test) 7659ms
+   ✓ real HTTP SSE drains over 200 ingestion cursors, resumes Last-Event-ID, admits late event time and suppresses deleted data  7657ms
+ ✓ tests/integration/analytics.test.ts (15 tests) 7134ms
+     ✓ persists and merges unequal-count t-digest summaries through PostgreSQL  310ms
+     ✓ advances snapshot watermarks under sustained actual collection and never completes later outbox rows early  538ms
+     ✓ streams late event-time arrivals through real HTTP ingestion cursors and closes after viewer membership revocation  4055ms
+ ✓ tests/integration/remaining-historical-identity.test.ts (1 test) 6019ms
+   ✓ 47 historical B checkpoint and exact archive remain available after later identity A deletion  6017ms
+ ✓ tests/integration/strict-fact-worker.test.ts (1 test) 5231ms
+   ✓ real sealed backup activates strict facts and subsequent workers retain no persistent PG body  5229ms
+ ✓ tests/integration/session-facts.test.ts (10 tests) 5479ms
+     ✓ spills a long multitab heartbeat component to actual PG disk and keeps exact visible time with one session summary  2244ms
+     ✓ renews a one-second lease throughout real longer RR capture on max1 without blocking concurrent generation writes  2262ms
+ ✓ tests/integration/funnel-analysis.test.ts (4 tests) 5202ms
+     ✓ refuses actual PG oversized detail instead of claiming exact UV from a truncated sample  4247ms
+ ✓ tests/integration/canonical-replay-collect.test.ts (1 test) 4342ms
+   ✓ actual canonical masked replay collector preserves durable receipts, sequence identity and physical retention/deletion  4341ms
+ ✓ tests/integration/strict-identity-api.test.ts (1 test) 4279ms
+   ✓ actual native identity sessions remain sourced from CH after sealed strict activation  4277ms
+ ✓ tests/integration/fact-store-worker.test.ts (1 test) 3591ms
+   ✓ production worker shadows immutable effects/vitals and exact queries survive deliberate PG body removal then partial deletion  3589ms
+ ✓ tests/integration/canonical-authority-flow.test.ts (1 test) 3990ms
+     ✓ uses actual HTTP administrative operations and committed CH bodies without manually assigning authority  3989ms
+ ✓ tests/integration/identity-pressure.test.ts (1 test) 12316ms
+   ✓ 120 reverse/concurrent event-time identity episodes remain precise under late arrival, conflicts, deletion and immutable old retries  12314ms
+ ✓ tests/integration/fact-member-query.test.ts (1 test) 3911ms
+     ✓ unions cross-day visitors and funnel steps in SQL, filters provenance and avoids large compatibility member arrays  3910ms
+ ✓ tests/integration/history-security.test.ts (12 tests) 4003ms
+     ✓ executes the operator CLI against isolated real PG/CH and reconciles signed file restore  1805ms
+ ✓ tests/integration/tracker-browser.test.ts (4 tests) 4539ms
+     ✓ consent gates IDs and events, SPA owns a distinct page and retries identical bodies  1557ms
+   ✓ rrweb records masked browser structure only and heatmap requires opt-in  1116ms
+   ✓ pre-render does not allocate IDs and activation emits exactly one PV  958ms
+   ✓ daily_salt identify consumes no IDs and stable properties cannot escape a cleaning hook  905ms
+ ✓ tests/integration/ai-question-api.test.ts (8 tests) 3419ms
+     ✓ content-only and injected foreign SQL cannot complete or create chart evidence; reserved budget always releases  620ms
+     ✓ erases old question/suggestion/prose and cached exports on actual visitor deletion; journal replay and restore purge cannot revive them while another site and quota remain  653ms
+     ✓ does not return old recheck evidence when actual deletion happens during the authorized crawler transport  430ms
+ ✓ tests/integration/external-alert.test.ts (1 test) 3404ms
+     ✓ binds a real two-hour alert, retries safely and preserves immutable aggregate-only evidence  3403ms
+ ✓ tests/integration/governance.test.ts (21 tests) 3366ms
+     ✓ strict funnel completed-day step collapse queues a real notification  323ms
+     ✓ goal thresholds and offline boundaries queue distinct notifications once  339ms
+     ✓ traffic alert requires two abnormal complete hours and durably queues once  558ms
+     ✓ saved report runs seven real filters, editable DSL and distinct visitor union  596ms
+ ✓ tests/integration/relational-continuous.test.ts (1 test) 3283ms
+     ✓ publishes captured prefixes while later batches stay dirty, reports RSS/lag, and fails closed on missing backing  3281ms
+ ✓ tests/integration/remaining-fact-full-deletion.test.ts (1 test) 3279ms
+     ✓ publishes real five-kind worker state, rolls back PG after CH ACK, retries and preserves the other visitor  3278ms
+ ✓ tests/integration/remaining-fact-unavailable.test.ts (1 test) 3642ms
+   ✓ 47 TCP refusal fails closed before metadata/proof trimming and actual durable journal recovery preserves B  3641ms
+ ✓ tests/integration/tracker-replay-heatmap.test.ts (1 test) 3415ms
+   ✓ real SPA and shared-cookie tabs have independent complete masked replay snapshots; responsive heatmap retry is idempotent and private controls are excluded  3414ms
+ ✓ tests/integration/remaining-fact-worker.test.ts (1 test) 3072ms
+   ✓ production worker publishes five remaining-body kinds from real session reducers without PG pruning  3071ms
+ ✓ tests/integration/tracker-collector.test.ts (1 test) 3143ms
+   ✓ real browser tracker -> Fastify persisted PG -> governance -> session/rollup -> query  3142ms
+ ✓ tests/integration/tracker-hooks.test.ts (1 test) 2972ms
+   ✓ real collector accepts four scroll thresholds, private form metadata and 404 while native links/download/form work after banner consent  2971ms
+ ✓ tests/integration/tracker-outbound-text.test.ts (1 test) 3035ms
+   ✓ actual Chromium outbound labels persist sanitized public text to PG/EAV/stats/JSONCSV but exclude private links and daily labels  3034ms
+ ✓ tests/integration/external.test.ts (9 tests) 2564ms
+     ✓ AI uses validated semantic tool, settles budget atomically and preserves immutable evidence  395ms
+     ✓ background daily generation retries with backoff and periodic GSC reimport is durable  450ms
+     ✓ concurrent AI calls cannot exceed reserved monthly budget  445ms
+     ✓ lowercase real PG lcp creates performance suggestion; local SEO evidence recheck uses newer crawl  597ms
+ ✓ tests/integration/clickhouse-incremental.test.ts (7 tests) 2768ms
+     ✓ streams bootstrap then uploads only deltas and returns exact hybrid results during real continuing collection  536ms
+     ✓ keeps partial physical bootstrap invisible, retries safely and durably cleans failed generations  1106ms
+ ✓ tests/integration/cutover-worker.test.ts (1 test) 2632ms
+   ✓ first rebuilding worker consumes the real processed PG head through a verified cutover receipt  2631ms
+ ✓ tests/integration/remaining-fact-deletion.test.ts (1 test) 2708ms
+     ✓ collects real A→B identities, keeps B after exact interval deletion and retries a post-ACK PG rollback  2706ms
+ ✓ tests/integration/replica-pool-capacity.test.ts (3 tests) 2110ms
+   ✓ default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=false)  949ms
+   ✓ default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=true)  789ms
+   ✓ max1 failed replica cleanup records durable retry using its existing client  371ms
+ ✓ tests/integration/clickhouse.test.ts (16 tests) 3725ms
+     ✓ mirrors the full sanitized collector schema, preserves retry idempotency, and switches actual content/geo/filtered stats reads  348ms
+     ✓ fails safely when the bounded PG snapshot budget is exceeded, without publishing a partial replica  912ms
+ ✓ tests/integration/session-header-canonical-worker.test.ts (1 test) 2197ms
+   ✓ manually selected CH authority publishes bounded sealed headers and repairs partial deletion without persistent PG header bodies  2195ms
+ ✓ tests/integration/governance-full-export.test.ts (4 tests) 2212ms
+     ✓ fails explicitly above the row cap without completing or silently truncating a long-fact table  1061ms
+ ✓ tests/integration/bot-collector.test.ts (2 tests) 1882ms
+   ✓ actual collector (Redis unavailable=false) excludes request bursts and AI crawlers, accepts normal event batches and immutable retries  1042ms
+   ✓ actual collector (Redis unavailable=true) excludes request bursts and AI crawlers, accepts normal event batches and immutable retries  838ms
+ ✓ tests/integration/cache-store.test.ts (3 tests) 2143ms
+     ✓ preserves per-bucket historical values, weighted centroid and typed heatmap without permanent PG bodies, fails closed and physically invalidates  949ms
+     ✓ preserves original producer seals across target epoch/namespace and rejects forged contents before writes  819ms
+     ✓ uses max-one pool, records exponential retry and recovers after actual TCP refusal  373ms
+ ✓ tests/integration/canonical-new-revenue.test.ts (1 test) 2333ms
+     ✓ accepts new CH revenue without PG raw and preserves currency/order receipt conflicts  2332ms
+ ✓ tests/integration/history-store.test.ts (13 tests) 2309ms
+ ✓ tests/integration/tracker-subdomain.test.ts (1 test) 2410ms
+   ✓ actual two-subdomain Chromium tracker uses explicit parent first-party cookie through real collector/PG and revokes that same scope  2409ms
+ ✓ tests/integration/external-sso-keyring.test.ts (3 tests) 2788ms
+ ✓ tests/integration/remaining-body-backup.test.ts (1 test) 2162ms
+     ✓ restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A  2161ms
+ ✓ tests/integration/governance-sharing-facts.test.ts (1 test) 2333ms
+   ✓ real V2 fact publication → native readonly share daily UV; legacy days and salt privacy remain exact with max1  2331ms
+ ✓ tests/integration/clickhouse-app.test.ts (2 tests) 1887ms
+     ✓ wires actual authenticated selection and preserves a standard-mode replica across app restarts  1010ms
+     ✓ fails closed on upgraded privacy replica cleanup errors, then removes expired legacy aliases before queries reopen  875ms
+ ✓ tests/integration/deletion-authorization.test.ts (1 test) 1629ms
+   ✓ 47 recovery authorization binds real fsynced journal scope and refuses invented records or serialized current tokens  1628ms
+ ✓ tests/integration/history-app.test.ts (4 tests) 1859ms
+     ✓ cleans known legacy daily aliases at startup while preserving real collected traffic and safe history aggregates  523ms
+ ✓ tests/integration/identity-experiment-browser.test.ts (1 test) 1763ms
+   ✓ real shared-cookie browser A conversion deletion preserves B contributions and restore cannot revive A  1762ms
+ ✓ tests/integration/cache-body-backup.test.ts (1 test) 1499ms
+     ✓ preserves covered and uncovered strata in independent target with no mixed batch or double count  1498ms
+ ✓ tests/integration/canonical-revenue-receipt.test.ts (1 test) 1347ms
+     ✓ rejects new-event order duplicates when original canonical body is missing or CH unreadable  1346ms
+ ✓ tests/integration/governance-notification-race.test.ts (3 tests) 1696ms
+     ✓ re-reads cached claimed report after real deletion and sends no revoked private body  401ms
+     ✓ holds real shared site gate through bounded local HTTP provider so deletion waits, then no post-ACK stale dispatch  347ms
+ ✓ tests/integration/remaining-body-backup-daily.test.ts (1 test) 1509ms
+     ✓ restores real collector-derived lineage to independent CH target after raw/key pruning and erases only journal A  1508ms
+ ✓ tests/integration/carry-provenance.test.ts (1 test) 1281ms
+     ✓ retains sealed anchor after raw/key TTL, restores original metadata, and rejects missing or forged checkpoint lineage  1280ms
+ ✓ tests/integration/deletion-same-transaction.test.ts (1 test) 1877ms
+   ✓ restore journal replay shares max-one target transaction and rejects invented scopes  1876ms
+ ✓ tests/integration/canonical-daily-backup.test.ts (1 test) 1761ms
+     ✓ verifies source shadow, survives raw pruning, imports seals and sanitizes target before commit without changing source  1760ms
+ ✓ tests/integration/session-header-deletion.test.ts (1 test) 1520ms
+   ✓ native collection and durable identity deletion split an expired session while preserving B, properties and vitals  1519ms
+ ✓ tests/integration/realtime-analysis.test.ts (1 test) 1733ms
+   ✓ real collector/PG realtime Top uses all 30-minute PV beyond the 200 preview and excludes bots, deleted visitors and stale heartbeats  1731ms
+ ✓ tests/integration/governance-pool-race.test.ts (2 tests) 1496ms
+     ✓ completes real filtered report with the same G client, DDL and eight HTTP intakes despite an exhausted pool  454ms
+ ✓ tests/integration/governance-event-store.test.ts (3 tests) 1534ms
+     ✓ keeps actual archived rollups in shares and embed without adding hourly distinct counts  411ms
+ ✓ tests/integration/external-suggestions.test.ts (1 test) 1484ms
+     ✓ captures funnel losses and lowercase vitals, sorts explicitly labeled benefit proxies  1482ms
+ ✓ tests/integration/session-prefix-reducer.test.ts (1 test) 1385ms
+   ✓ 036 real prefix resumes cross-midnight lineage, exact heartbeat/goal/funnel state and timeout isolation with pool max1  1383ms
+ ✓ tests/integration/canonical-privacy-cleanup.test.ts (5 tests) 1300ms
+     ✓ removes forbidden daily identify and replay body content without erasing unrelated safe traffic  344ms
+ ✓ tests/integration/retention-analysis.test.ts (6 tests) 1451ms
+     ✓ reads exact archived cohort return members from real CH after PG effect bodies are removed  344ms
+ ✓ tests/integration/fact-deletion-api.test.ts (1 test) 1737ms
+     ✓ physically erases A effects after failure/recovery and preserves B receipts, body and proof  1736ms
+ ✓ tests/integration/core-api.test.ts (8 tests) 1502ms
+ ✓ tests/integration/partition-replica-race.test.ts (1 test) 764ms
+   ✓ real replica upload, journal-backed deletion and partition DROP finish without a three-way advisory cycle  762ms
+ ✓ tests/integration/ai-fact-source.test.ts (1 test) 1372ms
+   ✓ AI typed tools read real worker facts from CH after PG effect removal, never fake empty coverage  1370ms
+ ✓ tests/integration/privacy-aggregate-migration.test.ts (1 test) 1344ms
+   ✓ upgrade scrubs real worker daily-salt archives after raw expiry, preserves safe counters and excludes aliases from reports/full exports  1342ms
+ ✓ tests/integration/canonical-replay-retention.test.ts (5 tests) 1308ms
+ ✓ tests/integration/bot-minute-failover.test.ts (1 test) 1335ms
+   ✓ real Redis minute limit retains 99-request history after this client disconnects  1333ms
+ ✓ tests/integration/provenance-lifecycle.test.ts (3 tests) 734ms
+ ✓ tests/integration/governance-privacy.test.ts (2 tests) 1506ms
+     ✓ never stores or exports cross-day user/page/client-visitor identifiers  325ms
+ ✓ tests/integration/ai-evidence.test.ts (5 tests) 1357ms
+ ✓ tests/integration/fact-body-backup.test.ts (1 test) 1436ms
+     ✓ restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A  1434ms
+ ✓ tests/integration/canonical-replay-deletion.test.ts (3 tests) 1350ms
+     ✓ recovers verified replacement orphan after physical ACK followed by PG rollback, then journal replay cannot resurrect A  310ms
+ ✓ tests/integration/history-carry-daily-package.test.ts (1 test) 1533ms
+     ✓ packages daily carry after raw/key TTL, imports original anchor before publishing target heads, and preserves privacy refresh  1532ms
+ ✓ tests/integration/remaining-fact-source.test.ts (1 test) 1420ms
+     ✓ reads CH-only bodies including owned carry after PG pruning, merges explicit legacy PG and refuses a missing sealed checkpoint  1419ms
+ ✓ tests/integration/identity-switch.test.ts (1 test) 1093ms
+   ✓ event-time A -> B -> delete A preserves B, old A retries and restored A cannot revive  1092ms
+ ✓ tests/integration/session-header-backup.test.ts (1 test) 1171ms
+     ✓ restores published receipts and bodies to an independent CH database, applies latest A journal, and never modifies source  1170ms
+ ✓ tests/integration/redis-cache.test.ts (1 test) 1267ms
+     ✓ publishes changed generations, deletes site cache and never serves cached deleted events  439ms
+ ✓ tests/integration/history-cache-store-backup.test.ts (1 test) 1079ms
+   ✓ selected history caches preserve producer seals and original owners in an isolated target with exact heatmap mapping  1078ms
+ ✓ tests/integration/experiment-lifecycle.test.ts (2 tests) 1214ms
+   ✓ real collector/worker merges unequal daily vital sample weights rather than averaging daily percentiles  350ms
+ ✓ tests/integration/partition-intake-race.test.ts (4 tests) 1014ms
+ ✓ tests/integration/site-fact-config.test.ts (1 test) 1145ms
+ ✓ tests/integration/canonical-shadow-validation.test.ts (3 tests) 679ms
+ ✓ tests/integration/bot-filter-redis.test.ts (1 test) 1120ms
+   ✓ real Redis shared workers atomically classify the 21st HTTP request without persisting IP  1119ms
+ ✓ tests/integration/canonical-replay-retention-proof.test.ts (3 tests) 1013ms
+ ✓ tests/integration/canonical-backup.test.ts (7 tests) 1007ms
+ ✓ tests/integration/canonical-startup-privacy.test.ts (1 test) 1099ms
+ ✓ tests/integration/worker-fairness.test.ts (1 test) 1194ms
+   ✓ real PG fairly advances every persistently dirty site independent of late event watermarks  1192ms
+ ✓ tests/integration/fact-store.test.ts (9 tests) 1000ms
+ ✓ tests/integration/remaining-fact-store.test.ts (6 tests) 957ms
+ ✓ tests/integration/mcp.test.ts (4 tests) 1028ms
+ ✓ tests/integration/mini-runtime.test.ts (1 test) 827ms
+   ✓ independent SDK runs without DOM/WebCrypto in local wx callback runtime against actual collector/PG with lost response immutable retry and daily privacy  826ms
+ ✓ tests/integration/manual-search-import.test.ts (3 tests) 1002ms
+ ✓ tests/integration/header-deletion-api.test.ts (1 test) 906ms
+     ✓ physically clears deleted A carry and exact keys while keeping B across epoch rotation and restored stale A  904ms
+ ✓ tests/integration/privacy-alias.test.ts (1 test) 817ms
+   ✓ daily direct collector aliases cannot survive raw rows, EAV or real JSON/CSV exports  816ms
+ ✓ tests/integration/history-fact-backup.test.ts (3 tests) 853ms
+     ✓ preserves exact archived A/B membership and unequal vital samples across remapped runs, then precisely removes A  518ms
+     ✓ rejects a malformed referenced carry checksum using an independent real 036 DDL fixture  333ms
+ ✓ tests/integration/fact-store-source.test.ts (1 test) 916ms
+     ✓ unions CH effects and zero-kind receipts with legacy owned PG rows, filters identities and restores nested read context  914ms
+ ✓ tests/integration/canonical-operations-api.test.ts (1 test) 934ms
+ ✓ tests/integration/canonical-ingest.test.ts (4 tests) 808ms
+ ✓ tests/integration/single-client-error-path.test.ts (3 tests) 936ms
+     ✓ actual max1 invite register and accept persist audit with membership, and audit failure rolls all writes back  448ms
+ ✓ tests/integration/session-header-source.test.ts (1 test) 830ms
+     ✓ spills mixed published CH/legacy PG owners, verifies seals, filters tombstones and never borrows the max1 pool  829ms
+ ✓ tests/integration/canonical-clickhouse.test.ts (6 tests) 655ms
+ ✓ tests/integration/fact-deletion-hooks.test.ts (1 test) 885ms
+   ✓ actual deletion and replay retain B exact archive backing after all PG raw has expired  524ms
+ ✓ tests/integration/api-errors.test.ts (3 tests) 795ms
+ ✓ tests/integration/canonical-replay-history-retention.test.ts (3 tests) 884ms
+ ✓ tests/integration/cutover-receipt.test.ts (1 test) 847ms
+     ✓ binds verified CH shadow to old PG head and surviving V1 archive, rejects mutation, stale state and deletion advancement  846ms
+ ✓ tests/integration/governance-file-cleanup.test.ts (2 tests) 803ms
+ ✓ tests/integration/privacy-migration.test.ts (1 test) 692ms
+   ✓ migration repairs retained daily identities/page linkage and startup physically removes revoked owned exports  691ms
+ ✓ tests/integration/restore-replica.test.ts (2 tests) 746ms
+ ✓ tests/integration/external-error-contract.test.ts (1 test) 649ms
+   ✓ actual app returns stable localized connector codes and hides untrusted provider errors  648ms
+ ✓ tests/integration/carry-deletion-api.test.ts (1 test) 719ms
+     ✓ physically clears deleted A carry and exact keys while keeping B across epoch rotation and restored stale A  717ms
+ ✓ tests/integration/governance-canonical.test.ts (7 tests) 686ms
+ ✓ tests/integration/history-replay-retention-restore.test.ts (1 test) 569ms
+     ✓ physically removes expired records from the target mixed chunk while source namespace and later record remain  567ms
+ ✓ tests/integration/canonical-retention.test.ts (2 tests) 663ms
+ ✓ tests/integration/session-carry-worker.test.ts (1 test) 636ms
+   ✓ production carry keeps a cross-retention session and unrelated archived B after raw pruning  635ms
+ ✓ tests/integration/ai-budget.test.ts (3 tests) 628ms
+ ✓ tests/integration/distribution-license.test.ts (1 test) 660ms
+   ✓ actual HTTP serves the referenced full MIT text without exposing other source files  659ms
+ ✓ tests/integration/canonical-heatmap.test.ts (1 test) 663ms
+     ✓ keeps expired legacy counts, adds late/new coordinates once, rejects unavailable evidence and never borrows the locked pool  661ms
+ ✓ tests/integration/canonical-deletion.test.ts (1 test) 564ms
+ ✓ tests/integration/canonical-site-export.test.ts (2 tests) 628ms
+ ✓ tests/integration/canonical-identity.test.ts (3 tests) 588ms
+ ✓ tests/integration/session-header-orphans.test.ts (1 test) 589ms
+     ✓ reclaims an uncommitted attempt in a still-live run, preserves its committed body and records retry failure  588ms
+ ✓ tests/integration/notification-derived-privacy.test.ts (1 test) 570ms
+     ✓ physically erases private snapshots while preserving ordinary jobs and other sites; restored old rows are not exported  569ms
+ ✓ tests/integration/canonical-shadow-provenance.test.ts (5 tests) 601ms
+ ✓ tests/integration/ga4-windows.test.ts (5 tests) 560ms
+ ✓ tests/integration/dirty-session-plan.test.ts (6 tests) 495ms
+ ✓ tests/integration/canonical-raw-backup-readiness.test.ts (1 test) 522ms
+   ✓ raw prune requires actual signed current raw backup and rejects forged, damaged and new-arrival uncovered proof  520ms
+ ✓ tests/integration/restore-rebuild.test.ts (5 tests) 529ms
+ ✓ tests/integration/canonical-provenance-collect.test.ts (2 tests) 443ms
+ ✓ tests/integration/session-carry.test.ts (1 test) 459ms
+     ✓ keeps unpublished state invisible, streams exact keys, and isolates session contribution ownership  458ms
+ ✓ tests/integration/revenue-identity.test.ts (5 tests) 447ms
+ ✓ tests/integration/history-backup-snapshot.test.ts (1 test) 493ms
+     ✓ waits for an actual deletion gate before RR and refuses to mint stale archived identity  492ms
+ ✓ tests/integration/history-carry-backup.test.ts (1 test) 489ms
+     ✓ preserves V1 prefix owners and all keys, maps the latest V2 head to zero, then erases A while preserving B  487ms
+ ✓ tests/integration/partitions.test.ts (2 tests) 451ms
+ ✓ tests/integration/canonical-read-snapshot.test.ts (1 test) 538ms
+   ✓ waits for committed deletion before RR and preserves empty authoritative read/export metadata with max-one pool  537ms
+ ✓ tests/integration/content-analytics.test.ts (3 tests) 510ms
+ ✓ tests/integration/privacy-derived-hooks.test.ts (1 test) 479ms
+ ✓ tests/integration/site-export-notification-epoch.test.ts (1 test) 430ms
+ ✓ tests/integration/replay-key-cleanup.test.ts (2 tests) 381ms
+ ✓ tests/integration/session-contribution-selection.test.ts (1 test) 387ms
+   ✓ selects one complete A owner and keeps archived B including weighted vital samples  386ms
+ ✓ tests/integration/remaining-owner-batch.test.ts (1 test) 67ms
+ ✓ tests/integration/governance-experiment-migration.test.ts (1 test) 169ms
+
+ Test Files  146 passed (146)
+      Tests  395 passed (395)
+   Start at  18:30:41
+   Duration  379.45s (transform 2.58s, setup 0ms, import 48.92s, tests 314.12s, environment 12ms)
+
+JSON report written to /tmp/baize-final-local.mD9Ra2/reports/integration.json
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 db:migrate
+> tsx scripts/migrate.ts
+
+Database migrations applied
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 test:e2e
+> playwright test
+
+
+Running 27 tests using 1 worker
+
+(node:628342) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/ai-evidence-language.spec.ts:9:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (6.5s)
+  ✓   2 tests/e2e/connector-settings.spec.ts:9:1 › real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider (2.0s)
+  ✓   3 tests/e2e/extended-analysis.spec.ts:3:1 › real retained content, global campaign filter, repair CSV and advanced English controls (3.9s)
+  ✓   4 tests/e2e/funnel-dropoff.spec.ts:5:1 › actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries (3.7s)
+  ✓   5 tests/e2e/ga4-history.spec.ts:8:1 › real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors (3.7s)
+  ✓   6 tests/e2e/manual-search-import.spec.ts:6:1 › actual custom CSV upload, column mapping, preview and idempotent independent import (1.6s)
+  ✓   7 tests/e2e/multilingual-errors.spec.ts:3:1 › real English login, revoked permission, share and unconfigured connector errors use stable safe messages (2.3s)
+  ✓   8 tests/e2e/realtime-retention.spec.ts:3:1 › complete realtime Top exceeds 200-row preview and retention never renders immature days as zero (4.7s)
+  ✘   9 tests/e2e/report-members.spec.ts:3:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls (9.7s)
+(node:630500) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 tests/e2e/responsive-replay.spec.ts:3:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status (7.8s)
+(node:631024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 tests/e2e/revenue-identity.spec.ts:17:1 › actual tracker revenue keeps currencies separate and event-time account switches isolated (3.6s)
+  ✓  12 tests/e2e/revenue-identity.spec.ts:45:1 › actual consented experiment assignment and tracker conversion survive stop and resume (1.7s)
+  ✓  13 tests/e2e/strict-storage.spec.ts:17:1 › strict real CH facts show verified source and clear stale values after authoritative body loss (5.0s)
+  ✓  14 tests/e2e/time.spec.ts:3:1 › Chinese date picker uses the selected site timezone rather than browser UTC (1ms)
+  ✓  15 tests/e2e/time.spec.ts:4:1 › date range includes the whole civil day across US daylight saving transition (1ms)
+  ✓  16 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Decline and private heatmap exclusions (815ms)
+  ✓  17 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Accept and private heatmap exclusions (919ms)
+  ✓  18 tests/e2e/workflow.spec.ts:3:1 › product landing is the default, login is an explicit action (399ms)
+  ✓  19 tests/e2e/workflow.spec.ts:4:1 › real administrator → site → durable collection → aggregate → Chinese dashboard (2.4s)
+  ✓  20 tests/e2e/workflow.spec.ts:56:1 › tracker consent does not identify or transmit before grant and stops after revoke (7.0s)
+  ✓  21 tests/e2e/workflow.spec.ts:100:1 › real goal, funnel, saved report, protected share and revocation workflows (3.3s)
+  ✓  22 tests/e2e/workflow.spec.ts:141:1 › core English interface preference and Chinese reset (562ms)
+  ✓  23 tests/e2e/workflow.spec.ts:142:1 › invited viewer registration is scoped and cannot administer other sites (919ms)
+  ✓  24 tests/e2e/workflow.spec.ts:147:1 › opened realtime view receives a newly persisted event and heartbeat online count without refresh (3.4s)
+  ✓  25 tests/e2e/workflow.spec.ts:149:1 › local immutable evidence → suggestion states → actual recheck → verified without a paid model (1.9s)
+  ✓  26 tests/e2e/workflow.spec.ts:152:1 › Chinese dashboard remains usable at mobile width without page overflow (596ms)
+  ✓  27 tests/e2e/workflow.spec.ts:154:1 › actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap (3.6s)
+
+
+  1) tests/e2e/report-members.spec.ts:3:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Change member permissions', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Change member permissions', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Change member permissions', exact: true })
+        - waiting for navigation to finish...
+        - navigated to "http://127.0.0.1:3391/app"
+
+
+      14 |  const viewer=await browser.newContext({baseURL,storageState:{cookies:[],origins:[]}});try{const viewerPage=await viewer.newPage();await viewerPage.goto('/login');await viewerPage.getByLabel('邮箱',{exact:true}).fill(email);await viewerPage.getByLabel('密码',{exact:true}).fill(password);await viewerPage.getByRole('button',{name:'登录',exact:true}).click();await expect(viewerPage.getByRole('heading',{name:'总览',exact:true})).toBeVisible();const goalData={name:'Role permission proof',type:'event',config:{event_name:'member-event'}};expect((await viewer.request.post(`/api/v1/sites/${site.id}/goals`,{data:goalData})).status()).toBe(403);
+      15 |  await page.getByRole('button',{name:'成员',exact:true}).click();const roles=page.getByRole('heading',{name:'修改成员权限',exact:true}).locator('..');await expect(roles.locator('select').filter({has:page.locator('option[value="owner"]')})).toBeDisabled();const memberForm=roles.locator('form').filter({hasText:email});await memberForm.locator('select').selectOption('analyst');const rolePatch=page.waitForResponse(r=>r.request().method()==='PATCH'&&r.url().includes(`/sites/${site.id}/members/`));await memberForm.getByRole('button',{name:'更新权限',exact:true}).click();expect((await rolePatch).ok()).toBe(true);await expect.poll(async()=>(await viewer.request.post(`/api/v1/sites/${site.id}/goals`,{data:goalData})).status()).toBe(200);
+    > 16 |  await page.getByLabel('界面语言 / Interface language').selectOption('en');await expect(page.getByRole('heading',{name:'Change member permissions',exact:true})).toBeVisible();await page.getByRole('button',{name:'Reports',exact:true}).click();await expect(page.getByRole('heading',{name:'Save and edit filtered reports',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Save filtered report',exact:true})).toBeVisible();await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
+         |                                                                                                                                                              ^
+      17 |  }finally{await viewer.close();}
+      18 | });
+      19 |
+        at /tmp/baize-main-restore-order.yoemc5m1/tests/e2e/report-members.spec.ts:16:158
+
+    Error Context: test-results/report-members-actual-seve-3d3cf-ions-and-bilingual-controls/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/report-members-actual-seve-3d3cf-ions-and-bilingual-controls/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/report-members-actual-seve-3d3cf-ions-and-bilingual-controls/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/responsive-replay.spec.ts:3:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Play', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Play', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Play', exact: true })
+
+
+       9 |  // Element-only resizing proves ResizeObserver, rather than window.resize, updates the canvas.
+      10 |  const chart=page.locator('.chart').first();await chart.evaluate(element=>(element as HTMLElement).style.width='300px');await expect.poll(()=>chart.evaluate(element=>Math.round(element.querySelector('canvas')!.getBoundingClientRect().width))).toBe(300);await chart.evaluate(element=>(element as HTMLElement).style.removeProperty('width'));
+    > 11 |  await page.getByRole('button',{name:'Replay',exact:true}).click();for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});const play=page.getByRole('button',{name:'Play',exact:true}),pause=page.getByRole('button',{name:'Pause',exact:true});await expect(play).toBeVisible();await play.focus();await page.keyboard.press('Enter');await pause.focus();await page.keyboard.press('Enter');await page.getByLabel('Playback speed').selectOption('2');const range=page.getByLabel('Playback position');await range.focus();await page.keyboard.press('ArrowRight');await expect(range).toHaveAttribute('aria-valuetext',/seconds/);const frame=page.locator('.baize-replay-viewport iframe');await expect(frame).toHaveCount(1);expect(await frame.getAttribute('sandbox')).toBe('allow-same-origin');await expect.poll(()=>frame.evaluate(element=>{const frameBounds=element.getBoundingClientRect(),viewportBounds=element.closest('.baize-replay-viewport')!.getBoundingClientRect();return frameBounds.width>0&&frameBounds.width<=viewportBounds.width+1;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator('.baize-replay-player').innerText()).not.toContain(secret);await expect(range).toBeFocused();await page.screenshot({path:testInfo.outputPath(`replay-${width}.png`)});}
+         |                                                                                                                                                                                                                                                                                               ^
+      12 |  await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
+      13 |  }finally{await hostContext.close();}
+      14 | });
+        at /tmp/baize-main-restore-order.yoemc5m1/tests/e2e/responsive-replay.spec.ts:11:287
+
+    Error Context: test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/report-members.spec.ts:3:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls 
+    tests/e2e/responsive-replay.spec.ts:3:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+  25 passed (1.5m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Local final acceptance exit=1; evidence=/tmp/baize-final-local.mD9Ra2

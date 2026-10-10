@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "b7a0a5f68e6b45a9522add37ca6c58b7747b055e",
+  "exit": 1,
+  "unit": {
+    "passed": 114,
+    "failed": 0,
+    "skipped": 0,
+    "files": 33
+  },
+  "integration": {
+    "passed": 395,
+    "failed": 0,
+    "skipped": 0,
+    "files": 146
+  },
+  "e2e": {
+    "total": 27,
+    "passed": 25,
+    "failed": 2,
+    "skipped": 0,
+    "realBrowserPassed": 23,
+    "dateFunctionPassed": 2,
+    "failedFiles": [
+      "report-members.spec.ts",
+      "responsive-replay.spec.ts"
+    ]
+  },
+  "servicesCleaned": true,
+  "hostedCITriggered": false,
+  "artifactRoot": "/tmp/baize-main-restore-order.yoemc5m1",
+  "evidenceRoot": "/tmp/baize-final-local.mD9Ra2",
+  "traceRoot": "/tmp/baize-main-restore-order.yoemc5m1/test-results"
+}
