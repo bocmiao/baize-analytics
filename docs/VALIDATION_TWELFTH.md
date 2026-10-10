@@ -79,3 +79,9 @@ bd3f51fc1f7dba84a1fdbde75edfcdbecfcf24e8完整本地runner实际EXIT1/cleanup。
 0a0c171fc17e647fecf38dd55d4bc8e0f0144fbb正式全轮实际EXIT2/owned cleanup。lint通过，typecheck在stats-read-budget.test.ts13/14因EventEmitter value/type TS2749失败；unit/integration/browser/image均未运行，不把此前19定向或10单元计作本全轮。1191blob归属、实际命令/失败日志/原hash见 `test-evidence/main-0a0c171-*`。root下一test-only InstanceType修复尚需新冻结验证，原源码失败不改写；服务原始日志/秘密未复制。
 
 0a之后test-type修复WIP首轮完整单元实际EXIT1：215中213PASS/2FAIL，snapshot fake PGclient缺.on事件接口；type/lint通过。sourceCommit=null，基于0a并有未提交测试修复，不能冒某提交完整验收。reporter与summary `test-evidence/idle-testtype-unit-first-failed*` 保存，后续test-only EventEmitter mock修复第二轮尚在跑，不预称通过。
+
+## 66150be 完整空库本地全轮
+
+完整不可变 `66150be474e9988d0410256cde005d153e021680` 实际EXIT0/owned cleanup。55文件215单元、156文件426真实集成，共641应用检查PASS/0FAIL/0skip/0unhandled；30E2E=28真实Chromium+2日期全PASS/0skip。lint/types/SDK/build、55迁移、compiled入口、真实native operational恢复及fresh PG/CH/Redis通过。报告经敏感字段检查/脱敏，原loghash/source1198blob归属与summary见 `test-evidence/main-66150be-*`。浏览器本轮list-only日志，无reporterJSON则不伪造。
+
+最终中文workspace/SEO/AI1440/390、overview1440/375和annotation实图立即存 `screenshots/66150be/`，实际PNG像素、语言及hash入summary；annotation原case英文1280视口，不标中文390，metadata仅保存实际输出，不伪造附件。Google/模型运输模拟；所有旧FAIL不改写。661新image和当前fixedload完成尚未记录，托管/跨宿主DR未执行，不把完整性通过冒称性能达标。

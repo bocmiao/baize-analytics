@@ -4,7 +4,8 @@
 
 | Source/stage | Actual evidence and boundary |
 |---|---|
-| 66150be formal full run | Running; result pending. New image/load not run |
+| 66150be formal full run | Actual EXIT0/cleanup:215 unit/55 files+426 real integration/156 files=641 PASS,0 skips/unhandled;30 E2E(28 real Chromium+2 date)PASS,about1.5min;lint/type/SDK/journal/build/migrate/compiled entry PASS |
+| 66150be image/fixed load |1000/5000 running(root27546),pending;new661 image not run |
 | 66150be independent checks | Type/lint/215 unit tests PASS; not the full-run result |
 | 0a precommit targeted source digest | 19 real tests PASS; targeted digest-bound evidence, not a full count |
 | c890 backend | 211 unit+421 integration=632 PASS; historical source |

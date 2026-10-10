@@ -1,0 +1,143 @@
+{
+  "sourceCommit": "66150be474e9988d0410256cde005d153e021680",
+  "trackedBlobs": 1198,
+  "exit": 0,
+  "unit": {
+    "files": 55,
+    "passed": 215,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "files": 156,
+    "passed": 426,
+    "failed": 0,
+    "skipped": 0,
+    "unhandledErrors": 0
+  },
+  "applicationTotal": 641,
+  "browser": {
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "realChromium": 28,
+    "dateFunctions": 2,
+    "reporter": "list-only actual log; no fabricated browser reporter JSON"
+  },
+  "checks": [
+    "lint",
+    "types",
+    "SDK",
+    "build",
+    "migrations",
+    "compiled entry",
+    "real native operational restore",
+    "newPGCHRedis volumes",
+    "owned cleanup"
+  ],
+  "rawLogSha256": "ee957d10386da91a52b39eaa46a6c7735520b3967a7eda55ad9fa9f77684c743",
+  "screenshots": [
+    {
+      "file": "docs/screenshots/66150be/workspace-final-zh-1440.png",
+      "sha256": "9e38f2cb3d6e9fbbe627d16faa65136aff132f8e9f5118233b7117a38ed3101b",
+      "actualImagePixels": {
+        "width": 1440,
+        "height": 900
+      },
+      "viewportWidth": 1440,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/workspace-final-zh-390.png",
+      "sha256": "54b2fdbbc547f26caad0c12849c5ebe906716f1f6d0a8ad406802b4ad3cf8e7e",
+      "actualImagePixels": {
+        "width": 390,
+        "height": 900
+      },
+      "viewportWidth": 390,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/seo-zh-1440.png",
+      "sha256": "a57e57d62096c4f0291baba4c27ac6f6595a604fa5eedafeaf242ffb7e391462",
+      "actualImagePixels": {
+        "width": 1440,
+        "height": 4389
+      },
+      "viewportWidth": 1440,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/seo-zh-390.png",
+      "sha256": "833a03ff5c65ddc9bd70f40c781309323e5bc79a4084f8306b6166e58fb0f1cb",
+      "actualImagePixels": {
+        "width": 390,
+        "height": 5181
+      },
+      "viewportWidth": 390,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/ai-zh-1440.png",
+      "sha256": "55ecc8fedcf047cff1eb4ede2d175399992224258641201bba33ce5637b2d8f1",
+      "actualImagePixels": {
+        "width": 1440,
+        "height": 3104
+      },
+      "viewportWidth": 1440,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/ai-zh-390.png",
+      "sha256": "dd8cb5f91ed636b4d2fc55bc375dbe516a5434383136287a00104096a78c16e7",
+      "actualImagePixels": {
+        "width": 390,
+        "height": 3932
+      },
+      "viewportWidth": 390,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/overview-1440.png",
+      "sha256": "6b5004d9afbf553d53ca08ec9ffe0eeb11c476e04bad2ec1bb8271aa8c23975c",
+      "actualImagePixels": {
+        "width": 1440,
+        "height": 900
+      },
+      "viewportWidth": 1440,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/overview-375.png",
+      "sha256": "499efaf6499f07c6a4a69c3241a4d5a6196dee0a94d696c20236f92000d80c6b",
+      "actualImagePixels": {
+        "width": 375,
+        "height": 900
+      },
+      "viewportWidth": 375,
+      "language": "zh"
+    },
+    {
+      "file": "docs/screenshots/66150be/annotation-trend-keyboard.png",
+      "sha256": "fdc49199762a20586731b9d81ccc8f47e097c6dace0e24b9471c12f0d2766a1a",
+      "actualImagePixels": {
+        "width": 1280,
+        "height": 3518
+      },
+      "viewportWidth": 1280,
+      "language": "en"
+    }
+  ],
+  "annotationMetadata": [],
+  "annotationMetadataBoundary": "only actual emitted files; no fabricated attachmentbody",
+  "simulated": [
+    "Google/model transport"
+  ],
+  "notRun": [
+    "661productionimage",
+    "currentfixedload completion",
+    "hostedCI/sync",
+    "cross-hostDR"
+  ],
+  "priorFailuresPreserved": true
+}
