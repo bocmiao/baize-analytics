@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {writeFile} from 'node:fs/promises';
 import {Pool} from 'pg';
 import {describe,it,expect,vi} from 'vitest';
 import {migrate} from '../../src/server/db.js';
@@ -26,13 +27,14 @@ describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL
     await c.query("INSERT INTO analytics_vital_samples VALUES($1,$2,'2026-01-02','/ch','{}','lcp',999)",[run,randomUUID()]);
     await c.query("UPDATE analytics_fact_runs SET status='published' WHERE site_id=$1",[site]);await c.query('INSERT INTO analytics_session_contribution_heads VALUES($1,$2,$3,$4,$5,3)',[site,oldSession,'PG-visitor',legacy,epoch]);
     expect((await c.query('SELECT count(*)::int n FROM analytics_effect_facts WHERE run_id=$1',[run])).rows[0].n).toBe(0);
+    let originalParameterBytes=0;for await(const records of store.streamRunRows(c,site,run,'effects'))originalParameterBytes+=Buffer.byteLength(JSON.stringify(records));
     const writes=vi.spyOn(c,'query');
     await withFactReadSource(c,pool,site,async source=>{
      expect(source.source).toBe('hybrid');expect(hasFactReadSource(c)).toBe(true);expect((await c.query(`SELECT count(*)::int n FROM ${source.effectsRelation}`)).rows[0].n).toBe(206);
      expect((await c.query(factReadSql(c,'SELECT count(DISTINCT visitor_id)::int n FROM analytics_effect_facts'))).rows[0].n).toBe(2);
      expect((await c.query(`SELECT value FROM ${source.vitalsRelation}`)).rows.map(r=>r.value)).toEqual([123]);
      await withFactReadSource(c,pool,site,async nested=>expect(nested.effectsRelation).toBe(source.effectsRelation));expect(hasFactReadSource(c)).toBe(true);
-    });expect(writes.mock.calls.filter(call=>typeof call[0]==='string'&&call[0].startsWith('WITH envelopes AS MATERIALIZED')).length).toBe(3);writes.mockRestore();expect(hasFactReadSource(c)).toBe(false);expect(pool.waitingCount).toBe(0);
+    });const inserts=writes.mock.calls.filter(call=>typeof call[0]==='string'&&call[0].startsWith('WITH envelopes AS MATERIALIZED'));expect(inserts).toHaveLength(3);let projectedParameterBytes=0;for(const insert of inserts){const parameters=insert[1] as unknown as [string,string];projectedParameterBytes+=Buffer.byteLength(parameters[1]);for(const r of JSON.parse(parameters[1]))expect(Object.keys(r).sort()).toEqual(['row','visitorId']);}expect(projectedParameterBytes).toBeLessThan(originalParameterBytes);await writeFile('/tmp/baize-fact-source-projection-bytes.json',JSON.stringify({rows:205,batches:3,originalParameterBytes,projectedParameterBytes,reducedBytes:originalParameterBytes-projectedParameterBytes})+'\n');writes.mockRestore();expect(hasFactReadSource(c)).toBe(false);expect(pool.waitingCount).toBe(0);
     await c.query("INSERT INTO identity_tombstones(site_id,visitor_id,user_id,started_at,ended_at)VALUES($1,'CH-visitor','A','2026-01-01','2026-01-03')",[site]);
     const filtered=await prepareFactReadSource(c,pool,site);expect((await c.query(`SELECT count(*)::int n FROM ${filtered.effectsRelation}`)).rows[0].n).toBe(1);await filtered.cleanup();
     const canonicalEpoch=randomUUID();await c.query("INSERT INTO canonical_event_authority(site_id,epoch,authority,deletion_epoch)VALUES($1,$2,'clickhouse',1)",[site,canonicalEpoch]);
