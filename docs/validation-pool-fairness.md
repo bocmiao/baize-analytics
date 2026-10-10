@@ -1,0 +1,15 @@
+# 持锁连接池复用与任务公平性
+
+源码审计发现两类PG无法独自解开的应用层等待风险：镜像持session replica锁R再pool.query写upload/检查lease；日报持partition共享P再queryStats从同pool借连接。未实际把旧代码跑成僵局，不宣称这些风险已实测触发40P01，也不把三方软等待图当必然PG死锁。
+
+镜像持有连接期间upload/lease/发布都复用同connection；发布前仍先释放R再取site锁。心跳同connection且最多一个pending，finally等待心跳结束后释放R/连接。失败状态同connection记录，不再占锁借新连接。清理catch回滚后也复用client，避免max1自耗池。日报queryStats第6参数传事务client，所有PG和readSiteEvents同client读取。
+
+干净索引快照（HEAD加本批核心修复，不含在制025/026/SDK/新UI）：全lint/typecheck/build EXIT0。真实PG/CH/Redis10文件67项回归PASS；另新镜像池容量文件3项PASS，总计11文件70个不同测试、0失败0跳过，不代替全应用/浏览器最终全集。
+
+报表max10屏障实际排列G占1持P、DDL占1排他等P、8原生HTTP采集占8共享等P；第11条SELECT进入poolwaitingCount1，正式查询复用c后报告真实PV/UV/session=1，DDL/8采集202/sentinel完成且无锁/队列残留。错误hook抛错验证真实回滚无新增job/next_at不变。镜像max10屏障实际1镜像+9独立journal-backed删除耗满pool，正常真实CH与上传前503模拟传输故障两项均完成、waitingCount0、PG保B/删A、旧CH快照0；max1清理503模拟故障持久化重试成功。PG、连接池和删除流程未mock，HTTP503是明确故障注入，不能称该失败来自真实外部服务。
+
+另有真实持续四站调度不公平：912在持续采集时最小ID反复dirty被领取，其余站点迟迟没有watermark，最后20k全部接受且PG/outbox对账通过，但最终HTTP确认使用旧样本而CLI1。原失败仍保留，runner已纠正drain后再次查询并分别报告未发布等待下界（原四站max至少132.109秒）和published-only lag，不用后者代替全站滞后。
+
+新增前向027记录last_claimed_at，以最久未领取站点优先；不使用事件时间watermark或generation大小排序。真实PG持续afterSnapshot写入四站8轮，每4轮所有站点processed前进，老事件时间站点不饿死其他站点；4并发领取分别获得不同站点。新不可变提交需重跑集中四站后台负载，当前没有预先标通过或承诺SLO/1C2G。现有单站912成功仍只证明该明确单站负载。新镜像、F29/F30/F22/全量导出/025及多语言最终浏览器和Docker在制，远端托管CI仍未运行。
+
+证据：pool-core-regressions.json、replica-pool-capacity.json、ACCEPTANCE_PARTITION_CONCURRENCY.md、validation-continuous-scale.md。本批实际snapshot包含26个迁移（旧25+027），不含未冻结025/026。

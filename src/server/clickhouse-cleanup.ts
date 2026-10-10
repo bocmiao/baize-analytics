@@ -15,7 +15,7 @@ export async function runReplicaCleanup(pool: Pool, store: ClickHouseStore): Pro
    await client.query('DELETE FROM event_store_uploads WHERE snapshot_id=$1 AND cleanup_owner=$2', [candidate.snapshot_id, owner]); await client.query('COMMIT'); return true;
   } catch {
    await client.query('ROLLBACK').catch(() => {});
-   await pool.query("UPDATE event_store_uploads SET cleanup_attempts=cleanup_attempts+1,cleanup_error='CLICKHOUSE_CLEANUP_FAILURE',cleanup_next_at=now()+least(3600,power(2,least(cleanup_attempts,10))*5)*interval '1 second',cleanup_owner=NULL,cleanup_until=NULL WHERE snapshot_id=$1 AND cleanup_owner=$2", [candidate.snapshot_id, owner]); return false;
+   await client.query("UPDATE event_store_uploads SET cleanup_attempts=cleanup_attempts+1,cleanup_error='CLICKHOUSE_CLEANUP_FAILURE',cleanup_next_at=now()+least(3600,power(2,least(cleanup_attempts,10))*5)*interval '1 second',cleanup_owner=NULL,cleanup_until=NULL WHERE snapshot_id=$1 AND cleanup_owner=$2", [candidate.snapshot_id, owner]); return false;
   } finally {client.release();}
  }
  await pool.query('INSERT INTO event_store_maintenance(site_id) SELECT site_id FROM event_store_state ON CONFLICT DO NOTHING');
@@ -32,6 +32,6 @@ export async function runReplicaCleanup(pool: Pool, store: ClickHouseStore): Pro
   if (deleted) {await store.deleteScope(maintenance.site_id, {all: true, to: cutoff}); await client.query('UPDATE event_store_state SET snapshot_id=NULL,snapshot_epoch=NULL,snapshot_generation=-1,snapshot_count=0,attempts=0,last_error=NULL,dead_letter_at=NULL,next_attempt_at=now(),updated_at=now() WHERE site_id=$1', [maintenance.site_id]);}
   await client.query('UPDATE event_store_maintenance SET last_retention_at=now(),lease_owner=NULL,lease_until=NULL,attempts=0,last_error=NULL,next_attempt_at=now() WHERE site_id=$1 AND lease_owner=$2', [maintenance.site_id, owner]); await client.query('COMMIT'); return true;
  } catch {
-  await client.query('ROLLBACK').catch(() => {}); await pool.query("UPDATE event_store_maintenance SET attempts=attempts+1,last_error='CLICKHOUSE_RETENTION_FAILURE',next_attempt_at=now()+least(3600,power(2,least(attempts,10))*5)*interval '1 second',lease_owner=NULL,lease_until=NULL WHERE site_id=$1 AND lease_owner=$2", [maintenance.site_id, owner]); return false;
+  await client.query('ROLLBACK').catch(() => {}); await client.query("UPDATE event_store_maintenance SET attempts=attempts+1,last_error='CLICKHOUSE_RETENTION_FAILURE',next_attempt_at=now()+least(3600,power(2,least(attempts,10))*5)*interval '1 second',lease_owner=NULL,lease_until=NULL WHERE site_id=$1 AND lease_owner=$2", [maintenance.site_id, owner]); return false;
  } finally {client.release();}
 }

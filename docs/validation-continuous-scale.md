@@ -15,3 +15,9 @@
 四站20k实际再次失败（CLI EXIT1）：第2批捕获40P01/deadlock detected，PG日志确认INSERT events与DROP events_2026_02相互等待，两参与事务同时报错。证据 `continuous-4site-20000.json`。未满足集中多站后台验收，不用随机重复运行覆盖失败。需修正维护与采集的依赖锁顺序，在新不可变提交回归单站/多站后再判定。所有失败/通过运行均关闭并删除独立schema。
 
 最初runner SHA256=74f1deb9cb16474d03ac1901c02c3ff3183c427ce2812788d44242745cd1f1b5；观察hook版本（单站retry/四站）SHA256=60105ede90f31f7c7de642d90746ebd2f3be86daef6259571888fecd2ba1be2b。诊断runner后来增加初始化relation OID→表名映射以定位锁依赖，单独保存小规模重现证据，不覆盖已发生失败。
+
+不可变 `912f675dfcbabd32eeb3ca8b46b3f3bc721e1abc` 实际分区gate修复后的单站10k通过（CLI EXIT0，新的 `continuous-gate-1site-10000.json`，不覆盖9cd历史）：background=true，仅生产timer；采集与HTTP查询292.331秒，自然drain3.959秒；published watermark lag p95=5.764秒/max7.192秒，batch p95=2360.8ms/query p95=244.1ms；Node RSS1050157056bytes，schema42795008bytes。SQL PV10000/UV200/sessions200、outbox全done、最终HTTP coverage1、水位覆盖accepted、source摘要前后相同，schema已删。共享开发宿主可能并发短lint/type/PG专项，未隔离CPU/2GiB，不能把数值当生产SLO保证。
+
+同912四站20k真实结束CLI EXIT1（`continuous-gate-4site-20000.json`）：20k全部接受，SQL=PV20000/UV400/sessions400、outbox全done、4站generation/processed=100、attempts0，无40P01；但持续写入时按site_id调度导致两个站一直未首发布直到停止采集。未发布水位样本252项，首个实际PV样本起算等待下界p95≥122.003秒/max≥132.109秒；published样本lag p95=64.98秒/max71.13秒，不能用排除null后的数字代表全站低延迟。CLI末端失败另外来自runner确认顺序：先query得某站coverage0，worker其后完成，看到PGdirty0退出后复用刚过期样本判断失败。修runner为dirty0后重新真实HTTP验证，并在后续运行记录firstAccepted事件时间起算的unpublishedWaitMs；没有改生产应用或限流。旧EXIT1证据保留，不改成绿。源调度公平性待新不可变提交四站再验收。
+
+最新runner SHA256 `fe8438b32957ea055321385c675b290c35aa57ba0d4801047fc8e3eedbe4d81b` 修正最终确认顺序、accepted实时记录、失败也记录after-source摘要、未发布水位等待独立分布。912两规模实际使用上一版 `0654185e73b48798ffe2a4ce669cc3a20277faaa69bca65d51db4cdc5f9ab14b`；版本不能混用。分区与G连接池确定性实际专项详见 `ACCEPTANCE_PARTITION_CONCURRENCY.md`。
