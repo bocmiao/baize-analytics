@@ -52,6 +52,10 @@ Root独立索引快照实际lint/typecheck通过，完整build后5文件13 track
 
 ## 独立分发许可 / Standalone distribution license
 
-构建会将完整 MIT 版权及许可文本复制到 `public/tracker.LICENSE.txt`，所有 tracker 脚本均含版权及该文件引用。独立分发时必须将脚本与此许可文件一起复制并保留扩展中的第三方许可注释；不能只取 JS 丢弃许可文件。
+六个构建后的 JS 各自包含完整 MIT 版权、授权及免责声明，保留扩展捆绑的第三方许可注释；无需依赖链接才获得 MIT 全文。构建还生成相同许可的 `tracker.LICENSE.txt` 和预压缩 `.js.gz`。HTTP 精确脚本路由在客户端接受 gzip 时发送该预压缩文件，否则发送带完整许可的原始 JS；许可文本也有独立 `text/plain` 路由。独立浏览器 ZIP 和源码 ZIP 均保留完整许可文件。
 
-The build copies the full MIT copyright and permission notice to `public/tracker.LICENSE.txt`. Distribute that file together with the tracker scripts, keeping their copyright references and bundled third-party license comments.
+核心脚本的 5KB 指 **构建生成并实际 HTTP 提供的 Zopfli gzip 文件**（5120 字节上限），不是原始 JS 或默认 zlib 压缩大小。当前完整许可 core 为 5087 字节，min 为 4506 字节；默认 zlib core 为 5282 字节，不满足该上限。vitals/replay 等可选扩展不在核心 5KB 预算内。构建逐文件校验解压后与 JS 完全相同，超预算会失败。
+
+Each of the six JavaScript artifacts includes the complete MIT copyright, permission and warranty notice, preserving bundled third-party comments. The build also emits a matching license text and precompressed gzip files. Exact HTTP script routes serve precompressed gzip when accepted, or the full-notice uncompressed JS otherwise; the license has a separate text/plain route. Both standalone ZIP distributions retain their complete license files.
+
+The core 5KB limit applies to the generated, actually served Zopfli gzip artifact (5120 bytes), not raw JS or default zlib compression. Full-notice core is 5087 bytes and min is 4506; default zlib core is 5282 bytes and exceeds the budget. Optional extensions have separate sizes. Build-time decompression checks preserve identical script contents.

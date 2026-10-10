@@ -15,7 +15,7 @@ with zipfile.ZipFile(out/'baize-tracker-browser.zip') as z:
  assert z.read('tracker/tracker.LICENSE.txt')==(root/'packages/tracker/LICENSE').read_bytes()
  for name in z.namelist():
   if name.endswith('.js'):
-   assert b'Copyright (c) 2026 Baize contributors' in z.read(name)
+   assert (root/'packages/tracker/LICENSE').read_bytes().strip() in z.read(name)
    assert b'tracker.LICENSE.txt' in z.read(name)
 with zipfile.ZipFile(out/'baize-tracker-source.zip') as z:z.extractall(out/'isolated')
 `,directory],{stdio:'inherit'});

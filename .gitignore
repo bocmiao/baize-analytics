@@ -14,3 +14,5 @@ backups/
 public/tracker*.js
 public/tracker-sizes.json
 public/tracker.LICENSE.txt
+
+public/tracker*.js.gz
