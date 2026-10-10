@@ -64,9 +64,12 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
      if(records.length>100)throw Error('FACT_STORE_BATCH_LIMIT');
      for(const record of records)if(record.kind!==kind||record.row.run_id!==run.id||!record.visitorId||!record.sessionId)throw Error('FACT_STORE_RECORD_SCOPE');
      if(!records.length)continue;
-     await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM jsonb_to_recordset($1) envelope(row jsonb,"visitorId" text) ON CONFLICT DO NOTHING`,[JSON.stringify(records)]),{adapter:'facts'});
      const columns=kind==='effects'?'run_id uuid,event_id uuid,event_ts timestamptz,session_id uuid,visitor_id text,event_path text,dimensions jsonb,metric text,key jsonb,value double precision,member boolean':'run_id uuid,event_id uuid,event_ts timestamptz,event_path text,dimensions jsonb,metric text,value double precision';
-     await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${target} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"sessionId" text) CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records)]),{adapter:'facts'});
+     // Both writes consume the same authenticated <=100-row batch. The target
+     // uses envelope identity, not newly inserted rows, so conflict dedupe cannot
+     // drop multiple effects/vitals belonging to one event.
+     await measurePerformanceStage('temp_fill',()=>client.query(`WITH envelopes AS MATERIALIZED (SELECT * FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"sessionId" text)), identity_write AS (INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM envelopes envelope ON CONFLICT DO NOTHING RETURNING run_id) INSERT INTO ${target} SELECT r.* FROM envelopes envelope CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records)]),{adapter:'facts'});
+
     }
    }
   }
