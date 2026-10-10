@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {insertRemainingOwnerBatch} from '../../src/server/remaining-owner-batch.js';
+import {insertRemainingOwnerBatch,resolveRemainingOwnerBatch} from '../../src/server/remaining-owner-batch.js';
 const relations={owners:'test_owners',carryOwners:'test_carry_owners'},run='00000000-0000-4000-8000-000000000001';
 const rows=Array.from({length:100},()=>({sessionId:run,visitorId:'constructor',from:'2026-03-08T01:59:00Z',to:'2026-03-09T02:01:00Z'}));
 const client=(query:ReturnType<typeof vi.fn>)=>({query}) as unknown as Pick<PoolClient,'query'>;
@@ -9,4 +9,10 @@ describe('bounded exact owner batch SQL',()=>{
  it('uses two checkpoint inserts and one exact key anti-join',async()=>{const query=vi.fn().mockResolvedValue({rowCount:0});await insertRemainingOwnerBatch(client(query),relations,run,'carry_checkpoints',rows);expect(query).toHaveBeenCalledTimes(2);query.mockClear();await insertRemainingOwnerBatch(client(query),relations,run,'carry_keys',rows);expect(query).toHaveBeenCalledTimes(1);expect(query.mock.calls[0]![0]).toContain('p.visitor_id=x."visitorId" AND p.session_id=x."sessionId"');});
  it('rejects any missing owner and propagates uniqueness errors',async()=>{const missing=vi.fn().mockResolvedValue({rowCount:1});await expect(insertRemainingOwnerBatch(client(missing),relations,run,'carry_keys',rows)).rejects.toThrow('REMAINING_CARRY_OWNER_MISSING');const duplicate=vi.fn().mockRejectedValue(Error('23505'));await expect(insertRemainingOwnerBatch(client(duplicate),relations,run,'sessions',rows)).rejects.toThrow('23505');});
  it('accepts zero and rejects 101 before SQL',async()=>{const query=vi.fn();await insertRemainingOwnerBatch(client(query),relations,run,'sessions',[]);await expect(insertRemainingOwnerBatch(client(query),relations,run,'sessions',[...rows,rows[0]!])).rejects.toThrow('REMAINING_FACT_BATCH_LIMIT');expect(query).not.toHaveBeenCalled();});
+});
+
+describe('batch numeric/member owner resolution',()=>{
+ it('selects once and authenticates each missing distinct session only once',async()=>{const other='00000000-0000-4000-8000-000000000002',owner={visitor_id:'B',started_at:'2026-01-01T23:59:00Z',ended_at:'2026-01-02T00:01:00Z'};const query=vi.fn().mockResolvedValueOnce({rows:[{session_id:run,...owner}]}).mockResolvedValue({rows:[]});const sealed=vi.fn().mockResolvedValue(owner);const result=await resolveRemainingOwnerBatch(client(query),'test_owners',run,[run,other,other],sealed);expect(result.size).toBe(2);expect(sealed).toHaveBeenCalledExactlyOnceWith(other);expect(query).toHaveBeenCalledTimes(2);expect(query.mock.calls[0]![0]).toContain('ORDER BY session_id,priority');});
+ it('does not replace missing or failed authenticated ownership with guessed intervals',async()=>{const query=vi.fn().mockResolvedValue({rows:[]});await expect(resolveRemainingOwnerBatch(client(query),'test_owners',run,[run],async()=>{throw Error('SESSION_HEADER_SEAL_INVALID');})).rejects.toThrow('SESSION_HEADER_SEAL_INVALID');expect(query).toHaveBeenCalledTimes(1);await expect(resolveRemainingOwnerBatch(client(query),'test_owners',run,[run],async()=>({visitor_id:'',started_at:'bad',ended_at:'bad'}))).rejects.toThrow('REMAINING_FACT_OWNER_MISSING');});
+ it('keeps the 100 input-row limit even if rows all have the same owner',async()=>{const query=vi.fn();await expect(resolveRemainingOwnerBatch(client(query),'test_owners',run,Array(101).fill(run),vi.fn())).rejects.toThrow('REMAINING_FACT_BATCH_LIMIT');expect(query).not.toHaveBeenCalled();});
 });

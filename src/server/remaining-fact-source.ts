@@ -1,4 +1,4 @@
-import {insertRemainingOwnerBatch,type RemainingOwnerRow} from './remaining-owner-batch.js';
+import {insertRemainingOwnerBatch,resolveRemainingOwnerBatch,type RemainingOwnerRow} from './remaining-owner-batch.js';
 import {createHash,randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import {getRemainingFactStore} from './remaining-fact-store.js';
@@ -78,11 +78,12 @@ export async function prepareRemainingFactReadSource(client:PoolClient,pool:Pool
      for await(const batch of store.streamRunRows(client,siteId,run.id,kind))await validateAndInsert(kind,run.id,batch.map(row=>({row:row.row,visitorId:row.visitorId,sessionId:row.sessionId,from:row.from,to:row.to})));
     }else{if(strict)throw Error('REMAINING_FACT_SOURCE_NOT_MIGRATED');pg=true;const old=`remaining_old_${randomUUID().replaceAll('-','')}`;await client.query(`DECLARE ${old} NO SCROLL CURSOR FOR SELECT * FROM ${base[kind]} WHERE run_id=$1`,[run.id]);
      try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${old}`)).rows;if(!rows.length)break;const batch:RemainingFactRecord[]=[];
+      const batchOwners=kind==='numerics'||kind==='members'?await resolveRemainingOwnerBatch(client,owners,run.id,rows.map(row=>row.session_id),session=>sealedHeaderOwner(client,pool,siteId,run.id,session)):null;
       for(const row of rows){let visitorId:string,from:string,to:string;
        if(kind==='sessions'){visitorId=row.visitor_id;from=iso(row.data.started_at);to=iso(row.data.last_active);}
        else if(kind==='carry_checkpoints'){visitorId=row.visitor_id;from=iso(row.state.startedAt);to=iso(row.through_ts);row.local_day=typeof row.local_day==='string'?row.local_day:iso(row.local_day).slice(0,10);}
        else if(kind==='carry_keys'){visitorId=row.visitor_id;from=iso(row.first_ts);to=iso(row.last_ts);}
-       else{let owner=(await client.query(`SELECT * FROM ${owners} WHERE run_id=$1 AND session_id=$2 ORDER BY priority LIMIT 1`,[run.id,row.session_id])).rows[0];if(!owner){owner=await sealedHeaderOwner(client,pool,siteId,run.id,row.session_id);await client.query(`INSERT INTO ${owners} VALUES($1,$2,$3,$4,$5,2)`,[run.id,row.session_id,owner.visitor_id,owner.started_at,owner.ended_at]);}visitorId=owner.visitor_id;from=iso(owner.started_at);to=iso(owner.ended_at);}
+       else{const owner=batchOwners?.get(row.session_id);if(!owner)throw Error('REMAINING_FACT_OWNER_MISSING');visitorId=owner.visitor_id;from=iso(owner.started_at);to=iso(owner.ended_at);}
        batch.push({row,visitorId,sessionId:row.session_id,from,to});
       }await validateAndInsert(kind,run.id,batch);
      }}finally{await client.query(`CLOSE ${old}`);}

@@ -1,7 +1,7 @@
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {describe,it,expect} from 'vitest';
-import {insertRemainingOwnerBatch} from '../../src/server/remaining-owner-batch.js';
+import {insertRemainingOwnerBatch,resolveRemainingOwnerBatch} from '../../src/server/remaining-owner-batch.js';
 
 describe.skipIf(!process.env.TEST_DATABASE_URL)('exact owner batch real PostgreSQL',()=>{
  it('matches rowwise owners, preserves priorities, and rolls back duplicates and missing owners',async()=>{
@@ -11,6 +11,8 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('exact owner batch real PostgreS
    await insertRemainingOwnerBatch(c,relations,run,'sessions',rows);await insertRemainingOwnerBatch(c,relations,run,'carry_checkpoints',rows);
    for(const row of rows)for(const priority of [0,1])await c.query('INSERT INTO oracle_owners VALUES($1,$2,$3,$4,$5,$6)',[run,row.sessionId,row.visitorId,row.from,row.to,priority]);
    expect((await c.query('(TABLE batch_owners EXCEPT ALL TABLE oracle_owners) UNION ALL (TABLE oracle_owners EXCEPT ALL TABLE batch_owners)')).rows).toEqual([]);
+   await c.query("UPDATE batch_owners SET visitor_id='lower-priority-identity',started_at='2026-03-12' WHERE priority=1 AND session_id=$1",[rows[0]!.sessionId]);
+   const fallbackSession=randomUUID();let sealedReads=0;const resolved=await resolveRemainingOwnerBatch(c,relations.owners,run,[rows[0]!.sessionId,rows[1]!.sessionId,fallbackSession,fallbackSession],async()=>{sealedReads++;return {visitor_id:'distinct-B-identity',started_at:'2026-03-10T23:59:00.001Z',ended_at:'2026-03-11T00:01:00.002Z'};});expect(sealedReads).toBe(1);expect(resolved.get(rows[0]!.sessionId)!.visitor_id).toBe(rows[0]!.visitorId);expect(new Date(resolved.get(rows[0]!.sessionId)!.started_at).toISOString()).toBe(rows[0]!.from);expect(resolved.get(fallbackSession)!.visitor_id).toBe('distinct-B-identity');expect((await c.query('SELECT priority FROM batch_owners WHERE session_id=$1',[fallbackSession])).rows).toEqual([{priority:2}]);await c.query('DELETE FROM batch_owners WHERE session_id=$1',[fallbackSession]);
    await insertRemainingOwnerBatch(c,relations,run,'carry_keys',rows);expect((await c.query('SELECT count(*)::int n FROM batch_owners')).rows[0].n).toBe(200);
    await c.query('SAVEPOINT duplicate');await expect(insertRemainingOwnerBatch(c,relations,run,'sessions',[rows[0]!])).rejects.toMatchObject({code:'23505'});await c.query('ROLLBACK TO SAVEPOINT duplicate');
    await c.query('SAVEPOINT within_batch');const duplicate={...rows[0]!,sessionId:randomUUID()};await expect(insertRemainingOwnerBatch(c,relations,run,'sessions',[duplicate,duplicate])).rejects.toMatchObject({code:'23505'});await c.query('ROLLBACK TO SAVEPOINT within_batch');

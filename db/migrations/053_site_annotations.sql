@@ -1,0 +1,2 @@
+CREATE TABLE site_annotations(id uuid PRIMARY KEY,site_id text NOT NULL REFERENCES sites(id) ON DELETE CASCADE,date date NOT NULL,timezone text NOT NULL,title text NOT NULL CHECK(length(title) BETWEEN 1 AND 120),note text NOT NULL CHECK(length(note)<=2000),created_by uuid REFERENCES users(id) ON DELETE SET NULL,created_at timestamptz NOT NULL DEFAULT now(),updated_at timestamptz NOT NULL DEFAULT now());
+CREATE INDEX site_annotations_date ON site_annotations(site_id,date,id);

@@ -24,6 +24,9 @@ export const SITE_EXPORT_QUERIES={
  identity_tombstones:'SELECT site_id,visitor_id,user_id,started_at,ended_at,deleted_at,source FROM identity_tombstones WHERE site_id=$1',
  event_keys:'SELECT site_id,event_id,hash,ts,visitor_id FROM event_keys WHERE site_id=$1',
  bot_counts:'SELECT site_id,day,category,count FROM bot_counts WHERE site_id=$1',
+ bot_observations:'SELECT site_id,day,category,reason,rule_id,rule_version,filtered_requests,declared_events FROM bot_observations WHERE site_id=$1',
+ site_intake_observations:'SELECT site_id,first_received_at,last_received_at,last_event_time,last_generation,accepted_events FROM site_intake_observations WHERE site_id=$1',
+ site_annotations:'SELECT id,site_id,date,timezone,title,note,created_at,updated_at FROM site_annotations WHERE site_id=$1',
  revenue_orders:'SELECT site_id,order_hash,visitor_id,event_id,ts,currency,amount,privacy_mode,order_day FROM revenue_orders WHERE site_id=$1',
  stats_hourly:'SELECT site_id,hour,data,generation FROM stats_hourly WHERE site_id=$1',
  stats_daily:'SELECT site_id,day,data,generation FROM stats_daily WHERE site_id=$1',
@@ -43,9 +46,10 @@ export const SITE_EXPORT_QUERIES={
  share_links:'SELECT id,site_id,expires_at,revoked,frame_origins,created_at FROM share_links WHERE site_id=$1',
  audit_logs:'SELECT id,site_id,action,target,created_at FROM audit_logs WHERE site_id=$1',
  gsc_stats:'SELECT site_id,day,query,page,clicks,impressions,position FROM gsc_stats WHERE site_id=$1',
+ gsc_import_windows:'SELECT site_id,start_day,end_day,metadata,imported_at FROM gsc_import_windows WHERE site_id=$1',
  ga_import:'SELECT site_id,day,source,pv,uv,sessions,imported_at FROM ga_import WHERE site_id=$1',
  ga_import_windows:'SELECT site_id,start_day,end_day,property_id,property_timezone,data,imported_at FROM ga_import_windows WHERE site_id=$1',
- seo_scans:'SELECT id,site_id,created_at,results FROM seo_scans WHERE site_id=$1',
+ seo_scans:'SELECT id,site_id,created_at,results,metadata FROM seo_scans WHERE site_id=$1',
  rank_history:'SELECT site_id,day,keyword,provider,position FROM rank_history WHERE site_id=$1',
  ai_budget:'SELECT site_id,month,reserved,used FROM ai_budget WHERE site_id=$1',
  ai_calls:"SELECT c.id,c.site_id,c.created_at,c.purpose,c.tokens,c.status,c.evidence,c.answer FROM ai_calls c JOIN aggregation_state a ON a.site_id=c.site_id WHERE c.site_id=$1 AND c.evidence->'aggregation'->>'epoch'=a.epoch::text",
@@ -55,7 +59,7 @@ export const SITE_EXPORT_QUERIES={
  external_jobs:'SELECT site_id,kind,job_key,day,status,started_at,finished_at,attempts FROM external_jobs WHERE site_id=$1',
 } as const;
 const noDailyIdentity=new Set(['visitor_first_seen','identity_map','identity_bindings','identity_tombstones','experiment_assignments','experiment_contributions']);
-const jsonColumns=new Set(['payload','dimensions','data','config','steps','variants','dsl','body','target','results','evidence','recheck','priority_basis','settings','tags']);
+const jsonColumns=new Set(['payload','dimensions','data','config','steps','variants','dsl','body','target','results','metadata','evidence','recheck','priority_basis','settings','tags']);
 const secretKey=(key:string)=>/(?:password|secret|credential|authorization|encrypted|salt_secret|token_hash|access_token|refresh_token|api[_-]?key|license[_-]?key|write[_-]?key)/i.test(key);
 const email=(value:unknown)=>typeof value==='string'&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 export function scrubExportJson(value:unknown,dailySalt:boolean):unknown{

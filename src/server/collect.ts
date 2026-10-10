@@ -1,3 +1,5 @@
+import {recordBotObservation} from './bot-observations.js';
+import {recordIntakeObservation} from './intake-status.js';
 import {replayPayloadHash} from './replay-hash.js';
 import {sanitizeDailyPayload,sanitizeDailyDimensions} from './daily-privacy-policy.js';
 import {siteAllowsOrigin} from './site-hosts.js';
@@ -42,10 +44,10 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     if(ctx.redis){try{count=Math.max(count,Number(await ctx.redis.eval("local c=redis.call('INCR',KEYS[1]); if c==1 then redis.call('EXPIRE',KEYS[1],60) end; return c",1,limitKey)));}catch{/* Cache failure retains bounded local intake limits; durable PG remains authoritative. */}}
     if(count>100){reply.header('Retry-After','60');throw new HttpError(429,'rate_limited');}
     const bot=await botFilter.inspect({siteId:site.id,secret:site.salt_secret,ip,userAgent:ua});
-    if(bot.isBot){await ctx.pool.query('INSERT INTO bot_counts(site_id,day,category,count) VALUES($1,$2,$3,1) ON CONFLICT(site_id,day,category) DO UPDATE SET count=bot_counts.count+1',[site.id,new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone}).format(new Date()),bot.category]);return reply.code(204).send();}
+    if(bot.isBot){await recordBotObservation(ctx.pool,site.id,site.timezone,bot,botFilter.ruleVersion,envelope.events.length);return reply.code(204).send();}
     if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr)))return reply.code(204).send();
     if(req.headers.authorization){const write=site.config.write_key_hash;const token=req.headers.authorization.replace(/^Bearer /,'');if(!write||hashToken(token)!==write)throw new HttpError(401,'invalid_write_key');const signature=req.headers['x-baize-signature'];const expected=createHmac('sha256',token).update(canonical(envelope)).digest();let supplied:Buffer;try{supplied=Buffer.from(String(signature),'hex');}catch{throw new HttpError(401,'invalid_signature');}if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected))throw new HttpError(401,'invalid_signature');}
-    const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false;
+    const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false,lastAcceptedEventTime=0;
     await transaction(ctx.pool,async client=>{
       await lockSite(client,site.id);
       site=(await client.query('SELECT * FROM sites WHERE id=$1',[site.id])).rows[0];if(!site)throw new HttpError(404,'站点不存在');
@@ -103,10 +105,10 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         await ingestGovernance(client,site,clean as unknown as Record<string,unknown>,visitor,{canonical:Boolean(canonicalTarget)});
         if(!canonicalTarget)for(const [key,value] of Object.entries(clean.props??{}))await client.query('INSERT INTO event_data(site_id,event_id,ts,data_key,data_type,string_value,number_value,boolean_value) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[site.id,wire.event_id,new Date(wire.ts),key,typeof value==='string'?'s':typeof value==='number'?'n':'b',typeof value==='string'?value:null,typeof value==='number'?value:null,typeof value==='boolean'?value:null]);
         // Identity projection updates happen only on event-time identify transitions.
-        await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id) VALUES($1,$2,$3,$4)',[site.id,wire.event_id,new Date(wire.ts),visitor]);changed=true;accepted++;
+        await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id) VALUES($1,$2,$3,$4)',[site.id,wire.event_id,new Date(wire.ts),visitor]);changed=true;accepted++;lastAcceptedEventTime=Math.max(lastAcceptedEventTime,wire.ts);
       }
       if(canonicalTarget)await publishCanonicalIngest(client,site.id,canonicalTarget,canonicalInput);
-      if(changed){await dirtySite(client,site.id);await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);}
+      if(changed){await dirtySite(client,site.id);await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);await recordIntakeObservation(client,site.id,accepted,lastAcceptedEventTime);}
     });
     if(ignored)return reply.code(204).send();
     return reply.code(202).send({accepted,duplicates,rejected,clock_skew:Math.abs(Date.now()-envelope.sent_at)>86400000});

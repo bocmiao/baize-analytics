@@ -94,3 +94,9 @@ First direct retry at11:18:03 UTC:2 files10 tests,9 PASS/1 FAIL (4.33s). Isolati
 Final command `TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev npx vitest run tests/integration/external.test.ts tests/integration/external-suggestions.test.ts tests/integration/ai-question-api.test.ts`: **3 files18/18 PASS**,2026-10-10 11:18:23 UTC,7.62s, including the positive fresh scan and8 actual max1 privacy/question API tests. Root owns the final empty shared-Compose/full-CI rerun; this targeted result does not erase the failed run. External provider/model responses remain explicitly simulated.
 
 连接设置用户入口补齐（本阶段尚待资源窗口验收）：Model/Google/SERP 表单读取非秘密 settings 作为初值；首次配置必须提供密钥，已有配置留空不提交 secret、由既有服务端保留密钥。AI automaticAnomaly 与 Google dailyGsc 可明确启停，保存后重新读取。模型按钮调用既有 `/api/sites/:id/ai/test`，提示使用已保存设置、真实聚合及 Token 预算；未改权限、opt-in、epoch 或预算检查，也未将此 API 假称纯 ping。新增 `tests/e2e/connector-settings.spec.ts` 计划以实际隔离 PG/native app/浏览器验收加载、关闭、密钥保留及空站测试行为；仅提供商 transport 明确模拟，尚未运行此浏览器测试。轻量 TypeScript 与 scoped ESLint 已通过；没有执行 PG、浏览器、构建或全量测试。
+
+第二轮 SEO/GSC 证据契约（在制，非真实外部账号验收）：前向 051 保留旧扫描 results 并增加 metadata；新规则包含 HTTP Link canonical、HTML canonical 冲突、meta/X-Robots-Tag noindex 观察、呈现建议和官方依据。canonical 缺失只建议检查，不称索引阻断；noindex 先确认意图；title/description/h1/OG 等不保证排名。扫描仍只原始 HTML，不执行 JS，最多 30 次页面请求，robots/运输失败/非 HTML/预算跳过明确 unknown。按原 scan 保存的 URL 定点复检，fixed/persists/unknown 分列；SEO verified 仅允许非空、全部 fixed 的发现，不表示业务收益。旧无版本发现只标 unknown，不重新编造旧观察。
+
+前向 052 保存 GSC 请求窗口、date/query/page 维度、byPage、final、web、PT（America/Los_Angeles）、页数/返回行数和本地完成时间。已有 25k 分页保留；提供商明细完整性始终 not-guaranteed。本地导入在连接配置核对后原子替换，拒绝非法/越窗日期、重复键、非法 URL 与非有限指标；失败保留旧成功窗口。展示 1000+1 判 hasMore/displayTruncated，稳定并列排序；SEO 转化 clicks 标为已返回查询词的页面点击小计，非完整页面或站点点击，不拼接提供商与站点时区为精确转化率。
+
+静态单位测试 `npx vitest run tests/unit/seo-gsc-evidence.test.ts` 实际 7/7 通过（18:43:25，578ms）。新增真实隔离 PG/native HTTP fixture `tests/integration/seo-gsc-v2.test.ts` 仅外部 transport 模拟，源码已写但受串行资源窗口约束尚未运行；不得将它记为通过。真实 Google/外站账户未验证，无新账号/凭据/OAuth 范围/付费操作。

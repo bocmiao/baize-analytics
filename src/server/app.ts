@@ -6,6 +6,10 @@ import {cleanupCacheStoreOrphans} from './cache-store-maintenance.js';
 import {cleanupFactStoreOrphans} from './fact-store-maintenance.js';
 import {installSessionHeaderStore,cleanupSessionHeaderOrphans} from './session-header-store.js';
 import {registerManualSearchImport} from './manual-search-import.js';
+import {registerIntakeStatus} from './intake-status.js';
+import {registerBotObservations} from './bot-observations.js';
+import {registerSelfHostDiagnostics} from './self-host-diagnostics.js';
+import {registerSiteAnnotations} from './site-annotations.js';
 import {registerCanonicalOperations} from './canonical-routes.js';
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
@@ -117,6 +121,7 @@ export async function createApp(options:AppOptions={}){
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
+  await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}

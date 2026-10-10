@@ -1,5 +1,3 @@
-以下为第二轮完整UI研究，请原文保存 docs/research/round2/ui-research.md，并将五项实施与前两份研究一同映射落实索引。源基线旧main，先核新WIP去重。正文：
-
 # 白泽 Baize Analytics：第二轮 UI/UX 研究与实施建议
 
 核验日期：2026-10-10（UTC）  

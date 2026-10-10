@@ -37,3 +37,5 @@ APP_ROOT="$APP_ROOT" FROZEN_SOURCE_SHA=<exact-sha> \
 ## 磁盘与串行闸
 
 只读观察 `/workspace` 32GiB，当前约11GiB可用（观察时点，非执行保证）。构建前、目标server启动前、恢复/故障派生前再次核对，保留2GiB最低余量。估算一次新image/buildstage加独立CH/PG测试卷可能消耗数GiB，Docker存储驱动copy-up使`docker system df`不足以代表宿主余量；以宿主`df`为闸。保持当前已验fallback image，不做global prune。空间不足时停止昂贵阶段，报告明确owned image/cache/volume ID后由root批准精确清理；不得降闸或删其他代理服务。唯一heavy owner由root指定，CI/browser/负载与镜像矩阵串行。
+
+050–053接线准备已落实：namespace guard仅新增四个准确文件名；新版scope明确增加intake/bot、SEO evidence、GSC window、annotations，对五张表的完整PG行以有界cursor纳入签名快照fingerprint。旧049及更早包继续其原始fingerprint口径，不把旧包声明为包含第二轮元数据。native入口夹具已增加真实非空五表种子及恢复后断言，尚未运行。目录当前预期54个迁移文件（010有两个不同文件）；最终必须由实际runner输出文件列表与count，不用最大序号53冒称53个文件。

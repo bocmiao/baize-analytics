@@ -262,3 +262,12 @@ raw-prune安全窄修：管理员canonical HTTP `{action:"prune"}`返回409 `can
 
 
 报表筛选扩展（当前开发切片，真实PG/浏览器集成尚待）：DSL支持可选path/channel及五个UTM，全部已设条件同时匹配，手动运行和定时当前/前期比较使用相同筛选。旧报表不迁移，缺失或空字段表示不限；未知键、逆序日期、超长字段拒绝。path上限1024、channel100、各UTM500字符。定时报表按推送周期计算范围并保留筛选，不重用陈旧固定日期。明细留存、daily-salt跨日及精确coverage限制保持。
+
+### 接入观察、过滤原因、只读诊断与人工备注（第二轮开发切片）
+
+以下新接口已接线，当前仅类型、lint、单元验证；真实PG/浏览器联合验收待负责人执行，不追加到旧494计数。
+
+- `GET /api/v1/sites/:siteId/intake-status`（read）：可传from/to ISO时间与报表七项筛选；默认最近7天。返回receiver接收时间、事件时间、接受批次generation、聚合水位与当前查询coverage。stage为not_observed/aggregation_pending/statistics_available/statistics_unavailable。统计读取失败回滚savepoint，不假完整。旧站缺050观察仅表示未记录接收观察；不证明script失效。既不爬站点，也不发送测试PV或验证snippet，过滤空结果不等于采集失败。
+- `GET .../bot-observations?from=YYYY-MM-DD&to=YYYY-MM-DD`（read）：最多31个站点日历日、200组并返回truncated；reason仅ua/request_burst，附rule_id/rule_version。filtered_requests是被过滤请求数，declared_events是未逐条校验的批次声明事件数，二者不是PV。旧category计数差额为legacy_unknown，事件数null；不制造历史原因。无原IP/UA/访客/body。
+- `GET .../self-host-diagnostics`及`/export`（admin）：只读白名单数据库/Redis配置状态、schema版本、聚合水位/失败布尔、队列、权威模式、保留信息。Redis configured_not_checked不是实际健康验证；物理容量not_measured。backup not_verified明确需要当前签名包和独立最新journal，不能解释为失败或恢复保证。不接受任意路径、不自修、不输出连接串/密钥/原错误/访客/正文；下载Cache-Control:no-store。
+- `GET .../annotations?from&to`（read）：ISO日历日窗口≤366日、最多200条/truncated；每条携带保存时timezone，另返回currentTimezone。`POST .../annotations`、`PATCH .../annotations/:id`、`DELETE .../annotations/:id`（write，分析师以上）支持`{date,title,note?}`，title1–120字、note≤2000字；真实日期校验与审计同事务。编辑重新绑定编辑时站点时区。viewer不可改，其他站点不可读写，记录不存在404。这些是manual_note，measuredEvidence/causalEvidence:false，绝不作为AI事实或因果输入。

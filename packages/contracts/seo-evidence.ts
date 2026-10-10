@@ -1,0 +1,5 @@
+import {z} from 'zod';
+export const seoFindingSchema=z.object({id:z.string(),ruleId:z.string(),url:z.string().url(),state:z.enum(['pass','fail','unknown','not-applicable']),category:z.enum(['technical','canonical','presentation','index-directive']),severity:z.enum(['info','advice','review','error']),observed:z.record(z.string(),z.unknown()),advice:z.string(),checkedAt:z.iso.datetime(),officialUrl:z.string().url()});
+export type SeoFinding=z.infer<typeof seoFindingSchema>;
+export const seoMetadataSchema=z.object({version:z.literal(2),renderMode:z.literal('initial-html'),javascriptExecuted:z.literal(false),pageBudget:z.number().int().min(1).max(30),fetched:z.number().int().min(0).max(30),endReason:z.enum(['exhausted-discovered-links','page-budget','targeted']),providerIndexStatus:z.literal('unknown'),skipped:z.array(z.object({url:z.string().url(),reason:z.enum(['robots-denied','fetch-failed','non-html','page-budget'])})),checkedAt:z.iso.datetime()});
+export type SeoMetadata=z.infer<typeof seoMetadataSchema>;

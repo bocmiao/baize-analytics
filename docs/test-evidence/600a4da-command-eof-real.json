@@ -1,0 +1,63 @@
+{
+  "sourceCommit": "600a4da",
+  "sourceArchive": "/tmp/baize-main-600a4da.2mtwxdcg",
+  "sourceSha256": {
+    "src/server/clickhouse-command-response.ts": "6a6872350131b20ae3db091485836510de5e58a6cc3f468b6b3343f692e54cb3",
+    "src/server/canonical-clickhouse.ts": "907698f308d06c0cc1a8873e1e68ddfc033c7d967458f81039a9a110e8932610",
+    "src/server/clickhouse-store.ts": "7a7abe02dfa2878dcbe6835a367b47c241469863524dc9772f59f1345105557b",
+    "src/server/fact-store.ts": "ce3ba29ce9d19b778cb21fcbfbebed16ad27c8fa8a71a7a955bd9529c5ce074e",
+    "src/server/remaining-fact-store.ts": "8de2ee8c3f6636b463f3dfdd4c7e180fa0cbf2f58109afb04d0c8e074a3526bb",
+    "src/server/cache-store.ts": "0fd7e8a8a24378846a89b35c28a3817b9a03616d35867c267af21108673b508d",
+    "src/server/session-header-store.ts": "456bad2c468ed0d3f6c0b8671e218b14691cdeee990ed91d55b3ba08f836ef7c"
+  },
+  "actualResult": {
+    "numTotalTests": 43,
+    "numPassedTests": 43,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "files": [
+    {
+      "file": "cache-store.test.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "canonical-clickhouse.test.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "clickhouse-app.test.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "clickhouse.test.ts",
+      "status": "passed",
+      "tests": 16
+    },
+    {
+      "file": "fact-store.test.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "remaining-fact-store.test.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "session-header-source.test.ts",
+      "status": "passed",
+      "tests": 1
+    }
+  ],
+  "exitCode": 0,
+  "command": "TEST_DATABASE_URL=<baize_ci_eighth_stable_20261010 local URL> CLICKHOUSE_TEST_URL=<existing local38123> REDIS_URL=<local6379> ./node_modules/.bin/vitest run <seven listed integration files> --reporter=json --outputFile=/tmp/baize-600a4da-ch-command-real.json",
+  "cleanup": {
+    "isolatedPGSchemaPrefixesRemaining": 0,
+    "fixtureFinallyCompleted": true,
+    "note": "CH scoped physical ACK and isolated database removal exercised by fixture cleanup; no global prune or deletion of other data performed."
+  }
+}
