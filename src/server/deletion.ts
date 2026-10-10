@@ -1,5 +1,9 @@
+import {getCanonicalStore} from './canonical-clickhouse.js';
+import type {CanonicalSegment} from './canonical-clickhouse.js';
+import {invalidateSiteAi} from './ai-invalidation.js';
+import {invalidateSiteFacts} from './session-facts.js';
 import {cleanupHistoryBackupFiles} from './history-security.js';
-import {historyDeletionBarrier} from './history-store.js';
+import {deleteHistorySegments,rebaseDeletedHistory} from './history-store.js';
 import type { AppContext } from './context.js';
 import type { Pool,PoolClient } from 'pg';
 import { mkdir,open,readFile,rename } from 'node:fs/promises';
@@ -9,7 +13,7 @@ import { transaction,lockSite,dirtySite } from './db.js';
 import { HttpError,visitorHash } from './security.js';
 import {scheduleExportCleanup,runFileCleanup} from './file-cleanup.js';
 import {userDeletionRecords,purgeIdentity,type IdentityDeletionRecord} from './identity.js';
-interface DeletionRecord {site_id:string;visitor_id:string;user_id:string|null;deleted_at:string;source:string;started_at?:string;ended_at?:string|null}
+export interface DeletionRecord {site_id:string;visitor_id:string;user_id:string|null;deleted_at:string;source:string;started_at?:string;ended_at?:string|null}
 interface JournalWatermark {records:number;sha256:string}
 function journalRecords(data:Buffer):DeletionRecord[]{
   const text=data.toString('utf8');if(text&&!text.endsWith('\n'))throw new Error('Deletion journal is truncated; queries remain closed');
@@ -35,6 +39,7 @@ export async function initializeJournal(dataDir:string,requireExisting=false){
   if(!requireExisting&&actual.records>watermark.records){const lines=data.toString('utf8').split('\n').filter(Boolean);const prefix=Buffer.from(lines.slice(0,watermark.records).join('\n')+(watermark.records?'\n':''));if(createHash('sha256').update(prefix).digest('hex')===watermark.sha256){await persistWatermark(dataDir,data);return actual;}}
   throw new Error('Deletion journal does not match durable watermark; recovery blocked');
 }
+export async function readVerifiedDeletionRecords(dataDir:string):Promise<DeletionRecord[]>{await initializeJournal(dataDir,true);return journalRecords(await readFile(join(dataDir,'tombstones.jsonl')));}
 let journalWrite:Promise<void>=Promise.resolve();
 async function appendJournal(dataDir:string,records:DeletionRecord[],client?:PoolClient){
   if(client)await client.query('SELECT pg_advisory_xact_lock(92834104)');
@@ -42,6 +47,8 @@ async function appendJournal(dataDir:string,records:DeletionRecord[],client?:Poo
   try{await initializeJournal(dataDir);const file=await open(join(dataDir,'tombstones.jsonl'),'a',0o600);try{await file.writeFile(records.map(r=>JSON.stringify(r)+'\n').join(''));await file.sync();}finally{await file.close();}await persistWatermark(dataDir,await readFile(join(dataDir,'tombstones.jsonl')));}finally{release();}
 }
 async function invalidateDerived(client:PoolClient,siteId:string,dataDir:string){
+  await invalidateSiteAi(client,siteId);
+  await invalidateSiteFacts(client,siteId);
   await scheduleExportCleanup(client,siteId,dataDir);
   for(const table of ['stats_hourly','stats_daily','page_vitals','analytics_definitions','heatmap_points'])await client.query(`DELETE FROM ${table} WHERE site_id=$1`,[siteId]);
   await client.query("UPDATE sites SET config=config||jsonb_build_object('deletion_boundary','已删除派生结果，保留期内将完整重算；超过保留期的历史统计不可恢复') WHERE id=$1",[siteId]);
@@ -57,6 +64,13 @@ async function purge(client:PoolClient,siteId:string,visitors:string[],dataDir:s
   await invalidateDerived(client,siteId,dataDir);
 }
 export async function invalidateSiteCache(ctx:AppContext,siteId:string){if(!ctx.redis)return;for(const prefix of [`analytics:${siteId}:*`,`baize:online:${siteId}:*`]){let cursor='0';do{const r=await ctx.redis.scan(cursor,'MATCH',prefix,'COUNT',100);cursor=r[0];if(r[1].length)await ctx.redis.del(...r[1]);}while(cursor!=='0');}}
+async function canonicalDeletionBarrier(pool:Pool,client:PoolClient,siteId:string,records:DeletionRecord[]):Promise<boolean>{
+ const authority=(await client.query('SELECT authority FROM canonical_event_authority WHERE site_id=$1 FOR UPDATE',[siteId])).rows[0];
+ if(authority?.authority!=='clickhouse')return false;
+ const store=getCanonicalStore(pool);if(!store)throw new HttpError(503,'canonical_delete_store_required');
+ const segments:CanonicalSegment[]=records.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined}));
+ try{await store.deleteSegments(client,siteId,segments,async()=>{});}catch{throw new HttpError(503,'canonical_delete_unavailable');}return true;
+}
 export async function deleteVisitor(ctx:AppContext,siteId:string,input:{visitor_id?:string;user_id?:string},actorId:string|null){
   const deleted=await transaction(ctx.pool,async client=>{await lockSite(client,siteId);const site=(await client.query('SELECT salt_secret,privacy_mode FROM sites WHERE id=$1',[siteId])).rows[0];if(!site)throw new HttpError(404,'站点不存在');if(site.privacy_mode==='daily_salt'&&input.user_id)throw new HttpError(400,'每日盐模式不支持跨日身份关联');const userId=input.user_id?visitorHash(site.salt_secret,'identity',input.user_id,''):null;
     if(!input.visitor_id&&!userId)throw new HttpError(400,'需要访客或用户标识');
@@ -65,11 +79,12 @@ export async function deleteVisitor(ctx:AppContext,siteId:string,input:{visitor_
     const identityRecords=userId?await userDeletionRecords(client,siteId,userId):[];
     if(userId)records.push(...identityRecords,{site_id:siteId,visitor_id:`user:${userId}`,user_id:userId,deleted_at:new Date().toISOString(),source:'user'});
     await appendJournal(ctx.config.dataDir,records,client);
-    await ctx.clickhouseMirror?.withDeletionBarrier(client,siteId,{all:true});
-    await historyDeletionBarrier(client,ctx.pool,siteId);
+    if(!await canonicalDeletionBarrier(ctx.pool,client,siteId,records))await ctx.clickhouseMirror?.withDeletionBarrier(client,siteId,{all:true});
+    await deleteHistorySegments(client,ctx.pool,siteId,records.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
     for(const record of records.filter(r=>r.source!=='identity-segment'))await client.query('INSERT INTO tombstones(site_id,visitor_id,user_id,deleted_at,source) VALUES($1,$2,$3,$4,$5) ON CONFLICT(site_id,visitor_id) DO UPDATE SET user_id=COALESCE(excluded.user_id,tombstones.user_id)',[siteId,record.visitor_id,record.user_id,record.deleted_at,record.source]);
     if(identityRecords.length)await purgeIdentity(client,siteId,identityRecords);
     if(visitors.length)await purge(client,siteId,visitors,ctx.config.dataDir);else await invalidateDerived(client,siteId,ctx.config.dataDir);
+    await rebaseDeletedHistory(client,ctx.pool,siteId);
     return records.length;
   });const historyBackups=await cleanupHistoryBackupFiles(ctx.pool,ctx.config.dataDir,{siteId});const cleanup=await runFileCleanup(ctx,siteId);await invalidateSiteCache(ctx,siteId);await ctx.audit(actorId,siteId,'visitor.delete',{identifiers:deleted,journal:'fsync-complete'});return {deleted:true,historyBackups,identifiers:deleted,journal:'durable',fileCleanup:cleanup,aggregation:'pending-rebuild',historicalBoundary:'保留期外已无法重建，相关历史聚合标为不可用'};
 }
@@ -81,8 +96,8 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
   const bySite=new Map<string,DeletionRecord[]>();for(const r of records.values()){const list=bySite.get(r.site_id)??[];list.push(r);bySite.set(r.site_id,list);}
   for(const [siteId,list] of bySite)await transaction(pool,async client=>{
     await lockSite(client,siteId);if(!(await client.query('SELECT 1 FROM sites WHERE id=$1',[siteId])).rowCount)return;
-    await replicaBarrier?.(client,siteId);
-    await historyDeletionBarrier(client,pool,siteId);
+    if(!await canonicalDeletionBarrier(pool,client,siteId,list))await replicaBarrier?.(client,siteId);
+    await deleteHistorySegments(client,pool,siteId,list.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
     let changed=false;const identityRecords=list.filter(r=>r.source==='identity-segment') as IdentityDeletionRecord[];
     for(const r of list.filter(r=>r.source!=='identity-segment')){const marker=await client.query('INSERT INTO tombstones(site_id,visitor_id,user_id,deleted_at,source) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING RETURNING visitor_id',[siteId,r.visitor_id,r.user_id,r.deleted_at,'restore-replay']);if(marker.rowCount)changed=true;}
     for(const r of identityRecords){const marker=await client.query('SELECT 1 FROM identity_tombstones WHERE site_id=$1 AND visitor_id=$2 AND user_id=$3 AND started_at=$4',[siteId,r.visitor_id,r.user_id,r.started_at]);const existing=await client.query(`SELECT 1 WHERE EXISTS(SELECT 1 FROM events WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM experiment_contributions WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM outbox WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM event_keys WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM experiment_assignments a JOIN experiments e ON e.id=a.experiment_id WHERE e.site_id=$1 AND a.visitor_id=$2 AND a.converted IS DISTINCT FROM EXISTS(SELECT 1 FROM experiment_contributions c WHERE c.experiment_id=a.experiment_id AND c.visitor_id=a.visitor_id))`,[siteId,r.visitor_id,r.started_at,r.ended_at]);if(!marker.rowCount||existing.rowCount){await purgeIdentity(client,siteId,[r]);changed=true;}}
@@ -90,5 +105,9 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
     const existing=visitors.length?await client.query('SELECT 1 FROM events WHERE site_id=$1 AND visitor_id=ANY($2::text[]) LIMIT 1',[siteId,visitors]):null;
     if(existing?.rowCount){await purge(client,siteId,visitors,dataDir);changed=false;}
     if(changed)await invalidateDerived(client,siteId,dataDir);
+    // Old backups can restore derived data even when all tombstones already exist.
+    await invalidateSiteAi(client,siteId);
+    await invalidateSiteFacts(client,siteId);
+    await rebaseDeletedHistory(client,pool,siteId);
   });const historyCleanup=await cleanupHistoryBackupFiles(pool,dataDir);if(historyCleanup.pending)throw Error('History backup cleanup pending; queries remain closed');return {records:records.size,sites:[...bySite.keys()]};
 }

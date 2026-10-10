@@ -1,10 +1,12 @@
+import {ApplicationError} from '../shared/error-codes.js';
+import {CanonicalClickHouse,installCanonicalStore,getCanonicalStore} from './canonical-clickhouse.js';
 import {randomUUID} from 'node:crypto';
 import {beginPartitionSnapshot} from './db.js';
 import type {Pool, PoolClient} from 'pg';
 import type {SnapshotReadOptions,StoredEvent} from './clickhouse-store.js';
 import {ClickHouseStore} from './clickhouse-store.js';
 export interface EventReadOptions extends SnapshotReadOptions {client?: PoolClient}
-export interface EventReadResult {events: StoredEvent[]; source: 'postgres' | 'clickhouse' | 'hybrid'; mode: string; fallbackReason?: string; generation?: string; epoch?: string; watermark?: Date | string | null; coverage: number;consistency?:'captured_pg_rr'|'verified_current_replica';replicaGeneration?:string;deltaRows?:number;capturedOutboxId?:string;retentionBoundary?:string;rangeStatus?:string;uvStatus?:string;truncated?:boolean;limit?:number}
+export interface EventReadResult {events: StoredEvent[]; source: 'postgres' | 'clickhouse' | 'hybrid'; mode: string; fallbackReason?: string; generation?: string; epoch?: string; watermark?: Date | string | null; coverage: number;consistency?:'captured_pg_rr'|'verified_current_replica';replicaGeneration?:string;deltaRows?:number;capturedOutboxId?:string;retentionBoundary?:string;rangeStatus?:string;uvStatus?:string;truncated?:boolean;limit?:number;canonicalEpoch?:string;canonicalDeletionEpoch?:string;deletionEpoch?:string;authority?:'postgres'|'clickhouse'}
 function pgEventQuery(siteId:string,options:EventReadOptions){
   const params: unknown[] = [siteId]; const clauses = ['e.site_id=$1'];
   if (options.from) {params.push(options.from); clauses.push(`e.ts>=$${params.length}`);}
@@ -19,6 +21,9 @@ function pgEventQuery(siteId:string,options:EventReadOptions){
   const limit=options.limit===undefined?'':(params.push(options.limit),`LIMIT $${params.length}`);
  return {sql:`SELECT e.* FROM events e WHERE ${clauses.join(' AND ')} ORDER BY e.ts ${options.order==='desc'?'DESC':'ASC'},e.event_id ${options.order==='desc'?'DESC':'ASC'} ${limit}`,params};
 }
+export function installCanonicalEventStore(pool:Pool,store:CanonicalClickHouse|null){installCanonicalStore(pool,store);}
+async function canonicalAuthority(pool:Pool,siteId:string,client?:PoolClient){return (await(client||pool).query('SELECT authority,epoch::text,deletion_epoch::text,raw_pruned FROM canonical_event_authority WHERE site_id=$1',[siteId])).rows[0];}
+export async function captureEventReadState(pool:Pool,siteId:string,options:{client?:PoolClient}={}):Promise<Omit<EventReadResult,'events'>>{const authority=await canonicalAuthority(pool,siteId,options.client);if(authority?.authority==='clickhouse'){const store=getCanonicalStore(pool);if(!store)throw new ApplicationError('canonical_unavailable');const client=options.client||await pool.connect();try{const state=await store.captureReadState(client,siteId);return {source:'clickhouse',mode:'canonical_clickhouse',coverage:1,authority:'clickhouse',epoch:state.epoch,canonicalEpoch:state.epoch,deletionEpoch:state.deletionEpoch,canonicalDeletionEpoch:state.deletionEpoch,watermark:state.watermark};}catch{throw new ApplicationError('canonical_unavailable');}finally{if(!options.client)client.release();}}const state=(await(options.client||pool).query('SELECT epoch::text,generation::text,watermark FROM aggregation_state WHERE site_id=$1',[siteId])).rows[0];return {source:'postgres',mode:'postgres',coverage:1,authority:'postgres',epoch:state?.epoch,generation:state?.generation,watermark:state?.watermark};}
 const stores = new WeakMap<Pool, EventStore>();
 export function installEventStore(pool: Pool, store: EventStore): void {stores.set(pool, store);}
 export async function readSiteEvents(pool: Pool, siteId: string, options: EventReadOptions = {}): Promise<EventReadResult> {return (stores.get(pool) || new EventStore(pool)).readSiteEvents(siteId, options);}
@@ -37,6 +42,14 @@ export class EventStore {
   if(options.limit===undefined)return {...result,...metadata,coverage:incomplete?0:result.coverage};const truncated=result.events.length>options.limit;return {...result,...metadata,events:result.events.slice(0,options.limit),limit:options.limit,truncated,coverage:truncated||incomplete?0:result.coverage};
  }
  private async read(siteId: string, options: EventReadOptions): Promise<EventReadResult> {
+  const authority=await canonicalAuthority(this.pool,siteId,options.client);
+  if(authority?.authority==='clickhouse'){
+   const events:StoredEvent[]=[];let bytes=0;let metadata:EventReadResult|undefined;const limit=options.limit===undefined?100001:options.limit;
+   for await(const batch of canonicalBatches(this.pool,siteId,{...options,limit},1000)){metadata=batch;for(const event of batch.events){bytes+=Buffer.byteLength(JSON.stringify(event));if(bytes>128*1024*1024)throw new ApplicationError('canonical_read_limit');events.push(event);}}
+   if(options.limit===undefined&&events.length>=100001)throw new ApplicationError('canonical_read_limit');
+   return {...metadata,events,source:'clickhouse',mode:'canonical_clickhouse',coverage:1};
+  }
+
   if (options.client) return this.postgres(siteId, options, {fallbackReason: 'transaction_snapshot_requires_postgres'});
   if (!this.clickhouse) return this.postgres(siteId, options, {fallbackReason: 'clickhouse_not_configured'});
   const state = (await this.pool.query('SELECT e.*,a.generation::text AS current_generation,a.epoch::text AS current_epoch FROM aggregation_state a LEFT JOIN event_store_state e USING(site_id) WHERE a.site_id=$1', [siteId])).rows[0];
@@ -90,9 +103,22 @@ export async function readIdentityEvents(pool:Pool,siteId:string,options:EventRe
 /** Cursor batches keep a caller's RR transaction and epoch intact. Worker publication still performs its CAS fence. */
 export async function* streamSiteEventBatches(pool:Pool,siteId:string,options:EventReadOptions={},batchSize=1000):AsyncGenerator<EventReadResult>{
  if(!Number.isInteger(batchSize)||batchSize<1||batchSize>1000)throw Error('EVENT_BATCH_LIMIT');
+ if((await canonicalAuthority(pool,siteId,options.client))?.authority==='clickhouse'){yield* canonicalBatches(pool,siteId,options,batchSize);return;}
  const owned=!options.client;const client=options.client||await pool.connect();const cursor=`events_${randomUUID().replaceAll('-','')}`;let opened=false;let completed=false;
  try{if(owned)await beginPartitionSnapshot(client);const state=(await client.query('SELECT generation::text,epoch::text,watermark FROM aggregation_state WHERE site_id=$1',[siteId])).rows[0];const {sql,params}=pgEventQuery(siteId,options);await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR ${sql}`,params);opened=true;
   while(true){const events=(await client.query(`FETCH FORWARD ${batchSize} FROM ${cursor}`)).rows as StoredEvent[];if(!events.length)break;yield {events,source:'postgres',mode:'postgres',generation:state?.generation,epoch:state?.epoch,watermark:state?.watermark,coverage:1,fallbackReason:'transaction_snapshot_requires_postgres'};}
   await client.query(`CLOSE ${cursor}`);opened=false;if(owned)await client.query('COMMIT');completed=true;
  }finally{if(opened)await client.query(`CLOSE ${cursor}`).catch(()=>{});if(owned&&!completed)await client.query('ROLLBACK').catch(()=>{});if(owned)client.release();}
+}
+
+/** Exact canonical manifests staged on disk in PG; no whole event array. */
+async function* canonicalBatches(pool:Pool,siteId:string,options:EventReadOptions,batchSize:number):AsyncGenerator<EventReadResult>{
+ const store=getCanonicalStore(pool);if(!store)throw new ApplicationError('canonical_unavailable');const owned=!options.client,client=options.client||await pool.connect();const table='canonical_read_'+randomUUID().replaceAll('-',''),cursor='canonical_cursor_'+randomUUID().replaceAll('-','');let started=false,opened=false;
+ try{if(owned){await beginPartitionSnapshot(client);started=true;await client.query('SELECT pg_advisory_xact_lock_shared(hashtextextended($1,0))',[siteId]);}
+  const metadata=await store.captureReadState(client,siteId);await client.query(`CREATE TEMP TABLE ${table}(site_id text,event_id uuid,ts timestamptz,visitor_id text,type text,path text,payload jsonb,is_bot boolean,body jsonb) ON COMMIT DROP`);
+  for await(const events of store.streamCommitted(client,siteId,{snapshotEpoch:metadata.epoch})){await client.query(`INSERT INTO ${table} SELECT x->>'site_id',(x->>'event_id')::uuid,(x->>'ts')::timestamptz,x->>'visitor_id',x->>'type',x->>'path',x->'payload',COALESCE((x->>'is_bot')::boolean,false),x FROM jsonb_array_elements($1::jsonb) x`,[JSON.stringify(events)]);}
+  const {sql,params}=pgEventQuery(siteId,options);await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR `+sql.replace('SELECT e.*','SELECT e.body').replace('FROM events e',`FROM ${table} e`),params);opened=true;
+  while(true){const rows=(await client.query(`FETCH FORWARD ${batchSize} FROM ${cursor}`)).rows;if(!rows.length)break;yield {events:rows.map(r=>r.body as StoredEvent),source:'clickhouse',mode:'canonical_clickhouse',coverage:1,epoch:metadata.epoch,canonicalEpoch:metadata.epoch,canonicalDeletionEpoch:metadata.deletionEpoch,deletionEpoch:metadata.deletionEpoch,authority:'clickhouse',watermark:metadata.watermark};}
+  await client.query(`CLOSE ${cursor}`);opened=false;await client.query(`DROP TABLE ${table}`);if(owned){await client.query('COMMIT');started=false;const fresh=await canonicalAuthority(pool,siteId,client);if(fresh?.authority!=='clickhouse'||fresh.epoch!==metadata.epoch||fresh.deletion_epoch!==metadata.deletionEpoch)throw new ApplicationError('canonical_unavailable');}
+ }catch{if(started)await client.query('ROLLBACK').catch(()=>{});throw new ApplicationError('canonical_unavailable');}finally{if(opened)await client.query(`CLOSE ${cursor}`).catch(()=>{});if(started)await client.query('ROLLBACK').catch(()=>{});if(owned)client.release();}
 }

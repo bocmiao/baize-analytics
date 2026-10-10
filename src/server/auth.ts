@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
 import { hashToken,hashPassword,checkPassword,HttpError } from './security.js';
 import { transaction } from './db.js';
-export function authFunctions(pool:Pool){
+export function authFunctions(pool:Pick<Pool,'query'>){
   async function user(req:FastifyRequest):Promise<User>{
     const bearer=req.headers.authorization?.startsWith('Bearer ')?req.headers.authorization.slice(7):null;
     if(bearer){const found=await pool.query('SELECT u.id,u.email,u.name,u.is_admin FROM api_tokens t JOIN users u ON u.id=t.user_id WHERE t.token_hash=$1 AND NOT t.revoked AND (t.expires_at IS NULL OR t.expires_at>now())',[hashToken(bearer)]);if(found.rowCount)return found.rows[0];throw new HttpError(401,'无效或已过期的 API Token');}

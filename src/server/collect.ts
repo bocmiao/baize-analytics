@@ -1,3 +1,4 @@
+import {ApplicationError} from '../shared/error-codes.js';
 import {siteAllowsOrigin} from './site-hosts.js';
 import type { FastifyInstance } from 'fastify';
 import type { AppContext } from './context.js';
@@ -10,6 +11,8 @@ import {checkIdentity,registerIdentity} from './identity.js';
 import { ingestGovernance } from './governance.js';
 import {eventDimensions as dimensions} from './dimensions.js';
 import {createBotFilter} from './bot-filter.js';
+import {resolveCanonicalIngest,publishCanonicalIngest} from './canonical-ingest.js';
+import type {CanonicalInput} from './canonical-clickhouse.js';
 export {dimensions};
 function cleanEvent(event:WireEvent,ip:string,privacy=false){
   const out={...event};const url=new URL(event.url);url.search='';url.hash='';out.url=url.toString();
@@ -46,10 +49,15 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       if(origin){if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');}
       if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
+      const canonicalTarget=await resolveCanonicalIngest(ctx.pool,client,site.id);
+      const canonicalInput:CanonicalInput[]=[];
       let changed=false;
       for(const [index,rawEvent] of envelope.events.entries()){
         const parsed=eventSchema.safeParse(rawEvent);if(!parsed.success){rejected.push({index,event_id:(rawEvent as any)?.event_id,reason:'invalid_event'});continue;}
         const wire=parsed.data;
+        // These projections still depend on mutable PG event bodies. Never acknowledge
+        // canonical identity/replay until their independent integration is complete.
+        if(canonicalTarget&&(wire.type==='identify'||wire.user_id||wire.type==='replay'))throw new ApplicationError('canonical_unavailable');
         if(site.privacy_mode==='daily_salt'&&wire.type==='identify'){rejected.push({index,event_id:wire.event_id,reason:'identify_unsupported_in_daily_salt'});continue;}
         if(wire.ts>Date.now()+86400000){rejected.push({index,event_id:wire.event_id,reason:'future_event'});continue;}
         if(wire.ts<Date.now()-Number(site.retention_days)*86400000){rejected.push({index,event_id:wire.event_id,reason:'outside_retention'});continue;}
@@ -60,8 +68,8 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         const identity=await checkIdentity(client,site.id,visitor,wire.ts,userId??null,wire.type==='identify');if(!identity.allowed){rejected.push({index,event_id:wire.event_id,reason:identity.reason??'deleted_visitor'});continue;}
         // Hash the unmodified validated wire event, not server-derived dimensions/IP. Retry identity is stable.
         const hash=createHash('sha256').update(canonical(wire)).digest('hex');
-        const existing=await client.query('SELECT hash FROM event_keys WHERE site_id=$1 AND event_id=$2',[site.id,wire.event_id]);if(existing.rowCount){if(existing.rows[0].hash!==hash)rejected.push({index,event_id:wire.event_id,reason:'event_id_conflict'});else{duplicates++;accepted++;}continue;}
         const orderHash=wire.type==='revenue'?visitorHash(site.salt_secret,site.privacy_mode==='daily_salt'?`order:${day}`:'order',wire.order_id!,''):undefined;
+        const existing=await client.query('SELECT hash FROM event_keys WHERE site_id=$1 AND event_id=$2',[site.id,wire.event_id]);if(existing.rowCount){if(existing.rows[0].hash!==hash)rejected.push({index,event_id:wire.event_id,reason:'event_id_conflict'});else{if(canonicalTarget){const receipt=await client.query('SELECT 1 FROM canonical_event_members m JOIN canonical_event_batches b USING(site_id,batch_id) WHERE m.site_id=$1 AND m.event_id=$2 AND b.epoch=$6::uuid UNION ALL SELECT 1 FROM revenue_orders WHERE site_id=$1 AND order_hash=$3 AND currency=$4 AND amount=$5::numeric',[site.id,wire.event_id,orderHash??null,wire.currency??null,wire.revenue??null,canonicalTarget.epoch]);if(!receipt.rowCount)throw new ApplicationError('canonical_unavailable');}duplicates++;accepted++;}continue;}
         if(orderHash){
           const order=await client.query('SELECT currency,amount=$3::numeric AS same_amount FROM revenue_orders WHERE site_id=$1 AND order_hash=$2',[site.id,orderHash,String(wire.revenue)]);
           if(order.rowCount){
@@ -79,13 +87,15 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
           const { replayIsMasked }=await import('./governance.js');if(!replayIsMasked(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'unmasked_replay'});continue;}
         }
         await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);
-        await client.query('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[site.id,wire.event_id,new Date(wire.ts),visitor,clean.page_id,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(metadata)]);
+        if(canonicalTarget)canonicalInput.push({acceptedHash:hash,event:{site_id:site.id,event_id:wire.event_id,ts:new Date(wire.ts),visitor_id:visitor,page_id:clean.page_id,type:wire.type,path:wire.path,payload:clean,dimensions:Object.fromEntries(Object.entries(metadata).filter((entry):entry is [string,string]=>typeof entry[1]==='string')),is_bot:false}});
+        else await client.query('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[site.id,wire.event_id,new Date(wire.ts),visitor,clean.page_id,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(metadata)]);
         if(orderHash)await client.query('INSERT INTO revenue_orders(site_id,order_hash,visitor_id,event_id,ts,currency,amount,privacy_mode,order_day) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[site.id,orderHash,visitor,wire.event_id,new Date(wire.ts),wire.currency,String(wire.revenue),site.privacy_mode,site.privacy_mode==='daily_salt'?day:null]);
         await ingestGovernance(client,site,clean as unknown as Record<string,unknown>,visitor);
-        for(const [key,value] of Object.entries(clean.props??{}))await client.query('INSERT INTO event_data(site_id,event_id,ts,data_key,data_type,string_value,number_value,boolean_value) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[site.id,wire.event_id,new Date(wire.ts),key,typeof value==='string'?'s':typeof value==='number'?'n':'b',typeof value==='string'?value:null,typeof value==='number'?value:null,typeof value==='boolean'?value:null]);
+        if(!canonicalTarget)for(const [key,value] of Object.entries(clean.props??{}))await client.query('INSERT INTO event_data(site_id,event_id,ts,data_key,data_type,string_value,number_value,boolean_value) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[site.id,wire.event_id,new Date(wire.ts),key,typeof value==='string'?'s':typeof value==='number'?'n':'b',typeof value==='string'?value:null,typeof value==='number'?value:null,typeof value==='boolean'?value:null]);
         // Identity projection updates happen only on event-time identify transitions.
         await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id) VALUES($1,$2,$3,$4)',[site.id,wire.event_id,new Date(wire.ts),visitor]);changed=true;accepted++;
       }
+      if(canonicalTarget)await publishCanonicalIngest(client,site.id,canonicalTarget,canonicalInput);
       if(changed){await dirtySite(client,site.id);await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);}
     });
     if(ignored)return reply.code(204).send();

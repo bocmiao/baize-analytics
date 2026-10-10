@@ -1,0 +1,46 @@
+{
+  "baseline": "2f0fe97ff5adab9384c2042983343306c7267867",
+  "snapshot": "/tmp/baize-seventh-final.1kMovb",
+  "sourceManifestSHA256": "6873dd0c6d12b131d63176c35047ba827d2b6f4e12664df9b7c05416156f5d0a",
+  "sourceManifestEntries": 224,
+  "unit": {
+    "files": 20,
+    "passed": 84,
+    "failed": 0
+  },
+  "integration": {
+    "files": 65,
+    "passed": 234,
+    "failed": 0,
+    "skipped": 0,
+    "services": "real PostgreSQL, ClickHouse, Redis; native Chromium collection where declared"
+  },
+  "applicationTotal": 318,
+  "e2e": {
+    "passed": 20,
+    "failed": 0,
+    "browserWorkflows": 18,
+    "dateChecks": 2,
+    "seconds": 50.8
+  },
+  "lint": "pass",
+  "types": "pass",
+  "build": "pass",
+  "compiledEntrypoint": "pass",
+  "execution": "Shared regular command reached 318 passed and compiled health; exit1 at browser setup due wrong local executable variable. Corrected local env and fresh-schema migration/compiled entry/native E2E resumed exit0; not a single shared-script exit0. No backend tests were needlessly repeated after env-only correction.",
+  "priorFailuresPreserved": [
+    "seventh-initial-shared-ci-failed.txt",
+    "seventh-gzip-mime-shared-ci-failed.txt",
+    "seventh-318-before-browser-config-failed.txt",
+    "seventh-e2e-fixture-url-failed.txt"
+  ],
+  "scope": "030 typed AI traces/chart plus privacy invalidation; 031 production disk-backed session facts/lease/HWM; 032 guarded CH authority infrastructure; standard MCP; English product prompts and actual UI. No 033/034/035/036/037 or later runtime/ops helper changes in this snapshot.",
+  "remaining": [
+    "033 relational exact-stat backing, its deletion/retention/history restoration integration",
+    "AI distinct start-cohort conversion semantics and durable reservations (known old multi-goal rate semantics corrected in next worktree batch, not claimed complete here)",
+    "Canonical full activation and PG pruning, exact mixed-record replay cleanup, independent complete CH/history restoration and privacy upgrades",
+    "New final Docker image/lifecycle proof",
+    "Real external accounts and real Ollama download/inference remain untested as previously documented"
+  ],
+  "remoteCI": "Only owner-verified CNB223e887 hosted proof applies; no new hosted run claimed; GitHub Actions disabled."
+}

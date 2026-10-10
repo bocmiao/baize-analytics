@@ -6,7 +6,7 @@ This is a private development repository. Feature acceptance is recorded separat
 
 Install Docker and Compose v2, then run `./install.sh` in the existing checkout. The app listens on localhost:3000. Create the first administrator and website in the setup wizard. Secrets are generated locally and preserved on repeated installation.
 
-See docs/deployment.md for backup, new-database restore and downtime upgrade rollback; docs/development.md for validation commands. Application: AGPL-3.0-only. Independent tracker: MIT. No paid feature gates.
+Use the [API manual](docs/en/api.md) for actual routes, permissions, limits and errors; the [migration runbook](docs/en/migration.md) for forward migrations, latest independent deletion journal, files/keys, fresh-volume restore and downtime rollback. [Deployment](docs/en/deployment.md) covers installation/HTTPS and [development](docs/en/development.md) covers validation. Application: AGPL-3.0-only. Independent tracker: MIT. No paid feature gates.
 
 English operations, development, API, migration, compatibility and privacy guides are available in [docs/en](docs/en/README.md).
 
@@ -18,6 +18,6 @@ Data flows from the MIT tracker through Fastify validation and in-memory anonymi
 | Governance and deletion | Real API, database and filesystem tests; see [governance acceptance](docs/ACCEPTANCE_GOVERNANCE.md) |
 | External accounts | Secure connectors and simulated integration; live GSC/GA4/SERP/AI/WeCom accounts have not been validated |
 | Operations | Local Docker install, backup, fresh-volume restore and rollback; see [operations evidence](docs/validation-ops.md) |
-| P2 | Partial; full ClickHouse migration and complete UI localization remain unfinished |
+| P2 | Incremental CH replicas and signed history copy/isolated restore are locally validated; PG remains canonical, full storage/query migration is unfinished. Full UI localization additions await the next immutable acceptance batch |
 
 [Dashboard screenshot](docs/screenshots/dashboard-acceptance.png) uses acceptance events persisted to a real database, not production traffic. Daily-salt mode disables identify, cross-day distinct visitors and retention analysis. The design specifications and detailed development audit reports remain authoritative in Chinese; the English user and operations guides are linked above.

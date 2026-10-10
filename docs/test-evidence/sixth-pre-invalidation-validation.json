@@ -1,0 +1,35 @@
+{
+  "baseMain": "14e355f4348cad64fa6ed32bf24d53d9266fc260",
+  "snapshot": "/tmp/baize-sixth-ci.FCSbyP",
+  "scope": "frozen indexed 030 typed AI/chart and dirty-session planner; before AI deletion invalidation hooks and 031 facts/production worker",
+  "command": "CI_SKIP_INSTALL=1 CI_SKIP_BROWSER_INSTALL=1 bash scripts/ci-common.sh regular",
+  "exit": 0,
+  "unit": {
+    "files": 20,
+    "passed": 84
+  },
+  "integration": {
+    "files": 58,
+    "passed": 205,
+    "services": "real PostgreSQL/ClickHouse/Redis"
+  },
+  "applicationTotal": 289,
+  "e2e": {
+    "passed": 20,
+    "browserWorkflows": 18,
+    "dateFunctionChecks": 2,
+    "durationSeconds": 53.3
+  },
+  "lint": "passed",
+  "types": "passed",
+  "build": "passed",
+  "installation": "existing locked dependencies and installed Chromium reused",
+  "finalReleaseValidation": false,
+  "uncovered": [
+    "AI deletion/replay/restore invalidation hooks",
+    "031 facts and production worker changes",
+    "new production Docker image",
+    "hosted CNB execution of this snapshot"
+  ],
+  "logSha256": "4bd694232798f931ceef93dc97a8006535727cc90351dab89f15de71f77be2c0"
+}

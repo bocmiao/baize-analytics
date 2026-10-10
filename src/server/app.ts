@@ -1,4 +1,6 @@
 import {registerTrackerAssets} from './tracker-assets.js';
+import {invalidateSiteAi} from './ai-invalidation.js';
+import {invalidateSiteFacts} from './session-facts.js';
 import type {Transport} from './outbound.js';
 import {cleanupHistoryBackupFiles} from './history-security.js';
 import {HistoryStore,installHistoryStore,expireHistorySnapshots,cleanupHistoryFailures,historyDeletionBarrier} from './history-store.js';
@@ -19,6 +21,8 @@ import { registerCollect } from './collect.js';
 import { registerAnalytics } from './analytics.js';
 import { registerGovernance } from './governance.js';
 import { registerExternal } from './external.js';
+import { registerMcp } from './mcp.js';
+import {CanonicalClickHouse,installCanonicalStore} from './canonical-clickhouse.js';
 import { runGovernance } from './governance-worker.js';
 import { runWorkerOnce,enforceRetention } from './worker.js';
 import { replayDeletionJournal,invalidateSiteCache } from './deletion.js';
@@ -33,8 +37,8 @@ import {ClickHouseStore} from './clickhouse-store.js';
 import {ClickHouseMirror,registerClickHouseRoutes} from './clickhouse-mirror.js';
 import {EventStore,installEventStore} from './event-store.js';
 import {ExternalError} from './external-errors.js';
-import {resolveApiError} from '../shared/error-codes.js';
-export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;history?:HistoryStore|null;externalTransport?:Transport }
+import {ApplicationError,resolveApiError} from '../shared/error-codes.js';
+export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport }
 export async function createApp(options:AppOptions={}){
   const pool=options.pool??createPool();const dataDir=resolve(options.dataDir??process.env.DATA_DIR??'data');
   const redis=options.redis!==undefined?options.redis:process.env.REDIS_URL?new Redis(process.env.REDIS_URL,{maxRetriesPerRequest:1}):null;
@@ -48,12 +52,15 @@ export async function createApp(options:AppOptions={}){
   const clickhouse=options.clickhouse!==undefined?options.clickhouse:process.env.CLICKHOUSE_URL?new ClickHouseStore({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
   if(clickhouse)ctx.clickhouseMirror=new ClickHouseMirror(pool,clickhouse);
   installEventStore(pool,new EventStore(pool,clickhouse??undefined));
+  const canonical=options.canonical!==undefined?options.canonical:options.clickhouse===null?null:process.env.CLICKHOUSE_URL?new CanonicalClickHouse({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
+  if(canonical)await canonical.initialize();
+  if(canonical!==undefined)installCanonicalStore(pool,canonical);
   const history=options.history!==undefined?options.history:process.env.HISTORY_STORE_ENABLED==='1'&&process.env.CLICKHOUSE_URL?new HistoryStore({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
   if(history)await history.initialize();
   if(history!==undefined)installHistoryStore(pool,history);
   const replay=await replayDeletionJournal(pool,dataDir,undefined,ctx.clickhouseMirror?(client,siteId)=>ctx.clickhouseMirror!.withDeletionBarrier(client,siteId,{all:true}):undefined);for(const siteId of replay.sites)await invalidateSiteCache(ctx,siteId);
   for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version' ~ '^[1-9][0-9]*$'")).rows){
-    await transaction(pool,async client=>{await lockSite(client,site.id);await ctx.clickhouseMirror?.withDeletionBarrier(client,site.id,{all:true});await historyDeletionBarrier(client,pool,site.id);});
+    await transaction(pool,async client=>{await lockSite(client,site.id);const authority=(await client.query('SELECT authority FROM canonical_event_authority WHERE site_id=$1',[site.id])).rows[0];if(authority?.authority==='clickhouse')throw new ApplicationError('canonical_unavailable');await ctx.clickhouseMirror?.withDeletionBarrier(client,site.id,{all:true});await historyDeletionBarrier(client,pool,site.id);await invalidateSiteAi(client,site.id);await invalidateSiteFacts(client,site.id);});
     await invalidateSiteCache(ctx,site.id);
   }
   await runFileCleanup(ctx);
@@ -78,6 +85,7 @@ export async function createApp(options:AppOptions={}){
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
+  await registerMcp(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}

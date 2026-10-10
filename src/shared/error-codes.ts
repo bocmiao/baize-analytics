@@ -1,5 +1,7 @@
 // Fixed public error messages only. Never add provider payloads or dynamic exceptions here.
 export const API_ERRORS = {
+  canonical_unavailable: { statusCode: 503, zh: "权威事件存储暂时不可用，请重试", en: "The authoritative event store is unavailable. Try again later." },
+  canonical_read_limit: { statusCode: 413, zh: "事件结果超过安全读取上限，请缩小范围", en: "The event result exceeds the safe read limit. Narrow the range." },
   internal_error: { statusCode: 500, zh: "内部服务错误，请稍后重试", en: "Internal service error. Try again later." },
   client_request_failed: { statusCode: 400, zh: "请求无法完成，请检查输入与权限", en: "The request could not be completed. Check the input and permissions." },
   invalid_request: { statusCode: 400, zh: "请求参数无效", en: "Invalid request parameters." },

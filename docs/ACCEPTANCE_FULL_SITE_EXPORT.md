@@ -29,3 +29,16 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev ./node_modules
 ```
 
 这是整站非secret事实的JSON/CSV读取与逐表对账，**没有新增自动JSON导入器**，不能称自动迁移恢复已实现。数据库备份/恢复是独立ops验收；此文件不包含盐/凭证/权限，继续开发使用原身份关联需独立安全备份与密钥流程。恢复必须先应用独立删除日志、重建统计/失效缓存和旧任务，不直接重放导出中的历史计划或任务记录。大规模持续导出内存/吞吐不由这38个小fixture及单表100001边界测试证明。
+
+
+## F60 forward additive fact (030)
+
+After F48's independently verified39th GA4 window table, F60 adds the40th explicit safe table `ai_question_evidence(call_id,site_id,evidence,created_at)`. No secret, raw auth identity, system user, unknown/future column or dynamic SQL table selection is added. Composite FK requires the call to belong to the same site; trace JSON uses the existing secret/privacy scrub. The full-export actualPG JSON/CSV readback fixture populates this fact too. Its four tests pass within the F60 five-file24/24 run09:12:14UTC; original earlier failures/results above remain unchanged. This is fact readback, not a promise of JSON automatic import.
+
+
+## AI deletion/restore guard correction
+
+Current-epoch filters were added for initial AI calls, suggestions and final traces after root found that derived AI facts were missing from deletion invalidation. The conservative same-client site AI purge physically erases old snapshots, prose and suggestions while retaining quota ledgers. Full JSON/CSV after actual visitor deletion contain no old AI content; old cached files are physically unlinked, and inserting old AI rows back cannot bypass epoch guards or changed=false journal replay. The production max1 API/privacy test4/4 passed09:30:55UTC. This corrects the lifetime boundary; prior40-table readback passes alone did not prove deletion safety. See `ACCEPTANCE_AI_QUESTION_EVIDENCE.md` for exact scope and the distinction between SQL fact restoration/helper tests and whole-Docker backup/restore.
+
+
+Privacy/export final regression: the combined eight-file run at09:35:22 UTC passed29/29, including actual max:1 production question → JSON/CSV export → deletion during provider response → old files revoked and physically removed → fresh AI tables empty → restored old rows rejected by epoch and erased by journal replay. The fifth API case also rejects deletion during fresh suggestion recheck without returning old comparison evidence. Initial14/15 run failed because shared dev PG lacked031 `analytics_fact_runs`; after the authorized migration command, all original assertions passed. Full details and exact command are in ACCEPTANCE_AI_QUESTION_EVIDENCE.md. This tests row reinsertion plus journal/helper restoration, not a new pg_restore/Docker claim.

@@ -2,11 +2,15 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-最新应用里程碑已推送 main `8b61fc0`，后续 CI 健康检查修复 `4ed81c4`。最近完整应用基准已推进第五里程碑：74文件、272测试（80单元、192真实PG/CH/Redis集成）及19项fresh编译应用Chromium检查通过，0失败/0跳过；共享本地应用脚本EXIT0，复用现有依赖/浏览器，安装未重跑。失败/中止记录完整保留；见 [VALIDATION_MAIN.md](VALIDATION_MAIN.md) 与 fifth-main证据。
+当前已推送 main `14e355f4348cad64fa6ed32bf24d53d9266fc260`。最近不可变第五应用验收：74文件 **272测试 = 80单元 + 192真实PG/CH/Redis集成**，0失败/0跳过；**19检查 = 17真实fresh Chromium浏览器流程 + 2日期函数检查**，不是19个浏览器流程。共享本地应用脚本EXIT0，复用现有锁定依赖/系统Chromium，安装未重跑。应用源码与第五Docker版本关联见 [VALIDATION_MAIN.md](VALIDATION_MAIN.md)、fifth-main证据；不把文档/CI配置提交说成重新运行完整应用。
 
-后续 `040b27e` 单连接错误路径/邀请原子审计的37项相关回归和1项fresh邀请浏览器通过；`9c7f717` F06外链文字隐私的13项相关回归通过。这些重叠专项不能与237相加。028历史存储应用删除/权限/备份恢复闭环、029 GA4精确窗口现纳入第五完整本地验收；新production Docker c61030b4完整生命周期已EXIT0。
+第五production Docker `c61030b4` 完整生命周期EXIT0，201条source/image SHA与main `8b61fc0`对应、30迁移含028/029；安装、独立新DB/文件卷、最新journal校验与重放、worker故障拒绝、升级、缺镜像及已提交schema+503回滚已测。后续CI健康配置与当前030/031、AI图表、语言、bounded-worker改动不在该镜像，仍须下一不可变全量验收。历史单连接/邀请37回归、F06隐私13回归及各专项与完整272重叠，**不能相加**。
 
-最新production Docker `c61030b4` 完整生命周期 EXIT0，201条source/image SHA与main8b61fc0一致、30迁移包含028/029，已覆盖040/F06/本批应用；后续AI/语言/bounded-worker仍须新完整测试和镜像。GitHub Actions已由父线程网页停用且活动YAML归档；父确认c1fa2e4未新增run。CNB私有镜像bootstrap成功，首轮常规CI迁移因daemon/pipeline loopback不同失败，cron已注册但精确事件密钥授权待用户确认；父已核验223e887托管CI cnb-bnd-1k4igl82q，7分31秒EXIT0含18E2E，该旧源不替代第五272/19。完整F/P2仍未完成。
+CNB `223e887` 的 cnb-bnd-1k4igl82q 托管7分31秒EXIT0，18 E2E，父线程页面确认；完整应用测试总数未提供，不能推算或替代第五本地272/19。首轮迁移loopback失败、cron精确事件鉴权失败、本地容器安装DNS中止等证据保留。GitHub Actions活动YAML已归档并停用，不启用/重跑；cron成功/按钮渲染仍须实际验收。仓库私有、未外网部署、不修改其他仓库。
+
+第六 pre-deletefix 冻结阶段实际共享本地脚本EXIT0：20单元文件84项 + 58真实集成文件205项 = **289测试**；20 E2E检查 = **18真实浏览器 + 2日期函数**（53.3秒）。这是阶段验收，未包含随后AI物理文件清理hooks/031和worker新改动，尚未作为最终main/镜像验收，不替代顶部第五272/19，也不相加。
+
+本轮AI typed-question trace/chart、安全历史问题读取、031删除派生AI与bounded-session planner/语言一致性为**工作树在制**；独立测试通过只能证明对应专项，未获得下一main SHA/全量/镜像前不纳272。F65完整中英API/迁移用户手册已补，文档curl/SSE本地验证另列，不增加应用测试数。所有“做什么/采集端/实现”段是原规格目标摘录，不等于当前实现；若与上方状态/边界不同，以真实状态与用户手册为准，不把设计示例中的pnpm、BullMQ/HLL或未来接口当已交付。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
@@ -395,7 +399,7 @@
 - 状态：已实现已测（本地）
 - 实现文件：src/server/governance.ts
 - 验收测试：governance.test.ts（真实HTML与CSP）
-- 边界/未实测：真实单图表HTML、nonce脚本及精确origin frame-ancestors；密码分享需独立token-only嵌入，不支持iframe自定义密码请求头。
+- 边界/未实测：真实单图表HTML、nonce样式及精确origin frame-ancestors；密码分享需独立token-only嵌入，不支持iframe自定义密码请求头。
 
 - 单图表嵌入自家后台：/embed/chart?type=top-pages&token=只读token；嵌入域名白名单用 **CSP `frame-ancestors`** 实现（X-Frame-Options 只有 DENY/SAMEORIGIN，做不了任意域名白名单）。
 
@@ -456,10 +460,10 @@
 
 ## F-44 API【P0/P1】
 
-- 状态：已实现已测（本地）
+- 状态：P0站点API本地验收；P1标准MCP server未交付
 - 实现文件：src/server/context.ts；governance.ts；external.ts
 - 验收测试：core-api.test.ts；governance.test.ts；external.test.ts
-- 边界/未实测：站点scoped token/hash/到期/吊销、限流、统计管理API及只读语义工具；外部MCP客户端兼容矩阵未实测。
+- 边界/未实测：站点scoped token/hash/到期/吊销、限流、统计管理API及HTTP只读typed语义工具已实现；当前未发现标准MCP协议server/客户端接线，不能把query_analytics模型工具或HTTP语义查询冒充标准MCP。P1 server与真实MCP客户端兼容仍未完成。
 
 - 统计查询 API（/api/v1/stats/*，Token 鉴权 + 限流）；管理 API（站点/目标 CRUD）；Token 可吊销、设过期。
 - P1 加 MCP 只读 server（给 AI 助手的语义工具，抄 Rybbit/OpenGSC）。
@@ -476,7 +480,7 @@
 ## F-46 一键删除访客数据【P0】
 
 - 状态：已实现已测（本地）；增强新卷恢复已测
-- 实现文件：src/server/deletion.ts；file-cleanup.ts；cli.ts
+- 实现文件：src/server/deletion.ts；src/server/file-cleanup.ts；scripts/restore-runtime.ts
 - 验收测试：core-api.test.ts；governance-file-cleanup.test.ts；docs/validation-ops.md
 - 边界/未实测：入口/worker tombstone、同站锁、fsync独立日志、generation/缓存失效、身份展开删除与JSON/CSV/tmp物理清理已测；新卷恢复已通过删除/中立资产场景，完整增强升级演练EXIT0，日志 /tmp/baize-ops-fresh-restore.log。
 
@@ -533,10 +537,10 @@
 
 ## F-52 百度搜索资源平台【P1】
 
-- 状态：未实现（官方接口未核验）
-- 实现文件：docs/ACCEPTANCE_EXTERNAL.md
-- 验收测试：未运行真实官方接口测试
-- 边界/未实测：无可核验官方流量关键词API文档；明确unsupported，不杜撰端点，不申请账户或购买服务。
+- 状态：公开文档可行性已查；普通站长搜索分析公开读取API未证实，连接器未实现。
+- 实现文件：docs/BAIDU_API_FEASIBILITY.md；src/server/external.ts（unsupported-unverified状态）
+- 验收测试：未运行真实官方账号/API读取；此前网络CONNECT403失败记录保留。
+- 边界/未实测：截至2026-10-10，父线程官方文档核验：搜索资源[搜索分析](https://ziyuan.baidu.com/college/articleinfo?id=3415)有点击/展现/关键词/平均排名/热门页说明，但未找到普通站长公开文档化读取API，不能断言不存在。[2015关键词下载说明](https://ziyuan.baidu.com/wiki/571)没有当前CSV实际样本；收录接口是URL提交而非搜索分析读取。[百度统计搜索词接口](https://tongji.baidu.com/api/manual/Chapter1/source_searchword_a.html)为PV/UV搜索词，不是自然搜索展现/排名。不杜撰端点，不新建统计连接器，不购买/申请凭据。手动自定义模板/列映射在制或待明确，原生CSV兼容必须有实际样本后另验。
 
 - 官方 API（需站点验证）拉流量与关键词数据；国内独一份（13 家海外全无）。
 - 注意：本轮未找到可直接引用的官方 API 接口文档，"流量/关键词 API"的具体端点与配额**待核验**，P1 立项前先做接口可行性验证。
@@ -611,10 +615,10 @@
 
 ## F-60 自然语言问数【P1】
 
-- 状态：已实现已测（只读工具/模拟模型）
-- 实现文件：src/server/external.ts；src/web/Connectors.tsx
-- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：只读typed语义工具无任意SQL、权限与daily_salt guard；可返回数据图，真实模型问数质量与第三方MCP客户端未实测。
+- 状态：基础只读工具已本地验收；新增可验证工具trace/图表在制，待下一不可变全量batch。
+- 实现文件：src/server/external.ts；src/server/ai-evidence.ts；src/web/Connectors.tsx；docs/api.md
+- 验收测试：external.test.ts；ACCEPTANCE_AI_QUESTION_EVIDENCE.md；ACCEPTANCE_EXTERNAL.md（新增专项不可加到272）
+- 边界/未实测：typed查询/权限/daily_salt guard已测。工作树新增questionEvidence、确定性chart、query/result版本与授权证据、历史问题读取及同client原子预算；独立24PG/相关浏览器专项通过但未纳已推第五source。模型收到用户问题和获授权聚合，不是“从不发问题”；真实模型质量、第三方MCP客户端仍未实测。
 
 - "上周微信来的 iOS 用户转化率多少？"→ 走 MCP 只读工具（F-44）→ 模型组装查询 → 返回数字+图表；guardrail：只能查有权限站点、只读聚合。
 
@@ -659,14 +663,14 @@
 - 状态：已实现已测（主要中英用户文档）
 - 实现文件：README.md；README.en.md；docs/
 - 验收测试：docs/ACCEPTANCE_WEB.md；validation-ops.md；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：实际PG截图、安装、Mermaid数据流、验收矩阵、API/开发/隐私删除文档已补；docs/en已提供部署/开发/API/迁移/兼容/隐私/验证英文入口；项目规格和开发审计报告仍中文。
+- 边界/未实测：实际PG截图、安装、Mermaid数据流、验收矩阵已补。本轮完整中文/英文用户API与迁移运行手册约81kB，逐真实路由/权限/限制/错误/无通用分页，区分站点100k/table导出与PG全库backup、GA4精确窗口、独立最新journal/files/key恢复与CH非canonical。真实本地HTTP/PG文档curl/SSE样例EXIT0，链接及shell语法检查通过；新AI/031明确在制。项目规格与审计报告仍中文，不等于用户手册缺失。
 
 - README：截图/GIF 占位、一键安装、5 分钟上手、架构图、功能矩阵；docs/：部署、反代、升级、迁移、API、二次开发。
 
 ## F-66 upgrade.sh【P0】
 
 - 状态：已实现已测（真实Docker）；增强场景EXIT0
-- 实现文件：upgrade.sh；backup.sh；restore.sh
+- 实现文件：upgrade.sh；scripts/backup.sh；scripts/restore.sh
 - 验收测试：docs/validation-ops.md；scripts/ops-lifecycle-test.sh
 - 边界/未实测：恢复点含DB/卷/密钥分离，迁移锁、503/缺镜像/已提交schema回滚旧DB已实际演练；增强独立新卷/严格journal场景通过，完整增强脚本EXIT0，日志 /tmp/baize-ops-fresh-restore.log。
 
@@ -675,7 +679,7 @@
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：**部分实现，本地阶段验收通过**。9cd7 的 180 项全量测试包含真实 PG/CH/Redis 完整脱敏镜像、选择性读切换、租约/epoch/count fencing、故障明确 PG fallback、删除/恢复屏障、启动隐私失败关闭和独立副本恢复隔离；新 f8dc Docker 同源代码与 25 迁移已验证。详见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)。PG 仍是权威；worker/rollups/governance/identity/realtime/事件属性等仍 PG。PG 仅存元数据、全面查询切换、增量分区/历史迁移、CH 集群备份与大容量验收仍未完成；不能把镜像阶段标作全部 P2 完成。
+- P2-01 ClickHouse 明细可选迁移：**部分实现，本地阶段验收通过，canonical迁移未完成**。025增量副本与PG尾部混合读取、snapshot/count/epoch/lease fencing、失败显式PG fallback、删除/恢复屏障已测；028历史raw/hourly/daily/vitals manifest、签名文件/版本key备份、隔离namespace恢复、权限/应用删除与独立journal闭环纳入第五272/19。详见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)、[ACCEPTANCE_HISTORY_STORE.md](ACCEPTANCE_HISTORY_STORE.md)。PG仍权威；worker、rollup、governance export RR和身份元数据等仍PG。不是“仅PG”也不是“仅元数据PG”的全面CH切换；canonical读/存储迁移、CH集群灾备和大容量/持续删写SLO未完成。第五c610 Docker未另开启可选history/CH模式，不扩大为全部P2验收。
 - P2-02 隐私优先会话回放：**已实现且本地专项验收**。opt-in、服务端严格遮罩、真实 rrweb sandbox player 已测；9cd7 专项进一步验证多 SPA/多标签三页面实例各自完整 snapshot、独立播放/Play/Pause、私密文本不进入播放器与 API、真实 metadata/过滤。证据 tracker-collector.test.ts、tracker-replay-heatmap.test.ts、third-main-tests.json、ACCEPTANCE_WEB.md。复杂真实站点/CSS 还原兼容与更多浏览器未全矩阵实测；当前是保守结构回放，不恢复远端资源或遮罩文本。
 - P2-03 热力图：**已实现且本地专项验收**。真实 opt-in 点击/四档滚动、不同页面与 1000/400 CSS 视口独立分桶、敏感 input/select/private 排除、不可变重试计数不增、真实 API 过滤及 SVG 呈现已验。包含 9cd7 全 180 项与 15 项 fresh-E2E；一次异步滚动失败及修正后的重测保留证据。坐标为文档百分比，不使用演示底图或宿主截图；任意复杂响应式/无限滚动、真实站点兼容仍未全矩阵验证。
 - P2-04 A/B 实验归因：**已实现且本地专项验收**。真实同意门控、确定性 visitor 分组、实际 SDK 目标→唯一转化访客、停止/继续分配且保留历史与稳定 variant、权限/审计已测。双比例检验/Bonferroni 修正/Wilson 转化率区间和不足样本保护、账号 A→B 删除保留 B/独立日志重放、event_id+ts 幂等、旧无明细历史禁显著性均有真实 PG/浏览器证明，纳入 9cd7 的 180/15。固定周期是统计方法约定，当前不由平台强制锁定结束时间；观察归因不证明真实支付或因果。
@@ -686,12 +690,27 @@
 - P2-09 Ollama 本地模型：**连接器本地验收；真实 Ollama 推理受现有网络阻断未实测**。管理员窄范围内网例外和真实本地HTTP模拟传输通过。实际检查5可用CPU/约29GiB可用内存/4.1GiB磁盘，未装Ollama；官方二进制下载CONNECT被现有代理403拒绝，curl报告56。不是缺账号，不修改网络、不申请凭据；见ollama-runtime-probe.json。
 - P2-10 Cookie 同意横幅：**已实现且本地真实浏览器验收**，与 F-50 同功能同证据。独立 tracker-consent.js 构建，真实点击前无 ID/PG 数据、点击后采集及撤回通过 tracker-hooks.test.ts。与 F-50 状态一致；更多真实 CMP/主题组合未实测，不能把核心横幅继续列为未实现。
 
-## 集中剩余清单（不代表全部验收）
+## 当前未完成与未实测（不与历史验收混合）
+
+| 目标 | 当前状态 | 尚需完成/证明 |
+|---|---|---|
+| F60可验证问数trace/chart/历史问题 | 工作树生产接线、独立测试已过 | 下一不可变main完整应用+浏览器/镜像；真实模型问数质量另列 |
+| F46/031删除AI派生证据与历史答案 | 在制 | 整site失效AI衍生答案/证据/建议，保留预算账本；真实删除/旧备份journal重放回归、文档随实际接线更新 |
+| 规模/bounded-session planner | 在制 | 集中大站/持续采集查询删写、真实RSS/lag/失败；不能用旧1M背景关闭顺序worker当生产SLO |
+| P2-01 CH canonical迁移 | 部分 | PG仅元数据/全面查询切换、集群灾备、大容量持续混合负载；已有incremental/history闭环不重复列未实现 |
+| F44 P1标准MCP server | 未交付 | 当前仅HTTP/模型typed工具；协议server、站点鉴权和实际客户端接线需实现/验收 |
+| F52百度官方接口 | 公开可行性已查，普通站长公开读取未证实；未实现连接器 | 官方公开接口/授权/数据字典仍待明确；2015下载说明无当前CSV样本，手动模板/列映射不称原生兼容；旧CONNECT403记录保留 |
+| F11/F48/F51/F54/F63、通知/企业SSO/商业AI | 安全连接器本地验收，真实外部未测 | Google/MaxMind/SERP/SMTP/企业WeCom/Server酱等实际账号/许可/交付；不购买或创建生产凭据 |
+| P2-09真实Ollama | 资源可行，现有下载网络阻断 | 官方二进制CONNECT403、curl56，未安装/下载模型/真实推理；不是缺账号 |
+| P2-05微信小程序、F61 Windows | 本地SDK/脚本存在 | 真机/实际账号与Windows运行，不把Linux/注入传输替代 |
+| P2-08全量多语言 | 部分，最新语言补齐在制 | 所有后台错误/任务原因/高级控件与模型事实说明一致性新batch；不自动翻译用户事实 |
+| CNB定时/第五及新增应用托管 | 旧223 regular成功 | cron授权实际成功、按钮渲染、当前应用新source托管；不把旧18E2E混本地272/19 |
+| 真实站点兼容矩阵 | 部分 | 回放CSS/复杂响应式/无限滚动、各设备/浏览器、WP主题/CMP组合；已有真实WP/consent验收保留 |
 
 - **已实现且本地证明**：9cd7 精确索引 lint/type/build、180 应用测试和 15 fresh-E2E 通过；收入趋势/归因专页、事件时间身份/明确跨设备注册→正收入专页、回放/响应式热图/A/B 专项、WordPress 实际运行与 Cookie 横幅均有对应本地证据，不再列为待实现。新 f8dc Docker 170 条源码 hash、25 条迁移与完整生命周期 EXIT0；该矩阵不代表新增 Docker-Chromium 或真实外部账户验收。
-- **第四批已实现且本地验收**：F29完整会话流失特征/API/UI、F30成熟期留存与缺口诚实标记、F22完整实时Top与SSE更新、38张表安全全站导出、稳定中英错误、明确白名单跨子域身份与撤回、真实本地SEO整改复检均纳入66文件237测试与fresh18E2E通过。025增量CH副本/PG尾部混合读取已测；不能称PG-only或全面P2迁移。第四新镜像bf77完整生命周期实际EXIT0，28迁移含025/026/027，189镜像hash一致；最新单连接错误分支与邀请原子审计040b27e另有7文件37回归、fresh邀请E2E1项通过，不在bf77镜像，下一新镜像仍需覆盖；028历史复制/恢复与应用删除/权限/journal闭环现纳入第五272/19本地验收；仍非PG-only。
+- **历史第四批（保留版本证据，不作为当前剩余项）**：F29完整会话流失特征/API/UI、F30成熟期留存与缺口诚实标记、F22完整实时Top与SSE更新、38张表安全全站导出、稳定中英错误、明确白名单跨子域身份与撤回、真实本地SEO整改复检均纳入66文件237测试与fresh18E2E通过。025增量CH副本/PG尾部混合读取已测；不能称PG-only或全面P2迁移。第四新镜像bf77完整生命周期实际EXIT0，28迁移含025/026/027，189镜像hash一致；最新单连接错误分支与邀请原子审计040b27e另有7文件37回归、fresh邀请E2E1项通过，不在bf77镜像，已由后续第五c610镜像覆盖；028历史复制/恢复与应用删除/权限/journal闭环现纳入第五272/19本地验收；仍非PG-only。
 - **持续后台性能已有限实测，仍非资源/SLO承诺**：100k/1M PG-only顺序链路证据保留，百万40站先采集后聚合，不能称实时负载。旧9cd7真实分区维护40P01已防御修复并真实PG回归；912单站10k EXIT0、四站20k暴露调度饥饿及最终查询采样缺陷（失败保留），027公平调度后不可变77d5f615四站20k持续后台采集+查询 EXIT0，每站水位在写入期间前进、最终PG/HTTP/outbox一致。发布水位滞后p95 8.836秒、Node峰值约791MiB；共享主机、非1C2G隔离，无实时SLO承诺。详见 [validation-continuous-scale.md](validation-continuous-scale.md)。Windows安装在Linux未运行，更多真实设备/CMP/复杂站点组合未全验。
-- **真实外部未实测**：Google GA4/GSC、MaxMind 授权下载及地域准确率、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业 SSO、商业 AI；真实Ollama属于本地自托管、无账号要求，官方工具下载被现有代理403阻断（资源探针单列）；安全连接器、模拟集成及本地 HTTP 返回不替代外部账号验收。F52 官方流量/关键词接口可行性仍未核验：官方文档读取被既有代理 CONNECT 403 阻断（origin 000），并非百度拒绝或无 API 的证明；证据见 [BAIDU_API_FEASIBILITY.md](BAIDU_API_FEASIBILITY.md)。不杜撰端点、不以 SERP/referrer 替代、不购买或创建生产凭据。
+- **真实外部未实测**：Google GA4/GSC、MaxMind 授权下载及地域准确率、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业 SSO、商业 AI；真实Ollama属于本地自托管、无账号要求，官方工具下载被现有代理403阻断（资源探针单列）；安全连接器、模拟集成及本地 HTTP 返回不替代外部账号验收。F52父线程已核验公开产品说明，但普通站长公开搜索分析读取API仍未证实；此前官方首页CONNECT403未到origin记录保留，并非百度拒绝或无API证明；当前CSV原生兼容无样本；证据见 [BAIDU_API_FEASIBILITY.md](BAIDU_API_FEASIBILITY.md)。不杜撰端点、不以 SERP/referrer 替代、不购买或创建生产凭据。
 - **远端/发布边界**：GitHub托管CI因账号计费/额度在执行前阻断，尚未运行；CNB私有镜像bootstrap普通push已由父验证，cron已注册但精确事件密钥鉴权失败未重试；885e4e8同网络修复及223e887按钮已推送，9本地Git分支通过，父已验证223e887托管cnb-bnd-1k4igl82q EXIT0、18E2E；第五新增应用尚未托管验收，按钮渲染/cron成功仍待实际证明。GitHubActions已停用归档，无启用/重跑。本地命令通过不代表托管run。仓库保持私有，未外网部署、不改其他仓库。
 - **实现与规模偏差持续披露**：exact 访客集合代替 HLL、持久 PG 任务代替 BullMQ、部分精确时间/过滤查询重建保留明细。正确性已本地测试，但事件内存/吞吐、持续混合写删、超保留边界、CH 128 MiB 源预算和大站增量设计仍需继续验收。
 

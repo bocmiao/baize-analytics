@@ -114,3 +114,20 @@ Playwright globalSetup 现在在任何测试文件运行前通过真实浏览器
 新增 `ga4-history.spec.ts` 在独立端口、新真实 PG schema 启动完整 createApp，通过实际浏览器管理员→站点→snippet 向导、加密配置和后端导入；仅 Google 出站 Transport 显式模拟，未使用页面 API route.fulfill 或数据库注入统计。验证整段7用户与每日6/5不相加、每日及每周/来源、America/Los_Angeles、constructor来源名、二次导入阈值、英文与未匹配窗口不显示旧7、viewer读取及真实撤销后英文403。隔离配置单项运行 1/1 通过（3.7秒），lint/type及Vite构建通过。证据：[ga4-browser-local.json](test-evidence/ga4-browser-local.json)。
 
 这是当前工作区的本地专项，尚待后续独立索引全集（预期19项）验收；Google真实账号、token授权与Data API配额未实测，不能由模拟传输结果替代。
+
+
+### F60 真实语义图表与 P2 固定文案（本地专项通过，待新索引）
+
+问数 UI 严格校验共享 `aiQuestionEvidenceSchema`，只从已执行且权限核验的工具 trace 绘制图表与可核对表格，不从模型文本解析或编造数据。显示查询期间、站点时区、自然日精度、覆盖/水位、代次、截断组数；转化率显示分子与分母，null 保留不可用。保存问数重新读取真实 GET 记录，未完成或 legacy-unverified 记录清除图表，不声称已验证。模型回答及业务名称保留原文，固定隐私/因果风险提示使用产品中英文。
+
+补齐初始化步骤、删除/吊销确认、邀请成功、隐私开关、中国导航、固定实验代码注释与事实统计提示。通知渠道可保存明确语言；单独无密码且有限制 Origin 的分享提供带 lang 的实际嵌入链接/代码，提示普通 iframe 不支持分享密码。地域资产名称和用户来源/页面名称不自动翻译。
+
+`ai-evidence-language.spec.ts` 最终实际运行 1/1 通过（3.8秒）：独立完整 app/PG/浏览器向导、真实3PV与worker、两个真实语义工具 PV3/转化率0（分子0/分母1）、typed 图表/UTC/date/coverage、immutable trace重读不再次调用模型，固定英文提示/保留中文模型回答、通知语言、英文实际嵌入/撤销确认及邀请成功。模型只有出站 Transport 显式模拟，不 mock UI API、不向数据库注入统计、不宣称真实供应商或 Ollama 验收。先前两次选择器失败及修正记录在 [ai-evidence-browser-local.json](test-evidence/ai-evidence-browser-local.json)。Web/E2E lint、全库类型、Vite构建及 diff 检查通过。
+
+当前是工作区专项通过；后续独立索引全集预计20项（18浏览器+2日期），尚未运行不记通过。此处不宣称用户内容、模型文本或所有技术诊断 JSON 全量翻译。
+
+F60 隐私披露复核补充：结果区明确显示模型收到用户输入问题与已授权只读工具聚合，BYOK 将其发送至配置目标，而非仅隐藏 API 中文 privacy 字段。新增 case 精确英文披露断言后，仅重跑该专项：1/1 通过（4.7秒）；scoped lint、全库类型和 Vite 构建通过，旧18项未重复执行。
+
+D 增补复核（独立专项）：所有 main 删除确认入口均使用完整本地化句子；模型配置页初始提示与问数结果一致披露用户输入问题+授权聚合，避免“仅聚合”误导。AskAnalytics 开始新请求清除旧结果，已保存证据错误或未验证状态清除旧答案/图表；证据表格补充可访问名称和列标题 scope。
+
+根允许资源闸后只重跑该 AI 英文专项：1/1 通过（8.6秒）。第二浏览器页面实际执行永久删除、精确英文确认、删除 API 200；旧问数 GET 实际 404 evidence_missing，原页面重新读取显示英文404并清除旧图表/答案，不新增模型请求。既有吊销确认也在同一用例通过。scoped lint、全库类型与 Vite 构建通过，安全错误单元4项通过；其余18项未重跑。本次小改尚未进入后续精确全量快照，当前工作区专项不能代替全量结果。真实模型及 Safari/Firefox/读屏设备仍未实测。

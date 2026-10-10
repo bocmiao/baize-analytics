@@ -38,8 +38,9 @@ export const SITE_EXPORT_QUERIES={
  seo_scans:'SELECT id,site_id,created_at,results FROM seo_scans WHERE site_id=$1',
  rank_history:'SELECT site_id,day,keyword,provider,position FROM rank_history WHERE site_id=$1',
  ai_budget:'SELECT site_id,month,reserved,used FROM ai_budget WHERE site_id=$1',
- ai_calls:'SELECT id,site_id,created_at,purpose,tokens,status,evidence,answer FROM ai_calls WHERE site_id=$1',
- ai_suggestions:'SELECT s.id,s.site_id,s.evidence_id,s.status,s.title,s.confidence,s.implemented_at,s.recheck,s.category,s.priority_score,s.priority_basis FROM ai_suggestions s JOIN ai_calls c ON c.id=s.evidence_id WHERE s.site_id=$1 AND c.site_id=$1',
+ ai_calls:"SELECT c.id,c.site_id,c.created_at,c.purpose,c.tokens,c.status,c.evidence,c.answer FROM ai_calls c JOIN aggregation_state a ON a.site_id=c.site_id WHERE c.site_id=$1 AND c.evidence->'aggregation'->>'epoch'=a.epoch::text",
+ ai_question_evidence:"SELECT q.call_id,q.site_id,q.evidence,q.created_at FROM ai_question_evidence q JOIN aggregation_state a ON a.site_id=q.site_id WHERE q.site_id=$1 AND jsonb_typeof(q.evidence->'tools')='array' AND jsonb_array_length(q.evidence->'tools')>0 AND NOT EXISTS(SELECT 1 FROM jsonb_array_elements(q.evidence->'tools') t WHERE t->'result'->'storage'->>'epoch' IS DISTINCT FROM a.epoch::text)",
+ ai_suggestions:"SELECT s.id,s.site_id,s.evidence_id,s.status,s.title,s.confidence,s.implemented_at,s.recheck,s.category,s.priority_score,s.priority_basis FROM ai_suggestions s JOIN ai_calls c ON c.id=s.evidence_id JOIN aggregation_state a ON a.site_id=c.site_id WHERE s.site_id=$1 AND c.site_id=$1 AND c.evidence->'aggregation'->>'epoch'=a.epoch::text",
  external_connections:'SELECT site_id,kind,settings,updated_at FROM external_connections WHERE site_id=$1',
  external_jobs:'SELECT site_id,kind,job_key,day,status,started_at,finished_at,attempts FROM external_jobs WHERE site_id=$1',
 } as const;
