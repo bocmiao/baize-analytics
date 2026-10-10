@@ -49,3 +49,9 @@ Web Vitals 官方 attribution、rrweb 回放和匿名网格位置热图分别放
 这是最小化处理，不保证任意业务文字或 URL 路径都匿名。站长应给敏感链接添加忽略/私密标记，或用 before-send 钩子进一步清洗；自动文字过滤不能识别伪装账号、任意姓名或所有国际号码格式。真实 Chromium→本地 HTTP 采集→PG/EAV→worker 属性统计→JSON/CSV 导出回归见 `tests/integration/tracker-outbound-text.test.ts`，不使用 mock 采集器。
 
 Root独立索引快照实际lint/typecheck通过，完整build后5文件13 tracker/同意/跨子域/外链专项通过、0失败/0跳过。初次快照未先生成public SDK，导致3个浏览器用例404/ORB/超时；这是本次验证顺序错误，原失败报告保留outbound-isolated-sdk-not-built-failed.json，按CI先build再测后原断言全部通过，未改产品或弱化测试。核心gzip4583字节、min3994字节。本批随后仍需新整应用/Docker集成，不沿用bf77作为这些源码证明。
+
+## 独立分发许可 / Standalone distribution license
+
+构建会将完整 MIT 版权及许可文本复制到 `public/tracker.LICENSE.txt`，所有 tracker 脚本均含版权及该文件引用。独立分发时必须将脚本与此许可文件一起复制并保留扩展中的第三方许可注释；不能只取 JS 丢弃许可文件。
+
+The build copies the full MIT copyright and permission notice to `public/tracker.LICENSE.txt`. Distribute that file together with the tracker scripts, keeping their copyright references and bundled third-party license comments.

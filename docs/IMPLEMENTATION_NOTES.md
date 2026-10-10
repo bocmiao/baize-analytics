@@ -4,6 +4,10 @@
 
 本文件记录对 PROJECT_SPEC.md 中伪代码与示意数据模型的实施修正。原始报告保留，不能把示意 SQL 视为已验证迁移，也不能把本文件视为功能已实现。
 
+## 许可实施决策（覆盖原稿待定项）
+
+主体明确采用 `AGPL-3.0-only`，独立 `packages/tracker` 采用 MIT。该决策覆盖 `PROJECT_SPEC.md` 第24行仍保留的 only/or-later 待定措辞；原调研稿不改写。以根 `LICENSE`、根 `package.json` 及 tracker `LICENSE` 为实施入口。独立 MIT 源码的公共 wire 类型位于 tracker 自身边界，没有运行时或类型路径指向 AGPL server/contracts。仓库与 tracker manifest 的 `private:true` 表示未向 npm 发布；本地分发产物不等于公开发行或完成法律审计。
+
 ## 已确认边界
 
 - 仓库保持私有，未经用户另行授权不公开或部署。

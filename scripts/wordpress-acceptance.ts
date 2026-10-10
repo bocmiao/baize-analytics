@@ -38,7 +38,7 @@ try{
  await page.goto(wpOrigin+'/wp-login.php');await page.locator('#user_login').fill('wp_acceptance');await page.locator('#user_pass').fill(wpPassword);await page.locator('#wp-submit').click();await page.waitForURL('**/wp-admin/**');
  const zipPath=join(temporary,'baize.zip');await command('python3',['-c',`import sys,zipfile,pathlib
 with zipfile.ZipFile(sys.argv[1],'w',zipfile.ZIP_DEFLATED) as z:
- for name in ['baize.php','README.md']:
+ for name in ['baize.php','README.md','LICENSE']:
   entry=zipfile.ZipInfo('baize/'+name)
   entry.external_attr=0o100644<<16
   entry.compress_type=zipfile.ZIP_DEFLATED
