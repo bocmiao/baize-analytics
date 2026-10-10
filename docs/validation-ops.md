@@ -26,3 +26,7 @@
 恢复重算 P1 复检：新增 `runRestoreRebuild` 以数据库持久状态确认每个目标站点 generation=processed_generation、无 lease、attempts=0、无 error/dead-letter 后才允许 `restored/reaggregated` 成功输出；worker 返回 false 不作为完成证据。实际运行 `TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev npm exec vitest -- run tests/integration/restore-rebuild.test.ts`，5/5通过：真实脏数据重算、false但仍dirty拒绝、暂态持久失败可重试、实际SQL42P01失败达到dead-letter拒绝、active lease拒绝假完成。新修正已通过typecheck/lint，最新完整Docker矩阵尚待重跑，不能沿用之前生命周期绿灯证明该版本。
 
 真实恢复脚本 worker 失败验收已加入 `scripts/ops-restore-failure-test.sh` 并接入生命周期：通过本地衍生镜像迁移隐藏 goals 表触发实际 worker SQL42P01，断言目标数据库保留且仍 dirty/dead-letter、没有成功 manifest/成功输出、源应用容器及 DATABASE_URL 保持且 health 正常。失败脚本仅在断言后清理该测试目标。当前仅完成 Bash 语法/diff 检查，此新增 Docker 场景待最终代码稳定后实际运行，尚不能标记通过。
+
+新版首次Docker全矩阵 `/tmp/baize-ops-final-matrix.log` 退出1：前置真实恢复及worker失败验收通过，但其他验收并发拉镜像使vfs磁盘满，最终schema503回滚 `mktemp` ENOSPC，schema未回滚。失败日志和备份保留；隔离测试trap清理了测试数据库，不能声称保留完整诊断现场。修复升级前空间门槛与紧急预留后，实际高门槛拒绝命令通过；顺序清理本任务旧镜像/cache后重跑 `/tmp/baize-ops-final-matrix-retry.log`，当前仍运行中。
+
+最终顺序重跑 `/tmp/baize-ops-final-matrix-retry.log` **退出0**（实际镜像 `6c66d8a80e51`）：严格新库/新卷恢复通过且持久重算 `sites=1,rounds=1,verified=true`；真实 worker SQL42P01 故障导致恢复失败、诊断目标库存在、无成功marker/成功输出、源流量配置与健康不变；同镜像升级、不存在镜像回滚、已提交字段(count=1)+HTTP503失败后数据库/卷/旧应用回滚(count=0,health200)全部通过。22条迁移。新增升级磁盘门槛高阈值实际拒绝通过，128MiB紧急预留随升级/回滚执行。首次ENOSPC失败仍记录而未被覆盖。本次结束仅留下原devPG/Redis，隔离测试栈、目标卷及故障镜像均清理；工作区剩21GiB。没有Git提交或镜像推送。

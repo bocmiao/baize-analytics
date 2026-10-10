@@ -4,3 +4,4 @@
 .quality{font-weight:700}.quality.good{color:#176c51;background:#e0f4e8}.quality.fair{color:#946700;background:#fff4cf}.quality.poor{color:#a73323;background:#ffede7}.language{font-size:11px;color:#6d806f;margin-top:16px}.language select{font-size:12px;padding:6px}
 @media(max-width:600px){.date-range,.segment-filters{flex-wrap:wrap}.date-range label{flex:1;min-width:130px}.segment-filters label{min-width:130px;flex:1}.landing nav{gap:10px}.landing nav .button{padding:10px}.landing nav .language{display:none}}
 @media(max-width:600px){.landing header{flex-wrap:wrap;gap:16px}.landing nav{width:100%}.landing nav .language{display:block;margin-top:0}}
+.segment-filters{flex-wrap:wrap;max-width:100%}.segment-filters label{flex:1 1 180px;min-width:0}.segment-filters>button{align-self:flex-end;white-space:nowrap;margin-bottom:16px}.geography-map{min-height:360px}

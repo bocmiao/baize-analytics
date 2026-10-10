@@ -37,7 +37,7 @@ export async function createApp(options:AppOptions={}){
   await initializeKeyring(pool,config);
   const ctx:AppContext={pool,redis,config,...authFunctions(pool),audit:async(actorId,siteId,action,target)=>{await pool.query('INSERT INTO audit_logs(actor_id,site_id,action,target) VALUES($1,$2,$3,$4)',[actorId,siteId,action,JSON.stringify(target)]);}};
   const replay=await replayDeletionJournal(pool,dataDir);for(const siteId of replay.sites)await invalidateSiteCache(ctx,siteId);
-  for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version' IN ('1','2','3')")).rows)await invalidateSiteCache(ctx,site.id);
+  for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version' ~ '^[1-9][0-9]*$'")).rows)await invalidateSiteCache(ctx,site.id);
   await runFileCleanup(ctx);
   const geo=new GeoIP();await geo.open(dataDir);
   ctx.geoReload=async(enabled=true)=>{if(enabled)await geo.open(dataDir);else geo.disable();};

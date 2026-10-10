@@ -40,8 +40,8 @@ export async function purgeIdentity(client:PoolClient,site:string,records:Identi
   if((await client.query("SELECT to_regclass('revenue_orders') AS relation")).rows[0].relation)await client.query(`DELETE FROM revenue_orders WHERE ${predicate}`,args.slice(0,4));
   // Remove conversion facts only inside the deleted identity episode, then retain B's valid facts.
   if((await client.query("SELECT to_regclass('experiment_contributions') AS relation")).rows[0].relation){
-   const affected=(await client.query(`DELETE FROM experiment_contributions WHERE ${predicate} RETURNING experiment_id`,args.slice(0,4))).rows.map(row=>row.experiment_id);
-   if(affected.length)await client.query(`UPDATE experiment_assignments a SET converted=EXISTS(SELECT 1 FROM experiment_contributions c WHERE c.experiment_id=a.experiment_id AND c.visitor_id=a.visitor_id) WHERE a.visitor_id=$1 AND a.experiment_id=ANY($2::uuid[])`,[record.visitor_id,affected]);
+   await client.query(`DELETE FROM experiment_contributions WHERE ${predicate}`,args.slice(0,4));
+   await client.query(`UPDATE experiment_assignments a SET converted=EXISTS(SELECT 1 FROM experiment_contributions c WHERE c.experiment_id=a.experiment_id AND c.visitor_id=a.visitor_id) FROM experiments e WHERE a.experiment_id=e.id AND e.site_id=$1 AND a.visitor_id=$2`,[site,record.visitor_id]);
   }
   await client.query(`DELETE FROM outbox WHERE ${predicate}`,args.slice(0,4));
   await client.query(`DELETE FROM event_keys WHERE ${predicate}`,args.slice(0,4));

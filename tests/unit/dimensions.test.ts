@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {eventDimensions} from '../../src/server/dimensions.js';
+import {eventDimensions,terminalDimensions} from '../../src/server/dimensions.js';
 import {channelRuleSchema,type WireEvent} from '../../packages/contracts/index.js';
 const event=(extra:Record<string,unknown>={})=>({referrer:'https://www.google.com/search?q=白泽',...extra}) as WireEvent;
 it('uses domain boundaries for search, AI and social instead of substring matches',()=>{
@@ -21,3 +21,12 @@ it('keeps all UTM dimensions and removes directly identifying search terms',()=>
  expect(eventDimensions('',event({utm_term:'keyword',utm_content:'link-a'}))).toMatchObject({utm_term:'keyword',utm_content:'link-a'});
  for(const q of ['person@example.test','203.0.113.17','13800138000'])expect(eventDimensions('',event({referrer:'https://www.google.com/search?q='+encodeURIComponent(q)}),{}, {},'203.0.113.17').keyword).toBe('');
 });
+
+it('parses actual terminal UA, CSS screen and density without inventing devices for unknown UA',()=>{
+ const phone='Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+ expect(terminalDimensions(phone,{screen:'390x844',device_pixel_ratio:3})).toMatchObject({device:'mobile',browser:'Mobile Safari',os:'iOS',device_pixel_ratio:3});
+ expect(terminalDimensions('Mozilla/5.0 (Linux; Android 13; Pixel C) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',{screen:'1280x800',device_pixel_ratio:2})).toMatchObject({device:'tablet',browser:'Chrome',os:'Android'});
+ expect(terminalDimensions('unrecognized-client',{screen:'not-a-screen'})).toMatchObject({device:'unknown',browser:'unknown',os:'unknown',screen:'unknown'});
+});
+
+it('marks advertising origin without retaining click IDs',()=>{expect(eventDimensions('',event({ad_click_source:'both'}))).toMatchObject({channel:'paid',ad_click_source:'both'});});

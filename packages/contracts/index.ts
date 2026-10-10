@@ -15,12 +15,12 @@ export const eventSchema=z.object({
   ts:z.number().int().min(0).max(8640000000000000),visitor_id:z.uuid().nullable(),page_id:z.uuid(),
   url:z.url().max(4096).refine(s=>/^https?:\/\//.test(s),'HTTP URL required'),path:z.string().max(2048).startsWith('/'),
   referrer:z.string().max(4096).optional(),title:z.string().max(512).optional(),
-  utm_source:z.string().max(256).optional(),utm_medium:z.string().max(256).optional(),utm_campaign:z.string().max(256).optional(),utm_term:z.string().max(256).optional(),utm_content:z.string().max(256).optional(),
+  ad_click_source:z.enum(['google','meta','both']).optional(),utm_source:z.string().max(256).optional(),utm_medium:z.string().max(256).optional(),utm_campaign:z.string().max(256).optional(),utm_term:z.string().max(256).optional(),utm_content:z.string().max(256).optional(),
   event_name:z.string().min(1).max(128).optional(),props:z.record(z.string().max(64),propertySchema).refine(p=>Object.keys(p).length<=20,'Maximum 20 properties').optional(),
   visible_ms:z.number().int().min(0).max(86400000).optional(),interval_start:z.number().int().optional(),interval_end:z.number().int().optional(),replay_seq:z.number().int().nonnegative().optional(),
   vitals:z.partialRecord(vitalKeySchema,z.number().nonnegative()).optional(),
   revenue:z.number().finite().nonnegative().max(1e12).optional(),currency:z.string().regex(/^[A-Z]{3}$/).optional(),order_id:z.string().min(1).max(128).optional(),user_id:z.string().min(1).max(256).optional(),
-  screen:z.string().max(64).optional(),language:z.string().max(64).optional(),replay:z.array(z.unknown()).max(500).optional(),heatmap:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),kind:z.enum(['click','scroll']),width:z.number().positive().optional(),height:z.number().positive().optional()}).optional()
+  screen:z.string().max(64).optional(),device_pixel_ratio:z.number().finite().min(0.1).max(16).optional(),language:z.string().max(64).optional(),replay:z.array(z.unknown()).max(500).optional(),heatmap:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),kind:z.enum(['click','scroll']),width:z.number().positive().optional(),height:z.number().positive().optional()}).optional()
 }).superRefine((e,c)=>{
   const require=(key:keyof typeof e)=>{if(e[key]===undefined)c.addIssue({code:'custom',path:[key],message:`${key} required for ${e.type}`});};
   if(e.type==='event')require('event_name');

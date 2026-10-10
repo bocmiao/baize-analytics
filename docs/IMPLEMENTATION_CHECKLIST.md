@@ -32,10 +32,10 @@
 
 ## F-03 会话划分【P0】
 
-- 状态：部分实现（核心已测）
-- 实现文件：src/server/analytics.ts；worker.ts
+- 状态：已实现已测（事件时间核心）
+- 实现文件：src/server/analytics.ts；src/server/worker.ts；src/server/sites.ts
 - 验收测试：tests/unit/analytics.test.ts；tests/integration/analytics.test.ts
-- 边界/未实测：事件时间、迟到乱序、跨日、多标签、完整受影响桶重算、并发租约/fencing已测；30分钟会话阈值对外配置入口仍需核对sites schema/UI。
+- 边界/未实测：30分钟默认与session_timeout_minutes配置/API/UI已补；迟到乱序、多标签/跨日、可重算心跳、并发lease/fencing测试通过。精确边界/细分可重建保留期明细，保留期外不虚构完整结果。
 
 - 做什么：把 pageview 串成会话，算会话数/跳出率/平均停留。
 - 实现：Worker 消费队列时按 (site_id, visitor_id) 在 Redis 维护"最后活动时间"；距上次事件 > 30 分钟（可配置）则开新 session（UUIDv7）；sessions 表存 entry_page/exit_page/page_count/duration/bounced（单页且 <10s 记跳出）。
@@ -55,10 +55,10 @@
 
 ## F-05 滚动深度【P0】
 
-- 状态：部分实现（采集/聚合已实现）
+- 状态：已实现已测（真实浏览器/PG）
 - 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts
-- 验收测试：tracker-collector.test.ts；analytics.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：25/50/75/100档、初始文档高度和页面实例完成率已实现；四档真实浏览器专项验收尚未单独记录。
+- 验收测试：tests/integration/tracker-hooks.test.ts；analytics.test.ts
+- 边界/未实测：25/50/75/100四档真实正常UA浏览器→采集→PG通过；初始文档高度与页面实例完成率，横幅移除时序对100%判定回归已修。
 
 - 做什么：25%/50%/75%/100% 四档，衡量内容消费。
 - 采集端：scroll 监听（节流 200ms），计算 (scrollY+innerHeight)/docHeight，首次达到各档位发一次（props.depth=50）。
@@ -70,7 +70,7 @@
 - 状态：部分实现（采集已实现）
 - 实现文件：packages/tracker/src/index.ts
 - 验收测试：tracker-collector.test.ts；packages/tracker/README.md
-- 边界/未实测：自动外链与data-baize-ignore；只保留origin/path，保守不采集链接文字；真实外站跳转不阻塞专项验收未记录。
+- 边界/未实测：自动外链与data-baize-ignore；只保留origin/path，保守不采集链接文字；真实popup外链跳转不阻塞与PG采集专项tracker-hooks.test.ts通过。
 
 - 做什么：自动记录跳往外部域名的点击。
 - 采集端：click 捕获阶段找最近 <a>；hostname 不同则 sendBeacon 发 click 事件（props 含 url、链接文字前 50 字）；不阻止跳转、不延迟。
@@ -78,10 +78,10 @@
 
 ## F-07 文件下载【P0】
 
-- 状态：部分实现
-- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts；src/web/main.tsx
-- 验收测试：tracker-collector.test.ts；analytics.test.ts
-- 边界/未实测：扩展名/配置后缀/HTML download采集与事件聚合存在；独立下载Top内容报表及专项浏览器用例待补。
+- 状态：已实现已测（真实浏览器/接口/采集）
+- 实现文件：packages/tracker/src/index.ts；src/server/content-analytics.ts；src/web/ExtendedAnalysis.tsx
+- 验收测试：tests/integration/tracker-hooks.test.ts；content-analytics.test.ts；docs/ACCEPTANCE_CONTENT.md
+- 边界/未实测：真实PDF下载不阻塞及PG采集；下载URL/type/path次数与精确UV Top接口/看板已实现。细分限定90天且完整明细保留内，过期coverage0；每日盐跨日UV=null。
 
 - 做什么：pdf/zip/doc/xlsx/mp4 等后缀点击自动记为下载。
 - 采集端：同 F-06 逻辑，正则匹配后缀（data-download-exts 可自定义）；事件名 'download'。
@@ -89,10 +89,10 @@
 
 ## F-08 404 追踪【P0】
 
-- 状态：部分实现
-- 实现文件：packages/tracker/src/index.ts；src/web/main.tsx
-- 验收测试：tracker-collector.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：标题/body标识404采集存在；独立404 URL×来源×次数报表与修链清单导出入口未完整实现。
+- 状态：已实现已测（真实浏览器/接口/采集）
+- 实现文件：packages/tracker/src/index.ts；src/server/content-analytics.ts；src/web/ExtendedAnalysis.tsx
+- 验收测试：tracker-hooks.test.ts；content-analytics.test.ts；docs/ACCEPTANCE_CONTENT.md
+- 边界/未实测：真实标题404采集、URL×脱敏来源路径×渠道×次数、修链CSV防公式注入与审计已测。超明细保留期不可用、导出409；最新13项E2E含真实下载/404CSV/事件趋势已通过。
 
 - 做什么：发现死链与错误引流。
 - 采集端：document.title 匹配 /404|not found|页面不存在/i，或 <body data-baize-404> 标记，pageview 带 props.status=404。
@@ -100,10 +100,10 @@
 
 ## F-09 UTM/Referrer/渠道【P0】
 
-- 状态：部分实现（基础渠道已测）
-- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts；analytics.ts
-- 验收测试：tracker-collector.test.ts；analytics.test.ts
-- 边界/未实测：UTM/referrer与渠道×落地页维度存在；可编辑渠道分组规则、多筛选作用于整看板趋势、广告点击标记完整展示待补。
+- 状态：已实现已测（基础/配置/完整UTM接口）
+- 实现文件：packages/contracts/index.ts；src/server/dimensions.ts；sites.ts；analytics.ts；src/web/DashboardFilters.tsx；SourceSettings.tsx
+- 验收测试：dimensions.test.ts；core-api.test.ts；content-analytics.test.ts
+- 边界/未实测：UTM五字段、广告点击标记、可编辑安全渠道规则及AI域名、渠道×入口页；筛选真实应用完整stats/analysis/同口径compare/cache，而非仅前端表格。历史未持久化的term/content不追补猜测。
 
 - 采集端：上报 document.referrer + location.search 的 utm_*（campaign/source/medium/term/content）+ gclid/fbclid（标记广告点击）。
 - 服务端：渠道分组规则（可配置，默认）：搜索引擎（google/bing/baidu/so/360/sm 等域名匹配）、社交（微信/微博/知乎/抖音/小红书/twitter/facebook…）、直接（空 referrer）、外链、邮件（utm_medium=email）。
@@ -111,10 +111,10 @@
 
 ## F-10 终端信息采集【P0】
 
-- 状态：部分实现
-- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
-- 验收测试：core-api.test.ts；analytics.test.ts
-- 边界/未实测：UA/设备/屏幕/语言维度和unknown降级存在；简化UA识别非完整ua-parser覆盖，devicePixelRatio/屏幕综合分类专项验收待补。
+- 状态：已实现已测（解析/维度）
+- 实现文件：src/server/dimensions.ts；packages/tracker/src/index.ts
+- 验收测试：tests/unit/dimensions.test.ts；core-api.test.ts
+- 边界/未实测：ua-parser-js标准解析、CSS屏幕宽高与DPR真实维度、UA+屏幕综合mobile/tablet/desktop、unknown降级已补测试。完整真实设备型号矩阵未实测。
 
 - 采集端：navigator.userAgent 发给服务端；另采 screen 宽高、devicePixelRatio、navigator.language。
 - 服务端：ua-parser 解析 browser/os/device；device_type 按 UA+屏幕宽度综合判 mobile/tablet/desktop；解析失败记 unknown 不丢事件。
@@ -131,10 +131,10 @@
 
 ## F-12 Web Vitals【P1】
 
-- 状态：部分实现（关键算法已测）
+- 状态：已实现已测（算法/官方模块）
 - 实现文件：packages/tracker/src/vitals.ts；src/server/analytics.ts；src/web/AnalysisDetails.tsx
 - 验收测试：tracker-collector.test.ts；tests/unit/analytics.test.ts；tests/integration/analytics.test.ts
-- 边界/未实测：官方web-vitals按需模块、PG t-digest与不等样本合并、p75/p90和三色UI存在；采样率设置/所有指标名端到端覆盖最终回归仍需记录。
+- 边界/未实测：官方web-vitals按需独立模块、data-sample-rate采样默认1、真实PG t-digest不等样本合并/p75/p90/三色UI已实现已测；低采样率及全部真实浏览器性能环境矩阵未专项实测。
 
 - 采集端：**优先采用 Google 官方 `web-vitals` 库**（attribution 构建），指标就绪或页面卸载时上报 vitals 事件；不要为凑 tracker 体积手写简化算法。Web Vitals 采集做成**按需加载的独立模块**，默认脚本不包含（保 F-19 体积目标）。
 - 服务端：page_vitals 表按（站点、页面、日）存 **t-digest 分位摘要**（不是只存一个 p75 数字）；看板 p75/p90 从摘要实时计算，按 Google 阈值三色展示（好/需改进/差）。
@@ -174,19 +174,19 @@
 
 ## F-16 表单提交【P0】
 
-- 状态：部分实现（采集已实现）
+- 状态：已实现已测（真实浏览器/PG）
 - 实现文件：packages/tracker/src/index.ts
-- 验收测试：packages/tracker/README.md；tracker-collector.test.ts
-- 边界/未实测：双重opt-in表单，只记id/action不取字段值；真实submit专项隐私用例未单独记录。
+- 验收测试：tests/integration/tracker-hooks.test.ts
+- 边界/未实测：双重optin原生GET submit不阻塞；仅form id/action无输入字段值。跨源卸载改text/plain JSON防预检丢POST，复用协议验证。
 
 - 采集端：form submit 监听（data-baize-form 开启才生效）；只记 form id/action，不记字段值。默认关闭，文档强调隐私。
 
 ## F-17 机器人过滤【P0】
 
-- 状态：部分实现（基础过滤已测）
-- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
-- 验收测试：core-api.test.ts；tracker-browser.test.ts
-- 边界/未实测：webdriver、UA爬虫、bot独立计数存在；行为型1秒>20请求bot判定与可维护/更新机器人库尚未完整实现。
+- 状态：已实现已测（真实PG/Redis）
+- 实现文件：src/server/bot-filter.ts；src/server/bot-rules.json；collect.ts
+- 验收测试：bot-filter.test.ts；bot-filter-redis.test.ts；bot-collector.test.ts；bot-minute-failover.test.ts；docs/bot-filter.md
+- 边界/未实测：字面token可维护规则库、AI优先、每站点/IP一秒>20 HTTP请求行为过滤（批量20事件只计1请求）；域分隔HMAC不存明文IP，原子Redis TIME/Lua与有界同步本地故障窗口，分钟99→100→101故障限流已测试。NAT误报及低频伪装漏报边界明确。
 
 - 服务端：UA 匹配自维护爬虫库；行为规则（1s 内 >20 请求等）记 bot；bot 流量单独计数、不计入正式指标。
 - 采集端：navigator.webdriver 为 true 直接不上报。
@@ -248,10 +248,10 @@
 
 ## F-23 来源分析【P0】
 
-- 状态：部分实现（查询核心已测）
-- 实现文件：src/server/analytics.ts；src/web/main.tsx
-- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：来源及通用组合维度、渠道×落地页、精确访客集合；整个看板联合筛选/UTM效果专属图仍不足，不能将多行UV相加。
+- 状态：已实现已测（真实浏览器/查询核心）
+- 实现文件：src/server/analytics.ts；content-analytics.ts；src/web/DashboardFilters.tsx
+- 验收测试：analytics.test.ts；content-analytics.test.ts；dimensions.test.ts
+- 边界/未实测：来源/UTM五字段/渠道×入口页与全局组合筛选实际PG验证，缓存/同期比较含筛选；distinct集合不累加行UV；过滤明细过期范围显式不可用。
 
 - 引荐域名 Top、UTM campaign/source/medium 效果表、渠道分组；支持"渠道 × 落地页"交叉。
 - 实现：预聚合表按 channel/referrer/utm 建维度。
@@ -278,40 +278,40 @@
 
 ## F-26 受众分析【P0】
 
-- 状态：部分实现
-- 实现文件：src/server/collect.ts；analytics.ts；src/web/main.tsx
-- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：设备/浏览器/系统/国家→region通用维度下钻；中国省份地图/china.json资产与地图视图未实现，MaxMind实际数据未实测。
+- 状态：已实现已测（真实浏览器/接口/资产）
+- 实现文件：src/server/geography-analytics.ts；packages/geography；src/web/ExtendedAnalysis.tsx
+- 验收测试：geography-analytics.test.ts；content-analytics.test.ts；docs/ACCEPTANCE_CONTENT.md
+- 边界/未实测：真实国家→四川→成都PV2/UV1和unknown coverage0.5；官方ECharts包34省资产带LICENSE/SHA，ECharts6真实SSR兼容通过。真实官方SVG四川点击→真实region API→省地图与unknown城市提示已13项E2E通过；真实MaxMind四川/城市实测与坐标准确性未测。
 
 - 设备/浏览器/OS/屏幕/语言分布；地域：中国地图下钻到省（ECharts + 内置 china.json）。
 - 实现：预聚合维度查询。
 
 ## F-27 自定义事件报表【P0】
 
-- 状态：部分实现（EAV核心已测）
-- 实现文件：src/server/analytics.ts；src/web/main.tsx
-- 验收测试：analytics.test.ts；core-api.test.ts
-- 边界/未实测：事件列表与人数/属性Top/boolean/90天限制已实现；事件按时间趋势专属可视化仍需补齐/验收。
+- 状态：已实现已测（真实浏览器/EAV/趋势）
+- 实现文件：src/server/analytics.ts；content-analytics.ts；src/web/ExtendedAnalysis.tsx
+- 验收测试：analytics.test.ts；content-analytics.test.ts
+- 边界/未实测：事件次数/人数/EAV属性Top/boolean、真实hour趋势与UI已补；最多90天，新趋势明细过期coverage0，非无限存档查询。
 
 - 事件列表（触发次数/人数/趋势）；按属性分组 Top（如 signup 按 plan）。
 - 查询：events 明细按 event_name + 时间过滤，属性走 event_data join；限 90 天。
 
 ## F-28 转化目标【P0】
 
-- 状态：部分实现（目标核心已测）
-- 实现文件：src/server/analytics.ts；worker.ts；src/web/main.tsx
-- 验收测试：analytics.test.ts；tests/e2e/workflow.spec.ts
-- 边界/未实测：事件/页面/时长目标CRUD、一次会话一次转化、范围转换及渠道归因存在；目标专属转化趋势和渠道趋势UI/API未齐全。
+- 状态：已实现已测（真实浏览器/目标/趋势）
+- 实现文件：src/server/analytics.ts；content-analytics.ts；src/web/ExtendedAnalysis.tsx
+- 验收测试：analytics.test.ts；content-analytics.test.ts；workflow.spec.ts
+- 边界/未实测：事件/页面/时长目标CRUD、一次会话一次转化、首次完成hour、实际末次非direct页面/渠道趋势与UI已补。真实E2E email目标渠道与趋势通过；细分超明细保留不可用，不将归因当因果。
 
 - 三种：事件型（event_name=xxx）、页面型（到达 /thank-you）、时长型（会话 > N 分钟）；转化数/转化率趋势；按渠道分组。
 - 实现：goals 表存定义；每小时定时任务算 goal_stats（避免实时扫明细）。
 
 ## F-29 漏斗分析【P1】
 
-- 状态：部分实现（有序漏斗核心已测）
-- 实现文件：src/server/analytics.ts；worker.ts；src/web/main.tsx
-- 验收测试：tests/unit/analytics.test.ts；tests/integration/analytics.test.ts；workflow.spec.ts
-- 边界/未实测：严格/宽松、有序去重人数、范围漏斗/每步流失存在；流失用户来源×设备Top特征尚未实现，不能标全项验收。
+- 状态：已实现已测（真实浏览器/漏斗/流失）
+- 实现文件：src/server/analytics.ts；content-analytics.ts；src/web/ExtendedAnalysis.tsx
+- 验收测试：analytics.test.ts；content-analytics.test.ts；workflow.spec.ts
+- 边界/未实测：严格/宽松有序唯一访客漏斗及真实流失集合Top来源/设备已补PG测试，按最早入组会话首步归属，全量sampleRate1；真实E2E两人进入/一人流失及来源设备通过；保留期外coverage0、每日盐跨日unsupported。
 
 - 多步骤（如 首页→商品页→下单→支付），每步转化率/流失数/流失用户特征（Top 来源/设备）。
 - 实现：按会话 pageview/event 序列有序匹配；支持严格/宽松顺序；抽样 + 预计算 funnel_stats 日表。
@@ -329,20 +329,20 @@
 
 ## F-31 搜索关键词【P0/P1】
 
-- 状态：部分实现；Google外部未实测
-- 实现文件：src/server/collect.ts；external.ts；src/web/Connectors.tsx
-- 验收测试：external.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：搜索引擎维度和GSC查询词/点击/排名/页面连接器已模拟验证；referrer关键词解析尚未实现；真实Google授权未实测。
+- 状态：已实现已测（关键词/模拟GSC）；Google未实测
+- 实现文件：src/server/dimensions.ts；external.ts；src/web/Connectors.tsx
+- 验收测试：dimensions.test.ts；external.test.ts
+- 边界/未实测：真实搜索referrer关键词有限解析已补，过滤明显IP/email/长数字；GSC查询词/点击/排名/落地页模拟PG验证；无referrer仍unknown/direct，真实Google授权未测。
 
 - P0：referrer 解析到的少量关键词 + 搜索引擎维度。
 - P1：GSC API 接入后升级为"查询词 × 点击 × 排名 × 落地页"报表。
 
 ## F-32 AI 引荐（GEO）渠道【P1】
 
-- 状态：部分实现
-- 实现文件：src/server/collect.ts；src/web/main.tsx
-- 验收测试：core-api.test.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：基础AI referrer/UA渠道识别存在；可维护ai_sources规则库及完整国内助手覆盖未齐全；无referrer流量保持direct，识别上限诚实披露。
+- 状态：已实现已测（规则/基础识别）
+- 实现文件：src/server/dimensions.ts；sites.ts；src/web/SourceSettings.tsx
+- 验收测试：dimensions.test.ts；core-api.test.ts
+- 边界/未实测：AI基础host/UA渠道及可编辑ai_referrer_hosts、渠道规则已补；不是自动维护外部AI词库。无referrer保留direct，识别率上限明确。
 
 - 来源分析单列"AI 搜索/助手"：识别 ChatGPT/Claude/豆包/文心等 referrer 与 UA 特征；AI 爬虫单独标记。
 - 实现：ai_sources 规则表（F-17 机器人库子集）；文档诚实说明识别率上限（Fathom 70% 无 referrer 流量只能记 Direct 的教训）。
@@ -358,10 +358,10 @@
 
 ## F-34 定时推送【P1】
 
-- 状态：部分实现；真实通知账号未实测
-- 实现文件：src/server/governance-worker.ts；governance.ts
-- 验收测试：governance.test.ts（统一月报/每日盐/历史聚合）
-- 边界/未实测：日周月持久PG任务、三次重试、日志和安全出口已实现；HTML目前基础摘要，完整指标卡+Top变化模板不足；SMTP/企业微信/Server酱真实账号未测。
+- 状态：已实现已测（模板/持久任务）；外部账号未实测
+- 实现文件：src/server/governance-worker.ts
+- 验收测试：governance.test.ts；governance-privacy.test.ts；tests/unit/governance.test.ts
+- 边界/未实测：日周月统一汇总、等长前期Top变化、中英安全HTML、每日盐UV unsupported、三次持久失败重试/无secret日志已测；SMTP TLS/15秒超时/连接回收已加。真实SMTP/企业微信/Server酱未实测。
 
 - 日/周/月报 → 邮件（SMTP 自配）/企业微信 webhook/Server酱/Webhook；服务端模板渲染 HTML（指标卡 + Top 变化）。
 - 实现：定时任务（BullMQ/Redis 队列，替代 APScheduler 方案）；失败重试 3 次；notification_logs 存发送记录。
@@ -395,29 +395,29 @@
 
 ## F-38 流量异常告警【P1】
 
-- 状态：部分实现（PV告警核心已测）
+- 状态：已实现已测（预聚合PV/UV/持续采集）
 - 实现文件：src/server/governance-worker.ts
-- 验收测试：tests/unit/governance.test.ts；tests/integration/governance.test.ts
-- 边界/未实测：28天同小时含零样本、偏离/zscore、连续两个不同小时和静默已测；UV异常规则、F58告警触发关联尚未完成。
+- 验收测试：governance.test.ts；external-alert.test.ts
+- 边界/未实测：UTC完整小时×过去28天候选，已有存档桶或site创建后明确零值才计有效样本，至少7样本；processed>0且无旧小时pending outbox可覆盖，dirty当前hour不饥饿，pending一分钟重试不消费小时。真实PG归档UV3vs1/0raw、epoch未处理阻塞、迟到恢复、连续两小时与AI绑定通过。
 
 - 规则：当前小时 PV/UV vs 过去 28 天同小时均值，偏离 ±50%（可配）触发；连续 2 小时异常才发（防抖）；通知渠道同 F-34；支持一键静默。
 - 实现：每小时任务算 z-score。
 
 ## F-39 目标达成/漏斗骤降告警【P1】
 
-- 状态：部分实现（规则已实现）
+- 状态：已实现已测（真实PG规则/队列）
 - 实现文件：src/server/governance-worker.ts
-- 验收测试：governance.test.ts；analytics.test.ts（漏斗核心）
-- 边界/未实测：目标阈值与严格漏斗指定步骤日环比规则已实现；事件目标阈值真实PG通知入队/24小时静默已测；具体goal定义与漏斗投递专项PG仍待补。
+- 验收测试：tests/integration/governance.test.ts
+- 边界/未实测：事件阈值、真实page goal重复PV仅计一次会话、跨日会话按首次目标完成日、配置会话阈值及完整保留期上下文、严格漏斗步骤0.8→0.2骤降、24小时静默与安全通知队列已测试；真实外部账号投递未测。
 
 - 目标转化数达阈值通知；漏斗某步转化率单日跌超 30% 通知。
 
 ## F-40 脚本掉线检测【P1】
 
-- 状态：部分实现（检测规则已实现）
+- 状态：已实现已测（真实PG边界/队列）
 - 实现文件：src/server/governance-worker.ts
-- 验收测试：ACCEPTANCE_GOVERNANCE.md
-- 边界/未实测：last_event_at 24小时无事件扫描和通知队列已实现；23小时无告警/25小时触发及24小时静默真实PG已测；真实通知投递未实测。
+- 验收测试：tests/integration/governance.test.ts
+- 边界/未实测：23小时不告警/25小时触发、24小时静默与入队已测；真实通知账号投递未实测。
 
 - 站点 24h 无新事件 → 提醒"检查追踪代码是否被删"；实现：定时扫描 sites.last_event_at。
 
@@ -426,7 +426,7 @@
 - 状态：已实现已测（本地）
 - 实现文件：src/server/sites.ts；src/web/main.tsx
 - 验收测试：core-api.test.ts；tests/e2e/workflow.spec.ts
-- 边界/未实测：站点/分组/时区/隐私/追踪代码、行级权限已测；website_id为随机24hex而非规格UUID，功能偏差明确保留。
+- 边界/未实测：站点/时区/隐私/追踪代码、行级权限已测；新真实E2E13项含标签修改和按组筛选通过；website_id为随机24hex而非规格UUID，功能偏差明确保留。
 
 - sites 表（name/domain/timezone/privacy_config）；分组 tags；每站点独立 website_id（UUID）与追踪代码片段生成页。
 
@@ -510,10 +510,10 @@
 
 ## F-50 Cookie 同意横幅【P2】
 
-- 状态：部分实现（轻量组件已实现）
+- 状态：已实现已测（真实浏览器）
 - 实现文件：packages/tracker/src/consent-banner.ts
 - 验收测试：packages/tracker/README.md；tracker-browser.test.ts
-- 边界/未实测：同意组件与grant/revoke集成源文件存在，尚未作为全局构建入口自动发布；横幅自身真实浏览器交互专项验收尚未确认，不以SDK consent测试替代。
+- 边界/未实测：同意组件与grant/revoke集成并以独立tracker-consent.js入口发布；tracker-consent.js正式582byte独立构建和真实点击前无ID/无PG数据、点击后启用专项通过。
 
 - 可选轻量横幅组件（配合 F-18 Consent Mode）；P0 文档先写清楚，P2 再做。
 
@@ -587,10 +587,10 @@
 
 ## F-58 异常归因【P1】
 
-- 状态：部分实现（独立归因已测）
+- 状态：已实现已测（实际告警/模拟模型）；真实模型未测
 - 实现文件：src/server/external-worker.ts
-- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：渠道/页面/设备前期变化候选与optin异常任务存在；F38告警记录触发绑定尚未完成，原因明确可能而非因果。
+- 验收测试：tests/integration/external-alert.test.ts；docs/ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：实际collect→worker→F38 PV/UV告警→F58 optin绑定，同小时联合渠道/页面/设备变化、原告警快照、通知UUID幂等、并发/失败退避retry已PG测试；无optin零调用。真实模型原因质量未实测，不宣称因果。
 
 - F-38 触发后自动下钻（渠道×页面×设备）找最大变化维度 → AI 生成可能原因说明。
 
@@ -599,7 +599,7 @@
 - 状态：已实现已测（规则/模拟模型）
 - 实现文件：src/server/external-worker.ts；external.ts；src/web/Connectors.tsx
 - 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：不可变事实/evidence_id/置信度/样本不足、状态机、SEO复扫、前后同口径/干扰因素；真实AI建议有效性未实测，不宣称修复有因果收益。
+- 边界/未实测：不可变事实/evidence_id/置信度/样本不足、状态机、SEO复扫、真实25→5漏斗和25LCP样本输入/priority代理排序、前后同口径/干扰因素；真实AI建议有效性未实测，不宣称修复有因果收益。
 
 - 输入：漏斗流失点、慢页面（Web Vitals 差）、高跳出入口页、SEO 问题清单 → 输出可执行整改清单（按预期收益排序）。每条建议带：evidence_id（关联事实快照）、可能原因与**置信度**（证据不足时明确说"证据不足"，不硬给结论）。
 - **建议实施后验证（复检闭环）**：建议状态机 = 新发现 → 已接受 → 处理中 → 已修复待复检 → 已验证 / 误报；记录实施日期；SEO 类建议触发复扫（F-53）；效果对比 = 实施前后同口径指标对照，并**注明干扰因素**（流量波动、季节性、同期其他改动）；不能仅凭前后变化宣布"优化有效"。
@@ -674,18 +674,18 @@
 - P2-01 ClickHouse 明细可选迁移：部分实现：真实ClickHouse25.8导入/去重/FINAL/查询/删除已测；应用双写/outbox及迁移切换尚未完成。证据 docs/validation-ops.md。
 - P2-02 隐私优先会话回放：部分实现（核心已测）：optin、严格服务端遮罩校验、page实例/序号、真实rrweb播放器；跨页完整播放/真实复杂站点兼容待扩展。证据 governance.test.ts、tracker-browser.test.ts、ACCEPTANCE_WEB.md。
 - P2-03 热力图：部分实现（核心已测）：optin与0.01精度归一化点击、SVG热图真实数据；复杂响应式/滚动坐标浏览器专项验收未完整记录。
-- P2-04 A/B 实验归因：部分实现：确定性visitor分组/目标计数/API与UI集成；固定周期双比例检验/Bonferroni多重修正/Wilson区间/样本不足保护已真实PG与单元测试；实验完整浏览器生命周期专项待补。
+- P2-04 A/B 实验归因：部分实现：确定性visitor分组/目标计数/API与UI集成；固定周期双比例检验/Bonferroni多重修正/Wilson区间/样本不足保护已真实PG与单元测试；实际共享cookie A→B identify/goal、删除A保留B、旧贡献回灌journal重放真实浏览器/PG已通过；贡献event_id+ts幂等，API不信converted缓存，旧无明细历史标partial_unavailable禁显著性。
 - P2-05 微信小程序 SDK：部分实现：wx.request注入SDK、无WebCrypto UUID、同意/幂等重试/每日盐限制已有本地测试；真实微信设备/账号未实测。
 - P2-06 WordPress 插件：部分实现：WordPress插件设置/追踪代码及PHP8.3语法检查；实际WordPress安装启停/兼容性未实测。
 - P2-07 企业微信扫码 SSO：连接器已实现、真实企业未实测：显式成员映射、一次state/session、禁止自动提权，真实PG模拟OAuth测试通过；不创建企业凭据。
-- P2-08 多语言 UI：部分实现：中文主体及英文核心UI；高级设置/后台错误/全部docs完整多语言尚未完成。
+- P2-08 多语言 UI：部分实现：中文主体及英文核心UI；高级治理表单/回放Play及speed实际英文交互已测；全量后台错误文本/开发审计报告仍非完整多语言。
 - P2-09 Ollama 本地模型：连接器已实现、真实Ollama推理未实测：明确登记窄范围内网例外与真实本地HTTP模拟传输测试；未运行真实模型。
-- P2-10 Cookie 同意横幅：部分实现：轻量consent-banner组件和Consent Mode文档；横幅本身浏览器点击专项证据未完整记录。
+- P2-10 Cookie 同意横幅：部分实现：轻量consent-banner组件和Consent Mode文档；正式独立构建与真实浏览器点击前无ID无PG数据、点击后采集通过tracker-hooks.test.ts。
 
 ## 集中剩余清单（不代表全部验收）
 
-- 可自主补齐的功能：404独立来源报表/修链导出、下载Top、可编辑渠道/AI来源规则、referrer关键词、机器人行为规则、中国省份地图、事件趋势、目标渠道趋势、漏斗流失来源/设备、完整通知HTML、UV异常告警、F38→F58绑定、ClickHouse应用双写迁移、高级英文UI。
-- 必须补专项证据：滚动四档/表单/外链不阻塞/consent横幅真实浏览器；具体goal定义/funnel告警PG触发及通知失败重试；身份跨设备历史缝合；WordPress真实运行；大规模PG/Redis全链路负载；Windows安装入口。
-- 等最终集成结果：最新真实浏览器全套12/12通过；ops增强新卷恢复/已提交schema回滚已EXIT0；本地lint/type/unit/PG/构建最终计数由集成负责人记录，不沿用阶段计数冒充最终。
+- 可自主补齐的功能：尚需扩展全量后台错误英文和高级一致性、跨设备身份专用注册→付费视图、ClickHouse应用双写迁移（进行中尚未验收）。新下载/404/事件/目标/漏斗/地域/规则/UTM接口及UI已实现；新增UI交互13项真实E2E通过。
+- 必须补专项证据：WordPress真实运行；大规模PG/Redis全链路负载；Windows安装入口。实际A→B身份删除/恢复与实验贡献已浏览器验证，匿名历史不自动缝合为隐私选择。
+- 等最终集成结果：最新真实浏览器全套13/13通过；ops增强新卷恢复/已提交schema回滚已EXIT0；本地lint/type/unit/PG/构建最终计数由集成负责人记录，不沿用阶段计数冒充最终。
 - 真实外部未实测：Google GA4/GSC、MaxMind授权下载、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业SSO、商业AI及真实Ollama模型；安全连接器与模拟集成通过不能替代外部验收。F52官方接口可行性未核验。
 - 规模/实现偏差：exact访客集合代替HLL、持久PG任务代替BullMQ、部分精确范围查询重建保留期明细；这些选择已测试正确性，但内存/吞吐规模和超保留期精度边界必须持续披露。

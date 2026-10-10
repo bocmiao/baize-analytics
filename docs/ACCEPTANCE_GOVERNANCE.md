@@ -60,3 +60,26 @@
 逐F01–F66/P2当前状态及集中自主剩余项记录于 `docs/IMPLEMENTATION_CHECKLIST.md`；增强真实Docker新卷恢复/严格journal/已提交schema回滚脚本已EXIT0，证据 `/tmp/baize-ops-fresh-restore.log` 与 `docs/validation-ops.md`。
 
 追加真实PG目标阈值/掉线专项：事件阈值2产生goal通知；23小时不触发offline、25小时触发，24小时静默重算不重复。与前述四文件组合重跑 **23/23通过**（05:52:55，3.85秒）。未直接联网发送通知。
+
+## 持续采集告警、身份分段实验贡献与完整配置导出
+
+最新实际命令：
+
+```bash
+TEST_DATABASE_URL=postgres://baize_dev@127.0.0.1:5432/baize_dev npm exec vitest run tests/unit/governance.test.ts tests/integration/governance.test.ts tests/integration/governance-privacy.test.ts tests/integration/governance-file-cleanup.test.ts tests/integration/governance-experiment-migration.test.ts
+npm run typecheck
+npm exec eslint src/server/governance.ts src/server/governance-worker.ts src/server/file-cleanup.ts tests/unit/governance.test.ts tests/integration/governance.test.ts tests/integration/governance-privacy.test.ts tests/integration/governance-file-cleanup.test.ts tests/integration/governance-experiment-migration.test.ts
+```
+
+**5文件33/33通过**（06:24:06，7.80秒），全局类型检查和所属8文件ESLint退出0。此为治理组合计数，不冒充全仓最终计数。
+
+- F38使用stats_hourly真实PV或每小时精确UV集合，排除bot由聚合口径保证，过期明细的存档仍可用。28天候选中仅已有存档桶或站点创建后明确可覆盖零桶参与基线，至少7个样本；新站仅4样本不会虚构28天历史。通知含 observed_hour、baseline_samples、processed_generation/current_generation、水位和覆盖方法。
+- 持续新写入导致generation dirty当前小时不阻塞已完成旧小时；processed_generation=0或旧小时仍有pending outbox时等待，一分钟重试且不消耗该小时防抖标记。真实PG回归覆盖迟到历史解除、配置失效等待、dirty新小时不饥饿、0raw历史UV3vs1、连续两个不同小时。告警时钟显式注入，不改生产时钟。
+- 实际page目标两次PV同会话只转换一次告警；严格漏斗步骤0.8→0.2骤降已真实PG入队。事件目标和offline23/25小时/24小时静默回归均通过。
+- 中英HTML指标卡、等长前期Top来源/页面变化、安全HTML escaping、每日盐跨日UV“不支持”、失败三次/指数退避/日志不含私密URL已测；SMTP添加TLS、15秒连接/握手/读超时及finally关闭。未连接真实邮件账号或支付通知服务。
+- 019迁移新增experiment_contributions，以实验+event_id幂等并保存不可变event ts；assignment级联删除、身份分段删除后按剩余贡献重算。API转换直接查询事实而非信任缓存converted；日盐不记实验贡献。旧true无可回填明细标partial_unavailable并禁止显著性。真实PG迁移夹具验证完整/不可用历史；真实创建API JSONB variants序列化修复、重复贡献、伪缓存标记不造转换、删除assignment级联均通过。tracker另验真实共享cookie A→B删除A保B及旧A贡献journal重放。
+- 全站导出包含实验与贡献和可移植站点配置：只导出白名单类型验证字段，排除未知api_key/master_key及密钥/连接器凭据。真实每日盐JSON/CSV下载回归验证完整配置保留且私密key无泄漏，删除竞态和物理文件回归仍通过。
+
+中间真实回归发现共享privacy helper漏page_id业务属性，导致daily-salt原值持久化与随后月报用例中断；tracker补统一alias及021forward后修复。另时钟注入暴露PG微秒与JS毫秒边界，测试事件/调度改为明确已发生的过去时间，未放宽生产判定。修复后的最新33/33为上方实际结果。
+
+追加目标告警事件时间回归：会话23:59开始、00:01首次目标完成，归入完成日而非会话开始日。目标/漏斗重建读取完整明细保留期上下文，并使用站点 session_timeout_minutes，避免原固定2/4天片段与默认阈值改变会话。最新同组合 **5文件34/34通过**（06:27:58，4.63秒），全局typecheck与所属lint退出0。告警细分仍受原始明细保留期边界影响；不声称可以从已清除的明细还原无限历史。

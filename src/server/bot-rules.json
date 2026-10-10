@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "rules": [
+    {"id":"openai","category":"ai","tokens":["gptbot","chatgpt-user","oai-searchbot"]},
+    {"id":"anthropic","category":"ai","tokens":["claudebot","claude-user","claude-searchbot","anthropic-ai"]},
+    {"id":"perplexity","category":"ai","tokens":["perplexitybot","perplexity-user"]},
+    {"id":"google-ai-policy","category":"ai","tokens":["google-extended"]},
+    {"id":"other-ai","category":"ai","tokens":["bytespider","cohere-ai","diffbot"]},
+    {"id":"search-crawlers","category":"bot","tokens":["googlebot","bingbot","bingpreview","baiduspider","yandexbot","duckduckbot","sogou","360spider","applebot","petalbot"]},
+    {"id":"previews-monitoring","category":"bot","tokens":["facebookexternalhit","slackbot","twitterbot","linkedinbot","uptimerobot","pingdom"]},
+    {"id":"automation","category":"bot","tokens":["headlesschrome","phantomjs","selenium"]},
+    {"id":"generic-crawler","category":"bot","tokens":["bot","crawler","spider"]}
+  ]
+}

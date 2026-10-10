@@ -34,6 +34,7 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev ./node_modules
 | F60 问数 | OpenAI-compatible tool orchestration、严格只读 DSL、授权站点在服务端绑定、时间范围/指标/维度/数量上限；仅读取 stats_daily 预聚合和权限/状态元数据；不接收 SQL、不发送访客集合/原始事件；联合维度、转化率分子分母、跨组 UV 不相加 | 部分不保留的联合口径返回 unsupported。每日盐模式跨日 UV/留存不支持。真实模型问数稳定性未实测。 |
 | F63 GeoIP | 实例管理员 cookie-only GET/PUT/refresh 配置；许可加密保存，状态仅指纹不返明文；并发部分更新保留密钥；startup优先DB并内存reload；官方 MaxMind 下载端点、独立官方 SHA256 校验、TLS 保持校验、归档路径限制、mmdb 验证；缺少账户/许可或失败时 unknown，内存查询接口供采集使用 | 当前没有 MaxMind 凭证；未下载或验证真实 GeoLite2 数据库内容，不伪造地域。测试以真实本地tar归档+注入官方响应检验SHA成功后仍必须通过mmdb验证，错误artifact不能覆盖旧文件。 |
 | P2 Ollama | 仅实例管理员登记准确的 localhost/私有 IP origin；元数据/link-local 禁止；例外仅传给模型请求，不传爬虫、通知或其他出口 | 本地 HTTP 安全传输已实测；当前无 Ollama 可执行文件/镜像；模型registry不在restricted package_managers快照允许域名内，未修改策略或绕过代理，真实模型未安装/推理。 |
+| P2 WordPress | 官方 WordPress 6.9.4/PHP 8.3.31/MariaDB 实际 localhost 栈；真实UI安装WordPress→上传ZIP安装当前插件→启用/保存配置/停用/重启；真实匿名Chromium tracker→HTTP202→独立PG→worker小时聚合与API PV一致；同意前零身份零采集、撤回清身份停止、关闭同意自动采集、管理员不采集 | 更多主题、缓存插件、CMP组合与WordPress多站点未验证。本轮只绑定localhost，未公网部署；实际报告 `docs/test-evidence/wordpress-actual-runtime.json`，可复用运行器 `scripts/wordpress-acceptance.ts`。 |
 | P2 企业微信 SSO | QRConnect→官方 auth/getuserinfo；浏览器绑定一次性 state；加密企业 secret；管理员显式映射到已有账号，不自动创建用户/管理员；真实 PG+注入官方响应形状测试 | 真实企业、授权 IP/回调域名、扫码登录未实测。开发环境不为测试而外网部署。 |
 
 ## 持久配置与并发
@@ -55,3 +56,17 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev ./node_modules
 `tests/integration/external-alert.test.ts` 不直接插入通知：合法 UUID 的事件实际送入 `/api/collect`，过去28个同小时各1PV、两连续小时各20PV，经worker重算后调用带可注入时间的真实 `evaluateAlerts`，确认第一次不触发、第二次创建告警。关闭自动AI时模型零调用；开启后并发tick仅认领一次，失败后有退避，再次并发重试完成；新增UV告警复用精确集合计数。存储的 `alertTrigger.notificationId`、原始快照、`alertWindow` 与审计串联，模型请求不含任何原始访客UUID。
 
 `tests/integration/external-suggestions.test.ts` 用实际采集与worker构建25人进入/5人完成漏斗及25个小写lcp=4500样本。模型收到的事实快照只有漏斗计数和聚合指标；建议含20人流失证据、性能候选、公开优先级公式与非因果/非实测收益说明。每日盐模式跨日漏斗返回unsupported，不冒充跨日识别。
+
+## WordPress 实际本地运行
+
+2026-10-10 06:39:52 UTC 执行成功，EXIT0、29.9秒：
+
+```sh
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev \
+./node_modules/.bin/tsx scripts/wordpress-acceptance.ts
+```
+
+官方镜像digest、版本和逐项结果见JSON报告；截图见 `docs/screenshots/wordpress-local-acceptance.png`。同意后实际WordPress网页加载本实例构建的tracker.js并发送真实请求，不模拟钩子、采集接口或数据存储。测试使用独立临时app数据库与localhost 3280/3290；原生3000、开发PG业务数据和其他任务栈未更改。结束后清理自己容器/网络/卷/测试DB/临时凭据，之后仅删除本任务拉取的WordPress/MariaDB镜像释放空间。
+
+早期失败如实说明：第一次并发镜像pull在VFS盘满时失败，并影响同时进行的ops回滚演练；已暂停，ops清理旧缓存并完整重跑EXIT0后，再顺序拉取。初版测试使用Docker internal网络无法发布localhost端口；已改独立bridge+localhost绑定并禁用WordPress外部HTTP。初版对201响应/默认未安装Playwright浏览器的假设已纠正，使用现成Chromium。实际WordPress UI揭示宿主私有0700目录/0600PHP文件不能被www-data读取，故改真实UI ZIP上传安装而未放宽宿主权限。最终当前实现完整通过，早期失败不算通过。

@@ -8,6 +8,7 @@ import {sanitizePrivacyProps} from '../../packages/tracker/src/privacy.js';
 import {checkIdentity,registerIdentity} from './identity.js';
 import { ingestGovernance } from './governance.js';
 import {eventDimensions as dimensions} from './dimensions.js';
+import {createBotFilter} from './bot-filter.js';
 export {dimensions};
 function cleanEvent(event:WireEvent,ip:string,privacy=false){
   const out={...event};const url=new URL(event.url);url.search='';url.hash='';out.url=url.toString();
@@ -18,6 +19,7 @@ function cleanEvent(event:WireEvent,ip:string,privacy=false){
 }
 export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLookup:(ip:string)=>Record<string,string>=()=>({})){
   const rate=new Map<string,{count:number,expires:number}>();
+  const botFilter=createBotFilter(ctx.redis);
   app.options('/api/collect',async(req,reply)=>{reply.header('Access-Control-Allow-Origin',req.headers.origin??'*').header('Access-Control-Allow-Methods','POST').header('Access-Control-Allow-Headers','Content-Type,Authorization,X-Baize-Signature');return reply.code(204).send();});
   app.post('/api/collect',async(req,reply)=>{
     let raw=req.body as any;
@@ -27,9 +29,13 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     const origin=req.headers.origin;if(origin){let host='';try{host=new URL(origin).host;}catch{throw new HttpError(403,'无效来源');}if(host!==site.domain&&host.split(':')[0]!==site.domain)throw new HttpError(403,'来源不属于该站点');reply.header('Access-Control-Allow-Origin',origin).header('Vary','Origin');}
     const ip=req.ip,ua=req.headers['user-agent']??'';
     const limitKey=`baize:rate:${site.id}:${visitorHash(site.salt_secret,'rate',ip,'')}`;let count=0;
-    if(ctx.redis){count=Number(await ctx.redis.eval("local c=redis.call('INCR',KEYS[1]); if c==1 then redis.call('EXPIRE',KEYS[1],60) end; return c",1,limitKey));}else{const before=rate.get(limitKey);if(before&&before.expires>Date.now())count=++before.count;else{count=1;rate.set(limitKey,{count,expires:Date.now()+60000});}if(rate.size>10000)for(const [key,v] of rate)if(v.expires<Date.now())rate.delete(key);}
+    // Maintain the local window even while Redis is healthy, so failover does not reset its history.
+    const before=rate.get(limitKey);if(before&&before.expires>Date.now())count=++before.count;else{count=1;rate.set(limitKey,{count,expires:Date.now()+60000});}
+    if(rate.size>10000){for(const [key,v] of rate)if(v.expires<Date.now())rate.delete(key);while(rate.size>10000)rate.delete(rate.keys().next().value!);}
+    if(ctx.redis){try{count=Math.max(count,Number(await ctx.redis.eval("local c=redis.call('INCR',KEYS[1]); if c==1 then redis.call('EXPIRE',KEYS[1],60) end; return c",1,limitKey)));}catch{/* Cache failure retains bounded local intake limits; durable PG remains authoritative. */}}
     if(count>100){reply.header('Retry-After','60');throw new HttpError(429,'rate_limited');}
-    if(/bot|crawler|spider|headless/i.test(ua)){const category=/gptbot|claudebot|google-extended/i.test(ua)?'ai':'bot';await ctx.pool.query('INSERT INTO bot_counts(site_id,day,category,count) VALUES($1,current_date,$2,1) ON CONFLICT(site_id,day,category) DO UPDATE SET count=bot_counts.count+1',[site.id,category]);return reply.code(204).send();}
+    const bot=await botFilter.inspect({siteId:site.id,secret:site.salt_secret,ip,userAgent:ua});
+    if(bot.isBot){await ctx.pool.query('INSERT INTO bot_counts(site_id,day,category,count) VALUES($1,$2,$3,1) ON CONFLICT(site_id,day,category) DO UPDATE SET count=bot_counts.count+1',[site.id,new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone}).format(new Date()),bot.category]);return reply.code(204).send();}
     if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr)))return reply.code(204).send();
     if(req.headers.authorization){const write=site.config.write_key_hash;const token=req.headers.authorization.replace(/^Bearer /,'');if(!write||hashToken(token)!==write)throw new HttpError(401,'invalid_write_key');const signature=req.headers['x-baize-signature'];const expected=createHmac('sha256',token).update(canonical(envelope)).digest();let supplied:Buffer;try{supplied=Buffer.from(String(signature),'hex');}catch{throw new HttpError(401,'invalid_signature');}if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected))throw new HttpError(401,'invalid_signature');}
     const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false;

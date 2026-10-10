@@ -39,3 +39,5 @@ server {
 ```
 
 Apply an appropriate request-body limit and retain the collector's site/CORS restrictions. Do not expose database or Redis ports. This development task does not enable external access, issue certificates, publish images or deploy a public service.
+
+Before stopping the working application, upgrades require at least 2GiB free workspace space (`BAIZE_UPGRADE_MIN_FREE_BYTES` can raise the threshold) and allocate a 128MiB emergency rollback reserve, released before rollback. This is not a guarantee against concurrent Docker pulls exhausting storage. Pause unrelated builds/pulls during upgrades and monitor the Docker data filesystem. Keep the recovery point if rollback fails, free space and complete manual recovery; a previous image or partial rollback is not success.

@@ -1,6 +1,6 @@
 {
   "source": "package-lock.json",
-  "sha256": "ac4c4a7e91ae59705d63e4b15ec4f13a7c000592cee69e45f52ccc93ce267322",
+  "sha256": "5374bd06b9f65a615aa01992078ff01c87072abf71f50ea5520fc8bfeaf25494",
   "scope": "Lockfile metadata only; not a legal or release compliance audit",
   "packages": [
     {
@@ -794,6 +794,15 @@
       "optional": false,
       "integrity": "sha512-89ZDvz0aw1Uwosx0JSV8qfB6q5PsyFHni2vzutiG6QOLqMt9W95VTaKRDD9f56oe2zRdD+3u3UGM3Zgu5708Sg==",
       "path": "node_modules/@types/tdigest"
+    },
+    {
+      "name": "@types/ua-parser-js",
+      "version": "0.7.39",
+      "license": "MIT",
+      "development": true,
+      "optional": false,
+      "integrity": "sha512-P/oDfpofrdtF5xw433SPALpdSchtJmY7nsJItf8h3KXqOslkbySh8zq4dSWXH2oTjRvJ5PczVEoCZPow6GicLg==",
+      "path": "node_modules/@types/ua-parser-js"
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
@@ -3125,6 +3134,15 @@
       "optional": false,
       "integrity": "sha512-oiNVPC3/NbV1FpaHU07l8O6ynqG9v4PAiW2WvTrAmZdR0f2HI/gE668ElMLCK7Xbsu5k2fK5C4fXNiq05j7/nQ==",
       "path": "node_modules/typescript-eslint"
+    },
+    {
+      "name": "ua-parser-js",
+      "version": "1.0.41",
+      "license": "MIT",
+      "development": false,
+      "optional": false,
+      "integrity": "sha512-LbBDqdIC5s8iROCUjMbW1f5dJQTEFB1+KO9ogbvlb3nm9n4YHa5p4KTvFPWvh2Hs8gZMBuiB1/8+pdfe/tDPug==",
+      "path": "node_modules/ua-parser-js"
     },
     {
       "name": "undici",

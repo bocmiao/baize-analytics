@@ -1,0 +1,13 @@
+{
+  "exitCode": 0,
+  "image": "sha256:6c66d8a80e51d06346a6773eebbc713fe92377ae78a6c8aba4953d715407db42",
+  "scope": "Strict journal/new-volume restore, injected worker SQL failure, install/upgrade/missing-image rollback/committed-schema-503 rollback; image precedes migration024 and UA/bot follow-up",
+  "previousRun": {
+    "exitCode": 1,
+    "cause": "ENOSPC during rollback after concurrent image pulls",
+    "log": "/tmp/baize-ops-final-matrix.log"
+  },
+  "retryLog": "docker-lifecycle-main.log",
+  "hostUpgradeFix": "minimum disk gate and emergency rollback reserve",
+  "remoteCI": "not run; account payment/spending limit block"
+}

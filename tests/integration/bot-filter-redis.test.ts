@@ -1,0 +1,7 @@
+import {it,expect} from 'vitest';
+import {Redis} from 'ioredis';
+import {randomUUID,createHmac} from 'node:crypto';
+import {createBotFilter} from '../../src/server/bot-filter';
+it('real Redis shared workers atomically classify the 21st HTTP request without persisting IP',async()=>{
+ const redis=new Redis(process.env.REDIS_URL??'redis://127.0.0.1:6379',{maxRetriesPerRequest:1}),siteId=randomUUID(),secret=randomUUID(),ip='203.0.113.231';const key='baize:bot-burst:'+createHmac('sha256',secret).update('bot-burst\0'+siteId+'\0'+ip).digest('hex');try{expect(await redis.ping()).toBe('PONG');const one=createBotFilter(redis),two=createBotFilter(redis),input={siteId,secret,ip,userAgent:'Mozilla/5.0 Chrome/145.0.0.0'};const results=await Promise.all(Array.from({length:21},(_,n)=>(n%2?one:two).inspect(input)));expect(results.filter(r=>r.isBot)).toHaveLength(1);expect(results.find(r=>r.isBot)).toMatchObject({reason:'request_burst',category:'bot',requests:21});expect(await redis.type(key)).toBe('zset');const members=await redis.zrange(key,0,-1);expect(members).toHaveLength(21);expect(JSON.stringify(members)).not.toContain(ip);expect(await redis.pttl(key)).toBeGreaterThan(0);await new Promise(resolve=>setTimeout(resolve,1100));expect((await two.inspect(input)).isBot).toBe(false);expect((await two.inspect({...input,userAgent:'OAI-SearchBot/1.0'})).category).toBe('ai');}finally{await redis.del(key);await redis.quit();}
+},10000);
