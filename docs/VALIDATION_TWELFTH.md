@@ -11,3 +11,7 @@ ce6ebcc/b0be327单站strict1000完整性通过不代表性能达标：最新排�
 ## 紧凑UI首轮（保留失败）
 
 b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检查中28通过、2失败、零跳过，EXIT1，资源清理完成。原29中27通过；新AI截图阶段中文日期定位错误超时、新operations接入卡刷新后折叠导致locator不可见。已准备窄fixture修复，不改变产品/隐私/权限/状态断言；实际重跑尚待。SEO中文1440/390、紧凑总览与可访问workspace已产出真实截图，当前没有AI最终图，不提前勾全绿。证据main-b6bb4f9-browser-failed.json保留。
+
+516ce9d四浏览器专项2PASS/2FAIL（总览和SEO截图通过）。AI附加截图受到真实预算429保护；时区更新后旧事实受到503保护，background:false fixture未重算。窄修只配置模拟模型测试站点预算及真实worker重算，不削产品guard；旧失败保留 main-516ce9d-four-browser-failed.json。
+
+比较期读取复用专项：新增同一站点事务共享已认证事实SQL TEMP，严格等长当前/上一窗口与相同path过滤各自计算；只normalized比较，legacy与单范围保持原行为。真实HTTP route/PG/CH1项+2单元通过，max1无借池等待；删除epoch变化与物理丢失正文仍拒绝。该定向结果不加到ef55e12全轮568计数；不声称普通查询提速。证据comparison-shared-snapshot-real.json。
