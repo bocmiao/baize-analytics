@@ -4,17 +4,15 @@ import { envelopeSchema,eventSchema,type WireEvent } from '../../packages/contra
 import { transaction,lockSite,dirtySite } from './db.js';
 import { HttpError,anonymizeIP,matchesCIDR,visitorHash,canonical,hashToken,dayScopedPageId } from './security.js';
 import { createHash,createHmac,randomUUID,timingSafeEqual } from 'node:crypto';
+import {sanitizePrivacyProps} from '../../packages/tracker/src/privacy.js';
 import {checkIdentity,registerIdentity} from './identity.js';
 import { ingestGovernance } from './governance.js';
-export function dimensions(ua:string,event:WireEvent,geo:Record<string,string>={}){
-  const ref=event.referrer??'';let host='';try{host=new URL(ref).hostname;}catch{/* No referrer. */}
-  const channel=event.utm_medium==='email'?'email':/cpc|paid|ppc/.test(event.utm_medium??'')?'paid':/chatgpt|claude|perplexity|doubao|yiyan/.test(host)?'ai':/google|bing|baidu|sogou|so\.com|duckduckgo/.test(host)?'search':/weixin|wechat|weibo|facebook|twitter|t\.co|zhihu|douyin|xiaohongshu/.test(host)?'social':host?'referral':'direct';
-  return {country:'unknown',region:'unknown',city:'unknown',...geo,device:/ipad|tablet/i.test(ua)?'tablet':/mobile|android|iphone/i.test(ua)?'mobile':'desktop',browser:/edg\//i.test(ua)?'Edge':/chrome|chromium/i.test(ua)?'Chrome':/firefox/i.test(ua)?'Firefox':/safari/i.test(ua)?'Safari':'unknown',os:/windows/i.test(ua)?'Windows':/android/i.test(ua)?'Android':/iphone|ipad/i.test(ua)?'iOS':/macintosh/i.test(ua)?'macOS':/linux/i.test(ua)?'Linux':'unknown',screen:event.screen??'unknown',language:event.language??'unknown',channel,referrer:host,utm_source:event.utm_source??'',utm_medium:event.utm_medium??'',utm_campaign:event.utm_campaign??''};
-}
+import {eventDimensions as dimensions} from './dimensions.js';
+export {dimensions};
 function cleanEvent(event:WireEvent,ip:string,privacy=false){
   const out={...event};const url=new URL(event.url);url.search='';url.hash='';out.url=url.toString();
   try{const ref=new URL(out.referrer??'');ref.search='';ref.hash='';out.referrer=ref.toString();}catch{out.referrer='';}
-  if(out.props)out.props=Object.fromEntries(Object.entries(out.props).filter(([k,v])=>!/(password|secret|token|email|phone|authorization|ip_address)/i.test(k)&&(!privacy||!/(user.?id|visitor.?id|distinct.?id|identity|account.?id|session.?id|page.?id)/i.test(k))&&v!==ip));
+  if(out.props){out.props=Object.fromEntries(Object.entries(out.props).filter(([k,v])=>!/(password|secret|token|email|phone|authorization|ip_address)/i.test(k)&&v!==ip));if(privacy)out.props=sanitizePrivacyProps(out.props);}
   if(privacy)delete out.user_id;
   return out;
 }
@@ -22,8 +20,10 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
   const rate=new Map<string,{count:number,expires:number}>();
   app.options('/api/collect',async(req,reply)=>{reply.header('Access-Control-Allow-Origin',req.headers.origin??'*').header('Access-Control-Allow-Methods','POST').header('Access-Control-Allow-Headers','Content-Type,Authorization,X-Baize-Signature');return reply.code(204).send();});
   app.post('/api/collect',async(req,reply)=>{
-    const raw=req.body as any;if(raw?.protocol_version!==1)return reply.code(400).send({error:'unsupported_protocol_version',supported:[1]});
-    const envelope=envelopeSchema.parse(raw);const found=await ctx.pool.query('SELECT * FROM sites WHERE id=$1',[envelope.site_id]);if(!found.rowCount)throw new HttpError(404,'站点不存在');const site=found.rows[0];
+    let raw=req.body as any;
+    if(typeof raw==='string'){try{raw=JSON.parse(raw);}catch{throw new HttpError(400,'invalid_json');}}
+    if(raw?.protocol_version!==1)return reply.code(400).send({error:'unsupported_protocol_version',supported:[1]});
+    const envelope=envelopeSchema.parse(raw);const found=await ctx.pool.query('SELECT * FROM sites WHERE id=$1',[envelope.site_id]);if(!found.rowCount)throw new HttpError(404,'站点不存在');let site=found.rows[0];
     const origin=req.headers.origin;if(origin){let host='';try{host=new URL(origin).host;}catch{throw new HttpError(403,'无效来源');}if(host!==site.domain&&host.split(':')[0]!==site.domain)throw new HttpError(403,'来源不属于该站点');reply.header('Access-Control-Allow-Origin',origin).header('Vary','Origin');}
     const ip=req.ip,ua=req.headers['user-agent']??'';
     const limitKey=`baize:rate:${site.id}:${visitorHash(site.salt_secret,'rate',ip,'')}`;let count=0;
@@ -32,9 +32,14 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     if(/bot|crawler|spider|headless/i.test(ua)){const category=/gptbot|claudebot|google-extended/i.test(ua)?'ai':'bot';await ctx.pool.query('INSERT INTO bot_counts(site_id,day,category,count) VALUES($1,current_date,$2,1) ON CONFLICT(site_id,day,category) DO UPDATE SET count=bot_counts.count+1',[site.id,category]);return reply.code(204).send();}
     if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr)))return reply.code(204).send();
     if(req.headers.authorization){const write=site.config.write_key_hash;const token=req.headers.authorization.replace(/^Bearer /,'');if(!write||hashToken(token)!==write)throw new HttpError(401,'invalid_write_key');const signature=req.headers['x-baize-signature'];const expected=createHmac('sha256',token).update(canonical(envelope)).digest();let supplied:Buffer;try{supplied=Buffer.from(String(signature),'hex');}catch{throw new HttpError(401,'invalid_signature');}if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected))throw new HttpError(401,'invalid_signature');}
-    const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0;
+    const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false;
     await transaction(ctx.pool,async client=>{
-      await lockSite(client,site.id);let changed=false;
+      await lockSite(client,site.id);
+      site=(await client.query('SELECT * FROM sites WHERE id=$1',[site.id])).rows[0];if(!site)throw new HttpError(404,'站点不存在');
+      if(origin){const host=new URL(origin).host;if(host!==site.domain&&host.split(':')[0]!==site.domain)throw new HttpError(403,'来源不属于该站点');}
+      if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
+      if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
+      let changed=false;
       for(const [index,rawEvent] of envelope.events.entries()){
         const parsed=eventSchema.safeParse(rawEvent);if(!parsed.success){rejected.push({index,event_id:(rawEvent as any)?.event_id,reason:'invalid_event'});continue;}
         const wire=parsed.data;
@@ -61,7 +66,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=await checkIdentity(client,site.id,visitor,wire.ts,userId??null);if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
         const clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
         if(site.privacy_mode==='daily_salt')clean.page_id=dayScopedPageId(site.salt_secret,day,wire.page_id);
-        const metadata={...dimensions(ua,wire,geo),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
+        const metadata={...dimensions(ua,wire,geo,site.config,ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
         // Replay is revalidated by the governance module before raw JSON can be retained.
         if(wire.type==='replay'){
           const { replayIsMasked }=await import('./governance.js');if(!replayIsMasked(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'unmasked_replay'});continue;}
@@ -76,6 +81,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       }
       if(changed){await dirtySite(client,site.id);await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);}
     });
+    if(ignored)return reply.code(204).send();
     return reply.code(202).send({accepted,duplicates,rejected,clock_skew:Math.abs(Date.now()-envelope.sent_at)>86400000});
   });
 }

@@ -25,3 +25,11 @@ Web Vitals 官方 attribution、rrweb 回放和匿名网格位置热图分别放
 每日盐隐私模式禁止 `identify`，该调用在构造事件或生成 ID 前直接返回；事件属性中的已知稳定身份字段（user_id、distinct_id、identity、email、phone 等）会移除，清洗钩子也不能重新注入这些字段。小程序 SDK 同样执行该规则。自定义字段仍需调用方避免传入个人数据或伪装在其他字段中的身份；字段过滤不能证明任意业务字符串都是匿名的。
 
 核心脚本从站点配置读取 replay/heatmap/vitals，获得所需同意后才从采集服务按需加载对应独立模块；无需增加多个嵌入标签。重复加载模块或主脚本会被阻止，不会重复注册采集。
+
+站点要求同意且未自行提供同意 UI 时，在核心脚本之后添加 `<script src="/tracker-consent.js"></script>`。独立中文组件在远端配置完成后显示同意/拒绝按钮；点击前不会生成访客 ID 或采集事件。重复加载不重复挂载。同意前先移除组件，避免组件高度影响滚动深度。
+
+原生表单提交只收集显式 `data-baize-form` 表单的 id 与 action 路径，立即通过非阻塞 beacon 发送，不收集字段名称或值。跨域 beacon 使用 CORS safelisted `text/plain;charset=UTF-8` 承载同一版本化 JSON 协议，避免导航时 JSON MIME preflight 导致行为批次丢失；发送失败仍受浏览器生命周期限制。
+
+每日盐模式的已知稳定属性别名由独立 MIT `src/privacy.ts` 统一过滤，浏览器、微信 SDK 与服务器入口使用同一规则，包括 `customer_id`、`device_id`、`uuid`、`contact`、属性里的 `page_id` / `pageId` 及邮箱形字符串。协议必需的顶层页面实例 ID 保留，由服务器再按站点本地日期隔离；任意业务自定义字段仍不应包含个人身份信息。
+
+应用回放播放器支持 `createReplayPlayer(container, events, {language: 'en'})`；默认语言为 `zh-CN`，语言只影响控件和隐私说明，不改变采集协议。

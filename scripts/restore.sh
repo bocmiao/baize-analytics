@@ -9,7 +9,9 @@ new_db="${2:?A new database name is mandatory; existing databases are never repl
 key_package="${BAIZE_KEY_RESTORE_DIR:-$(cat "$backup_dir/key-package.ref")}"
 (cd "$key_package" && sha256sum -c SHA256SUMS)
 restore_dir="$(mktemp -d "$PWD/.baize/restore-check.XXXXXX")"
-trap 'rm -rf "$restore_dir"' EXIT
+target_created=0
+restore_exit(){ status=$?; rm -rf "$restore_dir"; if [ "$status" -ne 0 ] && [ "$target_created" = 1 ]; then printf 'Restore failed; target database %s and isolated volumes retained for diagnosis. No traffic switched; no success marker written.\n' "$new_db" >&2; fi; }
+trap restore_exit EXIT
 # Fail before creating ANY target if independent latest deletion state is absent,
 # truncated, reset, corrupted, or older than the database snapshot journal.
 docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/tombstones.jsonl"
@@ -45,6 +47,7 @@ function own(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){c
 own("/target");own("/target-keys");fs.chmodSync("/target",0o700);fs.chmodSync("/target-keys",0o700);
 '
 docker compose exec -T postgres createdb -U baize "$new_db"
+target_created=1
 docker compose exec -T postgres pg_restore -U baize -d "$new_db" --exit-on-error --no-owner < "$backup_dir/database.dump"
 docker compose run --rm --no-deps --entrypoint node \
   --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data --env KEYS_DIR=/restore-keys \

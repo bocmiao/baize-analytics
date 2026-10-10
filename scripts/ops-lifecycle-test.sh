@@ -34,6 +34,8 @@ restored_tombstones="$(docker compose exec -T postgres psql -U baize -d "$restor
 [ "$restored_tombstones" = 1 ] || { echo "Deletion replay missing!" >&2; exit 1; }
 docker run --rm --mount "type=volume,src=${COMPOSE_PROJECT_NAME}_${restore_db}_app_data,dst=/target,readonly" --entrypoint node baize-analytics:local -e 'const fs=require("node:fs"),assert=require("node:assert/strict");assert.equal(fs.readFileSync("/target/geoip/restore-fixture.txt","utf8"),"snapshot-file-proof");if(fs.existsSync("/target/exports"))assert.equal(fs.readdirSync("/target/exports").length,0);console.log("Fresh target data volume restored asset fixture and purged revoked export files.")'
 
+bash scripts/ops-restore-failure-test.sh "backups/$COMPOSE_PROJECT_NAME"
+
 ./upgrade.sh baize-analytics:local
 # Health failure exercises full database+image rollback.
 if ./upgrade.sh baize-missing-image:must-not-exist; then

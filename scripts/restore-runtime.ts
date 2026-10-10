@@ -1,6 +1,6 @@
 import { createPool,migrate,transaction } from '../src/server/db.js';
 import { initializeJournal,replayDeletionJournal } from '../src/server/deletion.js';
-import { runWorkerOnce } from '../src/server/worker.js';
+import { runRestoreRebuild } from './restore-rebuild.js';
 import { scheduleExportCleanup,runFileCleanup } from '../src/server/file-cleanup.js';
 import { Redis } from 'ioredis';
 import { resolve } from 'node:path';
@@ -23,7 +23,7 @@ try{
     await client.query("UPDATE export_file_cleanup SET next_at=now() WHERE status='pending'");
   });
   const cleanup=await runFileCleanup({pool,config:{dataDir:dir}});if(cleanup.pending)throw new Error('Restored files cleanup is pending; queries remain closed');
-  while(await runWorkerOnce(pool)){/* Complete all dirty work before accepting queries. */}
+  const rebuild=await runRestoreRebuild(pool);
   if(redis)for(const row of(await pool.query('SELECT id FROM sites')).rows)for(const pattern of [`analytics:${row.id}:*`,`baize:online:${row.id}:*`]){let cursor='0';do{const batch=await redis.scan(cursor,'MATCH',pattern,'COUNT',100);cursor=batch[0];if(batch[1].length)await redis.del(...batch[1]);}while(cursor!=='0');}
-  console.log(JSON.stringify({restored:true,deletionRecords:result.records,reaggregated:true,fileCleanup:cleanup,schedulesPaused:true}));
+  console.log(JSON.stringify({restored:true,deletionRecords:result.records,reaggregated:rebuild.verified,rebuild,fileCleanup:cleanup,schedulesPaused:true}));
 }finally{await pool.end();await redis?.quit();}

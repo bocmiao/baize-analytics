@@ -1,6 +1,9 @@
 import { z } from 'zod';
 export const VITAL_KEYS=['lcp','inp','cls','fcp','ttfb'] as const;
 export const vitalKeySchema=z.enum(VITAL_KEYS);
+export const channelSchema=z.enum(['direct','referral','search','social','ai','paid','email']);
+export const referrerHostSchema=z.string().max(253).trim().toLowerCase().refine(s=>/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(s)&&!s.includes('..'),'请输入不含协议、路径、通配符的域名');
+export const channelRuleSchema=z.object({name:z.string().min(1).max(80),channel:channelSchema,referrer_host:referrerHostSchema.optional(),include_subdomains:z.boolean().default(false),utm_medium:z.string().min(1).max(256).optional(),utm_source:z.string().min(1).max(256).optional()}).strict().refine(r=>Boolean(r.referrer_host||r.utm_medium||r.utm_source),'至少需要一个来源条件');
 export const VITAL_THRESHOLDS={lcp:{good:2500,poor:4000},inp:{good:200,poor:500},cls:{good:0.1,poor:0.25},fcp:{good:1800,poor:3000},ttfb:{good:800,poor:1800}} as const;
 export const suggestionStatusSchema=z.enum(['new','accepted','in-progress','pending-recheck','verified','false-positive']);
 export const suggestionTransitions:Record<z.infer<typeof suggestionStatusSchema>,readonly z.infer<typeof suggestionStatusSchema>[]>= {

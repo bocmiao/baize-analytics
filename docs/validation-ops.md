@@ -22,3 +22,7 @@
 禁止使用 mock 宣称真实外部账号已验收。无外部公开部署、无镜像 push、无其他仓库操作。
 
 追加严格恢复验收：`/tmp/baize-ops-fresh-restore.log` 实际缺失日志、空日志重置均拒绝且未创建目标库；备份前生成的真实 JSON 导出、备份后的实际访客删除、全新目标数据/密钥卷恢复，目标库 events=0/tombstones=1，保留普通 geoip 目录文件且 exports 文件数=0，持久清理 pending=0。完整生命周期退出0：同镜像升级、不存在镜像回滚、已提交schema新增字段后HTTP503触发数据库/卷/旧应用回滚均通过。最新镜像 cf9ba00b6794；后续正常启动DB删除标记检查及显式legacy水位迁移工具通过原生typecheck/lint，尚未重新构建镜像。
+
+恢复重算 P1 复检：新增 `runRestoreRebuild` 以数据库持久状态确认每个目标站点 generation=processed_generation、无 lease、attempts=0、无 error/dead-letter 后才允许 `restored/reaggregated` 成功输出；worker 返回 false 不作为完成证据。实际运行 `TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev npm exec vitest -- run tests/integration/restore-rebuild.test.ts`，5/5通过：真实脏数据重算、false但仍dirty拒绝、暂态持久失败可重试、实际SQL42P01失败达到dead-letter拒绝、active lease拒绝假完成。新修正已通过typecheck/lint，最新完整Docker矩阵尚待重跑，不能沿用之前生命周期绿灯证明该版本。
+
+真实恢复脚本 worker 失败验收已加入 `scripts/ops-restore-failure-test.sh` 并接入生命周期：通过本地衍生镜像迁移隐藏 goals 表触发实际 worker SQL42P01，断言目标数据库保留且仍 dirty/dead-letter、没有成功 manifest/成功输出、源应用容器及 DATABASE_URL 保持且 health 正常。失败脚本仅在断言后清理该测试目标。当前仅完成 Bash 语法/diff 检查，此新增 Docker 场景待最终代码稳定后实际运行，尚不能标记通过。

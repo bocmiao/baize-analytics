@@ -37,7 +37,7 @@ export async function createApp(options:AppOptions={}){
   await initializeKeyring(pool,config);
   const ctx:AppContext={pool,redis,config,...authFunctions(pool),audit:async(actorId,siteId,action,target)=>{await pool.query('INSERT INTO audit_logs(actor_id,site_id,action,target) VALUES($1,$2,$3,$4)',[actorId,siteId,action,JSON.stringify(target)]);}};
   const replay=await replayDeletionJournal(pool,dataDir);for(const siteId of replay.sites)await invalidateSiteCache(ctx,siteId);
-  for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version'='1'")).rows)await invalidateSiteCache(ctx,site.id);
+  for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version' IN ('1','2','3')")).rows)await invalidateSiteCache(ctx,site.id);
   await runFileCleanup(ctx);
   const geo=new GeoIP();await geo.open(dataDir);
   ctx.geoReload=async(enabled=true)=>{if(enabled)await geo.open(dataDir);else geo.disable();};
@@ -61,7 +61,7 @@ export async function createApp(options:AppOptions={}){
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
-  for(const name of ['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap'])app.get(`/${name}.js`,async(_req,reply)=>reply.header('Access-Control-Allow-Origin','*').type('application/javascript').sendFile(`${name}.js`,resolve('public')));
+  for(const name of ['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap','tracker-consent'])app.get(`/${name}.js`,async(_req,reply)=>reply.header('Access-Control-Allow-Origin','*').type('application/javascript').sendFile(`${name}.js`,resolve('public')));
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
   if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));}
   app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
