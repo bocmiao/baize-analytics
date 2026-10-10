@@ -23,4 +23,4 @@
 
 新增 `manifest_sql` 后固定阶段共9类：pool_acquire、partition_lock、site_lock、ch_transport、authentication、temp_fill、aggregate_sql、json_serialize、manifest_sql。固定7个 adapter 标签×4个 operation×9阶段，adapter 聚合键最多252组合；未知接口未观察不能当作耗时零。计数/行数/批数/字节只使用真实观测，未测量字段为 null。阶段可嵌套或并行，是 inclusive 时长，不能相加为 CPU 占比。关联标识仅有界保存在内存，不输出 visitor、正文、凭据或关联 ID。
 
-root 实际阶段单元专项 `/tmp/baize-root-manifest-stage-unit.json` 为7 PASS、0 FAIL、0 skip；不加入旧全量计数。此文档没有重新运行测试、容器或托管流水线。044 同批单SQL TEMP优化仍在制，未完成验收，不能将上述索引或观测结果替代它的正确性/应用性能证据。
+root 实际阶段单元专项 [原始报告](../../test-evidence/main-2ec2723-manifest-stage-unit.json) 为7 PASS、0 FAIL、0 skip；不加入旧全量计数。044 fresh 成员单次 typed INSERT 已随 `19d97af` 保存，提交前文件摘要绑定的真实 PG/CH 专项14 PASS、单元3 PASS，见 [记录](../../test-evidence/044-fresh-member-bulk-record.json)。CH 读回、fresh fence、原 header 锁及事务顺序保持，普通 PK/FK 错误传播，写入数量不符拒绝；未使用 ON CONFLICT 吞错。后续不可变源码空库联合验收与应用负载尚在进行，不能将上述索引或观测实验替代整轮结果或声称性能达标。此文档更新没有重新运行测试、容器或托管流水线。
