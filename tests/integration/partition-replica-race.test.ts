@@ -1,0 +1,27 @@
+import {randomUUID} from 'node:crypto';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {Pool} from 'pg';
+import Fastify from 'fastify';
+import {it,expect} from 'vitest';
+import {migrate,lockPartitionWrites} from '../../src/server/db.js';
+import {ensureMonthPartition,dropEmptyHistoricalPartitions} from '../../src/server/partitions.js';
+import {ClickHouseStore} from '../../src/server/clickhouse-store.js';
+import {ClickHouseMirror,setReplicaMode} from '../../src/server/clickhouse-mirror.js';
+import {registerCollect} from '../../src/server/collect.js';
+import {deleteVisitor} from '../../src/server/deletion.js';
+import type {AppContext} from '../../src/server/context.js';
+it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('real replica upload, journal-backed deletion and partition DROP finish without a three-way advisory cycle',async()=>{
+ const schema=`replica_race_${randomUUID().replaceAll('-','')}`,site=randomUUID();const admin=new Pool({connectionString:process.env.TEST_DATABASE_URL});const pool=new Pool({connectionString:process.env.TEST_DATABASE_URL,options:`-c search_path=${schema}`});const ch=new ClickHouseStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'});const mirror=new ClickHouseMirror(pool,ch,{minIntervalMs:0});const app=Fastify();const dir=await mkdtemp('/tmp/baize-replica-race-');let blockersReleased=false;const gate=await pool.connect(),replica=await pool.connect();const work:Promise<unknown>[]=[];
+ try{
+  await admin.query(`CREATE SCHEMA ${schema}`);await migrate(pool);await ch.initialize();await pool.query("INSERT INTO sites(id,name,domain,salt_secret) VALUES($1,'race','example.test','secret')",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);const ctx={pool,redis:null,clickhouseMirror:mirror,config:{dataDir:dir,masterKey:Buffer.alloc(32,1),publicUrl:'http://localhost'},audit:async()=>{},authorize:async()=>({id:randomUUID()})} as unknown as AppContext;await registerCollect(app,ctx);
+  const events=['A','B'].map(path=>({event_id:randomUUID(),visitor_id:randomUUID(),page_id:randomUUID(),ts:Date.now()-60000,type:'pageview',url:`https://example.test/${path}`,path:`/${path}`}));const response=await app.inject({method:'POST',url:'/api/collect',headers:{'user-agent':'Mozilla/5.0 Chrome/145.0.0.0'},payload:{site_id:site,protocol_version:1,sdk:'real-race-test',sent_at:Date.now(),events}});expect(response.statusCode).toBe(202);expect(response.json().accepted).toBe(2);await setReplicaMode(pool,site,'prefer_clickhouse');const old=new Date();old.setUTCMonth(old.getUTCMonth()-2);await ensureMonthPartition(pool,old);
+  const visitor=(await pool.query("SELECT visitor_id FROM events WHERE site_id=$1 AND path='/A'",[site])).rows[0].visitor_id;
+  await gate.query('BEGIN');await lockPartitionWrites(gate);await replica.query('SELECT pg_advisory_lock(hashtextextended($1,0))',[`clickhouse:${site}`]);
+  const waiting=async(key:string,salt:number,minimum:number)=>{const deadline=Date.now()+5000;while(Date.now()<deadline){const rows=await pool.query("SELECT count(*)::int n FROM pg_locks WHERE locktype='advisory' AND NOT granted AND classid=((hashtextextended($1,$2::bigint)>>32)&4294967295)::oid AND objid=(hashtextextended($1,$2::bigint)&4294967295)::oid",[key,salt]);if(rows.rows[0].n>=minimum)return;await new Promise(resolve=>setTimeout(resolve,10));}throw Error('expected real advisory waiter absent');};
+  const upload=mirror.runOnce();work.push(upload);await waiting(`clickhouse:${site}`,0,1);const deletion=deleteVisitor(ctx,site,{visitor_id:visitor},null);work.push(deletion);await waiting(`clickhouse:${site}`,0,2);const ddl=dropEmptyHistoricalPartitions(pool);work.push(ddl);await waiting(`${schema}:baize:partition-writes`,92834110,1);
+  await gate.query('COMMIT');await replica.query('SELECT pg_advisory_unlock(hashtextextended($1,0))',[`clickhouse:${site}`]);blockersReleased=true;
+  const results=await Promise.all(work);expect(results[0]).toBe(false);expect(results[1]).toMatchObject({deleted:true,journal:'durable'});expect(results[2]).toEqual({dropped:1});expect((await pool.query('SELECT path FROM events WHERE site_id=$1',[site])).rows).toEqual([{path:'/B'}]);const uploadRow=(await pool.query('SELECT snapshot_id,epoch,generation::text FROM event_store_uploads WHERE site_id=$1 ORDER BY created_at DESC LIMIT 1',[site])).rows[0];if(uploadRow)expect(await ch.countSnapshot({siteId:site,snapshotId:uploadRow.snapshot_id,epoch:uploadRow.epoch,generation:uploadRow.generation})).toBe(0);expect((await pool.query('SELECT snapshot_id FROM event_store_state WHERE site_id=$1',[site])).rows[0].snapshot_id).toBeNull();const locks=await pool.query("SELECT count(*)::int n FROM pg_locks WHERE locktype='advisory' AND classid=((hashtextextended($1,0)>>32)&4294967295)::oid AND objid=(hashtextextended($1,0)&4294967295)::oid",[`clickhouse:${site}`]);expect(locks.rows[0].n).toBe(0);
+ }finally{
+  if(!blockersReleased){await gate.query('ROLLBACK').catch(()=>{});await replica.query('SELECT pg_advisory_unlock(hashtextextended($1,0))',[`clickhouse:${site}`]).catch(()=>{});}await Promise.allSettled(work);gate.release();replica.release();await app.close();await ch.deleteScope(site,{all:true});await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});
+ }
+},20000);

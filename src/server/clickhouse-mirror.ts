@@ -31,8 +31,8 @@ export class ClickHouseMirror {
   const connection = await this.pool.connect(); let replicaHeld = false; let captured: {generation: string; epoch: string} | undefined; let count = 0; let maxOutbox = '0'; let watermark: Date | string | null = null;
   const renew = setInterval(() => {void this.pool.query("UPDATE event_store_state SET lease_until=now()+interval '60 seconds' WHERE site_id=$1 AND lease_owner=$2 AND lease_until>now()", [siteId, owner]).catch(() => {});}, 15000); renew.unref();
   try {
-   await connection.query('SELECT pg_advisory_lock(hashtextextended($1,0))', [replicaLock(siteId)]); replicaHeld = true;
    await beginPartitionSnapshot(connection);
+   await connection.query('SELECT pg_advisory_lock(hashtextextended($1,0))', [replicaLock(siteId)]); replicaHeld = true;
    captured = (await connection.query('SELECT generation::text,epoch::text FROM aggregation_state WHERE site_id=$1', [siteId])).rows[0];
    const site = (await connection.query('SELECT retention_days FROM sites WHERE id=$1', [siteId])).rows[0];
    if (!captured || !site) {await connection.query('ROLLBACK'); return false;}
