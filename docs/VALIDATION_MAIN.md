@@ -9,7 +9,8 @@
 | c890后端 | 211单元+421真实集成=632 PASS/0skip，已实际执行 |
 | 1c1cb65浏览器 | 30检查=28真实Chromium+2日期全部PASS/0skip，92.6437秒，EXIT0/cleanup |
 | 两阶段源码关联 | src/db/packages与c890一致已核；不声称1c重跑后端 |
-| 1c新镜像与最终固定负载 | root正在执行，尚待结果；不得借19镜像或旧ac负载称通过/SLO达标 |
+| 1c1cb65新镜像 | 实际EXIT0；a5d495d6…，55DDL/054两个索引、391源码与镜像一致、运行budget probe、独立目标latest journal删A保B/源不变、故障拒绝及cleanup通过；证据main-1c1cb65-image-* |
+| 最终固定1000/5000负载 | root正在执行（80510），结果pending，不预称通过或SLO达标 |
 | 托管/外部边界 | 不触发托管；真实外部账号、设备及模型未测边界保留 |
 
 日期标记和累计SELECT次数/decoded bytes/deadline预算两项有限缺口已有本地证明；预算不保证scan/heap或性能改善。以下各SHA原文为历史时点，不作为另一个“当前/最新”入口；所有FAIL、执行时间与原证据保持。

@@ -65,3 +65,11 @@ c890be3c2a458d9a7934cd1d8133fbe3ec2032bd完整本地runner实际EXIT1/cleanup：
 1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340 operations定向真实Chromium1PASS/0skip、EXIT0、10.333秒。按真实bin中心点击验证日期标记与键盘双向焦点、PV/时区/权限，reporter含生成annotation附件记录；后续全轮重置test-results前未能复制专项原图，最终图待全轮另存，不伪造hash。证据 `test-evidence/main-1c1cb65-operations-browser-*`，1128trackedblob绑定（不是11128）。本定向通过不能称同源全30通过；完整套件尚在root运行，旧c890失败保留。
 
 同源1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340完整浏览器30/30 PASS、0skip、EXIT0、92.644秒，28真实Chromium+2日期，fresh Compose/compiled app/cleanup。最终中文workspace/SEO/AI1440/390、overview1440/375及真实英文annotation键盘交互截图已立即保存 `screenshots/1c1cb65-final/`；实际像素/viewport口径、hash及annotation metadata/source在 `test-evidence/main-1c1cb65-browser-*`。不能把英文annotation标中文，不能把375改称390。632后端检查仅c890实际通过，应用源码相同已blob/diff验证，未在1c重跑。新image尚未执行，旧FAIL保留。
+
+## 1c1cb65 最新生产镜像实际通过
+
+完整源码 `1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340` 的新镜像 `sha256:a5d495d6cc78a419963dc43a0aa8549577ede1876c39d8b32377f38966c21c1b` 实际runner EXIT0。391项source/image逐文件相同，源码manifest `12e5223805f77c0497c0729cf15dc8943d7c29ba73fa2f7f92d82e7678768bde`；安装/compiled Node健康与真实HTTP采集通过，55迁移文件应用，054准确两个nonunique索引valid/ready断言通过。compiled `configuredStatsReadLimits()` 实际读取Compose转发默认120000ms/20000 SELECT/2147483648 decoded bytes，安全probe只输出三数值。
+
+实物完整AGPL/MIT notices通过；core tracker gzip5087B≤5KiB但>5000B，min4506B双口径符合。真实签名原生独立CH服务器恢复覆盖非空carry/header/fact/remaining/cache和最新metadata；源正文/epoch/history不变、最新journal A删B留、retention前向与物理回放裁剪、真实worker故障拒绝/恢复、缺失/tamper/未知schema/非空目标拒绝均通过。目标同物理宿主第二服务器独立卷、无hostports，不是跨宿主DR。owned stack/volumes/network清理完成。
+
+安全summary/manifest/native/index/probe/notices/HTTP/cleanup证据 `test-evidence/main-1c1cb65-image-*`；不复制state、env/keys或raw services。旧FAIL保留，旧f4未变化故障矩阵单列不重数。托管未运行；root同源固定负载另行记录，镜像通过不能代替性能达标。
