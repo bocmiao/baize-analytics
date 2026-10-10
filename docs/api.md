@@ -1,5 +1,7 @@
 # 用户 API 手册 / User API manual
 
+当前交付：main0f14；19d97af同源595应用/30检查与55DDL/两个索引生产镜像均实际通过，核心activation guard已true，逐站proof/epoch/journal仍强制。下文早期切片的guard关闭/未交付描述是历史时点，不能用于当前操作；不得手动改authority绕过证明。ac投影仅定向14真实+2单元通过，ac1000通过5.316秒、5000失败，浏览器专项实际30检查PASS/0skip，96.441秒、EXIT0，不外推全轮或镜像。
+
 本手册描述当前应用路由，面向自托管管理员和集成开发者。主体 AGPLv3，独立 tracker MIT；接口不要求付费订阅。开发中接口单独标注，不能据此假定某个旧镜像已包含新功能。运行版本及真实验收见 [主验收记录](VALIDATION_MAIN.md)。本文件同时提供中文契约与英文操作说明。
 
 This manual documents implemented self-hosted endpoints. Check your installed version against the validation record. Development additions are explicitly marked; external connector fixtures do not prove real provider-account access.
@@ -237,7 +239,7 @@ POST `/api/sites/:siteId/mcp` 已在默认应用注册。它提供标准 JSON-RP
 
 唯一工具 query_analytics 只接受已授权站点的31个包含端点日历日、最多100分组的 typed 只读聚合，不提供 SQL、其他站点选择器、raw 数据或副作用。成功返回 content 与 structuredContent；工具运行/范围失败返回 MCP isError，权限失败为HTTP401/403。JSON-RPC协议错误用 -32700/-32600/-32601/-32602，不能套用所有普通API的错误JSON。官方 SDK1.32.1 真实HTTP/PG客户端已验证协议2025-11-25；服务声明2025-11-25、2025-06-18、2025-03-26，后两版以及其他桌面客户端不算已测。完整连接样例见[中文MCP](mcp.md)/[English MCP](en/mcp.md)。独立4项通过，默认入口已纳入上述fa3第七分阶段compiled-app验收；不假定旧镜像包含新入口。
 
-当前普通安装仍用 PG 权威。032 canonical adapter、033 normalized facts、034 replay metadata索引及治理权威读取为独立开发切片；整个 canonical activation guard 仍关闭。不要修改数据库 authority 字段或删除PG raw 来绕过保护。已选择canonical的隔离测试中，CH故障返回503 canonical_unavailable，不能回退空PG数据；这不改变可选副本模式允许显式PG fallback的既有契约。
+当前普通安装仍用 PG 权威。032 canonical adapter、033 normalized facts、034 replay metadata索引及治理权威读取为独立开发切片；该早期开发切片当时整个 canonical activation guard 仍关闭（当前已true）。不要修改数据库 authority 字段或删除PG raw 来绕过保护。已选择canonical的隔离测试中，CH故障返回503 canonical_unavailable，不能回退空PG数据；这不改变可选副本模式允许显式PG fallback的既有契约。
 
 034仅存 replay chunk 索引、事件/页面标识、hash和记录时间范围，不存 rrweb payload；canonical回放读取上限1000 chunks/128MiB，完整导出沿用每表100k。用量中的 canonical bytes:null 表示没有实际CH磁盘测量，logical_bytes仅是事件JSON大小。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。定向结果见[治理切片](ACCEPTANCE_CANONICAL_GOVERNANCE.md)，不是不可变main全量或部署验收。
 
@@ -271,3 +273,5 @@ raw-prune安全窄修：管理员canonical HTTP `{action:"prune"}`返回409 `can
 - `GET .../bot-observations?from=YYYY-MM-DD&to=YYYY-MM-DD`（read）：最多31个站点日历日、200组并返回truncated；reason仅ua/request_burst，附rule_id/rule_version。filtered_requests是被过滤请求数，declared_events是未逐条校验的批次声明事件数，二者不是PV。旧category计数差额为legacy_unknown，事件数null；不制造历史原因。无原IP/UA/访客/body。
 - `GET .../self-host-diagnostics`及`/export`（admin）：只读白名单数据库/Redis配置状态、schema版本、聚合水位/失败布尔、队列、权威模式、保留信息。Redis configured_not_checked不是实际健康验证；物理容量not_measured。backup not_verified明确需要当前签名包和独立最新journal，不能解释为失败或恢复保证。不接受任意路径、不自修、不输出连接串/密钥/原错误/访客/正文；下载Cache-Control:no-store。
 - `GET .../annotations?from&to`（read）：ISO日历日窗口≤366日、最多200条/truncated；每条携带保存时timezone，另返回currentTimezone。`POST .../annotations`、`PATCH .../annotations/:id`、`DELETE .../annotations/:id`（write，分析师以上）支持`{date,title,note?}`，title1–120字、note≤2000字；真实日期校验与审计同事务。编辑重新绑定编辑时站点时区。viewer不可改，其他站点不可读写，记录不存在404。这些是manual_note，measuredEvidence/causalEvidence:false，绝不作为AI事实或因果输入。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

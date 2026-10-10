@@ -1,5 +1,7 @@
 # Installation, upgrades and migration runbook
 
+Current delivery: main0f14; the same-source19d97af matrix passed595 application tests and30 checks, and its55-DDL/two-index production image passed. The core activation guard is true; per-site proofs, epochs and journals remain mandatory. Earlier closed-guard/not-delivered statements below are historical snapshots, not current operating instructions. Never change authority manually. The ac projection has targeted14 real integration/2 unit passes only; its1000 run passed(5.316s),5000 failed and browser targeted validation passed30 checks(28 Chromium/2 date),0 skips,96.441s,EXIT0. This is not a full ac matrix/image pass.
+
 For operators of a self-hosted instance. Examples act only on the explicitly selected local instance; they do not publish a site, change repository visibility or switch production traffic. [API manual](api.md) · [中文](../migration.md) · [Deployment](deployment.md). Provider accounts and paid APIs are not required to read or locally validate these procedures.
 
 ## Choose the correct operation
@@ -180,3 +182,5 @@ npx tsx scripts/canonical-cli.ts prune "$BAIZE_SITE_ID" "$BAIZE_RAW_BACKUP_DIR" 
 ```
 
 `BAIZE_RAW_BACKUP_DIR` must be the single-site raw package, not a database dump or facts package. Successful `scripts/backup.sh` output places it at `canonical/<SITE_ID>` under the backup directory. Check that the complete signed raw package actually exists for that site. The per-site directory contains `manifest.json`, `events.ndjson` and `published.ndjson`. Direct `canonical-ops-runtime.ts` output is `<directory>/<SITE_ID>`; the whole shell backup layout is `backups/<name>/canonical/<SITE_ID>`. The backup produces raw packages for actual CH-authority canonical sites; an empty directory is not evidence for an unsupported site. Use the current independent journal, not its old snapshot copy. A PG shadow is not yet prune-eligible. Equivalent invocation is `node --import tsx scripts/canonical-cli.ts prune` with the same arguments. Read the existing v1 key from `KEYS_DIR` or `MASTER_KEY_FILE` through private configuration; do not create or print credentials. This gate is included in the7fbb561/494 local matrix; the historical3e052d8/491 result is unchanged.
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

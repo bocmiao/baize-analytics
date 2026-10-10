@@ -27,14 +27,24 @@
 
 ## 当前交付状态
 
+当前验收按各不可变源码分别记录，不将后续提交自动视为同源通过。最新已完成完整冻结仍为19d97af：191单元+404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS；其生产镜像55条DDL、054两个索引、独立signed restore/source unchanged/cleanup实际EXIT0。此证据不外推后续源码。ac86cd3 TEMP投影只有源码摘要绑定14真实集成+2单元专项PASS；其独立1000 PASS、最终HTTP5.316秒，5000总体FAIL：4800accepted、4unsent、42delayed、drain超时且final断言失败。ac源码浏览器实际30检查（28Chromium+2日期）PASS/0skip，96.441秒、EXIT0，不称ac完整整轮或镜像通过。旧FAIL和外部未测保留，托管不触发。
+
+现有保护为单请求timeout、完整EOF、正文caps、每批100行精确归属oracle及站点/删除fences。B对应显式SELECT server throw的预算guard首片代码已轻量8单元PASS，真实PG/CH验收未跑；C整操作累计SELECT次数/decoded bytes/deadline整操作预算已获批准开始实作，当前仍在制未实现验收。预算限制不等于性能改善，该自主欠项不需要新增凭据，不归类为外部账号阻塞。
+
+### 历史第七实施快照（保留原失败与计数）
+
 更新时间：2026-10-10。本文件最初“仅初始化、尚无应用”的阶段已结束；该陈述作为早期阶段历史，不代表当前交付状态。当前已有TypeScript/Fastify/React/Vite/PG/Redis应用、独立MIT tracker、应用单元/真实PG/CH/Redis集成与Chromium浏览器流程、构建和私有CI配置，以及实际本地Docker安装/备份/独立卷恢复/升级/失败回滚证据。仓库仍私有，未向外网部署。
 
 最近已记录的第五不可变应用阶段为272测试（80单元+192集成）、19检查（17实际浏览器+2日期）；第五Docker c61030b4生命周期EXIT0。第六pre-deletefix为84单元+205集成=289，20检查（18实际浏览器+2日期），不含随后AI删除hooks等改动，不与第五数字相加。详见[主验收](VALIDATION_MAIN.md)和[逐项清单](IMPLEMENTATION_CHECKLIST.md)。
 
 第七第二冻结阶段已实际执行：84单元；234集成中228通过、6失败，原始gzip/MIME失败记录保存在docs/test-evidence/seventh-gzip-mime*。根线程已做nativeHTTP修复及定向检查，新的完整冻结验收仍待执行/汇总；这里不预写最终main/镜像通过数量。新标准MCP已默认注册并有官方SDK真实HTTP/PG4项定向通过；AI trace/chart与派生失效已接当前生产路径；G2治理与规范事实、canonical adapter/回放索引等是定向开发切片，不能替代第七全量结果。
 
-全部F01–F66/P2仍按逐项证据判定：canonical activation仍关闭，混合回放记录物理删除/恢复已有C4三项真实PG/CH定向验证，但原生canonical浏览器、完整迁移集成与规模SLO仍有明确剩余；真实Google/企业微信/付费SERP/MaxMind账号、模型质量、Windows/小程序设备等未实测项单列。README/API/中英运行手册已更新，不能把计划、模拟provider或本地环境smoke标成真实外部验收。
+全部F01–F66/P2仍按逐项证据判定：该历史快照的canonical activation仍关闭（当前guard已启用），混合回放记录物理删除/恢复已有C4三项真实PG/CH定向验证，但原生canonical浏览器、完整迁移集成与规模SLO仍有明确剩余；真实Google/企业微信/付费SERP/MaxMind账号、模型质量、Windows/小程序设备等未实测项单列。README/API/中英运行手册已更新，不能把计划、模拟provider或本地环境smoke标成真实外部验收。
 
 第七后续结果：root冻结源分阶段84unit+234integration=318通过，correctenv freshschema20E2E（18browser+2date）通过50.8s，compiled/build/type/lint通过。原路径缺失及未export测试DB失败记录保留，不能写单次sharedregular EXIT0。该阶段含030/031/032与标准MCP，033/034/035及C4/物理回放保留仍属下一批定向工作树，不提前标作当前main全量验收。
 
 第七已保存main里程碑：`fa3e82873d9b9e3cb1b139fbea3db9c742995a48`（root已推送，当前只读git log核验）。对应root上述分阶段318PASS+correctenv20PASS，不表示单次sharedregular EXIT0；037回放保留/proof及033/034/035/036/040等后续工作树切片不提前算入该提交或上述计数。
+
+当前人工日期标注后续UI切片由D开始实作，属于自主在制，不是外部凭据阻塞。GSC不扩第二stage；Ollama未测原因是官方工具下载网络阻断，Windows是执行器启动错误，Google/SERP/商业模型等另为真实外部账号/服务未测，三类原因不混合。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

@@ -1,5 +1,7 @@
 # 安装、升级与数据迁移运行手册
 
+当前交付：main0f14；19d97af同源595应用/30检查与55DDL/两个索引生产镜像均实际通过，核心activation guard已true，逐站proof/epoch/journal仍强制。下文早期切片的guard关闭/未交付描述是历史时点，不能用于当前操作；不得手动改authority绕过证明。ac投影仅定向14真实+2单元通过，ac1000通过5.316秒、5000失败，浏览器专项实际30检查PASS/0skip，96.441秒、EXIT0，不外推全轮或镜像。
+
 本手册供自托管操作者使用。操作对象仅为你拥有的实例；命令示例不会自动发布网站、改变仓库可见性或切换生产流量。接口契约见 [API](api.md)，具体安装文件/网络配置见 [部署](deployment.md)。中英文手册对应入口：[English operations manual](en/migration.md)。外部账号/付费API无须为阅读或本地验证而创建。
 
 ## 先选择你要做的事情
@@ -131,7 +133,7 @@ Baidu public search-analysis read access remains unverified; available product d
 
 ## 032–034 开发切片：不要手动切换权威
 
-032 新增 canonical manifest、event members和删除epoch；033新增规范事件时间贡献/SQL精确去重事实；034新增 replay chunk keys，保存标识、序号、hash和记录时间边界，PG不存canonical rrweb正文。这些是forward migrations，不是许可手动把 authority 改为 clickhouse 的操作指令。当前 CANONICAL_ACTIVATION_READY=false；普通安装和已部署旧镜像继续PG权威。
+032 新增 canonical manifest、event members和删除epoch；033新增规范事件时间贡献/SQL精确去重事实；034新增 replay chunk keys，保存标识、序号、hash和记录时间边界，PG不存canonical rrweb正文。这些是forward migrations，不是许可手动把 authority 改为 clickhouse 的操作指令。早期快照当时 CANONICAL_ACTIVATION_READY=false；当前guard已true，普通默认PG与逐站受控切换各按真实配置。
 
 在隔离专项里选择canonical后，CH正文、manifest、checksum与PG删除状态共同决定可读事件，CH不可用返回503而非回空PG。独立canonical备份/恢复模块已测，但尚未纳入安装器和完整应用恢复；既有history-cli恢复仍为隔离副本，不激活canonical。新的工具和迁移不能替代PG全库备份、文件/版本key备份及独立最新journal。
 
@@ -184,3 +186,5 @@ npx tsx scripts/canonical-cli.ts prune "$BAIZE_SITE_ID" "$BAIZE_RAW_BACKUP_DIR" 
 ```
 
 `BAIZE_RAW_BACKUP_DIR`必须是单站raw包目录，不是整库dump或facts包。现有 `scripts/backup.sh` 成功输出的布局为备份目录下 `canonical/<SITE_ID>`；应核对该站实际存在完整签名raw产物后再选取。单站目录实际含 `manifest.json`、`events.ndjson`、`published.ndjson`。`scripts/canonical-ops-runtime.ts` 直接输出为指定目录下 `<SITE_ID>`；shell整体布局为 `backups/<name>/canonical/<SITE_ID>`。备份流程只为实际CH权威canonical站点生成该raw包，不能为无产物站点构造空目录假证据。journal应取当前独立可信来源，不用旧快照内副本。PG shadow尚不是可prune站点。CLI也可使用 `node --import tsx scripts/canonical-cli.ts prune` 同一参数；master key从现有 `KEYS_DIR` 的v1文件或 `MASTER_KEY_FILE` 读取，来自已有私密实例配置，不创建新凭据、不打印密钥。此门槛纳入7fbb561的494应用测试联合验收，不修改3e052d8历史491计数。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

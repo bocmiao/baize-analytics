@@ -2,7 +2,7 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-当前冻结 `19d97af` 完整本地全轮实际EXIT0：51文件191单元+152文件404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS/0fail/0skip，浏览器1.6分钟；lint/type/SDK/build/migrate/compiledapp/Compose cleanup均0。历史完成的 `10eb88a` 为最新已完成整轮。严格权威采集、事实、删除、缓存与独立签名恢复主体已实现，核心 guard 已启用；逐站 proof/水位/删除屏障仍强制。10eb88a 完整本地全轮实际EXIT0：180单元+402真实集成、30检查（28真实Chromium+2日期）全PASS/0skip；新全部源码镜像及托管仍待。规格正文保持原目标，阶段计数不相加。
+当前冻结 `19d97af` 完整本地全轮实际EXIT0：51文件191单元+152文件404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS/0fail/0skip，浏览器1.6分钟；lint/type/SDK/build/migrate/compiledapp/Compose cleanup均0。历史 `10eb88a` 为此前已完成整轮。严格权威采集、事实、删除、缓存与独立签名恢复主体已实现，核心 guard 已启用；逐站 proof/水位/删除屏障仍强制。10eb88a 完整本地全轮实际EXIT0：180单元+402真实集成、30检查（28真实Chromium+2日期）全PASS/0skip；新全部源码镜像及托管仍待。规格正文保持原目标，阶段计数不相加。
 
 | 不可变阶段 | 实际本地结果与边界 |
 |---|---|
@@ -706,10 +706,10 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 | 目标 | 当前状态 | 尚需完成/证明 |
 |---|---|---|
-| F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 044CH事实读取已纳7fbb561同源494/22；050–053最新镜像待，真实模型质量未测，不重列既有PG问数为骨架 |
-| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 043–049CH正文删除/restore/latest-journal完整runtime已同源494/22本地验收，050–053最新镜像待；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
+| F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 044CH事实读取已纳7fbb561同源494/22；对应旧源当时050–053镜像待；当前19d镜像已PASS，ac新源码镜像未验，真实模型质量未测，不重列既有PG问数为骨架 |
+| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 043–049CH正文删除/restore/latest-journal完整runtime已同源494/22本地验收，对应旧源当时050–053镜像待；当前19d镜像已PASS，ac新源码镜像未验；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
 | 规模/bounded-session planner | ce/b0严格1000完整窗口完整性通过，性能仍慢 | ef55e12冻结全轮已历史通过；19d97af当前全轮595/30已PASS；b0单次同口径负载已通过、排空P95 6.44秒/最终HTTP7.01秒仍慢；集中大站/持续采集查询删写、资源隔离RSS/lag/SLO仍待，旧1M与旧5000失败保留 |
-| P2-01 CH canonical迁移 | 本地已验036/038/039/041/043–048，main7fbb561 guard已true | 同源494应用测试+22 E2E已通过；050–053新应用镜像、新同口径持续负载性能、集群灾备及资源隔离SLO待验证，不将本地通过等同外网部署 |
+| P2-01 CH canonical迁移 | 本地已验036/038/039/041/043–048，main7fbb561 guard已true | 同源494应用测试+22 E2E已通过；19d新应用镜像已PASS；ac新源码镜像与新同口径持续负载性能、集群灾备及资源隔离SLO待验证，不将本地通过等同外网部署 |
 | F44 P1标准MCP server | 已实现默认注册，官方SDK定向及第七compiled应用验收 | 最新镜像、其他桌面客户端与后两声明协议版未单独测 |
 | F52百度官方接口与手动导入 | 官方普通站长公开读取未证实，官方连接器未实现；042自定义模板/列映射已main5b402dd独立11+1验收 | 官方API/授权/数据字典及当前百度原生CSV样本仍待明确；手动导入不替代官方目标、不称原生兼容，旧CONNECT403记录保留 |
 | F11/F48/F51/F54/F63、通知/企业SSO/商业AI | 安全连接器本地验收，真实外部未测 | Google/MaxMind/SERP/SMTP/企业WeCom/Server酱等实际账号/许可/交付；不购买或创建生产凭据 |
@@ -758,7 +758,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 最新更新为[第十不可变验收](VALIDATION_TENTH.md)：7fbb5612cee6121df23425ff14274316e43a4bca，100unit/27files+394integration/145files=494PASS0fail0skip；22E2E=20Chromium+2date全部通过。freshCompose sharedEXIT0、cleanupcomplete；build/lint/type/SDK/freshmigration/compiledentry/journal全部0。收入回执/rawproof/049+保留期窄修闭合。旧3e491/22与701真实失败不修改；新镜像待、5000运行中、托管父最终待，不阶段触发。
 
-19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。19d97af镜像已实际EXIT0；该源1000 PASS、5000因9批未发送FAIL；后续ac86cd3新1000→5000运行中、结果待，ac最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。
+19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。19d97af镜像已实际EXIT0；该源1000 PASS、5000因9批未发送FAIL；后续ac86cd3新1000已PASS、5000实际FAIL，browser仍在运行，ac最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。
 
 ## 19d97af 镜像与负载后续证据
 
@@ -766,4 +766,14 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 19d97af 独立严格1000总体PASS，最终完整查询 **6.058秒**；严格5000总体 **FAIL**：计划100批中9批未发送，仅4550 accepted（91批HTTP202），不能称5000完成。已接受事件六项strict完整性断言与全部排空通过，最终查询 **25.626秒**；这是4550可靠处理证据，不是5000/SLO达标。原 [5000 JSON](test-evidence/main-19d97af-independent-strict-5000.json) 与 [总结](test-evidence/main-19d97af-independent-summary.md) 随 `4a05fa2` 保留，旧负载FAIL不删除。
 
-后续 `ac86cd3` TEMP投影有源码摘要绑定的14真实集成+2单元专项PASS；19d97af的191/404/30完整计数与镜像不外推为ac全轮或ac镜像通过。ac不可变1000→5000当前正在运行，尚无结果。真实外部未测及托管不触发规则保持，本段不新增功能范围。
+后续 `ac86cd3` TEMP投影有源码摘要绑定的14真实集成+2单元专项PASS；19d97af的191/404/30完整计数与镜像不外推为ac全轮或ac镜像通过。该句为当时历史状态；ac随后1000实际PASS5.316秒、5000实际FAIL（4800accepted/4unsent/42delayed/drain超时/final断言失败），当前ac browser专项30检查已PASS。真实外部未测及托管不触发规则保持，本段不新增功能范围。
+
+## 0f14当前源码与ac投影边界
+
+当前验收按各不可变源码分别记录，不将后续提交自动视为同源通过。最新已完成完整冻结仍为19d97af：191单元+404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS；其生产镜像55条DDL、054两个索引、独立signed restore/source unchanged/cleanup实际EXIT0。此证据不外推后续源码。ac86cd3 TEMP投影只有源码摘要绑定14真实集成+2单元专项PASS；其独立1000 PASS、最终HTTP5.316秒，5000总体FAIL：4800accepted、4unsent、42delayed、drain超时且final断言失败。ac源码浏览器实际30检查（28Chromium+2日期）PASS/0skip，96.441秒、EXIT0，不称ac完整整轮或镜像通过。旧FAIL和外部未测保留，托管不触发。
+
+现有保护为单请求timeout、完整EOF、正文caps、每批100行精确归属oracle及站点/删除fences。B对应显式SELECT server throw的预算guard首片代码已轻量8单元PASS，真实PG/CH验收未跑；C整操作累计SELECT次数/decoded bytes/deadline整操作预算已获批准开始实作，当前仍在制未实现验收。预算限制不等于性能改善，该自主欠项不需要新增凭据，不归类为外部账号阻塞。
+
+当前人工日期标注后续UI切片由D开始实作，属于自主在制，不是外部凭据阻塞。GSC不扩第二stage；Ollama未测原因是官方工具下载网络阻断，Windows是执行器启动错误，Google/SERP/商业模型等另为真实外部账号/服务未测，三类原因不混合。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

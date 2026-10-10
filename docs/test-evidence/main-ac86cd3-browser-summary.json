@@ -1,0 +1,29 @@
+{
+  "sourceCommit": "ac86cd322ef3d89d791c62f3c50cfc269cf66755",
+  "exit": 0,
+  "scope": "full browser suite only; not full unit/integration acceptance",
+  "passed": 30,
+  "realChromium": 28,
+  "dateFunctions": 2,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 96440.652,
+  "actual": [
+    "fresh local PG/CH/Redis",
+    "build",
+    "migration",
+    "compiled server",
+    "Chromium",
+    "owned cleanup"
+  ],
+  "simulated": [
+    "Google/GSC transport",
+    "model provider transport"
+  ],
+  "notRun": [
+    "ac unit/integration whole suite",
+    "ac new image",
+    "hosted CI/sync"
+  ],
+  "priorFailuresPreserved": true
+}

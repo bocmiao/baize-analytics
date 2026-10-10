@@ -53,3 +53,5 @@ root实际唯一串行镜像runner EXIT0。新镜像 `sha256:760e1bb3c1ce31da32f
 完整AGPL/MIT notice实际镜像检查通过；tracker core gzip5087B符合5KiB但超过十进制5000B，min4506B均符合，不混用口径。真实PG快照与签名原生恢复覆盖非空36/43/44/47/48、049receipt与050–053五表metadata；最新journal精准A删B留、7→90前向保留期与canonical/028回放物理裁剪、缺失/tamper/future/非空目标拒绝、worker真SQL失败拒绝及恢复均通过。独立目标CH服务器和卷无发布端口，源正文/epoch/history保持；仍为同物理宿主，不是跨宿主灾备。owned应用/PG/Redis/目标CH及卷网络已清理。
 
 安全摘要及manifest/native/notices/index/cleanup证据见 `test-evidence/main-19d97af-image-*`；不复制state/env/密钥或原始service日志。旧f4基础升级/故障回滚矩阵EXIT0单独沿用，未在本轮无限重跑，也不把旧FAIL抹掉。托管CI/同步未执行。
+
+ac86cd322ef3d89d791c62f3c50cfc269cf66755完整浏览器套件实际EXIT0：30检查=28真实Chromium+2日期全PASS/0FAIL/0skip，fresh本地Compose/build/migrate/compiled入口及cleanup。原始reporter与日志见 `test-evidence/main-ac86cd3-browser-*`。此为浏览器范围，不能继承19d97af的191/404单元集成计数，ac新镜像未执行；新预算/标记仍待最终冻结。Google/模型transport模拟，托管未触发，旧FAIL保留。

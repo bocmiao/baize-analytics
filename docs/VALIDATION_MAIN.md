@@ -38,9 +38,9 @@ b56b7e9 当时结果：最新独立索引快照实际通过 36 文件、148 应�
 - Docker故障场景最新实际矩阵EXIT0及先前磁盘满失败记录见docker-lifecycle-main.json/txt；镜像6c66明确早于024及后续UA/bot，不能宣称它验证后续新镜像。
 - 100k与1M真实HTTP全链路已通过，1M结果属于启动cb72a7e+WIP的独立运行，非此第二批精确索引快照。ClickHouse镜像在制另有真实测试，未在此提交中宣称完整P2迁移。全部F/P2仍未完成，剩余状态继续见逐项清单；远端CI仍未运行。
 
-新增真实PG不等样本分位合并缺陷（25×100 + 1×10000的p75曾错误5430）已按加权Type7修复，真实collector→worker→stats及单元尾部/6点350专项3文件23测试通过；当前工作区增量，非b56b7e9快照，root全集待跑。
+新增真实PG不等样本分位合并缺陷（25×100 + 1×10000的p75曾错误5430）已按加权Type7修复，真实collector→worker→stats及单元尾部/6点350专项3文件23测试通过；该历史阶段当时工作区增量，非b56b7e9快照，root全集待跑。
 
-ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Redis完整脱敏schema可靠镜像与analytics/content/geo选择性读取已有14集成+3单元通过，后续lease/deadline/cache/views合测22项通过；root全应用启动/隐私故障验收另在执行。高水位/epoch/count不符明示PGfallback；多数worker/rollups/governance/identity/realtime及事件属性仍PG。PG仅元数据、增量partition、全面读切换、历史迁移、CH集群备份与大容量仍未验收，详见ACCEPTANCE_CLICKHOUSE.md。
+历史第三里程碑ClickHouse增量进展（该历史阶段工作区，非b56b7e9索引）：实际PG/CH/Redis完整脱敏schema可靠镜像与analytics/content/geo选择性读取已有14集成+3单元通过，后续lease/deadline/cache/views合测22项通过；root全应用启动/隐私故障验收另在执行。高水位/epoch/count不符明示PGfallback；多数worker/rollups/governance/identity/realtime及事件属性仍PG。PG仅元数据、增量partition、全面读切换、历史迁移、CH集群备份与大容量仍未验收，详见ACCEPTANCE_CLICKHOUSE.md。
 
 
 ## 第三里程碑：当前源码与新镜像整体验收
@@ -53,7 +53,7 @@ ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Red
 
 功能清单已纠正WordPress真实验收及F50/P2-10一致状态。F29流失特征新独立模块在制，尚未注册主路由；CH目前可靠镜像与选择性读取，PG仅元数据的全面迁移、增量大规模复制/CH备份仍未完成。不可变提交上的持续后台/集中单站性能测试尚待执行。GSC/GA4/企业微信/付费SERP/真实模型账户未实测；远端GitHub托管CI仍因账号计费阻断未运行，不重跑或修改计费。
 
-当前工作区新增root全应用真实CH启动/隐私故障2项、外部错误契约1项通过；英文24个稳定外部错误映射已实现，浏览器验收仍待执行。此批状态至此冻结，后续全集结果由root补第三里程碑。
+该历史阶段当时工作区新增root全应用真实CH启动/隐私故障2项、外部错误契约1项通过；英文24个稳定外部错误映射已实现，浏览器验收仍待执行。此批状态至此冻结，后续全集结果由root补第三里程碑。
 
 
 ## 第四里程碑：共享本地CI组件与fresh浏览器
@@ -83,7 +83,7 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 
 第五新production Docker c61030b4已实际build+完整生命周期EXIT0，201source/image SHA严格一致且与main8b61fc0对照0差异，真实PG30迁移含028/029。独立新库新文件卷/最新journal/worker SQL故障拒绝/升级/missing-image与schema+503真回滚通过，owned栈已清理。docker-fifth-main.json及hash/log记录边界；后续030/AI/语言与4ed81compose变更不在该快照，可选CH history模式未另在Docker开启，不能扩大为全部P2验收。
 
-19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。19d97af镜像已实际EXIT0；该源1000 PASS、5000因9批未发送FAIL；后续ac86cd3新1000→5000运行中、结果待，ac最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。
+19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。19d97af镜像已实际EXIT0；该源1000 PASS、5000因9批未发送FAIL；后续ac86cd3新1000已PASS、5000实际FAIL，browser仍在运行，ac最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。
 
 ## 19d97af 镜像与负载后续证据
 
@@ -91,4 +91,14 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 
 19d97af 独立严格1000总体PASS，最终完整查询 **6.058秒**；严格5000总体 **FAIL**：计划100批中9批未发送，仅4550 accepted（91批HTTP202），不能称5000完成。已接受事件六项strict完整性断言与全部排空通过，最终查询 **25.626秒**；这是4550可靠处理证据，不是5000/SLO达标。原 [5000 JSON](test-evidence/main-19d97af-independent-strict-5000.json) 与 [总结](test-evidence/main-19d97af-independent-summary.md) 随 `4a05fa2` 保留，旧负载FAIL不删除。
 
-后续 `ac86cd3` TEMP投影有源码摘要绑定的14真实集成+2单元专项PASS；19d97af的191/404/30完整计数与镜像不外推为ac全轮或ac镜像通过。ac不可变1000→5000当前正在运行，尚无结果。真实外部未测及托管不触发规则保持，本段不新增功能范围。
+后续 `ac86cd3` TEMP投影有源码摘要绑定的14真实集成+2单元专项PASS；19d97af的191/404/30完整计数与镜像不外推为ac全轮或ac镜像通过。该句为当时历史状态；ac随后1000实际PASS5.316秒、5000实际FAIL（4800accepted/4unsent/42delayed/drain超时/final断言失败），当前ac browser专项30检查已PASS。真实外部未测及托管不触发规则保持，本段不新增功能范围。
+
+## 0f14当前源码与ac投影边界
+
+当前验收按各不可变源码分别记录，不将后续提交自动视为同源通过。最新已完成完整冻结仍为19d97af：191单元+404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS；其生产镜像55条DDL、054两个索引、独立signed restore/source unchanged/cleanup实际EXIT0。此证据不外推后续源码。ac86cd3 TEMP投影只有源码摘要绑定14真实集成+2单元专项PASS；其独立1000 PASS、最终HTTP5.316秒，5000总体FAIL：4800accepted、4unsent、42delayed、drain超时且final断言失败。ac源码浏览器实际30检查（28Chromium+2日期）PASS/0skip，96.441秒、EXIT0，不称ac完整整轮或镜像通过。旧FAIL和外部未测保留，托管不触发。
+
+现有保护为单请求timeout、完整EOF、正文caps、每批100行精确归属oracle及站点/删除fences。B对应显式SELECT server throw的预算guard首片代码已轻量8单元PASS，真实PG/CH验收未跑；C整操作累计SELECT次数/decoded bytes/deadline整操作预算已获批准开始实作，当前仍在制未实现验收。预算限制不等于性能改善，该自主欠项不需要新增凭据，不归类为外部账号阻塞。
+
+当前人工日期标注后续UI切片由D开始实作，属于自主在制，不是外部凭据阻塞。GSC不扩第二stage；Ollama未测原因是官方工具下载网络阻断，Windows是执行器启动错误，Google/SERP/商业模型等另为真实外部账号/服务未测，三类原因不混合。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。

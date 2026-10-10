@@ -30,7 +30,7 @@ flowchart LR
 | 权限、分享、导出、删除、定时报表 | 有真实 API/数据库/文件测试，见 [治理验收](docs/ACCEPTANCE_GOVERNANCE.md) |
 | GSC、GA4、SERP、BYOK AI、企业微信 | 安全连接器与模拟集成不代表真实外部账号已实测 |
 | 安装、备份、新卷恢复、升级回滚 | 本地 Docker 验收记录见 [运维验证](docs/validation-ops.md) |
-| P2 与规模化 | 部分实现；ClickHouse 完整迁移与完整多语言等剩余项见逐项清单 |
+| P2 与规模化 | 严格ClickHouse主体与固定中英文界面已有本地验收；规模/SLO、设备与真实外部未测见逐项清单 |
 
 [看板截图](docs/screenshots/dashboard-acceptance.png) 来自验收测试写入的真实数据库事件，仅说明测试结果，不代表生产流量。
 
@@ -39,4 +39,10 @@ flowchart LR
 主体 **AGPL-3.0-only**，独立 tracker **MIT**。无收费功能门槛。第三方依赖许可证按 lockfile 核查；未完成正式发行级 SBOM 审计前不声称审计完成。
 
 
-[最新不可变本地验收](docs/VALIDATION_TENTH.md)：main `7fbb561` 实际494应用测试与22 E2E（20真实Chromium+2日期）通过，全新Compose清理EXIT0。新应用镜像与5000严格负载仍待，不宣称最新托管通过。
+当前验收入口见 [VALIDATION_MAIN](docs/VALIDATION_MAIN.md)。最新已完成完整冻结仍为19d97af：191单元+404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS；其生产镜像55条DDL、054两个索引、独立signed restore/source unchanged/cleanup实际EXIT0。此证据不外推后续源码。ac86cd3 TEMP投影只有源码摘要绑定14真实集成+2单元专项PASS；其独立1000 PASS、最终HTTP5.316秒，5000总体FAIL：4800accepted、4unsent、42delayed、drain超时且final断言失败。ac源码浏览器实际30检查（28Chromium+2日期）PASS/0skip，96.441秒、EXIT0，不称ac完整整轮或镜像通过。旧FAIL和外部未测保留，托管不触发。
+
+现有保护为单请求timeout、完整EOF、正文caps、每批100行精确归属oracle及站点/删除fences。B对应显式SELECT server throw的预算guard首片代码已轻量8单元PASS，真实PG/CH验收未跑；C整操作累计SELECT次数/decoded bytes/deadline整操作预算已获批准开始实作，当前仍在制未实现验收。预算限制不等于性能改善，该自主欠项不需要新增凭据，不归类为外部账号阻塞。
+
+当前人工日期标注后续UI切片由D开始实作，属于自主在制，不是外部凭据阻塞。GSC不扩第二stage；Ollama未测原因是官方工具下载网络阻断，Windows是执行器启动错误，Google/SERP/商业模型等另为真实外部账号/服务未测，三类原因不混合。
+
+冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。
