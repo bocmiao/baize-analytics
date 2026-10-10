@@ -1,0 +1,5329 @@
+{
+  "status": "passed",
+  "sourceSha": "77d5f6154a4aab7d7884974b1ac4690609fcc132",
+  "appRoot": "/tmp/baize-pool-core-nt2gfw",
+  "sourceDigestBefore": "2b007b03dd30dc2c1d933eba8ee26afd2b4a805f8b0edaf2a07272afc617e76b",
+  "events": 20000,
+  "sites": 4,
+  "batchSize": 50,
+  "background": true,
+  "manualWorker": false,
+  "storage": "PostgreSQL only; clickhouse:null",
+  "startedAt": "2026-10-10T07:54:01.960Z",
+  "limits": "Production limits unchanged; one batch/site/second",
+  "relationOidNames": [
+    {
+      "oid": "837134",
+      "relname": "schema_migrations"
+    },
+    {
+      "oid": "837142",
+      "relname": "users"
+    },
+    {
+      "oid": "837154",
+      "relname": "auth_sessions"
+    },
+    {
+      "oid": "837167",
+      "relname": "sites"
+    },
+    {
+      "oid": "837182",
+      "relname": "site_members"
+    },
+    {
+      "oid": "837200",
+      "relname": "events"
+    },
+    {
+      "oid": "837212",
+      "relname": "events_default"
+    },
+    {
+      "oid": "837228",
+      "relname": "event_data"
+    },
+    {
+      "oid": "837242",
+      "relname": "event_data_default"
+    },
+    {
+      "oid": "837253",
+      "relname": "event_keys"
+    },
+    {
+      "oid": "837265",
+      "relname": "identity_map"
+    },
+    {
+      "oid": "837279",
+      "relname": "visitor_first_seen"
+    },
+    {
+      "oid": "837291",
+      "relname": "tombstones"
+    },
+    {
+      "oid": "837301",
+      "relname": "audit_logs"
+    },
+    {
+      "oid": "837312",
+      "relname": "aggregation_state"
+    },
+    {
+      "oid": "837328",
+      "relname": "outbox"
+    },
+    {
+      "oid": "837344",
+      "relname": "bot_counts"
+    },
+    {
+      "oid": "837357",
+      "relname": "sessions"
+    },
+    {
+      "oid": "837371",
+      "relname": "stats_hourly"
+    },
+    {
+      "oid": "837383",
+      "relname": "stats_daily"
+    },
+    {
+      "oid": "837395",
+      "relname": "page_vitals"
+    },
+    {
+      "oid": "837407",
+      "relname": "goals"
+    },
+    {
+      "oid": "837421",
+      "relname": "funnels"
+    },
+    {
+      "oid": "837435",
+      "relname": "analytics_definitions"
+    },
+    {
+      "oid": "837448",
+      "relname": "api_tokens"
+    },
+    {
+      "oid": "837469",
+      "relname": "reports"
+    },
+    {
+      "oid": "837482",
+      "relname": "notification_channels"
+    },
+    {
+      "oid": "837494",
+      "relname": "report_schedules"
+    },
+    {
+      "oid": "837517",
+      "relname": "notification_jobs"
+    },
+    {
+      "oid": "837530",
+      "relname": "notification_logs"
+    },
+    {
+      "oid": "837539",
+      "relname": "share_links"
+    },
+    {
+      "oid": "837556",
+      "relname": "alert_rules"
+    },
+    {
+      "oid": "837570",
+      "relname": "site_invites"
+    },
+    {
+      "oid": "837584",
+      "relname": "export_jobs"
+    },
+    {
+      "oid": "837599",
+      "relname": "replay_chunks"
+    },
+    {
+      "oid": "837612",
+      "relname": "heatmap_points"
+    },
+    {
+      "oid": "837625",
+      "relname": "experiments"
+    },
+    {
+      "oid": "837638",
+      "relname": "experiment_assignments"
+    },
+    {
+      "oid": "837651",
+      "relname": "external_connections"
+    },
+    {
+      "oid": "837665",
+      "relname": "oauth_states"
+    },
+    {
+      "oid": "837677",
+      "relname": "gsc_stats"
+    },
+    {
+      "oid": "837689",
+      "relname": "ga_import"
+    },
+    {
+      "oid": "837702",
+      "relname": "seo_scans"
+    },
+    {
+      "oid": "837715",
+      "relname": "rank_history"
+    },
+    {
+      "oid": "837727",
+      "relname": "ai_budget"
+    },
+    {
+      "oid": "837741",
+      "relname": "ai_calls"
+    },
+    {
+      "oid": "837755",
+      "relname": "ai_suggestions"
+    },
+    {
+      "oid": "837775",
+      "relname": "instance_keyring"
+    },
+    {
+      "oid": "837784",
+      "relname": "sso_config"
+    },
+    {
+      "oid": "837794",
+      "relname": "sso_mappings"
+    },
+    {
+      "oid": "837806",
+      "relname": "sso_states"
+    },
+    {
+      "oid": "837814",
+      "relname": "identity_bindings"
+    },
+    {
+      "oid": "837829",
+      "relname": "identity_tombstones"
+    },
+    {
+      "oid": "837841",
+      "relname": "external_jobs"
+    },
+    {
+      "oid": "837860",
+      "relname": "export_file_cleanup"
+    },
+    {
+      "oid": "837879",
+      "relname": "revenue_orders"
+    },
+    {
+      "oid": "837906",
+      "relname": "instance_settings"
+    },
+    {
+      "oid": "837920",
+      "relname": "experiment_contributions"
+    },
+    {
+      "oid": "837938",
+      "relname": "event_store_state"
+    },
+    {
+      "oid": "837957",
+      "relname": "event_store_uploads"
+    },
+    {
+      "oid": "837975",
+      "relname": "event_store_maintenance"
+    },
+    {
+      "oid": "837992",
+      "relname": "event_store_batches"
+    },
+    {
+      "oid": "838021",
+      "relname": "events_2025_10"
+    },
+    {
+      "oid": "838041",
+      "relname": "event_data_2025_10"
+    },
+    {
+      "oid": "838062",
+      "relname": "events_2025_11"
+    },
+    {
+      "oid": "838082",
+      "relname": "event_data_2025_11"
+    },
+    {
+      "oid": "838103",
+      "relname": "events_2025_12"
+    },
+    {
+      "oid": "838123",
+      "relname": "event_data_2025_12"
+    },
+    {
+      "oid": "838144",
+      "relname": "events_2026_01"
+    },
+    {
+      "oid": "838164",
+      "relname": "event_data_2026_01"
+    },
+    {
+      "oid": "838185",
+      "relname": "events_2026_02"
+    },
+    {
+      "oid": "838205",
+      "relname": "event_data_2026_02"
+    },
+    {
+      "oid": "838226",
+      "relname": "events_2026_03"
+    },
+    {
+      "oid": "838246",
+      "relname": "event_data_2026_03"
+    },
+    {
+      "oid": "838267",
+      "relname": "events_2026_04"
+    },
+    {
+      "oid": "838287",
+      "relname": "event_data_2026_04"
+    },
+    {
+      "oid": "838308",
+      "relname": "events_2026_05"
+    },
+    {
+      "oid": "838328",
+      "relname": "event_data_2026_05"
+    },
+    {
+      "oid": "838349",
+      "relname": "events_2026_06"
+    },
+    {
+      "oid": "838369",
+      "relname": "event_data_2026_06"
+    },
+    {
+      "oid": "838390",
+      "relname": "events_2026_07"
+    },
+    {
+      "oid": "838410",
+      "relname": "event_data_2026_07"
+    },
+    {
+      "oid": "838431",
+      "relname": "events_2026_08"
+    },
+    {
+      "oid": "838451",
+      "relname": "event_data_2026_08"
+    },
+    {
+      "oid": "838472",
+      "relname": "events_2026_09"
+    },
+    {
+      "oid": "838492",
+      "relname": "event_data_2026_09"
+    },
+    {
+      "oid": "838513",
+      "relname": "events_2026_10"
+    },
+    {
+      "oid": "838533",
+      "relname": "event_data_2026_10"
+    },
+    {
+      "oid": "838554",
+      "relname": "events_2026_11"
+    },
+    {
+      "oid": "838574",
+      "relname": "event_data_2026_11"
+    },
+    {
+      "oid": "838595",
+      "relname": "events_2026_12"
+    },
+    {
+      "oid": "838615",
+      "relname": "event_data_2026_12"
+    }
+  ],
+  "accepted": 20000,
+  "intakeWithQueriesMs": 121225.133091,
+  "drainMs": 14469.812764999995,
+  "sql": {
+    "pv": 20000,
+    "uv": 400,
+    "sessions": 400
+  },
+  "finalAggregationState": [
+    {
+      "site_id": "5987c2f3318a4709dc5a1969",
+      "generation": "100",
+      "processed_generation": "100",
+      "watermark": "2026-10-10T07:56:02.614Z",
+      "attempts": 0
+    },
+    {
+      "site_id": "8d5d7b30895a2e107a634901",
+      "generation": "100",
+      "processed_generation": "100",
+      "watermark": "2026-10-10T07:56:02.614Z",
+      "attempts": 0
+    },
+    {
+      "site_id": "ca70b57a277b003470c1e412",
+      "generation": "100",
+      "processed_generation": "100",
+      "watermark": "2026-10-10T07:56:02.613Z",
+      "attempts": 0
+    },
+    {
+      "site_id": "d717a2d8d8f66eced566f57f",
+      "generation": "100",
+      "processed_generation": "100",
+      "watermark": "2026-10-10T07:56:02.614Z",
+      "attempts": 0
+    }
+  ],
+  "schemaBytes": 58695680,
+  "outbox": {
+    "total": 20000,
+    "queued": 0,
+    "done": 20000
+  },
+  "sourceDigestAfter": "2b007b03dd30dc2c1d933eba8ee26afd2b4a805f8b0edaf2a07272afc617e76b",
+  "sourceUnchanged": true,
+  "samples": [
+    {
+      "at": "2026-10-10T07:54:02.843Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 332,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:02.852Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 340,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:02.860Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 347,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:02.867Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 354,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:03.814Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "2",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 1303,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:03.826Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "2",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 1314,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:03.840Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "2",
+      "processedGeneration": "1",
+      "lagMs": 998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:03.850Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "2",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 1337,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:04.798Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "3",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 2287,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:04.806Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "3",
+      "processedGeneration": "2",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:04.815Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "3",
+      "processedGeneration": "1",
+      "lagMs": 1997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:04.829Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "3",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 2316,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:05.792Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "4",
+      "processedGeneration": "3",
+      "lagMs": 1001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:05.801Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "4",
+      "processedGeneration": "2",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:05.826Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "4",
+      "processedGeneration": "1",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:05.835Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "4",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 3322,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:06.905Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "5",
+      "processedGeneration": "3",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:06.924Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "5",
+      "processedGeneration": "2",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:06.945Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "5",
+      "processedGeneration": "1",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:06.965Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "5",
+      "processedGeneration": "4",
+      "lagMs": 998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:07.934Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 300,
+      "generation": "6",
+      "processedGeneration": "3",
+      "lagMs": 3015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:07.946Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 300,
+      "generation": "6",
+      "processedGeneration": "2",
+      "lagMs": 4015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:07.959Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 300,
+      "generation": "6",
+      "processedGeneration": "5",
+      "lagMs": 1015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:07.970Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 300,
+      "generation": "6",
+      "processedGeneration": "4",
+      "lagMs": 2013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:08.770Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "7",
+      "processedGeneration": "3",
+      "lagMs": 4015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:08.782Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "7",
+      "processedGeneration": "6",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:08.808Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "7",
+      "processedGeneration": "5",
+      "lagMs": 2015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:08.820Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "7",
+      "processedGeneration": "4",
+      "lagMs": 3013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:09.776Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 400,
+      "generation": "8",
+      "processedGeneration": "7",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:09.789Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 400,
+      "generation": "8",
+      "processedGeneration": "6",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:09.803Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 400,
+      "generation": "8",
+      "processedGeneration": "5",
+      "lagMs": 3015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:09.816Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 400,
+      "generation": "8",
+      "processedGeneration": "4",
+      "lagMs": 4013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:10.889Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "9",
+      "processedGeneration": "7",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:10.909Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "9",
+      "processedGeneration": "6",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:10.926Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "9",
+      "processedGeneration": "5",
+      "lagMs": 4015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:10.939Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "9",
+      "processedGeneration": "8",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:11.813Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 500,
+      "generation": "10",
+      "processedGeneration": "7",
+      "lagMs": 3000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:11.828Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 500,
+      "generation": "10",
+      "processedGeneration": "6",
+      "lagMs": 3999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:11.842Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 500,
+      "generation": "10",
+      "processedGeneration": "9",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:11.858Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 500,
+      "generation": "10",
+      "processedGeneration": "8",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:12.874Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "11",
+      "processedGeneration": "7",
+      "lagMs": 3999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:12.896Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "11",
+      "processedGeneration": "10",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:12.912Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "11",
+      "processedGeneration": "9",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:12.928Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "11",
+      "processedGeneration": "8",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:13.910Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 600,
+      "generation": "12",
+      "processedGeneration": "11",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:13.926Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 600,
+      "generation": "12",
+      "processedGeneration": "10",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:13.946Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 600,
+      "generation": "12",
+      "processedGeneration": "9",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:13.960Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 600,
+      "generation": "12",
+      "processedGeneration": "8",
+      "lagMs": 3998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:14.958Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 650,
+      "generation": "13",
+      "processedGeneration": "11",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:14.974Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 650,
+      "generation": "13",
+      "processedGeneration": "10",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:14.991Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 650,
+      "generation": "13",
+      "processedGeneration": "9",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:15.011Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 650,
+      "generation": "13",
+      "processedGeneration": "12",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:15.877Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "14",
+      "processedGeneration": "11",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:15.893Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "14",
+      "processedGeneration": "10",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:15.908Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "14",
+      "processedGeneration": "13",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:15.923Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "14",
+      "processedGeneration": "12",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:16.909Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 750,
+      "generation": "15",
+      "processedGeneration": "11",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:16.925Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 750,
+      "generation": "15",
+      "processedGeneration": "14",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:16.942Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 750,
+      "generation": "15",
+      "processedGeneration": "13",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:16.958Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 750,
+      "generation": "15",
+      "processedGeneration": "12",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:17.977Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 800,
+      "generation": "16",
+      "processedGeneration": "15",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:17.995Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 800,
+      "generation": "16",
+      "processedGeneration": "14",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:18.016Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 800,
+      "generation": "16",
+      "processedGeneration": "13",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:18.034Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 800,
+      "generation": "16",
+      "processedGeneration": "12",
+      "lagMs": 3998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:18.933Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "17",
+      "processedGeneration": "15",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:18.951Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "17",
+      "processedGeneration": "14",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:19.000Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "17",
+      "processedGeneration": "13",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:19.024Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "17",
+      "processedGeneration": "16",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:19.999Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 900,
+      "generation": "18",
+      "processedGeneration": "15",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:20.021Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 900,
+      "generation": "18",
+      "processedGeneration": "14",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:20.041Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 900,
+      "generation": "18",
+      "processedGeneration": "17",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:20.061Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 900,
+      "generation": "18",
+      "processedGeneration": "16",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:21.054Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 950,
+      "generation": "19",
+      "processedGeneration": "15",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:21.076Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 950,
+      "generation": "19",
+      "processedGeneration": "18",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:21.098Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 950,
+      "generation": "19",
+      "processedGeneration": "17",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:21.121Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 950,
+      "generation": "19",
+      "processedGeneration": "16",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:22.029Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1000,
+      "generation": "20",
+      "processedGeneration": "19",
+      "lagMs": 1002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:22.049Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1000,
+      "generation": "20",
+      "processedGeneration": "18",
+      "lagMs": 2006,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:22.069Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1000,
+      "generation": "20",
+      "processedGeneration": "17",
+      "lagMs": 3005,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:22.109Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1000,
+      "generation": "20",
+      "processedGeneration": "16",
+      "lagMs": 4004,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:23.053Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "21",
+      "processedGeneration": "19",
+      "lagMs": 2002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:23.079Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "21",
+      "processedGeneration": "18",
+      "lagMs": 3001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:23.102Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "21",
+      "processedGeneration": "17",
+      "lagMs": 4001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:23.126Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "21",
+      "processedGeneration": "20",
+      "lagMs": 995,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:24.079Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1100,
+      "generation": "22",
+      "processedGeneration": "19",
+      "lagMs": 3001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:24.103Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1100,
+      "generation": "22",
+      "processedGeneration": "18",
+      "lagMs": 4000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:24.127Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1100,
+      "generation": "22",
+      "processedGeneration": "21",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:24.169Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1100,
+      "generation": "22",
+      "processedGeneration": "20",
+      "lagMs": 1994,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:25.053Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1150,
+      "generation": "23",
+      "processedGeneration": "19",
+      "lagMs": 4016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:25.078Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1150,
+      "generation": "23",
+      "processedGeneration": "22",
+      "lagMs": 1016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:25.104Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1150,
+      "generation": "23",
+      "processedGeneration": "21",
+      "lagMs": 2014,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:25.129Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1150,
+      "generation": "23",
+      "processedGeneration": "20",
+      "lagMs": 3009,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:26.117Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1200,
+      "generation": "24",
+      "processedGeneration": "23",
+      "lagMs": 1007,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:26.140Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1200,
+      "generation": "24",
+      "processedGeneration": "22",
+      "lagMs": 2022,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:26.190Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1200,
+      "generation": "24",
+      "processedGeneration": "21",
+      "lagMs": 3021,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:26.215Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1200,
+      "generation": "24",
+      "processedGeneration": "20",
+      "lagMs": 4016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:27.102Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1250,
+      "generation": "25",
+      "processedGeneration": "23",
+      "lagMs": 2017,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:27.131Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1250,
+      "generation": "25",
+      "processedGeneration": "22",
+      "lagMs": 3033,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:27.158Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1250,
+      "generation": "25",
+      "processedGeneration": "21",
+      "lagMs": 4031,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:27.185Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1250,
+      "generation": "25",
+      "processedGeneration": "24",
+      "lagMs": 1010,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:28.100Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "26",
+      "processedGeneration": "23",
+      "lagMs": 3018,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:28.126Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "26",
+      "processedGeneration": "22",
+      "lagMs": 4034,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:28.152Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "26",
+      "processedGeneration": "25",
+      "lagMs": 1001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:28.179Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "26",
+      "processedGeneration": "24",
+      "lagMs": 2011,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:29.299Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1350,
+      "generation": "27",
+      "processedGeneration": "23",
+      "lagMs": 4057,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:29.330Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1350,
+      "generation": "27",
+      "processedGeneration": "26",
+      "lagMs": 1039,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:29.387Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1350,
+      "generation": "27",
+      "processedGeneration": "25",
+      "lagMs": 2040,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:29.421Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1350,
+      "generation": "27",
+      "processedGeneration": "24",
+      "lagMs": 3050,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:30.241Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1400,
+      "generation": "28",
+      "processedGeneration": "27",
+      "lagMs": 1012,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:30.268Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1400,
+      "generation": "28",
+      "processedGeneration": "26",
+      "lagMs": 2051,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:30.324Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1400,
+      "generation": "28",
+      "processedGeneration": "25",
+      "lagMs": 3052,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:30.352Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1400,
+      "generation": "28",
+      "processedGeneration": "24",
+      "lagMs": 4063,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:31.364Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1450,
+      "generation": "29",
+      "processedGeneration": "27",
+      "lagMs": 2012,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:31.399Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1450,
+      "generation": "29",
+      "processedGeneration": "26",
+      "lagMs": 3050,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:31.459Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1450,
+      "generation": "29",
+      "processedGeneration": "25",
+      "lagMs": 4052,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:31.713Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1450,
+      "generation": "29",
+      "processedGeneration": "28",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:32.460Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1500,
+      "generation": "30",
+      "processedGeneration": "27",
+      "lagMs": 3074,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:32.711Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1500,
+      "generation": "30",
+      "processedGeneration": "26",
+      "lagMs": 4112,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:32.808Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1500,
+      "generation": "30",
+      "processedGeneration": "29",
+      "lagMs": 1062,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:32.848Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1500,
+      "generation": "30",
+      "processedGeneration": "28",
+      "lagMs": 2061,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:33.728Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1550,
+      "generation": "31",
+      "processedGeneration": "27",
+      "lagMs": 4209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:33.822Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1550,
+      "generation": "31",
+      "processedGeneration": "30",
+      "lagMs": 1135,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:33.869Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1550,
+      "generation": "31",
+      "processedGeneration": "29",
+      "lagMs": 2196,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:33.902Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1550,
+      "generation": "31",
+      "processedGeneration": "28",
+      "lagMs": 3196,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:34.870Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "32",
+      "processedGeneration": "31",
+      "lagMs": 1054,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:34.909Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "32",
+      "processedGeneration": "30",
+      "lagMs": 2190,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:34.947Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "32",
+      "processedGeneration": "29",
+      "lagMs": 3252,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:34.983Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "32",
+      "processedGeneration": "28",
+      "lagMs": 4251,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:35.477Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1650,
+      "generation": "33",
+      "processedGeneration": "31",
+      "lagMs": 2135,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:35.803Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1650,
+      "generation": "33",
+      "processedGeneration": "30",
+      "lagMs": 3270,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:35.839Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1650,
+      "generation": "33",
+      "processedGeneration": "29",
+      "lagMs": 4331,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:35.907Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1650,
+      "generation": "33",
+      "processedGeneration": "32",
+      "lagMs": 1080,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:36.445Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1700,
+      "generation": "34",
+      "processedGeneration": "31",
+      "lagMs": 3134,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:36.498Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1700,
+      "generation": "34",
+      "processedGeneration": "30",
+      "lagMs": 4269,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:36.711Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1700,
+      "generation": "34",
+      "processedGeneration": "33",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:36.780Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1700,
+      "generation": "34",
+      "processedGeneration": "32",
+      "lagMs": 2078,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:37.399Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1750,
+      "generation": "35",
+      "processedGeneration": "31",
+      "lagMs": 4133,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:37.431Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1750,
+      "generation": "35",
+      "processedGeneration": "34",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:37.463Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1750,
+      "generation": "35",
+      "processedGeneration": "33",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:37.726Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1750,
+      "generation": "35",
+      "processedGeneration": "32",
+      "lagMs": 3078,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:38.279Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1800,
+      "generation": "36",
+      "processedGeneration": "35",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:38.333Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1800,
+      "generation": "36",
+      "processedGeneration": "34",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:38.366Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1800,
+      "generation": "36",
+      "processedGeneration": "33",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:38.398Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1800,
+      "generation": "36",
+      "processedGeneration": "32",
+      "lagMs": 4077,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:39.274Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1850,
+      "generation": "37",
+      "processedGeneration": "35",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:39.337Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1850,
+      "generation": "37",
+      "processedGeneration": "34",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:39.370Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1850,
+      "generation": "37",
+      "processedGeneration": "33",
+      "lagMs": 3996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:39.403Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1850,
+      "generation": "37",
+      "processedGeneration": "36",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:40.307Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1900,
+      "generation": "38",
+      "processedGeneration": "35",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:40.342Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1900,
+      "generation": "38",
+      "processedGeneration": "34",
+      "lagMs": 3996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:40.378Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1900,
+      "generation": "38",
+      "processedGeneration": "37",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:40.417Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1900,
+      "generation": "38",
+      "processedGeneration": "36",
+      "lagMs": 1997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:41.460Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "39",
+      "processedGeneration": "35",
+      "lagMs": 3996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:41.499Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "39",
+      "processedGeneration": "38",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:41.785Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "39",
+      "processedGeneration": "37",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:41.874Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "39",
+      "processedGeneration": "36",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:42.840Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2000,
+      "generation": "40",
+      "processedGeneration": "39",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:42.880Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2000,
+      "generation": "40",
+      "processedGeneration": "38",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:42.950Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2000,
+      "generation": "40",
+      "processedGeneration": "37",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:42.989Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2000,
+      "generation": "40",
+      "processedGeneration": "36",
+      "lagMs": 3995,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:43.816Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2050,
+      "generation": "41",
+      "processedGeneration": "39",
+      "lagMs": 2012,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:43.899Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2050,
+      "generation": "41",
+      "processedGeneration": "38",
+      "lagMs": 3011,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:43.936Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2050,
+      "generation": "41",
+      "processedGeneration": "37",
+      "lagMs": 4010,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:44.000Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2050,
+      "generation": "41",
+      "processedGeneration": "40",
+      "lagMs": 1013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:44.815Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2100,
+      "generation": "42",
+      "processedGeneration": "39",
+      "lagMs": 3023,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:44.862Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2100,
+      "generation": "42",
+      "processedGeneration": "38",
+      "lagMs": 4022,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:44.912Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2100,
+      "generation": "42",
+      "processedGeneration": "41",
+      "lagMs": 1011,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:44.949Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2100,
+      "generation": "42",
+      "processedGeneration": "40",
+      "lagMs": 2024,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:45.939Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2150,
+      "generation": "43",
+      "processedGeneration": "39",
+      "lagMs": 4022,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.031Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2150,
+      "generation": "43",
+      "processedGeneration": "42",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.072Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2150,
+      "generation": "43",
+      "processedGeneration": "41",
+      "lagMs": 2010,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.119Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2150,
+      "generation": "43",
+      "processedGeneration": "40",
+      "lagMs": 3024,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.696Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2200,
+      "generation": "44",
+      "processedGeneration": "43",
+      "lagMs": 1120,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.763Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2200,
+      "generation": "44",
+      "processedGeneration": "42",
+      "lagMs": 2119,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.806Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2200,
+      "generation": "44",
+      "processedGeneration": "41",
+      "lagMs": 3130,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:46.851Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2200,
+      "generation": "44",
+      "processedGeneration": "40",
+      "lagMs": 4143,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:47.332Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2250,
+      "generation": "45",
+      "processedGeneration": "43",
+      "lagMs": 2119,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:47.377Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2250,
+      "generation": "45",
+      "processedGeneration": "42",
+      "lagMs": 3119,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:47.417Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2250,
+      "generation": "45",
+      "processedGeneration": "41",
+      "lagMs": 4130,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:47.459Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2250,
+      "generation": "45",
+      "processedGeneration": "40",
+      "lagMs": 5143,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:48.987Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2300,
+      "generation": "46",
+      "processedGeneration": "43",
+      "lagMs": 3118,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:49.038Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2300,
+      "generation": "46",
+      "processedGeneration": "42",
+      "lagMs": 4117,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:49.086Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2300,
+      "generation": "46",
+      "processedGeneration": "41",
+      "lagMs": 5129,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:49.152Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2300,
+      "generation": "46",
+      "processedGeneration": "45",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:49.977Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2350,
+      "generation": "47",
+      "processedGeneration": "43",
+      "lagMs": 4153,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.022Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2350,
+      "generation": "47",
+      "processedGeneration": "42",
+      "lagMs": 5152,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.069Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2350,
+      "generation": "47",
+      "processedGeneration": "46",
+      "lagMs": 1034,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.125Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2350,
+      "generation": "47",
+      "processedGeneration": "45",
+      "lagMs": 2033,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.435Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2400,
+      "generation": "48",
+      "processedGeneration": "43",
+      "lagMs": 5153,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.482Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2400,
+      "generation": "48",
+      "processedGeneration": "42",
+      "lagMs": 6152,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.828Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2400,
+      "generation": "48",
+      "processedGeneration": "46",
+      "lagMs": 2035,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:50.875Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2400,
+      "generation": "48",
+      "processedGeneration": "45",
+      "lagMs": 3034,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:51.723Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "49",
+      "processedGeneration": "43",
+      "lagMs": 6152,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:51.796Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "49",
+      "processedGeneration": "48",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:51.841Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "49",
+      "processedGeneration": "46",
+      "lagMs": 3033,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:51.892Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "49",
+      "processedGeneration": "45",
+      "lagMs": 4033,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:52.342Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2500,
+      "generation": "50",
+      "processedGeneration": "43",
+      "lagMs": 7151,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:52.393Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2500,
+      "generation": "50",
+      "processedGeneration": "48",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:52.437Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2500,
+      "generation": "50",
+      "processedGeneration": "46",
+      "lagMs": 4033,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:52.481Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2500,
+      "generation": "50",
+      "processedGeneration": "45",
+      "lagMs": 5032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:53.671Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2550,
+      "generation": "51",
+      "processedGeneration": "50",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:53.733Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2550,
+      "generation": "51",
+      "processedGeneration": "48",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:53.780Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2550,
+      "generation": "51",
+      "processedGeneration": "46",
+      "lagMs": 5032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:53.825Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2550,
+      "generation": "51",
+      "processedGeneration": "45",
+      "lagMs": 6031,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:54.376Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2600,
+      "generation": "52",
+      "processedGeneration": "50",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:54.426Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2600,
+      "generation": "52",
+      "processedGeneration": "48",
+      "lagMs": 3996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:54.481Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2600,
+      "generation": "52",
+      "processedGeneration": "46",
+      "lagMs": 6031,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:54.822Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2600,
+      "generation": "52",
+      "processedGeneration": "45",
+      "lagMs": 7030,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:55.757Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2650,
+      "generation": "53",
+      "processedGeneration": "50",
+      "lagMs": 3016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:55.829Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2650,
+      "generation": "53",
+      "processedGeneration": "48",
+      "lagMs": 5014,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:55.882Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2650,
+      "generation": "53",
+      "processedGeneration": "46",
+      "lagMs": 7048,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:55.943Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2650,
+      "generation": "53",
+      "processedGeneration": "52",
+      "lagMs": 1018,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:56.370Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2700,
+      "generation": "54",
+      "processedGeneration": "50",
+      "lagMs": 4015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:56.417Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2700,
+      "generation": "54",
+      "processedGeneration": "48",
+      "lagMs": 6014,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:56.470Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2700,
+      "generation": "54",
+      "processedGeneration": "46",
+      "lagMs": 8048,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:56.572Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2700,
+      "generation": "54",
+      "processedGeneration": "52",
+      "lagMs": 2017,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:57.788Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2750,
+      "generation": "55",
+      "processedGeneration": "50",
+      "lagMs": 5014,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:57.858Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2750,
+      "generation": "55",
+      "processedGeneration": "48",
+      "lagMs": 7012,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:57.911Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2750,
+      "generation": "55",
+      "processedGeneration": "54",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:57.967Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2750,
+      "generation": "55",
+      "processedGeneration": "52",
+      "lagMs": 3016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:58.363Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2800,
+      "generation": "56",
+      "processedGeneration": "50",
+      "lagMs": 6013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:58.414Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2800,
+      "generation": "56",
+      "processedGeneration": "48",
+      "lagMs": 8012,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:58.489Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2800,
+      "generation": "56",
+      "processedGeneration": "54",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:54:58.959Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2800,
+      "generation": "56",
+      "processedGeneration": "52",
+      "lagMs": 4016,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.081Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2850,
+      "generation": "57",
+      "processedGeneration": "50",
+      "lagMs": 7013,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.135Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2850,
+      "generation": "57",
+      "processedGeneration": "56",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.205Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2850,
+      "generation": "57",
+      "processedGeneration": "54",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.268Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2850,
+      "generation": "57",
+      "processedGeneration": "52",
+      "lagMs": 5015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.522Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2900,
+      "generation": "58",
+      "processedGeneration": "50",
+      "lagMs": 8118,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:00.964Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2900,
+      "generation": "58",
+      "processedGeneration": "56",
+      "lagMs": 2104,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:01.028Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2900,
+      "generation": "58",
+      "processedGeneration": "54",
+      "lagMs": 4103,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:01.097Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2900,
+      "generation": "58",
+      "processedGeneration": "52",
+      "lagMs": 6120,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:01.991Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 2950,
+      "generation": "59",
+      "processedGeneration": "58",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:02.051Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 2950,
+      "generation": "59",
+      "processedGeneration": "56",
+      "lagMs": 3103,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:02.115Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 2950,
+      "generation": "59",
+      "processedGeneration": "54",
+      "lagMs": 5101,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:02.173Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 2950,
+      "generation": "59",
+      "processedGeneration": "52",
+      "lagMs": 7118,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:02.498Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "60",
+      "processedGeneration": "58",
+      "lagMs": 1998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:02.897Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "60",
+      "processedGeneration": "56",
+      "lagMs": 4103,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:03.014Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "60",
+      "processedGeneration": "54",
+      "lagMs": 6101,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:03.068Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "60",
+      "processedGeneration": "52",
+      "lagMs": 8118,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:04.008Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3050,
+      "generation": "61",
+      "processedGeneration": "58",
+      "lagMs": 2997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:04.083Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3050,
+      "generation": "61",
+      "processedGeneration": "56",
+      "lagMs": 5101,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:04.145Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3050,
+      "generation": "61",
+      "processedGeneration": "54",
+      "lagMs": 7099,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:04.217Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3050,
+      "generation": "61",
+      "processedGeneration": "60",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:04.534Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3100,
+      "generation": "62",
+      "processedGeneration": "58",
+      "lagMs": 3996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:05.045Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3100,
+      "generation": "62",
+      "processedGeneration": "56",
+      "lagMs": 6101,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:05.108Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3100,
+      "generation": "62",
+      "processedGeneration": "54",
+      "lagMs": 8100,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:05.174Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3100,
+      "generation": "62",
+      "processedGeneration": "60",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:06.167Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3150,
+      "generation": "63",
+      "processedGeneration": "58",
+      "lagMs": 4996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:06.222Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3150,
+      "generation": "63",
+      "processedGeneration": "56",
+      "lagMs": 7101,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:06.281Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3150,
+      "generation": "63",
+      "processedGeneration": "62",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:06.337Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3150,
+      "generation": "63",
+      "processedGeneration": "60",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:06.547Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3200,
+      "generation": "64",
+      "processedGeneration": "58",
+      "lagMs": 6069,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:07.041Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3200,
+      "generation": "64",
+      "processedGeneration": "56",
+      "lagMs": 8174,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:07.107Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3200,
+      "generation": "64",
+      "processedGeneration": "62",
+      "lagMs": 2073,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:07.179Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3200,
+      "generation": "64",
+      "processedGeneration": "60",
+      "lagMs": 4072,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:08.088Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3250,
+      "generation": "65",
+      "processedGeneration": "58",
+      "lagMs": 7069,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:08.177Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3250,
+      "generation": "65",
+      "processedGeneration": "64",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:08.237Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3250,
+      "generation": "65",
+      "processedGeneration": "62",
+      "lagMs": 3071,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:08.292Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3250,
+      "generation": "65",
+      "processedGeneration": "60",
+      "lagMs": 5070,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:08.530Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3300,
+      "generation": "66",
+      "processedGeneration": "58",
+      "lagMs": 8069,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:09.024Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3300,
+      "generation": "66",
+      "processedGeneration": "64",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:09.082Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3300,
+      "generation": "66",
+      "processedGeneration": "62",
+      "lagMs": 4071,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:09.150Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3300,
+      "generation": "66",
+      "processedGeneration": "60",
+      "lagMs": 6071,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:10.138Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3350,
+      "generation": "67",
+      "processedGeneration": "66",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:10.195Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3350,
+      "generation": "67",
+      "processedGeneration": "64",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:10.262Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3350,
+      "generation": "67",
+      "processedGeneration": "62",
+      "lagMs": 5071,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:10.322Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3350,
+      "generation": "67",
+      "processedGeneration": "60",
+      "lagMs": 7070,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:10.545Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3400,
+      "generation": "68",
+      "processedGeneration": "66",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:11.073Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3400,
+      "generation": "68",
+      "processedGeneration": "64",
+      "lagMs": 3999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:11.135Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3400,
+      "generation": "68",
+      "processedGeneration": "62",
+      "lagMs": 6071,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:11.211Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3400,
+      "generation": "68",
+      "processedGeneration": "60",
+      "lagMs": 8070,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:12.142Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3450,
+      "generation": "69",
+      "processedGeneration": "66",
+      "lagMs": 2999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:12.201Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3450,
+      "generation": "69",
+      "processedGeneration": "64",
+      "lagMs": 4998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:12.266Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3450,
+      "generation": "69",
+      "processedGeneration": "62",
+      "lagMs": 7070,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:12.326Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3450,
+      "generation": "69",
+      "processedGeneration": "68",
+      "lagMs": 1000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:12.528Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3500,
+      "generation": "70",
+      "processedGeneration": "66",
+      "lagMs": 3998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:13.041Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3500,
+      "generation": "70",
+      "processedGeneration": "64",
+      "lagMs": 5997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:13.106Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3500,
+      "generation": "70",
+      "processedGeneration": "62",
+      "lagMs": 8070,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:13.183Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3500,
+      "generation": "70",
+      "processedGeneration": "68",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:14.363Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3550,
+      "generation": "71",
+      "processedGeneration": "66",
+      "lagMs": 4998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:14.441Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3550,
+      "generation": "71",
+      "processedGeneration": "64",
+      "lagMs": 6997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:14.519Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3550,
+      "generation": "71",
+      "processedGeneration": "70",
+      "lagMs": 999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:15.128Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3550,
+      "generation": "71",
+      "processedGeneration": "68",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:16.277Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3600,
+      "generation": "72",
+      "processedGeneration": "66",
+      "lagMs": 6791,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:16.374Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3600,
+      "generation": "72",
+      "processedGeneration": "71",
+      "lagMs": 1793,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:16.450Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3600,
+      "generation": "72",
+      "processedGeneration": "70",
+      "lagMs": 2792,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:16.578Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3600,
+      "generation": "72",
+      "processedGeneration": "68",
+      "lagMs": 4791,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:17.243Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "73",
+      "processedGeneration": "66",
+      "lagMs": 8241,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:17.314Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "73",
+      "processedGeneration": "71",
+      "lagMs": 3244,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:17.396Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "73",
+      "processedGeneration": "70",
+      "lagMs": 4243,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:17.472Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "73",
+      "processedGeneration": "68",
+      "lagMs": 6242,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:18.549Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3700,
+      "generation": "74",
+      "processedGeneration": "72",
+      "lagMs": 2450,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:19.077Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3700,
+      "generation": "74",
+      "processedGeneration": "71",
+      "lagMs": 4243,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:19.201Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3700,
+      "generation": "74",
+      "processedGeneration": "70",
+      "lagMs": 5242,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:19.274Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3700,
+      "generation": "74",
+      "processedGeneration": "68",
+      "lagMs": 7242,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:20.398Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3750,
+      "generation": "75",
+      "processedGeneration": "72",
+      "lagMs": 4145,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:20.469Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3750,
+      "generation": "75",
+      "processedGeneration": "71",
+      "lagMs": 5939,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:20.545Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3750,
+      "generation": "75",
+      "processedGeneration": "70",
+      "lagMs": 6938,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:21.088Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3750,
+      "generation": "75",
+      "processedGeneration": "74",
+      "lagMs": 1695,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:22.257Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3800,
+      "generation": "76",
+      "processedGeneration": "72",
+      "lagMs": 5960,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:22.332Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3800,
+      "generation": "76",
+      "processedGeneration": "71",
+      "lagMs": 7753,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:22.411Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3800,
+      "generation": "76",
+      "processedGeneration": "75",
+      "lagMs": 1815,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:22.490Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3800,
+      "generation": "76",
+      "processedGeneration": "74",
+      "lagMs": 3510,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:23.193Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3850,
+      "generation": "77",
+      "processedGeneration": "72",
+      "lagMs": 7363,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:23.261Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3850,
+      "generation": "77",
+      "processedGeneration": "71",
+      "lagMs": 9156,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:23.341Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3850,
+      "generation": "77",
+      "processedGeneration": "75",
+      "lagMs": 3217,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:23.421Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3850,
+      "generation": "77",
+      "processedGeneration": "74",
+      "lagMs": 4912,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:24.441Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3900,
+      "generation": "78",
+      "processedGeneration": "72",
+      "lagMs": 8362,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:24.509Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3900,
+      "generation": "78",
+      "processedGeneration": "76",
+      "lagMs": 2402,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:24.579Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3900,
+      "generation": "78",
+      "processedGeneration": "75",
+      "lagMs": 4216,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:25.126Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3900,
+      "generation": "78",
+      "processedGeneration": "74",
+      "lagMs": 5912,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:26.198Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 3950,
+      "generation": "79",
+      "processedGeneration": "78",
+      "lagMs": 1636,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:26.272Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 3950,
+      "generation": "79",
+      "processedGeneration": "76",
+      "lagMs": 4038,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:26.338Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 3950,
+      "generation": "79",
+      "processedGeneration": "75",
+      "lagMs": 5852,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:26.414Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 3950,
+      "generation": "79",
+      "processedGeneration": "74",
+      "lagMs": 7547,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:27.132Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4000,
+      "generation": "80",
+      "processedGeneration": "78",
+      "lagMs": 2924,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:27.306Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4000,
+      "generation": "80",
+      "processedGeneration": "76",
+      "lagMs": 5326,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:27.385Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4000,
+      "generation": "80",
+      "processedGeneration": "75",
+      "lagMs": 7140,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:27.478Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4000,
+      "generation": "80",
+      "processedGeneration": "74",
+      "lagMs": 8836,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:28.845Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4050,
+      "generation": "81",
+      "processedGeneration": "78",
+      "lagMs": 3988,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:28.956Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4050,
+      "generation": "81",
+      "processedGeneration": "76",
+      "lagMs": 6390,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:29.052Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4050,
+      "generation": "81",
+      "processedGeneration": "75",
+      "lagMs": 8204,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:29.134Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4050,
+      "generation": "81",
+      "processedGeneration": "80",
+      "lagMs": 1063,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:29.422Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4100,
+      "generation": "82",
+      "processedGeneration": "78",
+      "lagMs": 5644,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:29.511Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4100,
+      "generation": "82",
+      "processedGeneration": "76",
+      "lagMs": 8047,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:29.602Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4100,
+      "generation": "82",
+      "processedGeneration": "75",
+      "lagMs": 9861,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:30.274Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4100,
+      "generation": "82",
+      "processedGeneration": "80",
+      "lagMs": 2720,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:31.608Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4150,
+      "generation": "83",
+      "processedGeneration": "78",
+      "lagMs": 6783,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:32.219Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4150,
+      "generation": "83",
+      "processedGeneration": "76",
+      "lagMs": 9186,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:32.291Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4150,
+      "generation": "83",
+      "processedGeneration": "82",
+      "lagMs": 1139,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:32.387Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4150,
+      "generation": "83",
+      "processedGeneration": "80",
+      "lagMs": 3859,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:33.576Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4200,
+      "generation": "84",
+      "processedGeneration": "78",
+      "lagMs": 8897,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:34.213Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4200,
+      "generation": "84",
+      "processedGeneration": "83",
+      "lagMs": 2113,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:34.347Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4200,
+      "generation": "84",
+      "processedGeneration": "82",
+      "lagMs": 3252,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:34.430Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4200,
+      "generation": "84",
+      "processedGeneration": "80",
+      "lagMs": 5972,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:36.375Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4250,
+      "generation": "85",
+      "processedGeneration": "84",
+      "lagMs": 2043,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:36.461Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4250,
+      "generation": "85",
+      "processedGeneration": "83",
+      "lagMs": 4156,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:36.554Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4250,
+      "generation": "85",
+      "processedGeneration": "82",
+      "lagMs": 5295,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:36.657Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4250,
+      "generation": "85",
+      "processedGeneration": "80",
+      "lagMs": 8015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:37.880Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4300,
+      "generation": "86",
+      "processedGeneration": "84",
+      "lagMs": 4270,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:37.960Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4300,
+      "generation": "86",
+      "processedGeneration": "83",
+      "lagMs": 6383,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:38.048Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4300,
+      "generation": "86",
+      "processedGeneration": "82",
+      "lagMs": 7522,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:38.129Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4300,
+      "generation": "86",
+      "processedGeneration": "85",
+      "lagMs": 2227,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:38.367Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4350,
+      "generation": "87",
+      "processedGeneration": "84",
+      "lagMs": 5742,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:38.443Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4350,
+      "generation": "87",
+      "processedGeneration": "83",
+      "lagMs": 7855,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:38.562Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4350,
+      "generation": "87",
+      "processedGeneration": "82",
+      "lagMs": 8995,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:39.199Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4350,
+      "generation": "87",
+      "processedGeneration": "85",
+      "lagMs": 3700,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:40.600Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4400,
+      "generation": "88",
+      "processedGeneration": "84",
+      "lagMs": 6812,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:41.235Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4400,
+      "generation": "88",
+      "processedGeneration": "83",
+      "lagMs": 8925,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:41.402Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4400,
+      "generation": "88",
+      "processedGeneration": "87",
+      "lagMs": 1069,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:41.479Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4400,
+      "generation": "88",
+      "processedGeneration": "85",
+      "lagMs": 4770,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:43.489Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4450,
+      "generation": "89",
+      "processedGeneration": "84",
+      "lagMs": 9092,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:43.584Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4450,
+      "generation": "89",
+      "processedGeneration": "88",
+      "lagMs": 2280,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:43.671Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4450,
+      "generation": "89",
+      "processedGeneration": "87",
+      "lagMs": 3349,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:43.761Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4450,
+      "generation": "89",
+      "processedGeneration": "85",
+      "lagMs": 7049,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:44.915Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4500,
+      "generation": "90",
+      "processedGeneration": "89",
+      "lagMs": 2282,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:44.994Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4500,
+      "generation": "90",
+      "processedGeneration": "88",
+      "lagMs": 4562,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:45.089Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4500,
+      "generation": "90",
+      "processedGeneration": "87",
+      "lagMs": 5631,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:45.179Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4500,
+      "generation": "90",
+      "processedGeneration": "85",
+      "lagMs": 9331,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:45.458Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4550,
+      "generation": "91",
+      "processedGeneration": "89",
+      "lagMs": 3700,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:45.537Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4550,
+      "generation": "91",
+      "processedGeneration": "88",
+      "lagMs": 5980,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:45.621Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4550,
+      "generation": "91",
+      "processedGeneration": "87",
+      "lagMs": 7049,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:46.223Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4550,
+      "generation": "91",
+      "processedGeneration": "85",
+      "lagMs": 10749,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:47.604Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4600,
+      "generation": "92",
+      "processedGeneration": "89",
+      "lagMs": 4745,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:47.684Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4600,
+      "generation": "92",
+      "processedGeneration": "88",
+      "lagMs": 7025,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:48.275Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4600,
+      "generation": "92",
+      "processedGeneration": "87",
+      "lagMs": 8094,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:48.418Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4600,
+      "generation": "92",
+      "processedGeneration": "91",
+      "lagMs": 1045,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:49.725Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "93",
+      "processedGeneration": "89",
+      "lagMs": 6939,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:50.400Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "93",
+      "processedGeneration": "88",
+      "lagMs": 9219,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:50.479Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "93",
+      "processedGeneration": "92",
+      "lagMs": 2194,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:50.566Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "93",
+      "processedGeneration": "91",
+      "lagMs": 3239,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:51.885Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4700,
+      "generation": "94",
+      "processedGeneration": "89",
+      "lagMs": 9086,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:51.966Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4700,
+      "generation": "94",
+      "processedGeneration": "93",
+      "lagMs": 2148,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.062Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4700,
+      "generation": "94",
+      "processedGeneration": "92",
+      "lagMs": 4342,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.184Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4700,
+      "generation": "94",
+      "processedGeneration": "91",
+      "lagMs": 5387,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.412Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4750,
+      "generation": "95",
+      "processedGeneration": "89",
+      "lagMs": 10705,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.496Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4750,
+      "generation": "95",
+      "processedGeneration": "93",
+      "lagMs": 3766,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.592Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4750,
+      "generation": "95",
+      "processedGeneration": "92",
+      "lagMs": 5961,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:52.680Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4750,
+      "generation": "95",
+      "processedGeneration": "91",
+      "lagMs": 7006,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:54.556Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4800,
+      "generation": "96",
+      "processedGeneration": "95",
+      "lagMs": 1007,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:54.643Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4800,
+      "generation": "96",
+      "processedGeneration": "93",
+      "lagMs": 4776,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:54.744Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4800,
+      "generation": "96",
+      "processedGeneration": "92",
+      "lagMs": 6970,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:55.357Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4800,
+      "generation": "96",
+      "processedGeneration": "91",
+      "lagMs": 8015,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:56.770Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4850,
+      "generation": "97",
+      "processedGeneration": "95",
+      "lagMs": 3173,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:57.398Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4850,
+      "generation": "97",
+      "processedGeneration": "93",
+      "lagMs": 6939,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:57.561Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4850,
+      "generation": "97",
+      "processedGeneration": "92",
+      "lagMs": 9133,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:57.658Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4850,
+      "generation": "97",
+      "processedGeneration": "96",
+      "lagMs": 2163,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:59.618Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4900,
+      "generation": "98",
+      "processedGeneration": "95",
+      "lagMs": 5474,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:55:59.727Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4900,
+      "generation": "98",
+      "processedGeneration": "93",
+      "lagMs": 9240,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:00.421Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4900,
+      "generation": "98",
+      "processedGeneration": "97",
+      "lagMs": 2302,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:00.520Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4900,
+      "generation": "98",
+      "processedGeneration": "96",
+      "lagMs": 4466,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:02.328Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 4950,
+      "generation": "99",
+      "processedGeneration": "95",
+      "lagMs": 8336,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:02.424Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 4950,
+      "generation": "99",
+      "processedGeneration": "98",
+      "lagMs": 2862,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:02.518Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 4950,
+      "generation": "99",
+      "processedGeneration": "97",
+      "lagMs": 5163,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:02.614Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 4950,
+      "generation": "99",
+      "processedGeneration": "96",
+      "lagMs": 7326,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:03.499Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "95",
+      "lagMs": 10429,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:03.594Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:03.693Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:03.785Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "96",
+      "lagMs": 9420,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:03.915Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "95",
+      "lagMs": 10429,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:04.012Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:04.105Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:04.199Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "96",
+      "lagMs": 9420,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:05.360Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "95",
+      "lagMs": 10429,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:05.480Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:05.599Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:05.710Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "96",
+      "lagMs": 9420,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:07.328Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:07.572Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:07.676Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:07.787Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "96",
+      "lagMs": 9420,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:08.948Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:09.058Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:09.168Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:09.269Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:10.472Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:10.588Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:10.682Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "97",
+      "lagMs": 7257,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:10.785Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:11.895Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:11.984Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:12.094Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:12.200Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:13.471Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:13.573Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:13.679Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:13.781Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:14.918Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:15.020Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "98",
+      "lagMs": 4956,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:15.118Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:15.214Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:16.526Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:16.614Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:16.724Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:16.833Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:17.927Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 0,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "99",
+      "lagMs": 2093,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.037Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.150Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.255Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.406Z",
+      "site": "ca70b57a277b003470c1e412",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.493Z",
+      "site": "8d5d7b30895a2e107a634901",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.591Z",
+      "site": "5987c2f3318a4709dc5a1969",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T07:56:18.686Z",
+      "site": "d717a2d8d8f66eced566f57f",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    }
+  ],
+  "lagScope": "lagMs is published watermark lag; never-watermarked samples use separate unpublishedWaitMs",
+  "neverWatermarkedSampleCount": 10,
+  "unpublishedWaitP95Ms": 3322,
+  "unpublishedWaitMaxMs": 3322,
+  "uncoveredSampleCount": 426,
+  "observedWorkerFailureSampleCount": 0,
+  "lagMaxMs": 10749,
+  "lagP95Ms": 8836,
+  "batchP95Ms": 941.3907219999965,
+  "queryP95Ms": 398.0615770000004,
+  "peakNodeRssBytes": 829538304,
+  "finishedAt": "2026-10-10T07:56:18.694Z",
+  "isolatedSchemaRemoved": true
+}

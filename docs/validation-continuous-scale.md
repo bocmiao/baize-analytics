@@ -21,3 +21,9 @@
 同912四站20k真实结束CLI EXIT1（`continuous-gate-4site-20000.json`）：20k全部接受，SQL=PV20000/UV400/sessions400、outbox全done、4站generation/processed=100、attempts0，无40P01；但持续写入时按site_id调度导致两个站一直未首发布直到停止采集。未发布水位样本252项，首个实际PV样本起算等待下界p95≥122.003秒/max≥132.109秒；published样本lag p95=64.98秒/max71.13秒，不能用排除null后的数字代表全站低延迟。CLI末端失败另外来自runner确认顺序：先query得某站coverage0，worker其后完成，看到PGdirty0退出后复用刚过期样本判断失败。修runner为dirty0后重新真实HTTP验证，并在后续运行记录firstAccepted事件时间起算的unpublishedWaitMs；没有改生产应用或限流。旧EXIT1证据保留，不改成绿。源调度公平性待新不可变提交四站再验收。
 
 最新runner SHA256 `fe8438b32957ea055321385c675b290c35aa57ba0d4801047fc8e3eedbe4d81b` 修正最终确认顺序、accepted实时记录、失败也记录after-source摘要、未发布水位等待独立分布。912两规模实际使用上一版 `0654185e73b48798ffe2a4ce669cc3a20277faaa69bca65d51db4cdc5f9ab14b`；版本不能混用。分区与G连接池确定性实际专项详见 `ACCEPTANCE_PARTITION_CONCURRENCY.md`。
+
+新不可变main `77d5f6154a4aab7d7884974b1ac4690609fcc132`（分区gate、连接池同client查询与公平调度027）四站20k实际通过 **CLI EXIT0**：`APP_ROOT=/tmp/baize-pool-core-nt2gfw SOURCE_SHA=77d5f6154a4aab7d7884974b1ac4690609fcc132 npx tsx scripts/continuous-pipeline-benchmark.ts --sites=4 --events=20000 --output=docs/test-evidence/continuous-fair-4site-20000.json`。runner固定SHA256为上述fe8438版本，严格git blob校验后启动；前后源码摘要均为 `2b007b03dd30dc2c1d933eba8ee26afd2b4a805f8b0edaf2a07272afc617e76b`。没有手动worker、没有修改生产限流、没有启用ClickHouse。
+
+持续采集加实际HTTP查询121.225秒，自然后台drain14.470秒；四站在持续写入期间processed_generation均推进，最终generation/processed_generation全部100，水位覆盖最后接受事件。SQL PV20000/UV400/sessions400、outbox20000全部done、最终各站HTTP coverage=1；attempts与观察到的worker失败样本均0，隔离schema已删除。published watermark lag p95=8.836秒/max10.749秒；初始未发布水位10个样本单独统计，unpublishedWait p95/max=3.322秒，未复现912长期未首发布。持续dirty时426个coverage不足查询样本保留。batch p95=941.4ms、query p95=398.1ms、Node RSS峰829538304bytes、schema58695680bytes。
+
+本轮证据 `continuous-fair-4site-20000.json` 不覆盖旧9cd死锁和912失败；是固定负载、PG-only、共享开发宿主下的本地实测，可能并发短配置/SDK单测，未做CPU/2GiB隔离，不能宣称生产SLO保证或ClickHouse容量。
