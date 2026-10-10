@@ -1,14 +1,14 @@
 export interface EncodedFactPairRow {attempt_id:string;row_key:string;body_base64:string;body_hash:string}
 export interface DecodedFactPairRow {row_key:string;body:string;body_hash:string}
-/** Only a pair of committed, same-kind manifests may use this response.
+/** Only two or three committed, same-kind manifests may use this response.
  * Valid producer/strict-restore records have <=32768 normalized UTF8 bytes,
  * <=259 additional sealed-envelope bytes and fixed three-field provenance.
- * 202 sentinel rows base64-encode <=33027 bytes each: <=8,895,272 bytes,
- * plus bounded fixed keys/JSON framing, below the unchanged 16MiB response cap.
+ * 303 sentinel rows base64-encode <=33027 bytes each: <=13,342,908 bytes,
+ * with output_format_json_escape_forward_slashes=0 and fixed UUID/hex keys/JSON framing, below the unchanged 16MiB response cap.
  * Each manifest still gets its own 101-row sentinel and <=100 output check. */
 export function decodeFactPair(rows:unknown,attempts:readonly string[]):DecodedFactPairRow[][]{
- if(attempts.length!==2||attempts[0]===attempts[1]||!Array.isArray(rows)||rows.length>202)throw Error('FACT_STORE_READ_LIMIT');
- const groups:DecodedFactPairRow[][]=[[],[]];const keys=[new Set<string>(),new Set<string>()];
+ if((attempts.length<2||attempts.length>3)||new Set(attempts).size!==attempts.length||!Array.isArray(rows)||rows.length>attempts.length*101)throw Error('FACT_STORE_READ_LIMIT');
+ const groups:DecodedFactPairRow[][]=attempts.map(()=>[]);const keys=attempts.map(()=>new Set<string>());
  for(const unknownRow of rows){
   if(!unknownRow||typeof unknownRow!=='object')throw Error('FACT_STORE_BODY_UNAVAILABLE');
   const row=unknownRow as EncodedFactPairRow;
