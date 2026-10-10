@@ -2,7 +2,7 @@
 
 ## 当前验收入口（2818bd4）
 
-c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000仍运行待结果，不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
+c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000最终FAIL（4900accepted/2unsent/39delayed、排空超时、最终断言未执行），不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
 
 ## 历史契约与阶段记录
 
@@ -41,3 +41,5 @@ c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（
 先保留原不可变负载脚本和既有失败证据，使用阶段观测与独立调度测量。候选预算单独验证正确失败与清理，再按批准值接入；与批量归属 SQL、TEMP ANALYZE 分片评价，不能合并宣称收益。
 
 TEMP ANALYZE 的独立合成实验未显示计入分析成本后的净收益，目前不接生产。上述两片预算也未实现、未执行新的真实 CH 预算测试。本文件归档期间不修改生产源码，不启动数据库、负载、构建、容器或托管 CI。
+
+1c最终固定负载：1000 PASS、最终HTTP5120ms；5000总体FAIL：4900accepted、2unsent、39delayed、queryfail0，drainReached=false且120秒deadline，剩余积压1350/最大3250。最终查询25.389秒FAIL、assertionsExecuted=[]，不得声称六完整性断言已过。Node峰730509312字节不含数据库，source unchanged且4项cleanup全true；没有预算拒绝。已通过代码功能/浏览器/镜像不等于关闭此本地性能欠项，不据此称提速/SLO。归档证据为 docs/test-evidence/main-1c1cb65-independent-strict-5000.json 及配套record；原FAIL保留。

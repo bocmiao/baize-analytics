@@ -2,7 +2,7 @@
 
 ## 当前验收入口（2818bd4）
 
-c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000仍运行待结果，不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
+c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000最终FAIL（4900accepted/2unsent/39delayed、排空超时、最终断言未执行），不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
 
 ## 历史契约与阶段记录
 
@@ -194,3 +194,5 @@ npx tsx scripts/canonical-cli.ts prune "$BAIZE_SITE_ID" "$BAIZE_RAW_BACKUP_DIR" 
 `BAIZE_RAW_BACKUP_DIR`必须是单站raw包目录，不是整库dump或facts包。现有 `scripts/backup.sh` 成功输出的布局为备份目录下 `canonical/<SITE_ID>`；应核对该站实际存在完整签名raw产物后再选取。单站目录实际含 `manifest.json`、`events.ndjson`、`published.ndjson`。`scripts/canonical-ops-runtime.ts` 直接输出为指定目录下 `<SITE_ID>`；shell整体布局为 `backups/<name>/canonical/<SITE_ID>`。备份流程只为实际CH权威canonical站点生成该raw包，不能为无产物站点构造空目录假证据。journal应取当前独立可信来源，不用旧快照内副本。PG shadow尚不是可prune站点。CLI也可使用 `node --import tsx scripts/canonical-cli.ts prune` 同一参数；master key从现有 `KEYS_DIR` 的v1文件或 `MASTER_KEY_FILE` 读取，来自已有私密实例配置，不创建新凭据、不打印密钥。此门槛纳入7fbb561的494应用测试联合验收，不修改3e052d8历史491计数。
 
 冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。
+
+1c最终固定负载：1000 PASS、最终HTTP5120ms；5000总体FAIL：4900accepted、2unsent、39delayed、queryfail0，drainReached=false且120秒deadline，剩余积压1350/最大3250。最终查询25.389秒FAIL、assertionsExecuted=[]，不得声称六完整性断言已过。Node峰730509312字节不含数据库，source unchanged且4项cleanup全true；没有预算拒绝。已通过代码功能/浏览器/镜像不等于关闭此本地性能欠项，不据此称提速/SLO。归档证据为 docs/test-evidence/main-1c1cb65-independent-strict-5000.json 及配套record；原FAIL保留。
