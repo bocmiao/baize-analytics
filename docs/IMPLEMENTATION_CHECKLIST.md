@@ -2,7 +2,7 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-本次主线实现提交纳入036/038/039/041/043–048及严格采集、事实、删除、缓存、独立签名恢复闭环；必要真实专项已通过，guard已启用，逐站验证/水位/删除屏障仍强制检查。最终同源空库、完整浏览器、新Docker镜像与严格持续负载尚未完成，不称全计划验收通过。main准确SHA以本次提交记录和最终验收记录为准。
+本次主线实现提交纳入036/038/039/041/043–048及严格采集、事实、删除、缓存、独立签名恢复闭环；必要真实专项已通过，guard已启用，逐站验证/水位/删除屏障仍强制检查。3e052d8 同源空库和完整浏览器已通过；新应用Docker镜像与严格持续负载大规模仍待，不称全计划验收通过。main准确SHA以本次提交记录和最终验收记录为准。
 
 042此前独立功能里程碑 **`5b402dd`**：自定义搜索手动导入。042 自定义搜索手动导入以独立干净 main 快照 **4单元+7真实PG+1真实浏览器（11+1）**、build/type/lint PASS 保存，见 [manual-search-clean-main.json](test-evidence/manual-search-clean-main.json)。这些专项不累加为新的整体全量计数。
 
@@ -699,7 +699,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 | F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 新044CH事实读取接线及最新镜像尚待当前工作树全量；真实模型质量未测，不重列既有PG问数为骨架 |
 | F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 新043–048CH正文删除/restore/latest-journal完整runtime仍在制，需最终源/镜像统一验收；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
 | 规模/bounded-session planner | 在制 | 集中大站/持续采集查询删写、真实RSS/lag/失败；不能用旧1M背景关闭顺序worker当生产SLO |
-| P2-01 CH canonical迁移 | 部分，036/038/039/041/043–048仅WIP，main激活guard仍false | 047剩余正文及session/facts/carry迁出、全面生产读写/精准删除/保留/恢复接线、最终同源全集/镜像、集群灾备和持续容量；readytrue临时变体实际验收不等于main激活，已有incremental/history闭环不重复列未实现 |
+| P2-01 CH canonical迁移 | 本地已验036/038/039/041/043–048，main3e052d8 guard已true | 同源491应用测试+22 E2E已通过；新应用镜像、5000严格持续负载、集群灾备及资源隔离SLO待验证，不将本地通过等同外网部署 |
 | F44 P1标准MCP server | 已实现默认注册，官方SDK定向及第七compiled应用验收 | 最新镜像、其他桌面客户端与后两声明协议版未单独测 |
 | F52百度官方接口与手动导入 | 官方普通站长公开读取未证实，官方连接器未实现；042自定义模板/列映射已main5b402dd独立11+1验收 | 官方API/授权/数据字典及当前百度原生CSV样本仍待明确；手动导入不替代官方目标、不称原生兼容，旧CONNECT403记录保留 |
 | F11/F48/F51/F54/F63、通知/企业SSO/商业AI | 安全连接器本地验收，真实外部未测 | Google/MaxMind/SERP/SMTP/企业WeCom/Server酱等实际账号/许可/交付；不购买或创建生产凭据 |
@@ -736,4 +736,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 源码边界与所有初次失败/修复证据见[ACCEPTANCE_CANONICAL_GOVERNANCE.md](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。本节不增加第八377+20全量计数；/tmp/baize-cache-privacy-closed.json及快照SHA manifest为新定向证据，等待root新同源全套。
 
-本轮最终冻结前补记：pre-014 未受控 daily 明细的未知拓扑不制造038/041证明；旧安全report/export保留及当前native collector正常已有专项，不能概括为所有旧PG停用。043–048最新全树/完整同源总数尚未验收，guard仍false。048已认证V2 hour/day精确重建小专项通过，独立strict restore最后控制行readiness仍复验，未知legacy/非零heatmap负coverage不清除。CNB自动同步、触发、定时均暂停；上述历史托管成功/失败记录保留，未执行本轮新托管，不以暂停状态假称当前通过。
+本轮最终冻结前补记：pre-014 未受控 daily 明细的未知拓扑不制造038/041证明；旧安全report/export保留及当前native collector正常已有专项，不能概括为所有旧PG停用。此条为前一冻结历史边界；现在3e052d8最新同源491+22已验收、guardtrue。048已认证V2 hour/day精确重建小专项通过，独立strict restore最后控制行readiness已于16:26:59实际3文件3PASS闭合，未知legacy/非零heatmap负coverage不清除。CNB自动同步、触发、定时均暂停；上述历史托管成功/失败记录保留，未执行本轮新托管，不以暂停状态假称当前通过。
+
+
+最新不可变本地验收：`3e052d816c48a701fb82ce137436c30a770cf080`，全新测试专属 PG17/CH25.8/Redis7 Compose 空卷，`validate-local-final.sh` EXIT0 并清理。100 单元 +391 集成=491 PASS，0失败/0跳过；22 E2E 中20 Chromium真实浏览器+2日期函数全部通过。证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。主线核心激活 guard 已true，但每站证明/删除/水位屏障仍强制。D1000严格CH完整性通过，查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO；5000及新应用镜像尚待，不标完成。保留全部旧失败；本轮未运行CNB托管，自动触发仍暂停。

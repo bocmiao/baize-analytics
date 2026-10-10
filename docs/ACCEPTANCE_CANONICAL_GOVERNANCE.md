@@ -108,3 +108,9 @@ C最终真实native闭环通过：/tmp/baize-cache-privacy-closed.json，1PASS/0
 实际 collector → PG V2 发布 → CH 缓存 → 物理清除 → 认证证明 → 同客户端事实重建专项 1 PASS（16:17:22），含篡改证明拒绝与未知 false 拒绝；缓存/独立历史缓存 2 文件 4 PASS（16:16:10）。首次新增 SQL `hour` 别名语法失败已修正；原失败不抹去。旧治理两文件 24 PASS（16:17:35）：漏斗 fixture 按站点时区构造完整日，仍断言 0.2/0.8；分享存储标注断言真实 `postgres`。这些不是 root 全量验收，也不是独立 target restore 已通过；该原生流程由 B 继续复验。
 
 16:20 补充：独立恢复的安全遮蔽 `CANONICAL_OPERATION_FAILED` 对应新增日桶 SQL 的 `day` 保留字别名错误；扩展真实源专项同时覆盖 hourly/daily 后复现 PG42601，改为明确引用别名。16:20:23 两种认证缓存实际物理删除后重建均通过（同一测试还保留篡改和未知拒绝断言）。原小时单一路径通过不能代表日桶通过；此前恢复失败保留，B 重新验证独立目标。
+
+### 不可变 main 3e052d8 本地联合结果
+
+此前未知遮蔽、SQL日别名、控制行readiness失败保留。B最终整合已于16:26:59实际3文件3PASS/0skip：严格源真实删A、签名子备份+PG快照、独立PG/CH恢复、目标迁移及strict、B API真实CH来源coverage1/PG正文0、源不变；未知负面历史不清除。
+
+随后不可变 `3e052d816c48a701fb82ce137436c30a770cf080` 在全新测试Compose空卷完成100单元+391集成=491 PASS，0失败/0跳过；22 E2E=20实际Chromium+2日期函数通过；清理EXIT0。证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。当前核心guard已true，逐站证明与删除/水位屏障仍强制。1000严格CH负载完整性通过，但查询p95 9.41秒、滞后p95 63.71秒，不是SLO成功；5000及新应用镜像尚待。本轮CNB托管未执行，历史失败不覆盖。

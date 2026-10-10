@@ -135,7 +135,7 @@ Baidu public search-analysis read access remains unverified; available product d
 
 在隔离专项里选择canonical后，CH正文、manifest、checksum与PG删除状态共同决定可读事件，CH不可用返回503而非回空PG。独立canonical备份/恢复模块已测，但尚未纳入安装器和完整应用恢复；既有history-cli恢复仍为隔离副本，不激活canonical。新的工具和迁移不能替代PG全库备份、文件/版本key备份及独立最新journal。
 
-混合身份的一批回放必须按rrweb记录时间判定删除，不能只按wire ts删整个chunk；索引重叠清理不等于CH物理擦除。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。若曾在开发版本写入非规范键序hash，只能从已核验权威body重算，不能盲目更新hash忽略完整性失败。30天回放物理保留已有下述工作树定向闭环，不用只清PG索引冒充完成，也不提前声称全量已交付。
+混合身份的一批回放必须按rrweb记录时间判定删除，不能只按wire ts删整个chunk；索引重叠清理不等于CH物理擦除。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，该历史专项阶段activation/replay guard保持关闭；当前3e052d8核心激活已启用，索引隐藏不等于物理擦除。若曾在开发版本写入非规范键序hash，只能从已核验权威body重算，不能盲目更新hash忽略完整性失败。30天回放物理保留已有下述工作树定向闭环，不用只清PG索引冒充完成，也不提前声称全量已交付。
 
 治理读取先取得session partition共享与site共享锁，等DDL/删除完成后才固定RR快照，随后转事务锁并释放session锁；持client期间不借同pool。默认应用已注册标准[MCP只读入口](mcp.md)，独立官方SDK4项通过。新AI trace/chart与删除派生hooks已接入当前路径，删除后清整站答案/证据/建议并撤销相关导出，保留预算账本；恢复重放latest journal后亦须失效旧衍生信息。AI派生hooks与默认MCP入口已纳fa3第七分阶段compiled-app验收；033/034/035/037及新通知保护仍按下一工作树切片判定，镜像边界以主验收记录为准。
 
@@ -151,7 +151,7 @@ Baidu public search-analysis read access remains unverified; available product d
 
 ### 预览：已发布事实正文迁出与strict门禁
 
-以下是当前工作树CLI的实际参数契约，**尚非已开放生产canonical切换承诺**；主线activation guard仍false。使用前须核对同版本源码与最新联合验收，保持入口关闭、完整PG/application files/keys备份和独立最新删除journal。环境变量已在本地安全配置文件设置；命令不打印或内联数据库口令。
+以下是当前工作树CLI的实际参数契约，**必须满足逐站切换证明**；不可变main3e052d8核心activation guard已true，逐站证明、删除、水位检查仍强制。使用前须核对同版本源码与最新联合验收，保持入口关闭、完整PG/application files/keys备份和独立最新删除journal。环境变量已在本地安全配置文件设置；命令不打印或内联数据库口令。
 
 ```sh
 npx tsx scripts/canonical-cli.ts status "$BAIZE_SITE_ID"
@@ -167,4 +167,7 @@ npx tsx scripts/canonical-cli.ts strict "$BAIZE_SITE_ID" "$BAIZE_FACT_PACKAGE_DI
 
 pre-014 等旧版本未经受控入口产生的 daily-salt 明细，可能缺少可验证的每日身份拓扑。迁移不能从旧访客字段、页面 ID 或自报时间制造 038 lineage / 041 producer proof；未知拓扑不得进入需要这些证明的 canonical/carry 历史迁移。保留安全的旧报表与导出可继续使用，不代表所有旧 PostgreSQL 站点停用。实际隐私升级专项验证旧安全 report/export 不含身份别名，并验证当前原生 collector 仍可正常采集。
 
-缺少可信来源、留存已到期或历史重建不完整时返回明确不可用或 coverage<1；不把历史零行当真实零流量，也不以新入口正常运行证明旧历史完整。本轮 043–048 完整同源总验收尚未运行，生产激活 guard 仍为 false；定向工作树测试与已交付 main 验收须分开。当前独立严格恢复仍在复验最后的缓存控制行/签名正文 readiness，不提前宣称闭合。
+缺少可信来源、留存已到期或历史重建不完整时返回明确不可用或 coverage<1；不把历史零行当真实零流量，也不以新入口正常运行证明旧历史完整。不可变3e052d8同源100单元+391集成与22 E2E（20真实Chromium+2日期函数）通过，全新Compose清理EXIT0，核心guard已true；定向工作树测试与已交付 main 验收须分开。独立严格恢复最后缓存控制行/签名正文readiness已于16:26:59实际3文件3PASS闭合。
+
+
+当前不可变本地证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。这不代表外网部署或托管CI。1000事件严格CH完整性通过，但查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO。5000负载和新应用镜像矩阵尚待；所有历史失败保留。

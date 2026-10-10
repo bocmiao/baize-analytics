@@ -1,0 +1,985 @@
+{
+  "status": "passed",
+  "sourceSha": "3e052d816c48a701fb82ce137436c30a770cf080",
+  "appRoot": "/tmp/baize-main-3e052d8.GcCJ54",
+  "sourceDigestBefore": "68bea5ef9502d27c1cb5859a34059305afa6f246f680838203dd185e1d929573",
+  "events": 1000,
+  "sites": 1,
+  "batchSize": 50,
+  "background": true,
+  "manualWorker": false,
+  "storage": "strict-clickhouse; PG control metadata; authenticated canonical and derived CH bodies",
+  "storageMode": "strict-clickhouse",
+  "bootstrapEvents": 1,
+  "startedAt": "2026-10-10T16:41:29.262Z",
+  "limits": "Production limits unchanged; one batch/site/second",
+  "relationOidNames": [
+    {
+      "oid": "3890101",
+      "relname": "schema_migrations"
+    },
+    {
+      "oid": "3890109",
+      "relname": "users"
+    },
+    {
+      "oid": "3890121",
+      "relname": "auth_sessions"
+    },
+    {
+      "oid": "3890134",
+      "relname": "sites"
+    },
+    {
+      "oid": "3890149",
+      "relname": "site_members"
+    },
+    {
+      "oid": "3890167",
+      "relname": "events"
+    },
+    {
+      "oid": "3890179",
+      "relname": "events_default"
+    },
+    {
+      "oid": "3890195",
+      "relname": "event_data"
+    },
+    {
+      "oid": "3890209",
+      "relname": "event_data_default"
+    },
+    {
+      "oid": "3890220",
+      "relname": "event_keys"
+    },
+    {
+      "oid": "3890232",
+      "relname": "identity_map"
+    },
+    {
+      "oid": "3890246",
+      "relname": "visitor_first_seen"
+    },
+    {
+      "oid": "3890258",
+      "relname": "tombstones"
+    },
+    {
+      "oid": "3890268",
+      "relname": "audit_logs"
+    },
+    {
+      "oid": "3890279",
+      "relname": "aggregation_state"
+    },
+    {
+      "oid": "3890295",
+      "relname": "outbox"
+    },
+    {
+      "oid": "3890311",
+      "relname": "bot_counts"
+    },
+    {
+      "oid": "3890324",
+      "relname": "sessions"
+    },
+    {
+      "oid": "3890338",
+      "relname": "stats_hourly"
+    },
+    {
+      "oid": "3890350",
+      "relname": "stats_daily"
+    },
+    {
+      "oid": "3890362",
+      "relname": "page_vitals"
+    },
+    {
+      "oid": "3890374",
+      "relname": "goals"
+    },
+    {
+      "oid": "3890388",
+      "relname": "funnels"
+    },
+    {
+      "oid": "3890402",
+      "relname": "analytics_definitions"
+    },
+    {
+      "oid": "3890415",
+      "relname": "api_tokens"
+    },
+    {
+      "oid": "3890436",
+      "relname": "reports"
+    },
+    {
+      "oid": "3890449",
+      "relname": "notification_channels"
+    },
+    {
+      "oid": "3890461",
+      "relname": "report_schedules"
+    },
+    {
+      "oid": "3890484",
+      "relname": "notification_jobs"
+    },
+    {
+      "oid": "3890497",
+      "relname": "notification_logs"
+    },
+    {
+      "oid": "3890506",
+      "relname": "share_links"
+    },
+    {
+      "oid": "3890523",
+      "relname": "alert_rules"
+    },
+    {
+      "oid": "3890537",
+      "relname": "site_invites"
+    },
+    {
+      "oid": "3890551",
+      "relname": "export_jobs"
+    },
+    {
+      "oid": "3890566",
+      "relname": "replay_chunks"
+    },
+    {
+      "oid": "3890579",
+      "relname": "heatmap_points"
+    },
+    {
+      "oid": "3890592",
+      "relname": "experiments"
+    },
+    {
+      "oid": "3890605",
+      "relname": "experiment_assignments"
+    },
+    {
+      "oid": "3890618",
+      "relname": "external_connections"
+    },
+    {
+      "oid": "3890632",
+      "relname": "oauth_states"
+    },
+    {
+      "oid": "3890644",
+      "relname": "gsc_stats"
+    },
+    {
+      "oid": "3890656",
+      "relname": "ga_import"
+    },
+    {
+      "oid": "3890669",
+      "relname": "seo_scans"
+    },
+    {
+      "oid": "3890682",
+      "relname": "rank_history"
+    },
+    {
+      "oid": "3890694",
+      "relname": "ai_budget"
+    },
+    {
+      "oid": "3890708",
+      "relname": "ai_calls"
+    },
+    {
+      "oid": "3890722",
+      "relname": "ai_suggestions"
+    },
+    {
+      "oid": "3890742",
+      "relname": "instance_keyring"
+    },
+    {
+      "oid": "3890751",
+      "relname": "sso_config"
+    },
+    {
+      "oid": "3890761",
+      "relname": "sso_mappings"
+    },
+    {
+      "oid": "3890773",
+      "relname": "sso_states"
+    },
+    {
+      "oid": "3890781",
+      "relname": "identity_bindings"
+    },
+    {
+      "oid": "3890796",
+      "relname": "identity_tombstones"
+    },
+    {
+      "oid": "3890808",
+      "relname": "external_jobs"
+    },
+    {
+      "oid": "3890827",
+      "relname": "export_file_cleanup"
+    },
+    {
+      "oid": "3890846",
+      "relname": "revenue_orders"
+    },
+    {
+      "oid": "3890873",
+      "relname": "instance_settings"
+    },
+    {
+      "oid": "3890887",
+      "relname": "experiment_contributions"
+    },
+    {
+      "oid": "3890905",
+      "relname": "event_store_state"
+    },
+    {
+      "oid": "3890924",
+      "relname": "event_store_uploads"
+    },
+    {
+      "oid": "3890942",
+      "relname": "event_store_maintenance"
+    },
+    {
+      "oid": "3890961",
+      "relname": "event_store_batches"
+    },
+    {
+      "oid": "3890980",
+      "relname": "history_manifests"
+    },
+    {
+      "oid": "3890995",
+      "relname": "history_backup_files"
+    },
+    {
+      "oid": "3891011",
+      "relname": "ga_import_windows"
+    },
+    {
+      "oid": "3891026",
+      "relname": "ai_question_evidence"
+    },
+    {
+      "oid": "3891046",
+      "relname": "analytics_fact_runs"
+    },
+    {
+      "oid": "3891065",
+      "relname": "analytics_session_facts"
+    },
+    {
+      "oid": "3891077",
+      "relname": "analytics_numeric_facts"
+    },
+    {
+      "oid": "3891090",
+      "relname": "analytics_member_facts"
+    },
+    {
+      "oid": "3891103",
+      "relname": "analytics_vitals_facts"
+    },
+    {
+      "oid": "3891116",
+      "relname": "canonical_event_authority"
+    },
+    {
+      "oid": "3891132",
+      "relname": "canonical_event_batches"
+    },
+    {
+      "oid": "3891148",
+      "relname": "canonical_event_members"
+    },
+    {
+      "oid": "3891160",
+      "relname": "canonical_migration_progress"
+    },
+    {
+      "oid": "3891176",
+      "relname": "analytics_effect_facts"
+    },
+    {
+      "oid": "3891189",
+      "relname": "analytics_vital_samples"
+    },
+    {
+      "oid": "3891202",
+      "relname": "analytics_relational_buckets"
+    },
+    {
+      "oid": "3891221",
+      "relname": "replay_chunk_keys"
+    },
+    {
+      "oid": "3891237",
+      "relname": "ai_reservations"
+    },
+    {
+      "oid": "3891260",
+      "relname": "analytics_carry_checkpoints"
+    },
+    {
+      "oid": "3891275",
+      "relname": "analytics_carry_keys"
+    },
+    {
+      "oid": "3891290",
+      "relname": "analytics_carry_heads"
+    },
+    {
+      "oid": "3891307",
+      "relname": "analytics_session_contribution_heads"
+    },
+    {
+      "oid": "3891326",
+      "relname": "replay_retention_jobs"
+    },
+    {
+      "oid": "3891341",
+      "relname": "canonical_shadow_provenance"
+    },
+    {
+      "oid": "3891360",
+      "relname": "canonical_carry_provenance"
+    },
+    {
+      "oid": "3891374",
+      "relname": "canonical_provenance_replacements"
+    },
+    {
+      "oid": "3891394",
+      "relname": "analytics_session_event_headers"
+    },
+    {
+      "oid": "3891409",
+      "relname": "analytics_session_rebuild_requests"
+    },
+    {
+      "oid": "3891427",
+      "relname": "manual_search_imports"
+    },
+    {
+      "oid": "3891445",
+      "relname": "manual_search_rows"
+    },
+    {
+      "oid": "3891461",
+      "relname": "analytics_header_batches"
+    },
+    {
+      "oid": "3891483",
+      "relname": "analytics_header_members"
+    },
+    {
+      "oid": "3891501",
+      "relname": "analytics_header_runs"
+    },
+    {
+      "oid": "3891521",
+      "relname": "analytics_fact_store_runs"
+    },
+    {
+      "oid": "3891547",
+      "relname": "analytics_fact_store_batches"
+    },
+    {
+      "oid": "3891577",
+      "relname": "analytics_fact_store_members"
+    },
+    {
+      "oid": "3891596",
+      "relname": "analytics_fact_store_gc"
+    },
+    {
+      "oid": "3891612",
+      "relname": "analytics_header_gc"
+    },
+    {
+      "oid": "3891625",
+      "relname": "canonical_cutover_receipts"
+    },
+    {
+      "oid": "3891643",
+      "relname": "analytics_remaining_fact_runs"
+    },
+    {
+      "oid": "3891659",
+      "relname": "analytics_remaining_fact_batches"
+    },
+    {
+      "oid": "3891678",
+      "relname": "analytics_remaining_fact_members"
+    },
+    {
+      "oid": "3891692",
+      "relname": "analytics_remaining_fact_gc"
+    },
+    {
+      "oid": "3891720",
+      "relname": "analytics_cache_owners"
+    },
+    {
+      "oid": "3891737",
+      "relname": "analytics_cache_batches"
+    },
+    {
+      "oid": "3891752",
+      "relname": "analytics_cache_members"
+    },
+    {
+      "oid": "3891769",
+      "relname": "analytics_cache_pointers"
+    },
+    {
+      "oid": "3891781",
+      "relname": "analytics_cache_gc"
+    },
+    {
+      "oid": "3891797",
+      "relname": "cache_heatmap_coverage_batches"
+    },
+    {
+      "oid": "3891811",
+      "relname": "analytics_cache_unavailable"
+    },
+    {
+      "oid": "3891837",
+      "relname": "events_2025_10"
+    },
+    {
+      "oid": "3891857",
+      "relname": "event_data_2025_10"
+    },
+    {
+      "oid": "3891878",
+      "relname": "events_2025_11"
+    },
+    {
+      "oid": "3891898",
+      "relname": "event_data_2025_11"
+    },
+    {
+      "oid": "3891919",
+      "relname": "events_2025_12"
+    },
+    {
+      "oid": "3891939",
+      "relname": "event_data_2025_12"
+    },
+    {
+      "oid": "3891960",
+      "relname": "events_2026_01"
+    },
+    {
+      "oid": "3891980",
+      "relname": "event_data_2026_01"
+    },
+    {
+      "oid": "3892001",
+      "relname": "events_2026_02"
+    },
+    {
+      "oid": "3892021",
+      "relname": "event_data_2026_02"
+    },
+    {
+      "oid": "3892042",
+      "relname": "events_2026_03"
+    },
+    {
+      "oid": "3892062",
+      "relname": "event_data_2026_03"
+    },
+    {
+      "oid": "3892083",
+      "relname": "events_2026_04"
+    },
+    {
+      "oid": "3892103",
+      "relname": "event_data_2026_04"
+    },
+    {
+      "oid": "3892124",
+      "relname": "events_2026_05"
+    },
+    {
+      "oid": "3892144",
+      "relname": "event_data_2026_05"
+    },
+    {
+      "oid": "3892165",
+      "relname": "events_2026_06"
+    },
+    {
+      "oid": "3892185",
+      "relname": "event_data_2026_06"
+    },
+    {
+      "oid": "3892206",
+      "relname": "events_2026_07"
+    },
+    {
+      "oid": "3892226",
+      "relname": "event_data_2026_07"
+    },
+    {
+      "oid": "3892247",
+      "relname": "events_2026_08"
+    },
+    {
+      "oid": "3892267",
+      "relname": "event_data_2026_08"
+    },
+    {
+      "oid": "3892288",
+      "relname": "events_2026_09"
+    },
+    {
+      "oid": "3892308",
+      "relname": "event_data_2026_09"
+    },
+    {
+      "oid": "3892329",
+      "relname": "events_2026_10"
+    },
+    {
+      "oid": "3892349",
+      "relname": "event_data_2026_10"
+    },
+    {
+      "oid": "3892370",
+      "relname": "events_2026_11"
+    },
+    {
+      "oid": "3892390",
+      "relname": "event_data_2026_11"
+    },
+    {
+      "oid": "3892411",
+      "relname": "events_2026_12"
+    },
+    {
+      "oid": "3892431",
+      "relname": "event_data_2026_12"
+    }
+  ],
+  "strictBootstrap": {
+    "operator": "public shadow/verify/activate",
+    "factMigration": true,
+    "signedPackages": [
+      "headers",
+      "facts",
+      "remaining",
+      "caches"
+    ],
+    "privateProof": true,
+    "strict": true,
+    "manualWorker": false,
+    "elapsedMs": 3725.256735,
+    "isolatedCHDatabase": "continuous_3b0162e0b2d2f463"
+  },
+  "accepted": 1000,
+  "intakeWithQueriesMs": 40010.612049,
+  "drainMs": 50447.887945999995,
+  "canonicalCoverage": {
+    "pv": 1001,
+    "uv": 21,
+    "includesBootstrap": 1,
+    "authority": "clickhouse"
+  },
+  "pgBodyCounts": {
+    "events": 0,
+    "analytics_session_event_headers": 0,
+    "analytics_effect_facts": 0,
+    "analytics_vital_samples": 0,
+    "analytics_session_facts": 0,
+    "analytics_numeric_facts": 0,
+    "analytics_member_facts": 0,
+    "analytics_carry_checkpoints": 0,
+    "analytics_carry_keys": 0
+  },
+  "authority": [
+    {
+      "site_id": "edd40f0991ea0f89c1551535",
+      "authority": "clickhouse",
+      "body_mode": "strict"
+    }
+  ],
+  "finalAggregationState": [
+    {
+      "site_id": "edd40f0991ea0f89c1551535",
+      "generation": "22",
+      "processed_generation": "22",
+      "watermark": "2026-10-10T16:42:10.675Z",
+      "attempts": 0
+    }
+  ],
+  "schemaBytes": 98795520,
+  "outbox": {
+    "total": 1001,
+    "queued": 0,
+    "done": 1001
+  },
+  "sourceDigestAfter": "68bea5ef9502d27c1cb5859a34059305afa6f246f680838203dd185e1d929573",
+  "sourceUnchanged": true,
+  "samples": [
+    {
+      "at": "2026-10-10T16:41:34.124Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 0,
+      "source": "clickhouse",
+      "generation": "3",
+      "processedGeneration": "2",
+      "lagMs": 63711,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:35.169Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 0,
+      "source": "clickhouse",
+      "generation": "4",
+      "processedGeneration": "2",
+      "lagMs": 64713,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:36.670Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 50,
+      "source": "clickhouse",
+      "generation": "5",
+      "processedGeneration": "3",
+      "lagMs": 2003,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:37.927Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 50,
+      "source": "clickhouse",
+      "generation": "6",
+      "processedGeneration": "3",
+      "lagMs": 3027,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:38.880Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 50,
+      "source": "clickhouse",
+      "generation": "7",
+      "processedGeneration": "3",
+      "lagMs": 4282,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:39.772Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 50,
+      "source": "clickhouse",
+      "generation": "8",
+      "processedGeneration": "3",
+      "lagMs": 5284,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:41.433Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "9",
+      "processedGeneration": "4",
+      "lagMs": 5282,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:43.021Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "10",
+      "processedGeneration": "4",
+      "lagMs": 6788,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:44.481Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "11",
+      "processedGeneration": "4",
+      "lagMs": 8375,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:45.896Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "12",
+      "processedGeneration": "4",
+      "lagMs": 9834,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:47.236Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "13",
+      "processedGeneration": "4",
+      "lagMs": 11251,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:48.643Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "14",
+      "processedGeneration": "4",
+      "lagMs": 12590,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:49.757Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 100,
+      "source": "clickhouse",
+      "generation": "15",
+      "processedGeneration": "4",
+      "lagMs": 13997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:53.080Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "16",
+      "processedGeneration": "8",
+      "lagMs": 10829,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:41:56.548Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "17",
+      "processedGeneration": "8",
+      "lagMs": 14153,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:00.113Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "18",
+      "processedGeneration": "8",
+      "lagMs": 17620,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:03.620Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "19",
+      "processedGeneration": "8",
+      "lagMs": 21186,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:07.273Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "20",
+      "processedGeneration": "8",
+      "lagMs": 24692,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:10.675Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "21",
+      "processedGeneration": "8",
+      "lagMs": 28345,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:13.654Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 300,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "8",
+      "lagMs": 31747,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:21.182Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 650,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "15",
+      "lagMs": 22032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:29.240Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 650,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "15",
+      "lagMs": 22032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:37.683Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 650,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "15",
+      "lagMs": 22032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:46.144Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 650,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "15",
+      "lagMs": 22032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:42:53.688Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 0,
+      "pv": 650,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "15",
+      "lagMs": 22032,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:43:04.103Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 1,
+      "pv": 1000,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "22",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T16:43:14.017Z",
+      "site": "edd40f0991ea0f89c1551535",
+      "coverage": 1,
+      "pv": 1000,
+      "source": "clickhouse",
+      "generation": "22",
+      "processedGeneration": "22",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    }
+  ],
+  "lagScope": "lagMs is published watermark lag; never-watermarked samples use separate unpublishedWaitMs",
+  "neverWatermarkedSampleCount": 0,
+  "unpublishedWaitP95Ms": null,
+  "unpublishedWaitMaxMs": null,
+  "uncoveredSampleCount": 25,
+  "observedWorkerFailureSampleCount": 0,
+  "lagMaxMs": 64713,
+  "lagP95Ms": 63711,
+  "batchP95Ms": 459.02280600000086,
+  "queryP95Ms": 9414.472097999998,
+  "peakNodeRssBytes": 569131008,
+  "finishedAt": "2026-10-10T16:43:14.056Z",
+  "isolatedCHDatabaseRemoved": true,
+  "isolatedSchemaRemoved": true
+}
