@@ -4,6 +4,14 @@
 
 GitHub PRIVATE `bocmiao/baize-analytics` main remains authoritative. CNB is a PRIVATE, one-direction mirror and optional CI runner. Repository creation, private visibility, login and existing credentials are handled by the integration owner. No new keys, paid services, network policies or billing settings are created by these files. The former GitHub Actions workflow is archived at `docs/ci-reference/github-actions-ci.yml`, outside active `.github/workflows`; it is not a synchronization trigger. Automatic GitHub Actions are intentionally removed because the owner requested no further failed quota/billing notifications. The page-level workflow disable is handled by the parent before the removal commit is pushed.
 
+## Current manual-only operation
+
+Do not synchronize, trigger or rebuild CNB during development. The owner has disabled automatic events, scheduled events and NPC events in the private repository settings and confirmed no running tasks. After all autonomous implementation, integration and local checks finish, the parent may explicitly run `web_trigger` to fast-forward the private mirror, then `web_trigger_validate` for final validation. Fix a failed final validation locally before asking the parent to run it again. The validation job has no secret imports; only the manual sync job imports the already approved GitHub read-only secret. `.cnb.yml` declares no push or crontab event. GitHub Actions stays disabled throughout this task; ordinary GitHub main pushes remain permitted. Do not execute the bootstrap/sync examples below during this development phase.
+
+Historical hosted outcomes remain distinct:223e887 passed; fa3e failed (84 unit passed;65 integration files:4 failed/61 passed;234 tests:222 passed/3 failed/9 skipped; E2E not reached). Local eighth frozen validation passed377 application tests and20 checks, but has not been submitted for a new hosted run. Previously registered cron and incomplete cron secret authorization are historical records, not currently enabled scheduling or a reason to request an immediate credential change.
+
+## Historical onboarding attempts and bootstrap reference (superseded)
+
 The single read-only official-doc request returned HTTP403. `.cnb.yml` was YAML-parsed locally, but CNB event keys, Docker service networking, runner resources, credentials and hosted execution are **templates, not runtime-verified**. Confirm them against official documentation in the authorized console before enabling. The Node24 pipeline requires Docker CLI/Compose to build and orchestrate a daemon-side runner; test-service reachability is now through service-name endpoints within that runner network. Docker CLI/Compose availability still requires actual provider verification. Do not silently skip real integrations if provisioning fails.
 
 ## One-direction synchronization
