@@ -42,4 +42,6 @@ server {
 
 升级开始前检查工作区至少2GiB可用空间（`BAIZE_UPGRADE_MIN_FREE_BYTES` 可提高），并预留128MiB紧急回滚空间，回滚开始先释放预留。该检查不能保证其他并发Docker拉取不会耗尽存储；升级期间停止无关构建/拉取并监控Docker数据盘。任何回滚失败都必须保留恢复点，应用停机后由运营者释放空间并手动恢复，不能把旧镜像启动或部分回滚视为成功。
 
-ClickHouse是可选副本，PostgreSQL始终权威。新数据库恢复默认禁用ClickHouse，清除目标数据库复制指针、上传/维护旧任务并将存储模式设回postgres，不读取、删除或清理源副本。需要新目标副本时显式设置 `BAIZE_RESTORE_CLICKHOUSE_URL`、`BAIZE_RESTORE_CLICKHOUSE_USER`、`BAIZE_RESTORE_CLICKHOUSE_PASSWORD`；目标须为不同endpoint（同endpoint仅改query/database不算独立目标）。当前副本表namespace固定，不能让新旧恢复实例共用。新目标恢复完成后由管理员明确启用mirror并重建，不直接信任备份中的snapshot。原库升级回滚仍使用原ClickHouse删除屏障，失败不会宣称恢复成功。
+以下仅描述PG-authority的可选mirror副本恢复分支，不是当前全局存储契约；严格CH权威及044等正文迁出已交付并有19d同源应用/镜像证据。PG-authority副本分支的新数据库恢复默认禁用ClickHouse，清除目标数据库复制指针、上传/维护旧任务并将存储模式设回postgres，不读取、删除或清理源副本。需要新目标副本时显式设置 `BAIZE_RESTORE_CLICKHOUSE_URL`、`BAIZE_RESTORE_CLICKHOUSE_USER`、`BAIZE_RESTORE_CLICKHOUSE_PASSWORD`；目标须为不同endpoint（同endpoint仅改query/database不算独立目标）。当前副本表namespace固定，不能让新旧恢复实例共用。新目标恢复完成后由管理员明确启用mirror并重建，不直接信任备份中的snapshot。原库升级回滚仍使用原ClickHouse删除屏障，失败不会宣称恢复成功。
+
+已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结仍在运行、尚未验收，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。

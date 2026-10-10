@@ -1,0 +1,16 @@
+{
+  "exit": 0,
+  "scope": "static compose config only; no service start",
+  "values": {
+    "default": {
+      "BAIZE_STATS_READ_DEADLINE_MS": "120000",
+      "BAIZE_STATS_READ_MAX_SELECTS": "20000",
+      "BAIZE_STATS_READ_MAX_DECODED_BYTES": "2147483648"
+    },
+    "override": {
+      "BAIZE_STATS_READ_DEADLINE_MS": "90000",
+      "BAIZE_STATS_READ_MAX_SELECTS": "15000",
+      "BAIZE_STATS_READ_MAX_DECODED_BYTES": "1073741824"
+    }
+  }
+}

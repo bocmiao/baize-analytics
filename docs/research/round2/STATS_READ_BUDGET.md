@@ -22,3 +22,9 @@ PG17 在统计专属客户端一次读取/一次设置 statement/lock/transactio
 [轻量17项原报告](../../test-evidence/main-stats-read-budget-unit-17.json)，SHA256 `7c0b909778aacb32ae5af74e37b21597cd6008132b8264ef2d3e08980248199c`：stats-read-budget 8 + clickhouse-select-budget 8 + adapter-performance-eof 1；根代理只跑前两文件的16项是同一覆盖子集，不将16+17重复累加。全仓typecheck和ownedlint通过。
 
 这些证明操作超限失败关闭、原严格数据读取与连接生命周期保持，不证明查询更快或达到SLO。默认字节/次数上限不是内存峰值或扫描工作量保证，120秒只是安全截止；既有5000负载失败及慢finalHTTP证据继续有效。真实生产硬件/并发分布与外部账号未被此本地专项代替。
+
+## Docker安装的非秘密配置
+
+标准Compose现在显式把下列`.env`数值传给app，未配置时与native默认一致：`BAIZE_STATS_READ_DEADLINE_MS=120000`、`BAIZE_STATS_READ_MAX_SELECTS=20000`、`BAIZE_STATS_READ_MAX_DECODED_BYTES=2147483648`。需要调整时在本地安装`.env`写入已验证范围内整数并重建app容器；这不改变端口、数据库网络、费用或其他资源限制。预算超限仍明确失败，不返回部分统计冒称完整。不要在浏览器或客户端传入服务器预算。
+
+静态`docker compose --env-file /dev/null ... config --format json`默认及override对照通过，仅保存三项安全数值，见 `../../test-evidence/stats-budget-compose-config.json`。该检查未启动容器，也不表示当前c890不可变全轮或旧镜像已覆盖这项Compose配置；新镜像必须重新绑定包含本配置的提交。原应用默认和预算业务逻辑未改。
