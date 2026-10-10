@@ -1,5 +1,11 @@
 # Installation, upgrades and migration runbook
 
+## Current validation entry (2818bd4)
+
+c890 backend:211 unit+421 real integration=632 PASS. 1c1cb65 browser:30 checks(28 Chromium+2 date)PASS; src/db/packages match c890, without claiming a backend rerun. The actual1c image lifecycle exited0; main-1c1cb65-image-* evidence binds source1c. Fixed1000 passed: final HTTP5120ms, sampled app+harness Node peak650272768 bytes(excluding storage services);5000 is still running/pending, not a pass or SLO claim. Budget defaults do not guarantee scanned rows, heap bounds or performance gains. All later old main0f/de/annotation-pending text is SHA-bound historical narrative; original failures remain. Hosted workflows stay untriggered.
+
+## Historical contracts and stage records
+
 Current delivery: main0f14; the same-source19d97af matrix passed595 application tests and30 checks, and its55-DDL/two-index production image passed. The core activation guard is true; per-site proofs, epochs and journals remain mandatory. Earlier closed-guard/not-delivered statements below are historical snapshots, not current operating instructions. Never change authority manually. The ac projection has targeted14 real integration/2 unit passes only; its1000 run passed(5.316s),5000 failed and browser targeted validation passed30 checks(28 Chromium/2 date),0 skips,96.441s,EXIT0. This is not a full ac matrix/image pass.
 
 For operators of a self-hosted instance. Examples act only on the explicitly selected local instance; they do not publish a site, change repository visibility or switch production traffic. [API manual](api.md) · [中文](../migration.md) · [Deployment](deployment.md). Provider accounts and paid APIs are not required to read or locally validate these procedures.

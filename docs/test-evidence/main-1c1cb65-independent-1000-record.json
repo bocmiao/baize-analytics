@@ -1,0 +1,82 @@
+{
+  "sourceCommit": "1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340",
+  "rawReportSha256": "8c234b50f842ea9b5d581f9078cc9a5e5c15786bbf9a58234ca3820c1790de4c",
+  "status": "passed",
+  "expectedEvents": 1000,
+  "acceptedEvents": 1000,
+  "unsent": 0,
+  "delayed": 0,
+  "queryFailed": 0,
+  "drainReached": true,
+  "assertionsExecuted": [
+    "fresh_http_pv_coverage",
+    "authenticated_canonical_pv_uv",
+    "nine_pg_bodies_zero",
+    "ch_authority_strict",
+    "outbox_total_done_queued",
+    "processed_attempts_watermark"
+  ],
+  "finalMetadata": {
+    "finalHttpDurationMs": 5120.385496999996,
+    "http": {
+      "pv": 1000,
+      "coverage": 1,
+      "source": "clickhouse"
+    },
+    "canonical": {
+      "pv": 1001,
+      "uv": 21,
+      "bootstrap": 1
+    },
+    "pgBodyCounts": {
+      "events": 0,
+      "analytics_session_event_headers": 0,
+      "analytics_effect_facts": 0,
+      "analytics_vital_samples": 0,
+      "analytics_session_facts": 0,
+      "analytics_numeric_facts": 0,
+      "analytics_member_facts": 0,
+      "analytics_carry_checkpoints": 0,
+      "analytics_carry_keys": 0
+    },
+    "authority": {
+      "n": 1,
+      "strict": 1
+    },
+    "outbox": {
+      "total": 1001,
+      "done": 1001,
+      "queued": 0
+    },
+    "aggregation": {
+      "sites": 1,
+      "allProcessed": true,
+      "attempts": 0,
+      "watermarkCoversLatest": true
+    }
+  },
+  "nodeRss": {
+    "intakePeakBytes": 592728064,
+    "drainPeakBytes": 650272768,
+    "finalPeakBytes": 608051200,
+    "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+  },
+  "querySampleCounts": {
+    "intake": 2,
+    "drain": 3
+  },
+  "queryP95ByWindow": {
+    "intake": 205.99654800000008,
+    "drain": 4465.271387000001
+  },
+  "cleanup": {
+    "applicationClosed": true,
+    "chNamespaceRemoved": true,
+    "pgSchemaRemoved": true,
+    "temporaryRemoved": true
+  },
+  "sourceUnchanged": true,
+  "limits": "unchanged original ac runner; default cumulative budget",
+  "performanceConclusion": "single shared-host run; not SLO acceptance or causal improvement evidence",
+  "pending": "5000 still running; not included"
+}

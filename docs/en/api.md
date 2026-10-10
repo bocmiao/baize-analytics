@@ -1,5 +1,11 @@
 # User API manual
 
+## Current validation entry (2818bd4)
+
+c890 backend:211 unit+421 real integration=632 PASS. 1c1cb65 browser:30 checks(28 Chromium+2 date)PASS; src/db/packages match c890, without claiming a backend rerun. The actual1c image lifecycle exited0; main-1c1cb65-image-* evidence binds source1c. Fixed1000 passed: final HTTP5120ms, sampled app+harness Node peak650272768 bytes(excluding storage services);5000 is still running/pending, not a pass or SLO claim. Budget defaults do not guarantee scanned rows, heap bounds or performance gains. All later old main0f/de/annotation-pending text is SHA-bound historical narrative; original failures remain. Hosted workflows stay untriggered.
+
+## Historical contracts and stage records
+
 This is the English contract for the implemented self-hosted API. The application is AGPLv3 and the independent tracker is MIT; no paid application tier is required. The current validation/version record is [VALIDATION_MAIN](../VALIDATION_MAIN.md). Development additions below must not be assumed to exist in an older installed image. [中文](../api.md) · [Operations and migration](migration.md).
 
 ## Paths, authentication and time
