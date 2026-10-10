@@ -25,3 +25,15 @@ UI 已接入分组真链接、白名单 URL 与历史恢复、移动抽屉、核
 1e39942 完整浏览器复验28/29 PASS（26真实Chromium+2日期）、1回放focus FAIL。此前4失败均通过；9代表真实computed颜色ratio5.803–12.78，skip-main/筛选键盘/可见焦点通过。关闭rrweb录制focus触发已准备，原焦点断言保留；新地域提示仅受众/设置且admin才有配置入口尚未浏览器复验。
 
 恢复路径头记录复用只在同RR事务内完整认证后SQL TEMP读取，不靠metadata假设CH物理正文可用，常规路径不变；真实PG/CH三文件3 PASS +独立partial-deletion四场景4 PASS，包含旧B、迟到/删除恢复及缺正文失效、max1。未据此声称常规5000提升。独立查询计时新增drain窗口/finalHTTP时长源码和纯单元已准备，旧4ee两样本结果不改写。
+
+## ce6ebcc 定向复验与完整窗口基准
+
+当前 main 已推送 b0be327；该提交的新优化同口径测试正在进行，尚无结果。以下已完成证据只绑定 `ce6ebcc0a2a54f2881418b21781b6aa31543605c`，不外推到 b0be327。
+
+ce6ebcc 回放焦点与 workspace 导航两个真实 Chromium 专项均 PASS、0 skip，EXIT0：[浏览器证据](../../test-evidence/main-ce6ebcc-focus-workspace-browser.json)。覆盖真实回放多视口键盘操作、URL/历史恢复、移动抽屉及代表性 computed contrast；不代表该 SHA 全 29 项浏览器复验通过，也不宣称全面可访问性认证。1e39942 的 28/29、回放 focus FAIL 和此前 4eead97 的 25/29 记录保留为历史失败。完整七筛选保存/编辑已有实现，不重复列为缺口。
+
+ce6ebcc 不可变 Git archive 的独立严格单站基准完整性 PASS：[完整窗口证据](../../test-evidence/main-ce6ebcc-independent-strict-1000.json)。20 计划/20 发送/20 HTTP202，1000 接受，零拒绝、失败、延迟批次或未发送；只用生产后台 worker，未手动聚合。最终新 HTTP PV1000、coverage1、source clickhouse；认证正文 PV1001/UV21（含初始化 1 PV），九类 PG 正文表均零，outbox1001 全部 done、queued0，水位追平。934 个 Git blob 前后摘要一致；应用、CH namespace、PG schema、临时目录 cleanup 全 true。
+
+采集窗口 2 次查询、排空窗口 4 次查询均成功；排空查询 P95 **7726.857ms**，最终完整 HTTP 查询 **8825.490ms**，排空 **49.151 秒**。最大积压650，最终0；同一 Node 应用与 harness 进程峰值 **642490368 字节**，不含 PG/CH/Redis。性能仍慢，不是实时 SLO、1C2G 或5000规模达标证据，不能用早期两次轻查询替代最终窗口。阶段计时可能嵌套/并行，不相加为 CPU 比例。
+
+[有界读取与完整查询窗口](PREFETCH_VALIDATION.md) 记录后续044最多并发2次、单请求16MiB/总在途32MiB、有序100行和完整认证约束，以及受影响13项定向通过；新优化性能对比尚无结果。下一步仍为 b0be327 同口径负载结果、最新同源完整浏览器/后端及最终镜像验证；历史失败和托管暂停规则不变。
