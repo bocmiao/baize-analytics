@@ -13,11 +13,18 @@ main:
         - https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml
       docker:
         image: node:24-bookworm
-      services: [docker]
       stages:
         - name: pull-authoritative-private-main-only-when-new
           script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
-# web_trigger is manual only. Scheduled crontab/api_trigger syntax and secret
-# event authorization remain pending explicit official instructions.
+  "crontab: 0 */6 * * *":
+    - imports:
+        - https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml
+      docker:
+        image: node:24-bookworm
+      stages:
+        - name: scheduled-light-main-sync-only-when-new
+          script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
+# web_trigger is manual. Official cron uses Asia/Shanghai every six hours.
+# Secret allow_events save confirmation and hosted execution are still pending.
 # Heavy modes: run ci-common.sh heavy-ops or heavy-million manually in an
 # authorized Docker-capable isolated job; they are not default push stages.
