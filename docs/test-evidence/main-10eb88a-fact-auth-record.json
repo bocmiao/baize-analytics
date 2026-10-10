@@ -1,0 +1,34 @@
+{
+  "sourceCommitPrefix": "10eb88a",
+  "realReport": "main-10eb88a-fact-auth.json",
+  "realResult": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "realTestFiles": [
+    "/tmp/baize-final-canonical-nvlpq_hy/tests/integration/fact-source-batch-cte.test.ts",
+    "/tmp/baize-final-canonical-nvlpq_hy/tests/integration/fact-store-source.test.ts",
+    "/tmp/baize-final-canonical-nvlpq_hy/tests/integration/fact-store.test.ts"
+  ],
+  "unitResult": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "lightCommands": [
+    "node_modules/.bin/vitest run tests/unit/canonical-validation.test.ts --reporter=json --outputFile=/tmp/baize-canonical-validation-unit.json",
+    "node_modules/.bin/eslint src/server/canonical-validation.ts src/server/fact-store.ts tests/unit/canonical-validation.test.ts",
+    "node_modules/.bin/tsc --noEmit"
+  ],
+  "lintExitCode": 0,
+  "typesExitCode": 0,
+  "workspaceFileSha256": {
+    "src/server/fact-store.ts": "12b94da63e552579af7ee02397a56ac5d748cf27ef9c4624deacf3fa15cdea65",
+    "src/server/canonical-validation.ts": "f87c45a545eabf0c064b89d1ca7ea28e25b86dd08500c7484350b199cd0ca72b",
+    "tests/unit/canonical-validation.test.ts": "cc80bd9e845924fb0676e006d735bc4534416c2d0c718b2324c4b700e62271d3"
+  },
+  "scope": "Only published 044 reader uses per-row canonical serializer. Default writer and restore canonical unchanged. First normalized object subtree only is cached; later wire/source objects are not cached. All SHA/HMAC/schema/body size/byte equality/PK/source/epoch/count/EOF checks retained. No cross-row or cross-transaction cache.",
+  "performance": "No same-schedule performance measurement yet; no benefit or SLO claim."
+}

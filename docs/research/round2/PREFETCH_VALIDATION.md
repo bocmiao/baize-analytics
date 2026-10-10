@@ -37,3 +37,8 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 ## 33e005a 实际1000 PASS（5000 pending）
 
 [原JSON](../../test-evidence/main-33e005a-independent-strict-1000.json)、[解释](../../test-evidence/main-33e005a-independent-summary.md)。981blobs/sourcecleanup通过，六strict断言通过。HTTPfacts CH/auth/TEMP均1103，证明每批1PGcommand而旧2；不等于性能达标。finalHTTP7.143s vs旧7.625s仅共享主机两单轮，样本/时段有别不能因果或SLO结论。drainP956.297s；5000等待实际结束。
+
+
+### 33e005a 5000 actual EXIT1
+
+[原JSON](../../test-evidence/main-33e005a-independent-strict-5000.json)、[表格与边界](../../test-evidence/main-33e005a-independent-summary.md)。97批/4850接受、3未发送、38延迟；queryFailed2，drain deadline/末backlog1450，final断言executed空。HTTP facts5468CH/auth/TEMP，87.93/34.11/28.27s，site lock93.49s；worker facts7481CH/1581auth/TEMP。cleanup四true/source981blobs不变，仍负载失败，不声称SLO或因果改进。
