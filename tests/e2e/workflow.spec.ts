@@ -117,6 +117,16 @@ test('real goal, funnel, saved report, protected share and revocation workflows'
     await page.getByLabel('路径或事件名').nth(1).fill('/thanks');
     await page.getByRole('button', { name: '保存漏斗' }).click();
     await expect(page.getByRole('cell', { name: funnelName, exact: true }).first()).toBeVisible();
+    // Definition writes invalidate published facts; a saved definition is not a ready aggregate.
+    const activeSiteId = await page.getByLabel('选择站点').inputValue();
+    expect(activeSiteId).not.toBe('');
+    await expect.poll(async () => {
+        const response = await page.request.get(`/api/v1/sites/${encodeURIComponent(activeSiteId)}/stats`);
+        const body = await response.json();
+        if (response.status() === 503 && ['aggregate_source_changed', 'aggregation_pending'].includes(body.error)) return false;
+        if (response.status() !== 200) throw new Error(`Unexpected aggregate readiness response: HTTP ${response.status()}, code ${String(body.error)}`);
+        return body.coverage === 1 && body.watermark != null;
+    }, { timeout: 30000, intervals: [250, 500, 1000], message: 'Goal and funnel changes must have a complete published aggregate before sharing' }).toBe(true);
     await navigateWorkspace(page, "报表");
     await page.getByLabel('报表名称').fill(reportName);
     await page.getByRole('button', { name: '保存筛选报表' }).click();
