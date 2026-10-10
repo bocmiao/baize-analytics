@@ -1,6 +1,25 @@
 # Installation, upgrades and migration runbook
 
-## Current validation entry (2818bd4)
+## Current validation entry
+
+| Source/stage | Actual evidence and boundary |
+|---|---|
+| 66150be formal full run | Running; result pending. New image/load not run |
+| 66150be independent checks | Type/lint/215 unit tests PASS; not the full-run result |
+| 0a precommit targeted source digest | 19 real tests PASS; targeted digest-bound evidence, not a full count |
+| c890 backend | 211 unit+421 integration=632 PASS; historical source |
+| 1c1cb65 browser/image | 30 checks(28 Chromium+2 date)PASS; image EXIT0. Historical1c source, not661 |
+| 1c1cb65 fixed load | 1000 PASS;5000 FAIL. Historical1c source; no SLO claim |
+
+Hosted workflows remain untriggered. Every update below is an archived SHA-bound stage record: earlier occurrences of “current/latest” describe that historical stage, not another current entry. Failures and original evidence remain unchanged.
+
+## Historical stage records and contracts
+
+**当前66150be测试窄修**：完整type/lint/215单元实际EXIT0，src/db/packages与0a相同；19真实precommit专项仍只证明此前摘要绑定源码，不是完整全轮。0a正式入口实际EXIT2（TS2749），unit/int/browser/image未运行；随后测试WIP首次213/215单元通过、2FAIL，类型与event-capable mock窄修后215PASS。先type后追加测试导致旧报告外推的失误已记录，不掩盖。661新full/image/load待；bd未捕获错误、0a类型FAIL、测试WIP2FAIL及1c负载FAIL原证据保留。
+
+当前更新a9b49e7：bd3f51f三批候选7单元/21真实专项PASS，但新完整入口实际EXIT1：213单元PASS，集成424检查中423PASS/1skip，并有uncaught PG25P04 error1；浏览器NOT RUN。旧1c30浏览器及镜像通过仅绑定旧source，不外推候选。skip来自runner漏env，已改用仓库validate-local-final.sh正式入口；C idlefatal修复已保存0a0c171：precommit WIP摘要绑定第四轮19真实专项PASS/0skip/0uncaught，10单元/type/lint通过；新0a全量/镜像/负载尚待。所有FAIL保留，托管不触发。
+
+### Historical2818bd4 validation entry
 
 c890 backend:211 unit+421 real integration=632 PASS. 1c1cb65 browser:30 checks(28 Chromium+2 date)PASS; src/db/packages match c890, without claiming a backend rerun. The actual1c image lifecycle exited0; main-1c1cb65-image-* evidence binds source1c. Fixed1000 passed: final HTTP5120ms, sampled app+harness Node peak650272768 bytes(excluding storage services);5000 finally FAILED(4900 accepted/2 unsent/39 delayed; drain deadline exceeded; final assertions not executed), not a pass or SLO claim. Budget defaults do not guarantee scanned rows, heap bounds or performance gains. All later old main0f/de/annotation-pending text is SHA-bound historical narrative; original failures remain. Hosted workflows stay untriggered.
 
@@ -9,6 +28,8 @@ c890 backend:211 unit+421 real integration=632 PASS. 1c1cb65 browser:30 checks(2
 Current delivery: main0f14; the same-source19d97af matrix passed595 application tests and30 checks, and its55-DDL/two-index production image passed. The core activation guard is true; per-site proofs, epochs and journals remain mandatory. Earlier closed-guard/not-delivered statements below are historical snapshots, not current operating instructions. Never change authority manually. The ac projection has targeted14 real integration/2 unit passes only; its1000 run passed(5.316s),5000 failed and browser targeted validation passed30 checks(28 Chromium/2 date),0 skips,96.441s,EXIT0. This is not a full ac matrix/image pass.
 
 For operators of a self-hosted instance. Examples act only on the explicitly selected local instance; they do not publish a site, change repository visibility or switch production traffic. [API manual](api.md) · [中文](../migration.md) · [Deployment](deployment.md). Provider accounts and paid APIs are not required to read or locally validate these procedures.
+
+## Current user contracts and operating guide
 
 ## Choose the correct operation
 
@@ -192,3 +213,5 @@ npx tsx scripts/canonical-cli.ts prune "$BAIZE_SITE_ID" "$BAIZE_RAW_BACKUP_DIR" 
 冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。
 
 Final1c fixed-load result:1000 PASS, final HTTP5120ms. 5000 FAIL:4900 accepted,2 unsent,39 delayed; query failures0; drainReached=false at120s, remaining backlog1350/max3250. Final query25.389s failed, assertionsExecuted=[]; no successful six-assertion integrity claim. Node peak730509312 bytes excludes DB services; source unchanged and all four cleanup flags true. No budget rejection occurred. Passing code/browser/image does not close this local performance gap or prove a speedup/SLO. Evidence: main-1c1cb65-independent-strict-5000.json and its record under docs/test-evidence, archived separately; earlier failures remain.
+
+0a0c171包含三批候选及idlefatal修复。第四轮实际19/19 PASS（11budget+4server+3triple+1strictrestore）、0skip/0uncaught，另10单元/type/lint通过；这是提交前源码摘要绑定定向证明，不是新全局计数。原前三轮FAIL及bd完整EXIT1全部保留。0a新完整空库、镜像和固定负载正在准备，不预写通过；旧c890632、1c30/image、1c1000PASS/5000FAIL各按原源码阶段保留，不外推0a。
