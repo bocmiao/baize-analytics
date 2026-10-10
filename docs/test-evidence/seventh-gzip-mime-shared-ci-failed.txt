@@ -1,0 +1,213 @@
+
+> baize-analytics@0.1.0 lint
+> eslint .
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 test:unit
+> vitest run tests/unit
+
+
+ RUN  v4.1.11 /tmp/baize-seventh-repaired.zvvCgx
+
+
+ Test Files  20 passed (20)
+      Tests  84 passed (84)
+   Start at  10:15:34
+   Duration  5.01s (transform 530ms, setup 0ms, import 2.21s, tests 560ms, environment 2ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+SDK consent, event-id retry and typed ClickHouse parameter checks passed.
+Deletion journal missing/reset/truncation/older-than-snapshot checks passed.
+
+> baize-analytics@0.1.0 build
+> npm run build:tracker && vite build && tsc -p tsconfig.server.json
+
+
+> baize-analytics@0.1.0 build:tracker
+> tsx scripts/build-tracker.ts
+
+tracker: Zopfli gzip 5087; default zlib gzip 5282
+tracker-min: Zopfli gzip 4506; default zlib gzip 4690
+tracker-vitals: Zopfli gzip 5316; default zlib gzip 5503
+tracker-replay: Zopfli gzip 57320; default zlib gzip 59511
+tracker-heatmap: Zopfli gzip 1122; default zlib gzip 1170
+tracker-consent: Zopfli gzip 1196; default zlib gzip 1230
+{
+  tracker: 5087,
+  'tracker-min': 4506,
+  'tracker-vitals': 5316,
+  'tracker-replay': 57320,
+  'tracker-heatmap': 1122,
+  'tracker-consent': 1196
+}
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 767 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/web/index.html                          0.41 kB │ gzip:   0.31 kB
+dist/web/assets/index-BmarzjlC.css           5.34 kB │ gzip:   1.83 kB
+dist/web/assets/aomen-DXLsqBrz.js            1.78 kB │ gzip:   0.72 kB
+dist/web/assets/xianggang-B-GwqNoD.js       11.67 kB │ gzip:   4.78 kB
+dist/web/assets/shanghai-D5fADUyQ.js        11.94 kB │ gzip:   5.88 kB
+dist/web/assets/ningxia-Bpe_w3T9.js         12.15 kB │ gzip:   7.40 kB
+dist/web/assets/tianjin-BIND3J0Y.js         12.34 kB │ gzip:   6.51 kB
+dist/web/assets/beijing-6J6D0v26.js         21.11 kB │ gzip:  10.70 kB
+dist/web/assets/shanxi-sF6r9BMA.js          22.38 kB │ gzip:  13.82 kB
+dist/web/assets/jiangsu-CfAV2ncg.js         22.88 kB │ gzip:  13.91 kB
+dist/web/assets/hainan-ByIDMKTK.js          28.66 kB │ gzip:  16.29 kB
+dist/web/assets/taiwan-DuhSbPaK.js          29.36 kB │ gzip:   8.04 kB
+dist/web/assets/anhui-BSaniTrc.js           30.61 kB │ gzip:  18.31 kB
+dist/web/assets/shanxi1-B0i8biAP.js         30.90 kB │ gzip:  18.59 kB
+dist/web/assets/jiangxi-CMNmFB4L.js         31.85 kB │ gzip:  18.52 kB
+dist/web/assets/guizhou-BUdXZdgN.js         31.94 kB │ gzip:  19.18 kB
+dist/web/assets/henan-ByBj5SKi.js           35.56 kB │ gzip:  21.02 kB
+dist/web/assets/hubei-CbKDql3J.js           38.20 kB │ gzip:  22.44 kB
+dist/web/assets/hebei-T7l9OzzS.js           39.20 kB │ gzip:  22.67 kB
+dist/web/assets/jilin-i0ZAtsll.js           41.10 kB │ gzip:  23.34 kB
+dist/web/assets/fujian-CnXpqkhe.js          42.82 kB │ gzip:  22.41 kB
+dist/web/assets/qinghai-Bql4kmYY.js         43.59 kB │ gzip:  26.52 kB
+dist/web/assets/hunan-CWxspgVh.js           45.15 kB │ gzip:  26.21 kB
+dist/web/assets/guangxi-B63_XU_1.js         46.52 kB │ gzip:  26.82 kB
+dist/web/assets/gansu-Bi_VQQwS.js           46.94 kB │ gzip:  28.39 kB
+dist/web/assets/chongqing-Cl1EA9FX.js       47.72 kB │ gzip:  25.78 kB
+dist/web/assets/liaoning-CQP2PqVX.js        49.47 kB │ gzip:  27.61 kB
+dist/web/assets/shandong-G1nzS6sL.js        49.98 kB │ gzip:  28.33 kB
+dist/web/assets/zhejiang-DSbk7J7A.js        50.65 kB │ gzip:  25.95 kB
+dist/web/assets/neimenggu-CwzZW05h.js       57.11 kB │ gzip:  35.95 kB
+dist/web/assets/yunnan-z_D5KTxc.js          62.07 kB │ gzip:  35.74 kB
+dist/web/assets/guangdong-CX_QD5Pr.js       71.46 kB │ gzip:  38.25 kB
+dist/web/assets/heilongjiang-BpPsHrM9.js    78.21 kB │ gzip:  44.62 kB
+dist/web/assets/sichuan-BiKg7TEf.js         83.55 kB │ gzip:  47.33 kB
+dist/web/assets/xinjiang-CVqQoyx6.js        87.53 kB │ gzip:  54.44 kB
+dist/web/assets/Charts-CEA29vwl.js         120.94 kB │ gzip:  41.61 kB
+dist/web/assets/GeographicMap-BMkRQfQ7.js  127.02 kB │ gzip:  67.34 kB
+dist/web/assets/ReplayViewer-BNTftk5m.js   260.87 kB │ gzip:  80.55 kB
+dist/web/assets/install-BVGfFPIa.js        436.12 kB │ gzip: 147.88 kB
+dist/web/assets/index-Wfu8KXAV.js          506.56 kB │ gzip: 159.46 kB
+dist/web/assets/xizang-C9xTaVmy.js         686.05 kB │ gzip: 127.65 kB
+
+✓ built in 452ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 test:integration
+> vitest run tests/integration
+
+
+ RUN  v4.1.11 /tmp/baize-seventh-repaired.zvvCgx
+
+ ❯ tests/integration/tracker-outbound-text.test.ts (1 test | 1 failed) 30010ms
+   × actual Chromium outbound labels persist sanitized public text to PG/EAV/stats/JSONCSV but exclude private links and daily labels 30009ms
+ ❯ tests/integration/tracker-collector.test.ts (1 test | 1 failed) 1430ms
+   × real browser tracker -> Fastify persisted PG -> governance -> session/rollup -> query 1429ms
+ ❯ tests/integration/tracker-replay-heatmap.test.ts (1 test | 1 failed) 1703ms
+   × real SPA and shared-cookie tabs have independent complete masked replay snapshots; responsive heatmap retry is idempotent and private controls are excluded 1702ms
+ ❯ tests/integration/tracker-hooks.test.ts (1 test | 1 failed) 31595ms
+   × real collector accepts four scroll thresholds, private form metadata and 404 while native links/download/form work after banner consent 31594ms
+ ❯ tests/integration/tracker-subdomain.test.ts (1 test | 1 failed) 6430ms
+   × actual two-subdomain Chromium tracker uses explicit parent first-party cookie through real collector/PG and revokes that same scope 6423ms
+ ❯ tests/integration/identity-experiment-browser.test.ts (1 test | 1 failed) 1393ms
+   × real shared-cookie browser A conversion deletion preserves B contributions and restore cannot revive A 1391ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/identity-experiment-browser.test.ts > real shared-cookie browser A conversion deletion preserves B contributions and restore cannot revive A
+Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'ready')
+    at eval (eval at evaluate (:370:30), <anonymous>:2:23)
+    at UtilityScript.evaluate (<anonymous>:372:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+ ❯ tests/integration/identity-experiment-browser.test.ts:13:356
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/integration/tracker-collector.test.ts > real browser tracker -> Fastify persisted PG -> governance -> session/rollup -> query
+Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'ready')
+    at eval (eval at evaluate (:370:30), <anonymous>:2:23)
+    at UtilityScript.evaluate (<anonymous>:372:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+ ❯ tests/integration/tracker-collector.test.ts:33:14
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/integration/tracker-hooks.test.ts > real collector accepts four scroll thresholds, private form metadata and 404 while native links/download/form work after banner consent
+TimeoutError: locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: '同意', exact: true }) to be visible[22m
+
+ ❯ tests/integration/tracker-hooks.test.ts:13:647
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/integration/tracker-outbound-text.test.ts > actual Chromium outbound labels persist sanitized public text to PG/EAV/stats/JSONCSV but exclude private links and daily labels
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/tracker-outbound-text.test.ts:10:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/integration/tracker-replay-heatmap.test.ts > real SPA and shared-cookie tabs have independent complete masked replay snapshots; responsive heatmap retry is idempotent and private controls are excluded
+Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'ready')
+    at eval (eval at evaluate (:370:30), <anonymous>:2:24)
+    at UtilityScript.evaluate (<anonymous>:372:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+ ❯ ready tests/integration/tracker-replay-heatmap.test.ts:13:45
+
+ ❯ tests/integration/tracker-replay-heatmap.test.ts:14:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/integration/tracker-subdomain.test.ts > actual two-subdomain Chromium tracker uses explicit parent first-party cookie through real collector/PG and revokes that same scope
+Error: TimeoutError: page.waitForFunction: Timeout 5000ms exceeded. http://127.0.0.1:42719/tracker.js: net::ERR_BLOCKED_BY_ORB
+ ❯ ready tests/integration/tracker-subdomain.test.ts:10:522
+
+ ❯ tests/integration/tracker-subdomain.test.ts:11:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  6 failed | 59 passed (65)
+      Tests  6 failed | 228 passed (234)
+   Start at  10:15:49
+   Duration  200.80s (transform 1.16s, setup 0ms, import 22.87s, tests 170.53s, environment 5ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

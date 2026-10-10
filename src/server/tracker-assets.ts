@@ -13,7 +13,7 @@ export function registerTrackerAssets(app:FastifyInstance){
    });
    reply.header('Access-Control-Allow-Origin','*').header('Vary','Accept-Encoding').type('application/javascript');
    if(gzip)reply.header('Content-Encoding','gzip');
-   return reply.sendFile(`${name}.js${gzip?'.gz':''}`,resolve('public'));
+   return reply.sendFile(`${name}.js${gzip?'.gz':''}`,resolve('public'),{contentType:false});
   });
  }
 }
