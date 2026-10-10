@@ -43,3 +43,9 @@ Web Vitals 官方 attribution、rrweb 回放和匿名网格位置热图分别放
 共享 UID 的 Cookie 名为 `_baize_uid_shared`；默认 host-only 继续使用 `_baize_uid`，因此移除共享选项不会隐式沿用旧共享 ID。共享拒绝名为 `_baize_denied_shared_<URL编码站点ID>`，仅存布尔值 `1`。撤回或再次同意的 wire 协议保持不变。
 
 真实本地跨子域回归见 `tests/integration/tracker-subdomain.test.ts`：Playwright 只路由提供两个 HTTPS 宿主页面；SDK、配置与采集均访问真实本地应用和 PostgreSQL。隔离 BrowserContext 明确授予 `local-network-access`（类似浏览器用户允许测试 HTTPS 页面访问 loopback），不关闭 CORS/TLS 或改变环境网络策略。首轮未授此权限被 Chromium address-space 检查拒绝，不能当作采集器故障；授予后实际共享、两页面撤回停止、默认 host-only、未知/HTTP 子域拒绝和私有公共后缀拒绝均有真实链路断言。
+
+标准模式的自动出站链接事件包含 `props.url`（仅 origin/path，移除查询与 hash）和 `props.text`（实际渲染的链接文字，归一空白后最多 50 个 Unicode 字符）。邮箱、长号码/手机号及明显 IPv6 字符串会替换为 `[redacted]`；隐藏文字不采集。输入/editable、`data-private` / `data-baize-private` / `data-baize-mask`、rrweb mask/block 及 `data-baize-ignore` 的链接或私密子树不会自动记录。原生跳转不被阻止；同意前仍不采集。每日盐模式的自动外链事件只记录 URL，不新增文字属性。
+
+这是最小化处理，不保证任意业务文字或 URL 路径都匿名。站长应给敏感链接添加忽略/私密标记，或用 before-send 钩子进一步清洗；自动文字过滤不能识别伪装账号、任意姓名或所有国际号码格式。真实 Chromium→本地 HTTP 采集→PG/EAV→worker 属性统计→JSON/CSV 导出回归见 `tests/integration/tracker-outbound-text.test.ts`，不使用 mock 采集器。
+
+Root独立索引快照实际lint/typecheck通过，完整build后5文件13 tracker/同意/跨子域/外链专项通过、0失败/0跳过。初次快照未先生成public SDK，导致3个浏览器用例404/ORB/超时；这是本次验证顺序错误，原失败报告保留outbound-isolated-sdk-not-built-failed.json，按CI先build再测后原断言全部通过，未改产品或弱化测试。核心gzip4583字节、min3994字节。本批随后仍需新整应用/Docker集成，不沿用bf77作为这些源码证明。
