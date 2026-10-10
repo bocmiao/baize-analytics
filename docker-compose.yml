@@ -1,0 +1,51 @@
+services:
+  app:
+    image: ${BAIZE_IMAGE:-baize-analytics:local}
+    build: .
+    restart: unless-stopped
+    user: "${BAIZE_UID:-1000}:${BAIZE_GID:-1000}"
+    ports: ["127.0.0.1:${BAIZE_PORT:-3000}:3000"]
+    environment:
+      DATABASE_URL: postgres://baize:${POSTGRES_PASSWORD:?Run ./install.sh first}@postgres:5432/baize
+      REDIS_URL: redis://redis:6379
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATA_DIR: /app/data
+      MASTER_KEY_FILE: /run/secrets/master_key
+      NPM_CONFIG_CACHE: /app/data/npm-cache
+    secrets: [master_key]
+    volumes: [app_data:/app/data]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+  postgres:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: baize
+      POSTGRES_DB: baize
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run ./install.sh first}
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U baize -d baize"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  redis:
+    image: redis:7-bookworm
+    restart: unless-stopped
+    command: [redis-server, --appendonly, 'yes']
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+secrets:
+  master_key:
+    file: ./.baize/master.key
+volumes:
+  app_data:
+  postgres_data:
+  redis_data:

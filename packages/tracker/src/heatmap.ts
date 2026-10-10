@@ -1,0 +1,3 @@
+import type { Tracker } from './index';
+const tracker=(window as Window & {baize?:Tracker}).baize;
+if(tracker)void tracker.ready.then(()=>{if(!tracker.getConfig().heatmap)return;document.addEventListener('click',e=>{if(!tracker.isAllowed()||!(e.target instanceof Element)||e.target.closest('input,textarea,[data-baize-private]'))return;tracker.emit('heatmap',{heatmap:{kind:'click',x:Math.round((e.pageX/Math.max(1,document.documentElement.scrollWidth))*100)/100,y:Math.round((e.pageY/Math.max(1,document.documentElement.scrollHeight))*100)/100,width:innerWidth,height:innerHeight}});});});

@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { ClickHouseReplica } from '../sdk/clickhouse.js';
+const url=process.env.CLICKHOUSE_TEST_URL;
+if(!url)throw Error('CLICKHOUSE_TEST_URL required, isolated test database only');
+const replica=new ClickHouseReplica({url,username:'baize',password:'local-test-only',enabled:true});
+await replica.initialize();
+const now=new Date().toISOString();
+const row={site_id:'ops-site',event_id:crypto.randomUUID(),ts:now,type:'pageview',path:'/real',visitor_id:'ops-visitor',generation:1};
+await replica.export([row,row]);
+const before=await replica.counts('ops-site','2020-01-01 00:00:00','2030-01-01 00:00:00') as {data:{type:string;count:string|number}[]};
+assert.equal(Number(before.data.find(r=>r.type==='pageview')?.count),1);
+await replica.deleteVisitor('ops-site','ops-visitor');
+const after=await replica.counts('ops-site','2020-01-01 00:00:00','2030-01-01 00:00:00') as {data:unknown[]};
+assert.equal(after.data.length,0);
+console.log('Real ClickHouse create/export/dedup/parameterized query/delete passed.');

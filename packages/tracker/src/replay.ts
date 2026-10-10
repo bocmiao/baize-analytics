@@ -1,0 +1,5 @@
+import { record } from 'rrweb';
+import {redactReplay} from './replay-privacy';
+import type { Tracker } from './index';
+const tracker=(window as Window & {baize?:Tracker}).baize;
+if(tracker){let stop:(()=>void)|undefined,seq=0,lastPage='';const change=(allowed:boolean)=>{stop?.();stop=undefined;if(!allowed||!tracker.getConfig().replay)return;stop=record({maskAllInputs:true,maskTextSelector:'*',blockClass:'baize-private',blockSelector:'[data-baize-private],iframe,video,canvas',recordCanvas:false,collectFonts:false,inlineStylesheet:false,emit(event){if(tracker.isAllowed()){const page=tracker.getPageId();if(page!==lastPage){lastPage=page;seq=0;}tracker.emit('replay',{replay_seq:seq++,replay:[redactReplay(event)]});}}});};tracker.onConsent(change);void tracker.ready.then(()=>change(tracker.isAllowed()));}

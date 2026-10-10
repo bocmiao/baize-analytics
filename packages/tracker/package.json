@@ -1,0 +1,1 @@
+{"name":"@baize/tracker","version":"1.0.0","type":"module","license":"MIT","private":true,"exports":{".":"./src/index.ts","./mini-program":"./src/mini-program.ts"}}

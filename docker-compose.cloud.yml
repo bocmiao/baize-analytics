@@ -1,0 +1,9 @@
+# Optional local managed-cloud override: public CA trust is mounted, never copied.
+services:
+  app:
+    environment:
+      NODE_EXTRA_CA_CERTS: /run/secrets/proxy_ca
+    secrets: [proxy_ca]
+secrets:
+  proxy_ca:
+    file: ${CODEX_PROXY_CERT:?Managed cloud proxy CA path required}

@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { createMiniProgramTracker } from '../sdk/miniprogram.js';
+import { eventSchema } from '../packages/contracts/index.js';
+import { ClickHouseReplica } from '../sdk/clickhouse.js';
+let calls=0;let ids=0;const batches:unknown[]=[];
+const tracker=createMiniProgramTracker({request:o=>{calls++;batches.push(o.data);if(calls===1)o.fail();else o.success({statusCode:202});}},'test','https://example.com',()=>{ids++;return crypto.randomUUID();});
+tracker.page('/private');assert.equal(ids,0);
+tracker.grantConsent();tracker.page('/a');tracker.track('signup',{ok:true});
+assert.equal(await tracker.flush(),false);assert.equal(await tracker.flush(),true);
+for(const e of(batches[1] as {events:unknown[]}).events)assert.equal(eventSchema.safeParse(e).success,true);
+assert.deepEqual((batches[0] as {events:unknown[]}).events,(batches[1] as {events:unknown[]}).events);
+tracker.revokeConsent();tracker.track('blocked',{});assert.equal(await tracker.flush(),false);assert.equal(calls,2);
+await assert.rejects(new ClickHouseReplica({url:'https://example.com',username:'u',password:'p',enabled:false}).initialize(),/disabled/);
+const requests:URL[]=[];
+const replica=new ClickHouseReplica({url:'https://example.com',username:'u',password:'p',enabled:true,fetch:async input=>{requests.push(new URL(String(input)));return new Response('{"data":[]}');}});
+await replica.counts("s' OR 1=1",'2026-01-01','2026-02-01');
+assert.equal(requests[0]?.searchParams.get('param_site'),"s' OR 1=1");assert.match(requests[0]?.searchParams.get('query')??'',/site_id=\{site:String\}/);
+console.log('SDK consent, event-id retry and typed ClickHouse parameter checks passed.');
