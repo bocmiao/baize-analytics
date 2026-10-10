@@ -1,3 +1,4 @@
+import {consumeClickHouseCommand} from './clickhouse-command-response.js';
 import type {AnalyticsEvent} from './analytics.js';
 export interface ClickHouseStoreConfig {url: string; username: string; password: string; fetch?: typeof fetch; timeoutMs?: number}
 function boundDate(value: Date | string): string {return new Date(value).toISOString().replace('T', ' ').replace('Z', '');}
@@ -19,7 +20,7 @@ export class ClickHouseStore {
   if (!response.ok) {await response.body?.cancel(); throw Error('CLICKHOUSE_HTTP_FAILURE');}
   return response;
  }
- private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await response.body?.cancel();}
+ private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'CLICKHOUSE_HTTP_FAILURE');}
  async initialize() {
   await this.command(`CREATE TABLE IF NOT EXISTS baize_event_snapshots_v1 (site_id String,snapshot_id UUID,epoch UUID,generation UInt64,event_id UUID,ts DateTime64(3,'UTC'),visitor_id String,page_id UUID,type LowCardinality(String),path String,payload String,dimensions String,is_bot Bool,created_at DateTime64(3,'UTC') DEFAULT now64(3)) ENGINE=ReplacingMergeTree(generation) PARTITION BY toYYYYMM(ts) ORDER BY (site_id,snapshot_id,event_id,ts)`);
  }

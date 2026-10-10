@@ -1,3 +1,4 @@
+import {consumeClickHouseCommand} from './clickhouse-command-response.js';
 import {createHash,randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import type {ClickHouseStoreConfig} from './clickhouse-store.js';
@@ -37,7 +38,7 @@ export class ClickHouseSessionHeaderStore {
   const response=await(this.config.fetch??fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:AbortSignal.timeout(this.config.timeoutMs??30000)});
   if(!response.ok){await response.body?.cancel();throw Error('SESSION_HEADER_CH_UNAVAILABLE');}return response;
  }
- private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await response.body?.cancel();}
+ private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'SESSION_HEADER_CH_UNAVAILABLE');}
  private async rows(query:string,params:Record<string,string>={}){
   const response=await this.request(query+' FORMAT JSON',params),reader=response.body?.getReader();if(!reader)throw Error('SESSION_HEADER_CH_UNAVAILABLE');const chunks:Uint8Array[]=[];let size=0;
   try{while(true){const item=await reader.read();if(item.done)break;size+=item.value.length;if(size>16*1024*1024)throw Error('SESSION_HEADER_READ_LIMIT');chunks.push(item.value);}}finally{await reader.cancel();}

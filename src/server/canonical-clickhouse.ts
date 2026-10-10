@@ -1,3 +1,4 @@
+import {consumeClickHouseCommand} from './clickhouse-command-response.js';
 import {createHash,randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import type {ClickHouseStoreConfig,StoredEvent} from './clickhouse-store.js';
@@ -16,7 +17,7 @@ export function getCanonicalStore(pool:Pool){return registry.get(pool);}
 export class CanonicalClickHouse {
  constructor(private readonly config:ClickHouseStoreConfig){}
  private async request(query:string,params:Record<string,string>={},body?:string){const url=new URL(this.config.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)throw Error('CANONICAL_ENDPOINT_INVALID');url.searchParams.set('query',query);for(const [k,v]of Object.entries(params))url.searchParams.set('param_'+k,v);const response=await(this.config.fetch||fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:AbortSignal.timeout(this.config.timeoutMs||30000)});if(!response.ok){await response.body?.cancel();throw Error('CANONICAL_CH_UNAVAILABLE');}return response;}
- private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await response.body?.cancel();}
+ private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'CANONICAL_CH_UNAVAILABLE');}
  async createRemainingFactStore(){const {ClickHouseRemainingFactStore}=await import('./remaining-fact-store.js');return new ClickHouseRemainingFactStore(this.config);}
  async createCacheStore(){const {ClickHouseCacheStore}=await import('./cache-store.js');return new ClickHouseCacheStore(this.config);}
  async createFactStore(){const {ClickHouseFactStore}=await import('./fact-store.js');return new ClickHouseFactStore(this.config);}
