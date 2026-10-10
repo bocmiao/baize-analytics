@@ -4,18 +4,20 @@ main:
   push:
     - docker:
         image: node:24-bookworm
-        services: [docker]
+      services: [docker]
       stages:
         - name: regular-application-validation
           script: CI_START_SERVICES=1 bash scripts/ci-common.sh regular
   web_trigger:
-    - docker:
+    - imports:
+        - https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml
+      docker:
         image: node:24-bookworm
-        services: [docker]
+      services: [docker]
       stages:
         - name: pull-authoritative-private-main-only-when-new
           script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
-# Deliberately no invented cron/provider resource keys. A console schedule can
-# invoke web_trigger after official schema/auth/services have been confirmed.
+# web_trigger is manual only. Scheduled crontab/api_trigger syntax and secret
+# event authorization remain pending explicit official instructions.
 # Heavy modes: run ci-common.sh heavy-ops or heavy-million manually in an
 # authorized Docker-capable isolated job; they are not default push stages.

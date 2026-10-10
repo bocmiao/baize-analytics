@@ -4,9 +4,7 @@ set -euo pipefail
 set +x
 : "${CNB_MIRROR_URL:?Configure the approved private CNB HTTPS repository URL}"
 : "${GH_SOURCE_TOKEN:?Supply an existing read-only GitHub credential}"
-CNB_MIRROR_TOKEN="${CNB_MIRROR_TOKEN:-${CNB_TOKEN:-}}"
-export CNB_MIRROR_TOKEN
-: "${CNB_MIRROR_TOKEN:?Supply an existing CNB mirror write credential; CNB_TOKEN fallback permission is not assumed}"
+: "${CNB_TOKEN:?Built-in CNB_TOKEN input is required; write permission is not assumed}"
 [[ "$CNB_MIRROR_URL" =~ ^https://cnb\.cool/[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)+/?$ ]] || { echo 'CNB mirror must be a credential-free cnb.cool HTTPS URL' >&2; exit 2; }
 work="$(mktemp -d "${TMPDIR:-/tmp}/baize-cnb-sync.XXXXXX")"
 trap 'rm -rf "$work"' EXIT
@@ -16,7 +14,7 @@ cat > "$work/credential-helper" <<'HELPER'
 set +x
 host=''; while IFS='=' read -r key value; do [ -n "$key" ] || break; [ "$key" != host ] || host="$value"; done
 [ "${1:-}" = get ] || exit 0
-case "$host" in github.com) printf 'username=x-access-token\npassword=%s\n' "$GH_SOURCE_TOKEN";; cnb.cool) printf 'username=%s\npassword=%s\n' "${CNB_MIRROR_USERNAME:-cnb}" "$CNB_MIRROR_TOKEN";; *) exit 1;; esac
+case "$host" in github.com) printf 'username=x-access-token\npassword=%s\n' "$GH_SOURCE_TOKEN";; cnb.cool) printf 'username=cnb\npassword=%s\n' "$CNB_TOKEN";; *) exit 1;; esac
 HELPER
 chmod 700 "$work/credential-helper"
 export GIT_TERMINAL_PROMPT=0

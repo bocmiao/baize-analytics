@@ -15,7 +15,7 @@ export GIT_CONFIG_COUNT=2
 export GIT_CONFIG_KEY_0="url.$work/source.insteadOf" GIT_CONFIG_VALUE_0=https://github.com/bocmiao/baize-analytics.git
 export GIT_CONFIG_KEY_1="url.$work/mirror.insteadOf" GIT_CONFIG_VALUE_1=https://cnb.cool/local/test
 export GIT_ALLOW_PROTOCOL=file CNB_MIRROR_URL=https://cnb.cool/local/test
-export GH_SOURCE_TOKEN=local-test-not-a-credential CNB_MIRROR_TOKEN=local-test-not-a-credential
+export GH_SOURCE_TOKEN=local-test-not-a-credential CNB_TOKEN=local-test-not-a-credential
 # True empty repository bootstrap is opt-in; tags-only repositories are not empty.
 mkdir "$work/empty"
 git init -q --bare "$work/empty"
