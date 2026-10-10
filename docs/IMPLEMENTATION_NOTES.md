@@ -5,7 +5,8 @@
 | 源/阶段 | 实际证据与边界 |
 |---|---|
 | 66150be正式全轮 | actualEXIT0/cleanup：55文件215单元+156文件426真实集成=641PASS/0skip/0unhandled；30E2E（28真实Chromium+2日期）全部PASS，约1.5分钟；lint/type/SDK/journal/build/migrate/compiledentry全部PASS |
-| 66150be最新镜像/固定负载 | 固定1000/5000正在root27546运行，结果pending；661新镜像尚未跑 |
+| 66150be固定负载 | 1000PASS，finalHTTP5.047623651秒；5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/sourceCH，六完整性断言PASS，finalHTTP21.102973929秒；不是5000或SLO通过 |
+| 最新镜像/远端状态 | 新镜像尚未完成；本地HEAD e441存在，HTTPS认证失败导致push尚未确认，不操作Git或托管 |
 | 66150be独立静态/单元 | type/lint/215单元PASS，不代替正式全轮结果 |
 | 0a提交前摘要绑定专项 | 19真实定向PASS，仅对应precommit源码摘要，不是全局计数 |
 | c890后端（历史源） | 211单元+421真实集成=632PASS，未外推661 |

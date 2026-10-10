@@ -5,7 +5,8 @@
 | Source/stage | Actual evidence and boundary |
 |---|---|
 | 66150be formal full run | Actual EXIT0/cleanup:215 unit/55 files+426 real integration/156 files=641 PASS,0 skips/unhandled;30 E2E(28 real Chromium+2 date)PASS,about1.5min;lint/type/SDK/journal/build/migrate/compiled entry PASS |
-| 66150be image/fixed load |1000/5000 running(root27546),pending;new661 image not run |
+| 66150be fixed load |1000 PASS:final HTTP5.047623651s;5000 overall FAIL:4350 accepted/13 unsent/35 delayed,drainfalse120s;final PV4350/coverage1/CH and six integrity assertions PASS,21.102973929s.Not5000/SLO acceptance |
+| Image/remote |New image not completed;localHEAD e441 exists,push unconfirmed due HTTPS authentication failure.No Git/hosted actions |
 | 66150be independent checks | Type/lint/215 unit tests PASS; not the full-run result |
 | 0a precommit targeted source digest | 19 real tests PASS; targeted digest-bound evidence, not a full count |
 | c890 backend | 211 unit+421 integration=632 PASS; historical source |

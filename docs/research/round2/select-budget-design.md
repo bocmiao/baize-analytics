@@ -43,3 +43,5 @@ c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（
 TEMP ANALYZE 的独立合成实验未显示计入分析成本后的净收益，目前不接生产。上述两片预算也未实现、未执行新的真实 CH 预算测试。本文件归档期间不修改生产源码，不启动数据库、负载、构建、容器或托管 CI。
 
 1c最终固定负载：1000 PASS、最终HTTP5120ms；5000总体FAIL：4900accepted、2unsent、39delayed、queryfail0，drainReached=false且120秒deadline，剩余积压1350/最大3250。最终查询25.389秒FAIL、assertionsExecuted=[]，不得声称六完整性断言已过。Node峰730509312字节不含数据库，source unchanged且4项cleanup全true；没有预算拒绝。已通过代码功能/浏览器/镜像不等于关闭此本地性能欠项，不据此称提速/SLO。归档证据为 docs/test-evidence/main-1c1cb65-independent-strict-5000.json 及配套record；原FAIL保留。
+
+661正式641应用/30检查通过；固定1000PASS5.047623651秒，5000总体FAIL4350accepted/13unsent/35delayed/drainfalse120秒。已接受4350最终PV4350/coverage1/sourceCH、六完整性断言PASS21.102973929秒，不证明5000或SLO。新镜像待，e441本地HEAD的远端push因HTTPS认证失败未确认；旧FAIL保留。
