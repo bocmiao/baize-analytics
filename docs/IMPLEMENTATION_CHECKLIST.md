@@ -617,10 +617,10 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 ## F-60 自然语言问数【P1】
 
-- 状态：只读工具与可验证trace/chart/历史问题已生产注册并纳第八377+20本地完整应用验收；当前044CH事实来源增强仍属WIP。
+- 状态：只读工具与可验证trace/chart/历史问题已生产注册并纳第八377+20本地完整应用验收；044CH事实来源及严格读写已纳7fbb561空卷494应用与22检查验收；新镜像仍待。
 - 实现文件：src/server/external.ts；src/server/ai-evidence.ts；src/web/Connectors.tsx；docs/api.md
 - 验收测试：external.test.ts；ACCEPTANCE_AI_QUESTION_EVIDENCE.md；ACCEPTANCE_EXTERNAL.md（新增专项不可加到272）
-- 边界/未实测：typed查询/权限/daily_salt guard已测。当前生产路径已接questionEvidence、确定性chart、query/result版本与授权证据、历史问题读取及同client原子预算；早期独立24PG/相关浏览器专项通过不纳第五计数；后续033精确多目标会话口径、035持久预算与040失效已纳第八冻结源，f66f加强多轮发送前检查。当前CH正文/facts新接线与最终镜像仍待同源验收。模型收到用户问题和获授权聚合，不是“从不发问题”；真实模型质量和其他桌面MCP客户端仍未实测；官方MCP SDK实际HTTP/PG已测，不能继续统称协议客户端未测。
+- 边界/未实测：typed查询/权限/daily_salt guard已测。当前生产路径已接questionEvidence、确定性chart、query/result版本与授权证据、历史问题读取及同client原子预算；早期独立24PG/相关浏览器专项通过不纳第五计数；后续033精确多目标会话口径、035持久预算与040失效已纳第八冻结源，f66f加强多轮发送前检查。当前CH正文/facts已同源本地联合验收，最终新镜像仍待。模型收到用户问题和获授权聚合，不是“从不发问题”；真实模型质量和其他桌面MCP客户端仍未实测；官方MCP SDK实际HTTP/PG已测，不能继续统称协议客户端未测。
 
 - "上周微信来的 iOS 用户转化率多少？"→ 走 MCP 只读工具（F-44）→ 模型组装查询 → 返回数字+图表；guardrail：只能查有权限站点、只读聚合。
 
@@ -681,7 +681,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：**部分实现，本地阶段验收通过，canonical迁移未完成**。025增量副本与PG尾部混合读取、snapshot/count/epoch/lease fencing、失败显式PG fallback、删除/恢复屏障已测；028历史raw/hourly/daily/vitals manifest、签名文件/版本key备份、隔离namespace恢复、权限/应用删除与独立journal闭环纳入第五272/19。详见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)、[ACCEPTANCE_HISTORY_STORE.md](ACCEPTANCE_HISTORY_STORE.md)。PG仍权威；worker、rollup、governance export RR和身份元数据等仍PG。不是“仅PG”也不是“仅元数据PG”的全面CH切换；canonical读/存储迁移、CH集群灾备和大容量/持续删写SLO未完成。第五c610 Docker未另开启可选history/CH模式，不扩大为全部P2验收。
+- P2-01 ClickHouse 明细可选迁移：**严格权威主体已实现并本地验收，规模与新镜像未完成**。025副本/增量混合读取及028历史签名恢复保留；036–049严格权威正文、会话/事实/carry/缓存迁出、精准删除与签名独立恢复已进入main7fbb561，核心guardtrue且每站proof/epoch仍强制。同源空卷494应用与22检查通过，见 [VALIDATION_TENTH.md](VALIDATION_TENTH.md)。严格模式PG保留元数据与受控签名操作状态，不把镜像模式等同权威；5000持续负载正在运行，新生产镜像及独立CH服务器运维验收待，集群灾备与生产SLO不据单节点通过而承诺。旧副本证据见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)、[ACCEPTANCE_HISTORY_STORE.md](ACCEPTANCE_HISTORY_STORE.md)。
 - P2-02 隐私优先会话回放：**已实现且本地专项验收**。opt-in、服务端严格遮罩、真实 rrweb sandbox player 已测；9cd7 专项进一步验证多 SPA/多标签三页面实例各自完整 snapshot、独立播放/Play/Pause、私密文本不进入播放器与 API、真实 metadata/过滤。证据 tracker-collector.test.ts、tracker-replay-heatmap.test.ts、third-main-tests.json、ACCEPTANCE_WEB.md。复杂真实站点/CSS 还原兼容与更多浏览器未全矩阵实测；当前是保守结构回放，不恢复远端资源或遮罩文本。
 - P2-03 热力图：**已实现且本地专项验收**。真实 opt-in 点击/四档滚动、不同页面与 1000/400 CSS 视口独立分桶、敏感 input/select/private 排除、不可变重试计数不增、真实 API 过滤及 SVG 呈现已验。包含 9cd7 全 180 项与 15 项 fresh-E2E；一次异步滚动失败及修正后的重测保留证据。坐标为文档百分比，不使用演示底图或宿主截图；任意复杂响应式/无限滚动、真实站点兼容仍未全矩阵验证。
 - P2-04 A/B 实验归因：**已实现且本地专项验收**。真实同意门控、确定性 visitor 分组、实际 SDK 目标→唯一转化访客、停止/继续分配且保留历史与稳定 variant、权限/审计已测。双比例检验/Bonferroni 修正/Wilson 转化率区间和不足样本保护、账号 A→B 删除保留 B/独立日志重放、event_id+ts 幂等、旧无明细历史禁显著性均有真实 PG/浏览器证明，纳入 9cd7 的 180/15。固定周期是统计方法约定，当前不由平台强制锁定结束时间；观察归因不证明真实支付或因果。
@@ -696,8 +696,8 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 | 目标 | 当前状态 | 尚需完成/证明 |
 |---|---|---|
-| F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 新044CH事实读取接线及最新镜像尚待当前工作树全量；真实模型质量未测，不重列既有PG问数为骨架 |
-| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 新043–048CH正文删除/restore/latest-journal完整runtime仍在制，需最终源/镜像统一验收；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
+| F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 044CH事实读取已纳7fbb561同源494/22；最新镜像待，真实模型质量未测，不重列既有PG问数为骨架 |
+| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 043–049CH正文删除/restore/latest-journal完整runtime已同源494/22本地验收，新镜像待；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
 | 规模/bounded-session planner | 在制 | 集中大站/持续采集查询删写、真实RSS/lag/失败；不能用旧1M背景关闭顺序worker当生产SLO |
 | P2-01 CH canonical迁移 | 本地已验036/038/039/041/043–048，main7fbb561 guard已true | 同源494应用测试+22 E2E已通过；新应用镜像、5000严格持续负载、集群灾备及资源隔离SLO待验证，不将本地通过等同外网部署 |
 | F44 P1标准MCP server | 已实现默认注册，官方SDK定向及第七compiled应用验收 | 最新镜像、其他桌面客户端与后两声明协议版未单独测 |
@@ -739,7 +739,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 本轮最终冻结前补记：pre-014 未受控 daily 明细的未知拓扑不制造038/041证明；旧安全report/export保留及当前native collector正常已有专项，不能概括为所有旧PG停用。此条为前一冻结历史边界；现在3e052d8最新同源491+22已验收、guardtrue。048已认证V2 hour/day精确重建小专项通过，独立strict restore最后控制行readiness已于16:26:59实际3文件3PASS闭合，未知legacy/非零heatmap负coverage不清除。CNB自动同步、触发、定时均暂停；上述历史托管成功/失败记录保留，未执行本轮新托管，不以暂停状态假称当前通过。
 
 
-最新不可变本地验收：`3e052d816c48a701fb82ce137436c30a770cf080`，全新测试专属 PG17/CH25.8/Redis7 Compose 空卷，`validate-local-final.sh` EXIT0 并清理。100 单元 +391 集成=491 PASS，0失败/0跳过；22 E2E 中20 Chromium真实浏览器+2日期函数全部通过。证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。主线核心激活 guard 已true，但每站证明/删除/水位屏障仍强制。D1000严格CH完整性通过，查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO；5000及新应用镜像尚待，不标完成。保留全部旧失败；本轮未运行CNB托管，自动触发仍暂停。
+历史第九不可变本地验收：`3e052d816c48a701fb82ce137436c30a770cf080`，全新测试专属 PG17/CH25.8/Redis7 Compose 空卷，`validate-local-final.sh` EXIT0 并清理。100 单元 +391 集成=491 PASS，0失败/0跳过；22 E2E 中20 Chromium真实浏览器+2日期函数全部通过。证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。主线核心激活 guard 已true，但每站证明/删除/水位屏障仍强制。D1000严格CH完整性通过，查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO；5000及新应用镜像尚待，不标完成。保留全部旧失败；本轮未运行CNB托管，自动触发仍暂停。
 
 
 最新更新为[第十不可变验收](VALIDATION_TENTH.md)：7fbb5612cee6121df23425ff14274316e43a4bca，100unit/27files+394integration/145files=494PASS0fail0skip；22E2E=20Chromium+2date全部通过。freshCompose sharedEXIT0、cleanupcomplete；build/lint/type/SDK/freshmigration/compiledentry/journal全部0。收入回执/rawproof/049+保留期窄修闭合。旧3e491/22与701真实失败不修改；新镜像待、5000运行中、托管父最终待，不阶段触发。
