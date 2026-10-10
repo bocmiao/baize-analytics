@@ -18,3 +18,8 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 ## 0c3ca6a 固定适配器独立1000（实际）
 
 根代理 immutable runner actual passed；[原JSON](../../test-evidence/main-0c3ca6a-independent-strict-1000.json)、[详细边界](../../test-evidence/main-0c3ca6a-independent-summary.md)。20批全部202/1000接受，严格六项断言与namespace清理、sourceunchanged通过。drain查询4点P95约4.65s/finalHTTP7.63s，maxbacklog750；HTTP facts893次13.80s、worker facts1340次13.39s为目前主要观测成本，非性能改善结论。5000仍待完成，不覆盖ce/b0或旧结果。
+
+
+### 同源5000实际失败（EXIT1）
+
+[原JSON](../../test-evidence/main-0c3ca6a-independent-strict-5000.json)、[完整解释](../../test-evidence/main-0c3ca6a-independent-summary.md)：94/100批202，4700接受/6未发送，32延迟，maxbacklog3500/末1950；drain deadline reached，1query超时、final断言尝试失败且executed空，不能称strict验收通过。HTTP facts5014次82.87s/worker facts6714次74.22s，下一需聚焦重复事实来源读取链；不改限额、不称性能改善。实际四项namespace清理/source961blobs unchanged通过，旧1000PASS/ce/b0均保留。
