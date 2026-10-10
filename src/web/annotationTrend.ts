@@ -1,0 +1,5 @@
+import type {SiteAnnotation} from '../../packages/contracts/operations-observations';
+import {civilDate} from './time';
+export type TrendAnnotation=SiteAnnotation&{index:number;label:string};
+/** A date note has no event time: use only the first real observed bin in that site calendar day. */
+export function locateTrendAnnotations(notes:SiteAnnotation[],points:{label:string;value:number|null}[],timezone:string):TrendAnnotation[]{const days=new Map<string,{index:number;label:string}>();points.forEach((point,index)=>{if(typeof point.value!=='number'||!Number.isFinite(point.value))return;let day:string;if(/^\d{4}-\d{2}-\d{2}$/.test(point.label)){const date=new Date(`${point.label}T00:00:00Z`);if(!Number.isFinite(+date)||date.toISOString().slice(0,10)!==point.label)return;day=point.label;}else{if(!Number.isFinite(+new Date(point.label)))return;day=civilDate(point.label,timezone);}if(!days.has(day))days.set(day,{index,label:point.label});});return notes.slice(0,200).flatMap(note=>{const position=note.timezone===timezone?days.get(note.date):undefined;return position?[{...note,...position}]:[];});}
