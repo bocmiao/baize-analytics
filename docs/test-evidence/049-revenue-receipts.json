@@ -1,0 +1,64 @@
+{
+  "scope": "049 revenue accepted-event FK migration; local real PostgreSQL and ClickHouse",
+  "sourceSha256": {
+    "db/migrations/011_revenue.sql": "ad3f8422089cb7664b4e9996ba7e1318c2082bb90d1ffe87b1f71f24a220a6ea",
+    "db/migrations/049_revenue_event_receipts.sql": "ae1a0f730bb0fa3da51b916b27b7484cd3f2c059b1f158fc6e34a23010d9a8d0",
+    "src/server/collect.ts": "ec0543627bf3eb19b5c3d8293f2bf7434150e746dd47c80a9a4d04466a3d6b05",
+    "src/server/canonical-migration.ts": "ccfbd93cd9263dd54fdff2e11e0e4c8340845ef4746a73989f8d039f6a78a3b8",
+    "tests/integration/canonical-new-revenue.test.ts": "b6029ae21c2926d6d1730683b6894bc0c106f4cde04af8de0ac6f07f9946b20e",
+    "tests/support/canonical-raw-prune.ts": "5d79fe41d2cf2afa543f0dab1bfcadb47f4e6e597398273833f044ca1290b88f"
+  },
+  "sourceBinding": "Pre-integration worktree digests captured after the test; no unreleased commit SHA asserted. Shared dependency edits may proceed separately.",
+  "commands": [
+    "TEST_DATABASE_URL=<local isolated-schema PostgreSQL URL> CLICKHOUSE_TEST_URL=<local ClickHouse URL> ./node_modules/.bin/vitest run tests/integration/canonical-new-revenue.test.ts --reporter=json --outputFile=/tmp/baize-049-new-revenue-prune.json",
+    "./node_modules/.bin/eslint tests/integration/canonical-new-revenue.test.ts",
+    "./node_modules/.bin/tsc --noEmit"
+  ],
+  "checks": {
+    "eslintExitCode": 0,
+    "typecheckExitCode": 0
+  },
+  "finalActualResult": {
+    "numTotalTests": 1,
+    "numPassedTests": 1,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "assertions": [
+      {
+        "name": "canonical new revenue: accepted-event metadata ownership accepts new CH revenue without PG raw and preserves currency/order receipt conflicts",
+        "status": "passed",
+        "failureMessages": []
+      }
+    ]
+  },
+  "previousReceiptFailure": {
+    "numTotalTests": 1,
+    "numPassedTests": 0,
+    "numFailedTests": 1,
+    "numPendingTests": 0,
+    "assertions": [
+      {
+        "name": "production native HTTP canonical authority: setup → verified cutover → raw prune → revenue alias physical receipt rejects new-event order duplicates when original canonical body is missing or CH unreadable",
+        "status": "failed",
+        "failureMessages": [
+          "AssertionError: expected { error: 'internal_error', …(1) } to match object { accepted: 1 }\n(2 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///workspace/baize-analytics/node_modules/chai/index.js:1737:25)\n    at /tmp/baize-revenue-receipt-9r98l5q7/tests/integration/canonical-revenue-receipt.test.ts:26:147\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+        ]
+      }
+    ]
+  },
+  "previousFailureInterpretation": "The original receipt fixture failed with HTTP internal_error. Its saved runner JSON does not expose a PostgreSQL FK stack; independently inspected published migration011 binds revenue_orders to PG events, incompatible with canonical new revenue and destructive under PG raw prune. Do not call this saved JSON a direct SQL FK error reproduction.",
+  "limitations": [
+    "Deletion check executes a real DELETE of the new original event_keys row and verifies cascading removal of its revenue receipt while retaining the other order. This is not a whole public visitor deletion acceptance test.",
+    "This one test is not full-suite, Docker, deployment or performance acceptance."
+  ],
+  "verifiedBehavior": [
+    "HTTP prune without opaque backup proof returns409",
+    "Actual signed canonical backup and production child CLI prune remove PG raw while retaining order receipt",
+    "Same order with new event ID remains duplicate after prune",
+    "New canonical USD revenue receives202 with no PG raw event",
+    "Different currency for the same order is rejected",
+    "Worker publishes successfully",
+    "Missing physical CH body and unavailable CH connection refuse duplicate acceptance",
+    "Deleting the original accepted-event metadata removes its receipt and preserves the other order"
+  ]
+}

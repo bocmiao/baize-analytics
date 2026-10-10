@@ -1,3 +1,4 @@
+import {assertVerifiedCanonicalRawBackup,type VerifiedCanonicalRawBackup} from './canonical-raw-backup-readiness.js';
 import {captureCanonicalCutoverReceipt} from './cutover-receipt.js';
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
@@ -70,10 +71,10 @@ export async function activateCanonicalAuthority(client:PoolClient,siteId:string
  return {authority:'clickhouse',epoch:String(state.epoch),rawPruned:false};
 }
 /** Bounded independently resumable pruning. Unreachable until full integration is authorized. */
-export async function pruneCanonicalBatch(client:PoolClient,siteId:string,epoch:string,store?:CanonicalClickHouse){
+export async function pruneCanonicalBatch(client:PoolClient,siteId:string,epoch:string,store?:CanonicalClickHouse,proof?:VerifiedCanonicalRawBackup){
  if(!CANONICAL_ACTIVATION_READY)throw Error('CANONICAL_INTEGRATION_NOT_READY');await lockSite(client,siteId);const authority=(await client.query('SELECT * FROM canonical_event_authority WHERE site_id=$1 FOR UPDATE',[siteId])).rows[0];if(authority?.authority!=='clickhouse'||authority.epoch!==epoch)throw Error('CANONICAL_PRUNE_FENCE');
  if(!store)throw Error('CANONICAL_STORE_REQUIRED');
- const rows=(await client.query('SELECT e.*,m.body_hash FROM events e JOIN canonical_event_members m USING(site_id,event_id) WHERE e.site_id=$1 ORDER BY e.ts,e.event_id LIMIT 1000',[siteId])).rows;const published=await store.readPublishedEvents(client,siteId,rows.map(row=>row.event_id));for(const row of rows){const {body_hash,...event}=row;if(canonicalEventChecksum(event as StoredEvent)!==body_hash)throw Error('CANONICAL_PRUNE_CHECKSUM_FENCE');const body=published.get(event.event_id.toLowerCase());if(!body||canonicalEventChecksum(body)!==body_hash)throw Error('CANONICAL_PRUNE_BODY_UNAVAILABLE');}
+ const rows=(await client.query('SELECT e.*,m.body_hash FROM events e JOIN canonical_event_members m USING(site_id,event_id) WHERE e.site_id=$1 ORDER BY e.ts,e.event_id LIMIT 1000',[siteId])).rows;await assertVerifiedCanonicalRawBackup(client,siteId,epoch,rows,proof);const published=await store.readPublishedEvents(client,siteId,rows.map(row=>row.event_id));for(const row of rows){const {body_hash,...event}=row;if(canonicalEventChecksum(event as StoredEvent)!==body_hash)throw Error('CANONICAL_PRUNE_CHECKSUM_FENCE');const body=published.get(event.event_id.toLowerCase());if(!body||canonicalEventChecksum(body)!==body_hash)throw Error('CANONICAL_PRUNE_BODY_UNAVAILABLE');}
  for(const row of rows)await client.query('DELETE FROM events WHERE site_id=$1 AND event_id=$2 AND ts=$3',[siteId,row.event_id,row.ts]);if(rows.length){const last=rows.at(-1)!;await client.query("UPDATE canonical_migration_progress SET phase='pruning',prune_ts=$2,prune_event_id=$3,updated_at=now() WHERE site_id=$1",[siteId,last.ts,last.event_id]);await client.query('UPDATE canonical_event_authority SET raw_pruned=true WHERE site_id=$1',[siteId]);}
  const remaining=Boolean((await client.query('SELECT 1 FROM events WHERE site_id=$1 LIMIT 1',[siteId])).rowCount);
  if(!remaining){await client.query("UPDATE canonical_migration_progress SET phase='complete',updated_at=now() WHERE site_id=$1 AND epoch=$2",[siteId,epoch]);await client.query('UPDATE canonical_event_authority SET raw_pruned=true WHERE site_id=$1',[siteId]);}

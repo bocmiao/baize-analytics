@@ -78,9 +78,11 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
           if(previous.rowCount){if(previous.rows[0].payload_hash!==replayPayloadHash(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'replay_sequence_conflict'});continue;}await verifyReceipt(previous.rows[0].event_id);await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);duplicates++;accepted++;continue;}
         }
         if(orderHash){
-          const order=await client.query('SELECT currency,amount=$3::numeric AS same_amount FROM revenue_orders WHERE site_id=$1 AND order_hash=$2',[site.id,orderHash,String(wire.revenue)]);
+          const order=await client.query('SELECT event_id,currency,amount=$3::numeric AS same_amount FROM revenue_orders WHERE site_id=$1 AND order_hash=$2',[site.id,orderHash,String(wire.revenue)]);
           if(order.rowCount){
             if(order.rows[0].currency!==wire.currency||!order.rows[0].same_amount){rejected.push({index,event_id:wire.event_id,reason:'order_id_conflict'});continue;}
+            // Verify the original physical body before issuing an alias receipt.
+            await verifyReceipt(order.rows[0].event_id);
             // Record an alias receipt without another event: future reuse of this event ID still observes payload-conflict policy.
             await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);duplicates++;accepted++;continue;
           }

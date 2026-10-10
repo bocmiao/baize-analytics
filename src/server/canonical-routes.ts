@@ -12,6 +12,7 @@ export async function registerCanonicalOperations(app:FastifyInstance,ctx:AppCon
  app.post('/api/v1/sites/:siteId/canonical',async req=>{
   const {siteId}=req.params as {siteId:string},user=await ctx.authorize(req,siteId,'admin');
   const {action}=z.object({action:z.enum(canonicalActions)}).strict().parse(req.body);
+  if(action==='prune')throw new ApplicationError('canonical_backup_required');
   try{return await transaction(ctx.pool,c=>runCanonicalOperation(c,ctx.pool,siteId,action,user.id));}
   catch(error){if(error instanceof Error&&error.message==='CANONICAL_INTEGRATION_NOT_READY')throw new ApplicationError('canonical_integration_not_ready');if(error instanceof Error&&(error.message==='CANONICAL_VALIDATION_STALE'||error.message==='CANONICAL_PRUNE_FENCE'))throw new ApplicationError('canonical_validation_stale');throw error;}
  });

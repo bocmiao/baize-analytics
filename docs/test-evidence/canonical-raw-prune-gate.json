@@ -1,0 +1,23 @@
+{
+  "scope": "current worktree raw-prune signed-backup gate; not final immutable source/Docker acceptance",
+  "exitCode": 0,
+  "files": 4,
+  "tests": 6,
+  "skipped": 0,
+  "command": "TEST_DATABASE_URL=<local isolated fixture database> CLICKHOUSE_TEST_URL=<existing local fixture> npx vitest run tests/integration/canonical-raw-backup-readiness.test.ts tests/integration/canonical-authority-flow.test.ts tests/integration/canonical-daily-authority-flow.test.ts tests/integration/canonical-replay-collect.test.ts",
+  "checks": [
+    "actual signed raw backup plus production child CLI prune",
+    "HTTP raw prune denied 409 directing local operator CLI",
+    "forged/missing opaque proof denied",
+    "wrong signing key/file body tamper denied",
+    "new accepted body missing from old package denied",
+    "generation changes invalidate same-client proof",
+    "successful bounded raw prune preserves event_keys accepted receipts"
+  ],
+  "evidence": "canonical-raw-prune-gate.txt",
+  "notRun": [
+    "new immutable whole-suite CI",
+    "new production Docker image/matrix"
+  ],
+  "schema": "049 revenue namespace scope implemented with revenue_orders and event_keys streaming fingerprint; independent-target revenue receipt regression pending external owned fixture"
+}

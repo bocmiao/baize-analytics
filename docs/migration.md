@@ -171,3 +171,16 @@ pre-014 等旧版本未经受控入口产生的 daily-salt 明细，可能缺少
 
 
 当前不可变本地证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。这不代表外网部署或托管CI。1000事件严格CH完整性通过，但查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO。5000负载和新应用镜像矩阵尚待；所有历史失败保留。
+
+### raw-prune 的签名备份门槛（新窄修，等待联合验收）
+
+管理员 HTTP `POST /api/v1/sites/:siteId/canonical` 的 `{action:"prune"}` 明确返回409 `canonical_backup_required`；HTTP不接受服务器路径、备份JSON或verified布尔值作为授权。删除PG raw仅走操作CLI，并使用已有实例稳定master key验证真实 `backupCanonical` 签名包、精确当前独立删除journal、站点/scope/epoch/current generation与每条原正文hash。旧备份或journal推进后必须重新取得匹配证明；校验失败不prune。
+
+在已有私密操作环境中确认站点ID、成功备份目录及最新journal目录后执行（占位变量只指现有本地路径，不内联凭据）：
+
+```bash
+npx tsx scripts/canonical-cli.ts status "$BAIZE_SITE_ID"
+npx tsx scripts/canonical-cli.ts prune "$BAIZE_SITE_ID" "$BAIZE_RAW_BACKUP_DIR" "$BAIZE_LATEST_JOURNAL_DIR"
+```
+
+`BAIZE_RAW_BACKUP_DIR`必须是单站raw包目录，不是整库dump或facts包。现有 `scripts/backup.sh` 成功输出的布局为备份目录下 `canonical/<SITE_ID>`；应核对该站实际存在完整签名raw产物后再选取。单站目录实际含 `manifest.json`、`events.ndjson`、`published.ndjson`。`scripts/canonical-ops-runtime.ts` 直接输出为指定目录下 `<SITE_ID>`；shell整体布局为 `backups/<name>/canonical/<SITE_ID>`。备份流程只为实际CH权威canonical站点生成该raw包，不能为无产物站点构造空目录假证据。journal应取当前独立可信来源，不用旧快照内副本。PG shadow尚不是可prune站点。CLI也可使用 `node --import tsx scripts/canonical-cli.ts prune` 同一参数；master key从现有 `KEYS_DIR` 的v1文件或 `MASTER_KEY_FILE` 读取，来自已有私密实例配置，不创建新凭据、不打印密钥。此新增门槛不计入3e052d8已发布491，最终实际验收结果另记录。

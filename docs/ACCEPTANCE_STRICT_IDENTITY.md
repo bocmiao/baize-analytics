@@ -51,3 +51,7 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev CLICKHOUSE_TES
 最终唯一true变体 `/tmp/baize-b-final-readiness-pwvapksn`，仓库guard false未改变；完整源码 SHA/命令/边界见 `docs/test-evidence/strict-identity-final-three.json`。cache-body-backup SHA `98c283b9f529bb8743f0a838ae7fc086c1ec1f34d0a1da5f58b95d8d832bf255` 与负责人稳定回交一致。最新全仓TypeScript EXIT0（`/tmp/baize-b-final-readiness-types.log`），所属ESLint通过。代码冻结，没有 Git/CNB/全量CI/新镜像或容器操作；普通CI缺Docker设施明确跳过该独立恢复操作1项，根负责人在同冻结源本地另验，不向CI暴露Dockerhost。
 
 时间边界补记：以上16:26:59实际验收执行时，工作区生产 readiness 仍为false，隔离快照的唯一true差异及原SHA完整保存。根负责人随后在这组critical专项通过后启用工作区 readiness=true；逐站验证/权限/删除与备份证明未取消。这一后续集成决定不改变历史测试快照，也不意味着全部项目或后续联合CI已通过。
+
+新增不可逆 raw prune 门槛复验：实际 canonical 签名正文包、同连接 opaque proof 和四种派生签名包；HTTP 无证明裁剪返回 409，运维入口验证后才能裁剪。两个原有真实身份/AI及独立恢复测试于 16:51:35 全部通过（2/2、0 skip、20.98s），类型与 owned lint 通过。初次 EEXIST fixture 失败、新 049 备份 schema 拒绝失败均保留；详见 `test-evidence/strict-identity-raw-backup-proof.json`。仅本地真实 PG/CH/既有容器 dump/restore，AI 提供者仍为模拟。
+
+同一恢复 fixture 追加真实 B 收入 CNY 19.95 的 049 凭据闭环：生产 collector、真实 worker、签名备份与独立恢复后 order_hash/event_id/currency/amount 一致；同订单新 UUID 重试返回 duplicate 202 且无新 CH 正文，CH 不可达时同订单别名返回 503。原 B 页面/会话贡献不变。16:53:20 专项 1/1 通过（0 skip、16.93s），未新增测试数量。

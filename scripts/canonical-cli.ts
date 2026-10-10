@@ -1,3 +1,4 @@
+import {loadVerifiedCanonicalRawBackup} from '../src/server/canonical-raw-backup-readiness.js';
 import {createPool,transaction,lockSite} from '../src/server/db.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../src/server/canonical-clickhouse.js';
 import {canonicalActions,canonicalStatus,runCanonicalOperation,type CanonicalAction} from '../src/server/canonical-operations.js';
@@ -13,7 +14,7 @@ import {migratePublishedHeaderClosure} from '../src/server/session-header-public
 import {migratePublishedCacheClosure} from '../src/server/cache-closure-migration.js';
 // Uses existing private operator configuration. Never prints credentials or URLs.
 const [action,siteId,packageDirectory,journalDir]=process.argv.slice(2);
-if(!siteId||!['status','migrate-facts','strict',...canonicalActions].includes(action)||!process.env.DATABASE_URL||!process.env.CLICKHOUSE_URL||action==='strict'&&(!packageDirectory||!journalDir))throw Error('CANONICAL_CLI_CONFIGURATION_REQUIRED');
+if(!siteId||!['status','migrate-facts','strict',...canonicalActions].includes(action)||!process.env.DATABASE_URL||!process.env.CLICKHOUSE_URL||(action==='strict'||action==='prune')&&(!packageDirectory||!journalDir))throw Error('CANONICAL_CLI_CONFIGURATION_REQUIRED');
 const pool=createPool(),store=new CanonicalClickHouse({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''});
 let stableKey:Buffer|undefined;
 try{
@@ -38,7 +39,7 @@ try{
    const value=await activateStrictFactBodies(c,siteId,proof,{facts,remaining});
    await c.query('INSERT INTO audit_logs(actor_id,site_id,action,target)VALUES(NULL,$1,$2,$3)',[siteId,'canonical.strict',JSON.stringify(value)]);return value;
   });
- }else result=await transaction(pool,c=>action==='status'?canonicalStatus(c,siteId):runCanonicalOperation(c,pool,siteId,action as CanonicalAction,null));
+ }else if(action==='prune'){stableKey=await readOpsStableKey();result=await transaction(pool,async c=>{await lockSite(c,siteId);const proof=await loadVerifiedCanonicalRawBackup(c,{siteId,packageDirectory,journalDir,key:stableKey!,store});return runCanonicalOperation(c,pool,siteId,'prune',null,proof);});}else result=await transaction(pool,c=>action==='status'?canonicalStatus(c,siteId):runCanonicalOperation(c,pool,siteId,action as CanonicalAction,null));
  console.log(JSON.stringify(result));
 }catch(error){const code=error instanceof Error&&/^(?:CANONICAL|SHADOW_PROVENANCE|REPLAY_BACKFILL|FACT_BACKUP|FACT_STRICT|CACHE)_[A-Z_]+$/.test(error.message)?error.message:'CANONICAL_OPERATION_FAILED';console.error(JSON.stringify({error:code}));process.exitCode=1;}
 finally{stableKey?.fill(0);await pool.end();}

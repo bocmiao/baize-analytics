@@ -1,3 +1,4 @@
+import type {VerifiedCanonicalRawBackup} from './canonical-raw-backup-readiness.js';
 import {randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import {lockSite} from './db.js';
@@ -13,7 +14,7 @@ export async function canonicalStatus(client:PoolClient,siteId:string){
 }
 /** A single explicit local/operator action. No implicit switch or unbounded RAM;
  * ingestion/deletion cannot race the verification or metadata publication. */
-export async function runCanonicalOperation(client:PoolClient,pool:Pool,siteId:string,action:CanonicalAction,actorId:string|null){
+export async function runCanonicalOperation(client:PoolClient,pool:Pool,siteId:string,action:CanonicalAction,actorId:string|null,proof?:VerifiedCanonicalRawBackup){
  await lockSite(client,siteId);
  if(!(await client.query('SELECT 1 FROM sites WHERE id=$1',[siteId])).rowCount)throw Error('CANONICAL_SITE_REQUIRED');
  const store=getCanonicalStore(pool);if(!store)throw Error('CANONICAL_STORE_REQUIRED');
@@ -27,7 +28,7 @@ export async function runCanonicalOperation(client:PoolClient,pool:Pool,siteId:s
   result=await shadowCanonicalBatch(client,store,siteId,state?.epoch??randomUUID());
  }else if(action==='verify')result=await verifyCanonicalShadow(client,store,siteId);
  else if(action==='activate')result=await activateCanonicalAuthority(client,siteId);
- else{const state=(await client.query('SELECT epoch::text FROM canonical_event_authority WHERE site_id=$1',[siteId])).rows[0];if(!state)throw Error('CANONICAL_AUTHORITY_REQUIRED');result=await pruneCanonicalBatch(client,siteId,state.epoch,store);}
+ else{const state=(await client.query('SELECT epoch::text FROM canonical_event_authority WHERE site_id=$1',[siteId])).rows[0];if(!state)throw Error('CANONICAL_AUTHORITY_REQUIRED');result=await pruneCanonicalBatch(client,siteId,state.epoch,store,proof);}
  await client.query('INSERT INTO audit_logs(actor_id,site_id,action,target) VALUES($1,$2,$3,$4)',[actorId,siteId,'canonical.'+action,JSON.stringify(result)]);
  return result;
 }

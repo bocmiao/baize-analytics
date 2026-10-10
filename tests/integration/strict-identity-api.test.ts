@@ -24,6 +24,9 @@ import {backupSessionHeaders} from '../../src/server/session-header-backup.js';
 import {backupFactBodies} from '../../src/server/fact-body-backup.js';
 import {backupRemainingBodies} from '../../src/server/remaining-body-backup.js';
 import {backupCacheBodies} from '../../src/server/cache-body-backup.js';
+import {backupCanonical} from '../../src/server/canonical-backup.js';
+import {loadVerifiedCanonicalRawBackup} from '../../src/server/canonical-raw-backup-readiness.js';
+import {runCanonicalOperation} from '../../src/server/canonical-operations.js';
 import {loadVerifiedFactBackup,type VerifiedFactBackup} from '../../src/server/fact-backup-readiness.js';
 
 it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('actual native identity sessions remain sourced from CH after sealed strict activation',async()=>{
@@ -40,11 +43,16 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CAN
   const c=await pool.connect();try{await c.query('BEGIN');await lockSite(c,site);await shadowCanonicalBatch(c,canonical,site,randomUUID());expect((await verifyCanonicalShadow(c,canonical,site)).verified).toBe(2);const state=(await c.query('SELECT a.epoch,c.epoch canonical,c.deletion_epoch::text deletion,a.generation::text generation FROM aggregation_state a JOIN canonical_event_authority c USING(site_id) WHERE a.site_id=$1',[site])).rows[0],fence={expectedAggregationEpoch:state.epoch,expectedCanonicalEpoch:state.canonical,expectedDeletionEpoch:state.deletion,expectedGeneration:state.generation,verifyLiveFence:async()=>{}};
    await migratePublishedHeaderClosure(c,headers,site,fence);await migratePublishedFactClosure(c,site,{facts,remaining},fence);await c.query('COMMIT');
   }finally{await c.query('ROLLBACK');c.release();}
-  const activated=await http(`/api/v1/sites/${site}/canonical`,{action:'activate'});expect(activated.status,activated.text).toBe(200);await run();const pruned=await http(`/api/v1/sites/${site}/canonical`,{action:'prune'});expect(pruned.status,pruned.text).toBe(200);
+  const activated=await http(`/api/v1/sites/${site}/canonical`,{action:'activate'});expect(activated.status,activated.text).toBe(200);await run();const pruned=await http(`/api/v1/sites/${site}/canonical`,{action:'prune'});expect(pruned.status,pruned.text).toBe(409);expect(pruned.json().error).toBe('canonical_backup_required');
   const b=await pool.connect();try{await b.query('BEGIN');await lockSite(b,site);const s=(await b.query('SELECT a.epoch,c.epoch canonical,c.deletion_epoch::text deletion,a.generation::text generation FROM aggregation_state a JOIN canonical_event_authority c USING(site_id) WHERE a.site_id=$1',[site])).rows[0],fence={expectedAggregationEpoch:s.epoch,expectedCanonicalEpoch:s.canonical,expectedDeletionEpoch:s.deletion,expectedGeneration:s.generation,verifyLiveFence:async()=>{}};
    await migratePublishedHeaderClosure(b,headers,site,fence);await migratePublishedFactClosure(b,site,{facts,remaining},fence);await migratePublishedCacheClosure(b,cache,site,fence);
    const packages=join(dir,'packages');await mkdir(packages,{recursive:true});await backupSessionHeaders(b,headers,join(packages,'headers'),key);await backupFactBodies(b,facts,join(packages,'facts'),key);await backupRemainingBodies(b,remaining,join(packages,'remaining'),key);await backupCacheBodies(b,cache,join(packages,'caches'),key);
-   const proof=await loadVerifiedFactBackup(b,{packageDirectory:packages,journalDir:runtime.ctx.config.dataDir,key,stores:{headers,facts,remaining,cache},scope:'all'});
+   await backupCanonical(b,canonical,site,join(packages,'canonical'),runtime.ctx.config.dataDir,{key});
+   const rawProof=await loadVerifiedCanonicalRawBackup(b,{siteId:site,packageDirectory:join(packages,'canonical'),journalDir:runtime.ctx.config.dataDir,key,store:canonical});
+   await runCanonicalOperation(b,pool,site,'prune',null,rawProof);
+   const strictPackages=join(dir,'strict-packages');await mkdir(strictPackages);
+   await backupSessionHeaders(b,headers,join(strictPackages,'headers'),key);await backupFactBodies(b,facts,join(strictPackages,'facts'),key);await backupRemainingBodies(b,remaining,join(strictPackages,'remaining'),key);await backupCacheBodies(b,cache,join(strictPackages,'caches'),key);
+   const proof=await loadVerifiedFactBackup(b,{packageDirectory:strictPackages,journalDir:runtime.ctx.config.dataDir,key,stores:{headers,facts,remaining,cache},scope:'all'});
    await expect(activateStrictFactBodies(b,site,{verified:true,scope:'all'} as VerifiedFactBackup,{facts,remaining})).rejects.toThrow('PROOF_INVALID');
    expect(await activateStrictFactBodies(b,site,proof,{facts,remaining})).toMatchObject({strict:true,authority:'clickhouse'});await b.query('COMMIT');
   }finally{await b.query('ROLLBACK');b.release();}

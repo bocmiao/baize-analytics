@@ -257,3 +257,5 @@ canonical每站最多10k访客、每访客最多10k chunks，超预算明确失�
 工作树048 strict导出预览：完整站点facts的stats_hourly/stats_daily若为V2，data中的pv等数值来自当前已认证发布事实，不直接使用旧兼容缓存或控制字段默认值；uv与membership_counts为SQL去重计数，visitor_values_exported=false说明不返回个人成员值。export_manifest.source_vector分别给出published_fact_source、raw authority及canonical/deletion/aggregation epoch、generation/processed_generation/watermark。dirty状态拒绝，不把未重建旧导出当最新。该新投影已有定向测试，真实缓存旧个人正文的物理ACK、strict源/目标完整导出验收仍须联合结果，不能以投影隐藏证明擦除。
 
 048隐私失效后的导出预览：已知V2当前数值只依赖认证44/47事实，不要求已擦除的048兼容缓存再次存在。不可精确重建的legacy表从JSON中省略，并在export_manifest.unsupported_tables与table_read_metadata标coverage=0、reason及已知时间范围；表不存在不表示真实零。部分仍可认证的当前行可保留，manifest明确旧历史范围不可用。真实vitals样本可输出TDigest centroids及原加权sample_count。仅已知隐私基线失效允许此显式部分导出；正文缺失/损坏、HMAC错误或CH网络失败仍失败，不能伪装普通partial。桶UV不可跨日/小时直接相加。
+
+raw-prune安全窄修：管理员canonical HTTP `{action:"prune"}`返回409 `canonical_backup_required`，不接受备份路径/JSON授权。CLI必须验证真实签名raw包、当前独立journal、来源/epoch/generation与正文hash；参数及现有备份目录见[迁移手册](migration.md)。该新门槛等待独立实际联合验收，不追加到3e052d8已发布计数。
