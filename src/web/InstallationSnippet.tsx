@@ -1,0 +1,11 @@
+import {useState} from 'react';
+export function installationCode(siteId:string,origin:string,options:{banner?:boolean;language?:'zh-CN'|'en'}={}){
+ const escape=(text:string)=>text.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+ const host=origin.replace(/\/$/,'');const attributes=`data-site-id="${escape(siteId)}" data-api-host="${escape(host)}"`;
+ if(!options.banner)return `<script async defer src="${escape(host)}/tracker.js" ${attributes}></script>`;
+ return `<script defer src="${escape(host)}/tracker.js" ${attributes} data-consent-required="true"></script>\n<script defer src="${escape(host)}/tracker-consent.js" data-language="${options.language==='en'?'en':'zh-CN'}"></script>`;
+}
+export default function InstallationSnippet({site,origin=location.origin,language='zh-CN'}:{site:{id:string;domain:string};origin?:string;language?:'zh-CN'|'en'}){
+ const[banner,setBanner]=useState(false),[copied,setCopied]=useState(false),[error,setError]=useState('');const en=language==='en';const code=installationCode(site.id,origin,{banner,language});
+ return <><p>{en?'Place this snippet in the HTML head of':'将下面代码放入'} <strong>{site.domain}</strong> <code>&lt;head&gt;</code>{en?'.':'。'}{en?' The site ID is public, not an access key.':'站点标识是公开标识，不是访问密钥。'}</p><label className="checkbox"><input type="checkbox" checked={banner} onChange={e=>{setBanner(e.target.checked);setCopied(false);}}/>{en?'Include a consent banner':'包含同意横幅'}</label><p>{banner?(en?'Collection begins only after Accept. Keep both deferred scripts in this order.':'点击同意后才开始采集；保留两个 defer 脚本及其顺序。'):(en?'If consent is required, provide your own consent interface or include the banner.':'站点要求同意时，请提供自己的同意界面或勾选横幅。')}</p><pre>{code}</pre><button className="secondary" onClick={()=>void navigator.clipboard.writeText(code).then(()=>{setCopied(true);setError('');}).catch(()=>setError(en?'Copy failed; copy the snippet manually.':'复制失败，请手动复制代码。'))}>{copied?(en?'Copied':'已复制'):(en?'Copy tracker snippet':'复制追踪代码')}</button>{error&&<p role="alert">{error}</p>}</>;
+}

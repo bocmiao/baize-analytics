@@ -1,3 +1,4 @@
+import {insertRemainingOwnerBatch,type RemainingOwnerRow} from './remaining-owner-batch.js';
 import {createHash,randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import {getRemainingFactStore} from './remaining-fact-store.js';
@@ -53,18 +54,19 @@ export async function prepareRemainingFactReadSource(client:PoolClient,pool:Pool
  async function validateAndInsert(kind:RemainingFactKind,run:string,input:RemainingFactRecord[]){
   if(input.length>100)throw Error('REMAINING_FACT_BATCH_LIMIT');
   const records=input.map(item=>normalizeRemainingRecord(kind,item));
+  const ownerRows:RemainingOwnerRow[]=[];
   for(const record of records){if(record.row.run_id!==run)throw Error('REMAINING_FACT_SCOPE');
    if(kind==='carry_checkpoints'){
     const r=record.row as Extract<RemainingFactRecord['row'],{checksum:string}>;
     const cp:CarryCheckpoint={visitorId:r.visitor_id,sessionId:r.session_id,anchorEventId:r.anchor_event_id,through:iso(r.through_ts),lastEventId:r.last_event_id,privacyMode:r.privacy_mode,localDay:r.local_day,definitionsHash:r.definitions_hash,state:r.state as CarryCheckpoint['state'],status:r.status};
     if(createHash('sha256').update(canonical({siteId,...cp})).digest('hex')!==r.checksum)throw Error('CARRY_CHECKSUM_INVALID');
     if(cp.privacyMode==='daily_salt')await exportControlledCarryProofs(client,siteId,[{runId:run,checkpoint:cp}]);
-    await client.query(`INSERT INTO ${cpOwners} VALUES($1,$2,$3)`,[run,record.visitorId,record.sessionId]);
-    await client.query(`INSERT INTO ${owners} VALUES($1,$2,$3,$4,$5,1)`,[run,record.sessionId,record.visitorId,cp.state.startedAt,cp.state.lastActive]);
+    ownerRows.push({sessionId:record.sessionId,visitorId:record.visitorId,from:cp.state.startedAt,to:cp.state.lastActive});
    }
-   if(kind==='sessions')await client.query(`INSERT INTO ${owners} VALUES($1,$2,$3,$4,$5,0)`,[run,record.sessionId,record.visitorId,record.from,record.to]);
-   if(kind==='carry_keys'&&!(await client.query(`SELECT 1 FROM ${cpOwners} WHERE run_id=$1 AND visitor_id=$2 AND session_id=$3`,[run,record.visitorId,record.sessionId])).rowCount)throw Error('REMAINING_CARRY_OWNER_MISSING');
+   if(kind==='sessions')ownerRows.push({sessionId:record.sessionId,visitorId:record.visitorId,from:record.from,to:record.to});
+   if(kind==='carry_keys')ownerRows.push({sessionId:record.sessionId,visitorId:record.visitorId});
   }
+  if(kind==='sessions'||kind==='carry_checkpoints'||kind==='carry_keys')await insertRemainingOwnerBatch(client,{owners,carryOwners:cpOwners},run,kind,ownerRows);
   if(records.length)await client.query(`INSERT INTO ${temp[kind]} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"from" timestamptz,"to" timestamptz) CROSS JOIN LATERAL jsonb_populate_record(NULL::${base[kind]},envelope.row) r WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=envelope."to" AND t.ended_at>envelope."from")`,[siteId,JSON.stringify(records)]);
  }
  try{

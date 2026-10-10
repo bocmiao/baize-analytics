@@ -128,7 +128,7 @@ GET S/replay(admin)接受path/page_id/from/to/limit（1–1000，默认1000）�
 
 | S后缀 / S suffix | 方法、权限 / Method, permission | 契约 / Contract |
 |---|---|---|
-| /reports | GET read；POST write；PATCH/DELETE /:id write | `{name,dsl:{from,to,path?,channel?}}`；GET /:id/run read执行保存DSL，范围/coverage真实返回 |
+| /reports | GET read；POST write；PATCH/DELETE /:id write | `{name,dsl:{from,to,path?,channel?,utm_source?,utm_medium?,utm_campaign?,utm_term?,utm_content?}}`；GET /:id/run read执行保存DSL，范围/coverage真实返回 |
 | /channels | GET/POST admin；DELETE /:id admin | `{kind:smtp|webhook|wecom|serverchan,config:{...string}}`；GET仅id/kind不返密钥；SMTP host/port/from/to/user/password/locale，webhook URL须HTTPS且SSRF安全 |
 | /schedules | GET read；POST write；DELETE /:id write | `{report_id,channel_id,cadence:daily|weekly|monthly}`；同站点校验；异步通知任务、重试与日志 |
 | /alerts | GET read；POST admin；DELETE /:id admin | `{kind:traffic|goal|funnel|offline|storage|serp,config,channel_id}`；POST /:id/silence `{hours:1..720}` |
@@ -175,7 +175,7 @@ Public share URLs are bearer capabilities, not login credentials. They only expo
 | /suggestions/:id | PATCH状态 | `{status,implementedAt?}`；pending-recheck须implementedAt，verified须已有recheck；new→accepted→in-progress→pending-recheck→verified；false-positive可重开为new |
 | /suggestions/:id/recheck | POST | write `{start,end,confounders:1–20项}`；SEO另需admin，新SEO扫描/新周期复检，旧证据不变；区分改善、干扰与因果 |
 
-Google配置settings `{clientId,redirectUri,property?,gaProperty?,dailyGsc?}`，secret为JSON字符串 `{clientSecret,refreshToken?}`。redirectUri须等于实例 `/api/google/callback`。GA4报告分别为sourceDays、days、weeks、period、sources，rows含dimensions/pv/totalUsers/sessions，保留metadata/rowCount/property_timezone/property_id/requestedCoverage。每报告10万行上限、每HTTP响应5MB上限；超限失败，不悄悄保存不完整报告。日/ISO周/整段/来源totalUsers必须采用提供方对应报告的独立去重，不能相加日UV代替整段UV，不能与本地UV合并。阈值/采样质量limited、未知property时区须保留说明。
+Google配置settings `{clientId,redirectUri,property?,gaProperty?,dailyGsc?,dailyGa4?}`，secret为JSON字符串 `{clientSecret,refreshToken?}`。redirectUri须等于实例 `/api/google/callback`。GA4报告分别为sourceDays、days、weeks、period、sources，rows含dimensions/pv/totalUsers/sessions，保留metadata/rowCount/property_timezone/property_id/requestedCoverage。每报告10万行上限、每HTTP响应5MB上限；超限失败，不悄悄保存不完整报告。日/ISO周/整段/来源totalUsers必须采用提供方对应报告的独立去重，不能相加日UV代替整段UV，不能与本地UV合并。阈值/采样质量limited、未知property时区须保留说明。
 
 AI配置settings `{endpoint,model,enabled,monthlyTokenBudget,maxTokens?,localOrigin?,dailyReport?,automaticAnomaly?}`；默认不启用。仅明确登记localOrigin的实例管理员允许本地Ollama窄例外，不是全局关闭SSRF。发送用户问题/请求文本及获授权聚合数据，不发送原始事件行、原IP或身份。问题文本本身可能包含用户输入的敏感信息，提交前应自行避免；不能承诺“只传聚合从不传问题”。保留外部提供方成本风险，应用无额外收费。聚合变化和模型建议是观察性证据，不证明因果或收益。
 
@@ -254,8 +254,11 @@ canonical每站最多10k访客、每访客最多10k chunks，超预算明确失�
 
 后续通知保护把报表及个人数据派生告警绑定aggregationEpoch；派送在同连接partition/site共享锁下复读running状态、attempts、有效lease和当前epoch，失效则撤销且正文最小化。共享锁跨15秒有界传输直到记录结果，因此删除ACK之后不再从旧claim派送；已发出或在途的外网消息无法召回。真实本地HTTP/PG删除竞态已验收，真实SMTP/企业账号外发未实测。上述后续切片尚未纳入fa3主版本，不能据此称旧镜像已具备新保护。
 
-工作树048 strict导出预览：完整站点facts的stats_hourly/stats_daily若为V2，data中的pv等数值来自当前已认证发布事实，不直接使用旧兼容缓存或控制字段默认值；uv与membership_counts为SQL去重计数，visitor_values_exported=false说明不返回个人成员值。export_manifest.source_vector分别给出published_fact_source、raw authority及canonical/deletion/aggregation epoch、generation/processed_generation/watermark。dirty状态拒绝，不把未重建旧导出当最新。该新投影已有定向测试，真实缓存旧个人正文的物理ACK、strict源/目标完整导出验收仍须联合结果，不能以投影隐藏证明擦除。
+048 strict导出（不可变7fbb561已验）：完整站点facts的stats_hourly/stats_daily若为V2，data中的pv等数值来自当前已认证发布事实，不直接使用旧兼容缓存或控制字段默认值；uv与membership_counts为SQL去重计数，visitor_values_exported=false说明不返回个人成员值。export_manifest.source_vector分别给出published_fact_source、raw authority及canonical/deletion/aggregation epoch、generation/processed_generation/watermark。dirty状态拒绝，不把未重建旧导出当最新。真实缓存旧个人正文的物理ACK、strict源/独立目标恢复已有联合原生证据并纳不可变本地验收；单纯投影隐藏仍不能证明擦除。新镜像与规模验收另列。
 
 048隐私失效后的导出预览：已知V2当前数值只依赖认证44/47事实，不要求已擦除的048兼容缓存再次存在。不可精确重建的legacy表从JSON中省略，并在export_manifest.unsupported_tables与table_read_metadata标coverage=0、reason及已知时间范围；表不存在不表示真实零。部分仍可认证的当前行可保留，manifest明确旧历史范围不可用。真实vitals样本可输出TDigest centroids及原加权sample_count。仅已知隐私基线失效允许此显式部分导出；正文缺失/损坏、HMAC错误或CH网络失败仍失败，不能伪装普通partial。桶UV不可跨日/小时直接相加。
 
 raw-prune安全窄修：管理员canonical HTTP `{action:"prune"}`返回409 `canonical_backup_required`，不接受备份路径/JSON授权。CLI必须验证真实签名raw包、当前独立journal、来源/epoch/generation与正文hash；参数及现有备份目录见[迁移手册](migration.md)。该门槛已纳7fbb561不可变本地联合验收；3e052d8历史计数不修改。
+
+
+报表筛选扩展（当前开发切片，真实PG/浏览器集成尚待）：DSL支持可选path/channel及五个UTM，全部已设条件同时匹配，手动运行和定时当前/前期比较使用相同筛选。旧报表不迁移，缺失或空字段表示不限；未知键、逆序日期、超长字段拒绝。path上限1024、channel100、各UTM500字符。定时报表按推送周期计算范围并保留筛选，不重用陈旧固定日期。明细留存、daily-salt跨日及精确coverage限制保持。

@@ -59,3 +59,12 @@ Root独立索引快照实际lint/typecheck通过，完整build后5文件13 track
 Each of the six JavaScript artifacts includes the complete MIT copyright, permission and warranty notice, preserving bundled third-party comments. The build also emits a matching license text and precompressed gzip files. Exact HTTP script routes serve precompressed gzip when accepted, or the full-notice uncompressed JS otherwise; the license has a separate text/plain route. Both standalone ZIP distributions retain their complete license files.
 
 The core 5KB limit applies to the generated, actually served Zopfli gzip artifact (5120 bytes), not raw JS or default zlib compression. Full-notice core is 5087 bytes and min is 4506; default zlib core is 5282 bytes and exceeds the budget. Optional extensions have separate sizes. Build-time decompression checks preserve identical script contents.
+
+可选横幅支持固定中文/英文文案：`data-language="en"` 选择英文，省略或其他值使用中文。与核心一起嵌入时两个外部脚本都使用 `defer`，并保持核心在前；不要给核心添加 `async`，以免横幅先执行时尚无 tracker 实例：
+
+```html
+<script defer src="https://analytics.example/tracker.js" data-site-id="YOUR_SITE_ID" data-api-host="https://analytics.example" data-consent-required="true"></script>
+<script defer src="https://analytics.example/tracker-consent.js" data-language="en"></script>
+```
+
+热图点击同样排除 `data-baize-ignore`、private/mask、rrweb mask/block 与可编辑区域；只上报归一化位置，不上报区域文字。
