@@ -19,3 +19,9 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 2bf840d 最新整套浏览器30/30 PASS（28真实Chromium+2日期），97.83秒、0 skip，EXIT0。包含预算429不增加provider调用、模拟fixture预算明确调整后真实1PV/0÷1图表、时区修改后真实worker重算，再完成原备注/诊断/权限断言。owned Compose清理验证。证据main-2bf840d-browser.json。
 
 实际图像复核发现AI调用记录仍早于问数，本次下一切片进一步前置问数、后置技术记录；存储固定枚举计时标签也在下一冻结，均尚未被2bf浏览器或ef全轮覆盖。观察标签轻量13单位通过、types/lint通过；首次类型参数错误保留，不改变EOF/SQL/超时/池行为。
+
+## 08eab82 最终同源本地全轮
+
+完整冻结 `08eab82853ab1d625c35371085f10f136477b8b5`，实际 `bash scripts/validate-local-final.sh` EXIT0。46文件173单元、151文件401真实集成全部PASS，0失败0跳过；30检查=28真实Chromium+2日期函数全部PASS、0跳过（runner显示1.6分钟）。lint/types/SDK/tracker及应用构建、全新PG/CH/Redis卷、compiled Node、真实native operational恢复与owned cleanup均通过。原始日志/JSON/source摘要见 `test-evidence/main-08eab82-*`，阶段计数不累加，所有先前FAIL保持。
+
+最终中文workspace、SEO、AI各1440/390和总览/回放1440/375实截图位于 `screenshots/08eab82/`，图像SHA记录在最终报告。模型/Google运输明确模拟；本地数据库、HTTP、浏览器和PG dump/restore是真实。截图不证明付费API或真实OAuth账号已测。最新全部源码生产镜像、跨物理宿主灾备及托管CI仍未在本轮执行；不把f4镜像或b7 native通过冒称该新镜像通过。
