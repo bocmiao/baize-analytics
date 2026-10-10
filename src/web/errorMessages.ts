@@ -1,3 +1,6 @@
+import {ownValue} from './dictionary';
+import {API_ERRORS,type ApiErrorCode} from '../shared/error-codes';
+import {EXTERNAL_ERRORS,type ExternalErrorCode} from '../server/external-errors';
 import { language } from './i18n';
 const englishErrors: Record<string, string> = {
     connector_missing: 'Configure the connector first.',
@@ -25,8 +28,13 @@ const englishErrors: Record<string, string> = {
     geoip_not_configured: 'GeoIP is disabled or lacks credentials.',
     geoip_refresh_failed: 'GeoIP download or verification failed. Geography remains unknown. Check the account, license and network; TLS and SHA256 checks remain enabled.',
 };
+export function localizedErrorCode(code:unknown,status=500):string {
+    const key=typeof code==='string'?code:'';
+    if(Object.hasOwn(API_ERRORS,key)) {const value=API_ERRORS[key as ApiErrorCode];return language()==='en'?value.en:value.zh;}
+    if(Object.hasOwn(EXTERNAL_ERRORS,key)) return language()==='en'?ownValue(englishErrors,key)||API_ERRORS.internal_error.en:EXTERNAL_ERRORS[key as ExternalErrorCode].message;
+    const fallback=status>=500?API_ERRORS.internal_error:API_ERRORS.client_request_failed;
+    return language()==='en'?fallback.en:fallback.zh;
+}
 export function apiErrorMessage(result: {code?:unknown;error?:unknown;message?:unknown}, status:number): string {
-    const code = typeof result.code === 'string' ? result.code : typeof result.error === 'string' ? result.error : '';
-    const fallback = String(result.message || result.error || (language() === 'en' ? 'Request failed.' : '请求失败'));
-    return `HTTP ${status}: ${language() === 'en' ? englishErrors[code] || fallback : fallback}`;
+    return `HTTP ${status}: ${localizedErrorCode(typeof result.code==='string'?result.code:result.error,status)}`;
 }

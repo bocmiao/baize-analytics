@@ -1,8 +1,9 @@
 import type {AnalyticsEvent} from './analytics.js';
 export interface ClickHouseStoreConfig {url: string; username: string; password: string; fetch?: typeof fetch; timeoutMs?: number}
 function boundDate(value: Date | string): string {return new Date(value).toISOString().replace('T', ' ').replace('Z', '');}
+export interface SnapshotReadOptions {from?:Date|string;to?:Date|string;type?:string;includeBots?:boolean;eventIds?:string[];visitorIds?:string[];path?:string;eventName?:string;limit?:number;order?:'asc'|'desc'}
 export interface StoredEvent extends AnalyticsEvent {is_bot?: boolean}
-export interface SnapshotIdentity {siteId: string; snapshotId: string; epoch: string; generation: string}
+export interface SnapshotIdentity {siteId: string; snapshotId: string; epoch: string; generation: string; versionMode?:'exact'|'at_most'}
 /** Only sanitized persisted events enter this store; credentials never enter URLs or errors. */
 export class ClickHouseStore {
  private readonly endpoint: URL;
@@ -31,14 +32,24 @@ export class ClickHouseStore {
    await this.command('INSERT INTO baize_event_snapshots_v1 FORMAT JSONEachRow', {}, body);
   }
  }
- async readSnapshot(identity: SnapshotIdentity, options: {from?: Date | string; to?: Date | string; type?: string; includeBots?: boolean} = {}): Promise<StoredEvent[]> {
-  const clauses = ['site_id={site:String}', 'snapshot_id={snapshot:UUID}', 'epoch={epoch:UUID}', 'generation={generation:UInt64}'];
+ private selection(identity:SnapshotIdentity,options:SnapshotReadOptions){
+  const clauses = ['site_id={site:String}', 'snapshot_id={snapshot:UUID}', 'epoch={epoch:UUID}', identity.versionMode==='at_most'?'generation<={generation:UInt64}':'generation={generation:UInt64}'];
   const params: Record<string, string> = {site: identity.siteId, snapshot: identity.snapshotId, epoch: identity.epoch, generation: identity.generation};
   if (options.from) {clauses.push("ts>={from:DateTime64(3,'UTC')}"); params.from = boundDate(options.from);}
   if (options.to) {clauses.push("ts<{to:DateTime64(3,'UTC')}"); params.to = boundDate(options.to);}
   if (options.type) {clauses.push('type={type:String}'); params.type = options.type;}
   if (!options.includeBots) clauses.push('NOT is_bot');
-  const response = await this.request(`SELECT site_id,toString(event_id) AS event_id,formatDateTime(ts,'%Y-%m-%dT%H:%i:%S.%fZ','UTC') AS event_ts,visitor_id,toString(page_id) AS page_id,type,path,payload,dimensions,is_bot FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} ORDER BY ts,event_id FORMAT JSONEachRow`, params);
+  if(options.eventIds){clauses.push("has(JSONExtract({event_ids:String},'Array(String)'),toString(event_id))");params.event_ids=JSON.stringify(options.eventIds);}
+  if(options.visitorIds){clauses.push("has(JSONExtract({visitors:String},'Array(String)'),visitor_id)");params.visitors=JSON.stringify(options.visitorIds);}
+  if(options.path!==undefined){clauses.push('path={path:String}');params.path=options.path;}
+  if(options.eventName!==undefined){clauses.push("JSONExtractString(payload,'event_name')={event_name:String}");params.event_name=options.eventName;}
+  if(options.limit!==undefined)params.limit=String(options.limit);
+  return {clauses,params};
+ }
+ async countSelected(identity:SnapshotIdentity,options:SnapshotReadOptions={}):Promise<number>{const {clauses,params}=this.selection(identity,options);const response=await this.request(`SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} FORMAT JSON`,params);const result=await response.json() as {data:{count:string|number}[]};return Number(result.data[0]?.count||0);}
+ async readSnapshot(identity: SnapshotIdentity, options:SnapshotReadOptions = {}): Promise<StoredEvent[]> {
+  const {clauses,params}=this.selection(identity,options);
+  const response = await this.request(`SELECT site_id,toString(event_id) AS event_id,formatDateTime(ts,'%Y-%m-%dT%H:%i:%S.%fZ','UTC') AS event_ts,visitor_id,toString(page_id) AS page_id,type,path,payload,dimensions,is_bot FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} ORDER BY ts ${options.order==='desc'?'DESC':'ASC'},event_id ${options.order==='desc'?'DESC':'ASC'} ${options.limit!==undefined?'LIMIT {limit:UInt32}':''} FORMAT JSONEachRow`, params);
   let bytes = 0; const chunks: Uint8Array[] = []; const reader = response.body?.getReader();
   if (!reader) throw Error('CLICKHOUSE_EMPTY_RESPONSE');
   try {while (true) {const chunk = await reader.read(); if (chunk.done) break; bytes += chunk.value.length; if (bytes > 128 * 1024 * 1024) throw Error('CLICKHOUSE_RESULT_LIMIT'); chunks.push(chunk.value);}} finally {await reader.cancel();}
@@ -46,12 +57,13 @@ export class ClickHouseStore {
   return text.trim() ? text.trim().split('\n').map(line => {const {event_ts, ...row} = JSON.parse(line); return {...row, ts: event_ts, payload: JSON.parse(row.payload), dimensions: JSON.parse(row.dimensions)} as StoredEvent;}) : [];
  }
  async countSnapshot(identity: SnapshotIdentity): Promise<number> {
-  const response = await this.request('SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE site_id={site:String} AND snapshot_id={snapshot:UUID} AND epoch={epoch:UUID} AND generation={generation:UInt64} FORMAT JSON', {site: identity.siteId, snapshot: identity.snapshotId, epoch: identity.epoch, generation: identity.generation});
+  const response = await this.request('SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE site_id={site:String} AND snapshot_id={snapshot:UUID} AND epoch={epoch:UUID} AND generation'+(identity.versionMode==='at_most'?'<=':'=')+'{generation:UInt64} FORMAT JSON', {site: identity.siteId, snapshot: identity.snapshotId, epoch: identity.epoch, generation: identity.generation});
   const result = await response.json() as {data: {count: string | number}[]}; return Number(result.data[0]?.count || 0);
  }
  async countExpired(siteId: string, to: string): Promise<number> {
   const response = await this.request("SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE site_id={site:String} AND ts<{to:DateTime64(3,'UTC')} FORMAT JSON", {site: siteId, to: boundDate(to)}); const result = await response.json() as {data: {count: string | number}[]}; return Number(result.data[0]?.count || 0);
  }
+ async deleteGeneration(siteId:string,snapshotId:string,generation:string){await this.command('ALTER TABLE baize_event_snapshots_v1 DELETE WHERE site_id={site:String} AND snapshot_id={snapshot:UUID} AND generation={generation:UInt64} SETTINGS mutations_sync=2',{site:siteId,snapshot:snapshotId,generation});}
  async deleteSnapshot(siteId: string, snapshotId: string) {await this.command('ALTER TABLE baize_event_snapshots_v1 DELETE WHERE site_id={site:String} AND snapshot_id={snapshot:UUID} SETTINGS mutations_sync=2', {site: siteId, snapshot: snapshotId});}
  async deleteScope(siteId: string, scope: {visitorId?: string; from?: string; to?: string; all?: boolean}) {
   const clauses = ['site_id={site:String}']; const params: Record<string, string> = {site: siteId};

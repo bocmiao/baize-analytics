@@ -1,3 +1,4 @@
+import {siteAllowsOrigin} from './site-hosts.js';
 import type { FastifyInstance } from 'fastify';
 import type { AppContext } from './context.js';
 import { envelopeSchema,eventSchema,type WireEvent } from '../../packages/contracts/index.js';
@@ -26,7 +27,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     if(typeof raw==='string'){try{raw=JSON.parse(raw);}catch{throw new HttpError(400,'invalid_json');}}
     if(raw?.protocol_version!==1)return reply.code(400).send({error:'unsupported_protocol_version',supported:[1]});
     const envelope=envelopeSchema.parse(raw);const found=await ctx.pool.query('SELECT * FROM sites WHERE id=$1',[envelope.site_id]);if(!found.rowCount)throw new HttpError(404,'站点不存在');let site=found.rows[0];
-    const origin=req.headers.origin;if(origin){let host='';try{host=new URL(origin).host;}catch{throw new HttpError(403,'无效来源');}if(host!==site.domain&&host.split(':')[0]!==site.domain)throw new HttpError(403,'来源不属于该站点');reply.header('Access-Control-Allow-Origin',origin).header('Vary','Origin');}
+    const origin=req.headers.origin;if(origin){try{new URL(origin);}catch{throw new HttpError(403,'无效来源');}if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');reply.header('Access-Control-Allow-Origin',origin).header('Vary','Origin');}
     const ip=req.ip,ua=req.headers['user-agent']??'';
     const limitKey=`baize:rate:${site.id}:${visitorHash(site.salt_secret,'rate',ip,'')}`;let count=0;
     // Maintain the local window even while Redis is healthy, so failover does not reset its history.
@@ -42,7 +43,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     await transaction(ctx.pool,async client=>{
       await lockSite(client,site.id);
       site=(await client.query('SELECT * FROM sites WHERE id=$1',[site.id])).rows[0];if(!site)throw new HttpError(404,'站点不存在');
-      if(origin){const host=new URL(origin).host;if(host!==site.domain&&host.split(':')[0]!==site.domain)throw new HttpError(403,'来源不属于该站点');}
+      if(origin){if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');}
       if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
       let changed=false;

@@ -1,0 +1,26 @@
+# Explicit local replica profile. PostgreSQL remains the canonical event store.
+services:
+  app:
+    environment:
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-baize}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:?Set an independent local ClickHouse password}
+    depends_on:
+      clickhouse: {condition: service_healthy}
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.8-alpine@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146
+    profiles: [clickhouse]
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-baize}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:?Set an independent local ClickHouse password}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: '1'
+    volumes: [clickhouse_data:/var/lib/clickhouse]
+    # No published ports: only this Compose network can reach the replica.
+    healthcheck:
+      test: [CMD-SHELL, 'clickhouse-client --user "$$CLICKHOUSE_USER" --password "$$CLICKHOUSE_PASSWORD" --query "SELECT 1" >/dev/null']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+volumes:
+  clickhouse_data:

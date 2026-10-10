@@ -34,7 +34,7 @@
 - Docker故障场景最新实际矩阵EXIT0及先前磁盘满失败记录见docker-lifecycle-main.json/txt；镜像6c66明确早于024及后续UA/bot，不能宣称它验证后续新镜像。
 - 100k与1M真实HTTP全链路已通过，1M结果属于启动cb72a7e+WIP的独立运行，非此第二批精确索引快照。ClickHouse镜像在制另有真实测试，未在此提交中宣称完整P2迁移。全部F/P2仍未完成，剩余状态继续见逐项清单；远端CI仍未运行。
 
-当前新增真实PG统计缺陷：不等样本分位合并（25×100 + 1×10000）p75错误5430，analytics正在修复/复验；不得以此前148通过宣称此专项已通过。
+新增真实PG不等样本分位合并缺陷（25×100 + 1×10000的p75曾错误5430）已按加权Type7修复，真实collector→worker→stats及单元尾部/6点350专项3文件23测试通过；当前工作区增量，非b56b7e9快照，root全集待跑。
 
 ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Redis完整脱敏schema可靠镜像与analytics/content/geo选择性读取已有14集成+3单元通过，后续lease/deadline/cache/views合测22项通过；root全应用启动/隐私故障验收另在执行。高水位/epoch/count不符明示PGfallback；多数worker/rollups/governance/identity/realtime及事件属性仍PG。PG仅元数据、增量partition、全面读切换、历史迁移、CH集群备份与大容量仍未验收，详见ACCEPTANCE_CLICKHOUSE.md。
 
@@ -48,3 +48,16 @@ ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Red
 新Docker镜像 `f8dc7f94dcd5fc86dfedfc841f8af64d528f54de798115e59307b311434f8e90` 全安装/备份/新卷恢复/真实worker失败/升级回滚矩阵 **EXIT0**。170条source/image SHA一致，真实应用25条迁移，包含024及本批CH/收入身份/回放热图/多语言。新镜像此前两轮实际EXIT1分别为Node JSON导入属性和非root读取公开配置权限，均已修复并保留日志及镜像SHA；未用旧6c66镜像替代。此Docker矩阵没有额外重复Chromium；浏览器结果来自同源fresh应用快照。
 
 功能清单已纠正WordPress真实验收及F50/P2-10一致状态。F29流失特征新独立模块在制，尚未注册主路由；CH目前可靠镜像与选择性读取，PG仅元数据的全面迁移、增量大规模复制/CH备份仍未完成。不可变提交上的持续后台/集中单站性能测试尚待执行。GSC/GA4/企业微信/付费SERP/真实模型账户未实测；远端GitHub托管CI仍因账号计费阻断未运行，不重跑或修改计费。
+
+当前工作区新增root全应用真实CH启动/隐私故障2项、外部错误契约1项通过；英文24个稳定外部错误映射已实现，浏览器验收仍待执行。此批状态至此冻结，后续全集结果由root补第三里程碑。
+
+
+## 第四里程碑：共享本地CI组件与fresh浏览器
+
+冻结应用索引快照实际lint/typecheck/build、SDK协议与独立journal命令通过；17单元文件76项、49真实服务集成文件161项，共66文件237测试通过、0失败/0跳过。集成使用独立PG17/CH25.8/Redis7容器，fresh编译生产入口+真实PG独立schema/Redis14+Chromium管理员向导后18E2E通过（42.4秒，16浏览器流程、2日期函数）。F29 typed流失属性、F30成熟留存、F22完整Top及自动更新、跨子域撤回、完整安全38表导出和中英稳定错误均有实际覆盖。证据fourth-main-components.json/fourth-shared-ci-components.txt/fourth-fresh-e2e-passed.txt。
+
+共享脚本首轮76单元/160集成通过、1旧升级fixture失败：014历史schema故意没有027调度字段，fixture改为真实rebuildSite使用旧lease合约；产品未兼容伪造旧新混合schema。第二轮237应用测试通过，但18E2E有1旧文案selector失败；error-context中真实新事件和在线1已显示，测试保留精确baseline+1、改为新UI句子，fresh完整18通过。两轮原始EXIT1日志保留fourth-shared-ci-first-failed.txt/fourth-shared-ci-e2e-first-failed.txt。组件最终通过，尚未把失败的整脚本说成EXIT0。
+
+新bf77镜像189核心源码manifest与025/026/027已build；完整Docker生命周期仍在运行，将单独记录真实最终EXIT。此源码快照不包含下一批单连接错误路径/邀请原子audit修复与028历史模块；这些工作树专项通过不是本快照237测试证据。
+
+CNB配置4386ec2已直接main，GitHub私有main权威，父线程确认私有空仓；真实本地file-only7分支同步测试通过，空仓bootstrap为显式确认空refs后普通push。CNB_TOKEN兼容输入不保证权限，官方schema/密钥引用/调度和远端run未实测。GitHub账号级托管CI阻断继续单列，不改计费、不重跑。完整F/P2仍未完成，不能把可靠镜像称PG-only、将顺序百万称实时或1C2G承诺。

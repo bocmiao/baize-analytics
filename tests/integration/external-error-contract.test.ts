@@ -1,3 +1,4 @@
+import {API_ERRORS} from '../../src/shared/error-codes.js';
 import {it,expect} from 'vitest';
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
@@ -19,7 +20,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('actual app returns stable localized c
   expect(missing.statusCode).toBe(409);expect(missing.json()).toEqual({error:'connector_missing',message:'请先配置连接器'});
   const configure=await runtime.app.inject({method:'PUT',url:`/api/sites/${site}/external`,headers:{cookie},payload:{kind:'ai',settings:{endpoint:'https://provider.example/v1',model:'fixture',enabled:false}}});
   expect(configure.statusCode).toBe(400);expect(configure.json().error).toBe('connector_secret_required');
-  const fault=await runtime.app.inject('/fixture/provider-fault');expect(fault.statusCode).toBe(500);expect(fault.json()).toEqual({error:'internal_error'});expect(fault.body).not.toContain('not-for-public');
+  const fault=await runtime.app.inject('/fixture/provider-fault');expect(fault.statusCode).toBe(500);expect(fault.json()).toEqual({error:'internal_error',message:API_ERRORS.internal_error.zh});expect(fault.body).not.toContain('not-for-public');
   const timeout=await runtime.app.inject('/fixture/provider-timeout');expect(timeout.statusCode).toBe(504);expect(timeout.json()).toEqual({error:'external_timeout',message:'外部服务请求超时，请稍后重试'});
  }finally{await runtime?.app.close();await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}
 },30000);

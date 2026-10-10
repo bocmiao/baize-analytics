@@ -54,7 +54,7 @@ describe.skipIf(!configured)('full application ClickHouse startup and upgraded p
   const clean=await store.readSnapshot(pointer);expect(clean).toHaveLength(1);
   // Reproduce a pre-upgrade replica containing a known stable alias after PG detail expiry.
   await store.deleteSnapshot(siteId,pointer.snapshotId);
-  await store.writeSnapshot(pointer,clean.map(e=>({...e,payload:{...e.payload,props:{customer_id:'historical-customer-must-disappear',plan:'free'}}})));
+  await store.writeSnapshot(pointer,clean.map(e=>({...e,payload:{...e.payload,props:{customer_id:'historical-customer-must-disappear',device_id:'legacy-device',uuid:'legacy-uuid',contact:'legacy-contact',pageId:'legacy-page',email:'legacy@example.test',plan:'free'}}})));
   await pool.query('DELETE FROM events WHERE site_id=$1',[siteId]);
   await pool.query("UPDATE sites SET config=config||'{\"privacy_cleanup_version\":4}'::jsonb WHERE id=$1",[siteId]);
   await runtime.app.close();
@@ -68,5 +68,19 @@ describe.skipIf(!configured)('full application ClickHouse startup and upgraded p
    expect((await pool.query('SELECT snapshot_id FROM event_store_state WHERE site_id=$1',[siteId])).rows[0].snapshot_id).toBeNull();
    const read=await new EventStore(pool,store).readSiteEvents(siteId);expect(read.source).toBe('postgres');expect(read.events).toEqual([]);expect(JSON.stringify(read)).not.toContain('historical-customer');
   }finally{await restarted.app.close();}
+  // Restore an old replica and its pointer a second time: the privacy marker must
+  // remain a durable startup barrier, not a one-shot migration side effect.
+  await store.writeSnapshot(pointer,clean.map(e=>({...e,payload:{...e.payload,props:{device_id:'restored-stable-device',contact:'restored-contact'}}})));
+  await pool.query('UPDATE event_store_state SET snapshot_id=$2,snapshot_epoch=$3,snapshot_generation=$4 WHERE site_id=$1',[siteId,pointer.snapshotId,pointer.epoch,pointer.generation]);
+  expect(await store.countSnapshot(pointer)).toBe(1);
+  const beforeRestart=await new EventStore(pool,store).readSiteEvents(siteId);
+  expect(beforeRestart.source).toBe('postgres');expect(beforeRestart.events).toEqual([]);
+  expect(JSON.stringify(beforeRestart)).not.toContain('restored-stable-device');
+  const restored=await createApp(options);
+  try{
+   expect(await store.countSnapshot(pointer)).toBe(0);
+   const read=await new EventStore(pool,store).readSiteEvents(siteId);
+   expect(read.events).toEqual([]);expect(JSON.stringify(read)).not.toContain('restored-stable-device');
+  }finally{await restored.app.close();}
  }),30000);
 });

@@ -2,7 +2,11 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-已提交精确快照为 main `b56b7e9`：36文件148应用测试通过（59单元、89集成），13项Playwright通过（11浏览器流程、2日期检查）；见 `docs/test-evidence/second-main-tests.json` 和 `second-main-e2e.txt`。当前工作区新增ClickHouse及多语言改动单独记在制，不能由这个快照证明通过。旧Docker镜像6c66的矩阵已PASS，但不含024及后续改动；新镜像最终矩阵待ops执行。WordPress本地实际运行另有独立真实报告。
+当前已推送精确快照为 main `9cd7cd0745cc0bf0440fcfbd8af9822f91e2f1f1`：45 文件、180 项应用测试通过（64 单元、116 集成），15 项 fresh-PG Playwright 检查通过（13 浏览器工作流、2 日期检查），0 失败、0 跳过；lint/typecheck/build 通过。证据为 [third-main-tests.json](test-evidence/third-main-tests.json)、[third-main-e2e.txt](test-evidence/third-main-e2e.txt)。真实 PostgreSQL、Redis、ClickHouse 与 Chromium 已参与本地验收；本地通过不能代替未运行的远端托管 CI。
+
+同源新 Docker 镜像 `f8dc7f94dcd5fc86dfedfc841f8af64d528f54de798115e59307b311434f8e90` 全生命周期矩阵 EXIT0：170 条 source/image SHA 一致，25 条迁移（包含 024），实际 compiled Node 启动、安装/采集/导出、备份/独立新库新卷恢复、worker SQL 故障拒绝恢复成功、正常升级、缺失镜像与已提交 schema + HTTP503 回滚均验证。见 [docker-third-main.json](test-evidence/docker-third-main.json) 和 [validation-ops.md](validation-ops.md)。之前 Node JSON 导入属性、非 root 公开文件权限两次 EXIT1 保留证据；不再把旧 6c66 镜像当作当前版本。该 Docker 矩阵未额外重复 Chromium，浏览器证明来自同源 fresh 应用快照。
+
+收入/身份专用视图、实际 SDK 注册→正收入与账号切换、回放/多 SPA/多标签、响应式热图和 A/B 停续已有本地专项通过。F29 新完整上下文/typed 属性增强及新增第 16 项浏览器用例正在工作区集成，尚无本批完整 fresh-E2E 结果；不由上述 180/15 证明。高级后台错误的完整中英文、ClickHouse 全迁移目标仍未完成。WordPress 与 Cookie 横幅的真实本地通过状态见对应条目。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
@@ -94,7 +98,7 @@
 - 状态：已实现已测（真实浏览器/接口/采集）
 - 实现文件：packages/tracker/src/index.ts；src/server/content-analytics.ts；src/web/ExtendedAnalysis.tsx
 - 验收测试：tracker-hooks.test.ts；content-analytics.test.ts；docs/ACCEPTANCE_CONTENT.md
-- 边界/未实测：真实标题404采集、URL×脱敏来源路径×渠道×次数、修链CSV防公式注入与审计已测。超明细保留期不可用、导出409；最新13项E2E含真实下载/404CSV/事件趋势已通过。
+- 边界/未实测：真实标题404采集、URL×脱敏来源路径×渠道×次数、修链CSV防公式注入与审计已测。超明细保留期不可用、导出409；9cd7 的完整 15 项 fresh-E2E 含真实下载/404 CSV/事件趋势，通过；新 F29 改动需另验。
 
 - 做什么：发现死链与错误引流。
 - 采集端：document.title 匹配 /404|not found|页面不存在/i，或 <body data-baize-404> 标记，pageview 带 props.status=404。
@@ -155,10 +159,10 @@
 
 ## F-14 收入事件【P0】
 
-- 状态：部分实现（归因核心已测）
-- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts；src/web/main.tsx
-- 验收测试：analytics.test.ts（币种隔离/订单去重/多标签末次点击）
-- 边界/未实测：按币种独立金额、订单幂等、末次非direct渠道/实际页面实例归因已测；完整收入趋势/归因图展示仍须最终UI验收；金额仅业务自述。
+- 状态：已实现且本地验收（专用 API/UI/真实 SDK）
+- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts；revenue-identity.ts；src/web/RevenueIdentityViews.tsx
+- 验收测试：analytics.test.ts；revenue-identity.test.ts；tests/e2e/revenue-identity.spec.ts；third-main-tests.json；third-main-e2e.txt
+- 边界/未实测：币种独立金额/订单趋势、重复订单、末次非 direct 渠道/页面归因及历史币种缺失警示已测；真实 SDK 专项验证 119 CNY 与 5 USD 分开、重复订单不增收入、专页与英文控件，纳入 9cd7 的 180/15。金额仅业务自述，不是实际支付对账；不推算未知币种、不把归因当因果。
 
 - `baize.trackRevenue(99.0, { currency:'CNY', order_id})`；服务端汇总 revenue。
 - 看板：收入趋势、按渠道/页面的末次点击收入归因。
@@ -166,10 +170,10 @@
 
 ## F-15 用户标识 identify【P0】
 
-- 状态：部分实现（身份映射/删除已测）
-- 实现文件：packages/tracker/src/index.ts；src/server/identity.ts；collect.ts；deletion.ts；analytics.ts
-- 验收测试：core-api.test.ts；analytics.test.ts；governance-privacy.test.ts
-- 边界/未实测：标准模式identify、HMAC身份映射、授权路径查询及user删除展开已有；身份前后事件时间后的身份A→B关联/删除/日志恢复实际PG已测；历史匿名会话不自动缝合（隐私选择）；完整注册→付费专属视图仍需核对；每日盐明确禁止。
+- 状态：已实现且本地验收（时间绑定身份及注册→正收入视图）
+- 实现文件：packages/tracker/src/index.ts；src/server/identity.ts；revenue-identity.ts；collect.ts；deletion.ts；src/web/RevenueIdentityViews.tsx
+- 验收测试：core-api.test.ts；revenue-identity.test.ts；governance-privacy.test.ts；tests/e2e/revenue-identity.spec.ts
+- 边界/未实测：脱敏账号键/活动、明确相同业务标识的跨设备时间绑定、账号 A→B 隔离/删除/日志恢复已实际 PG 测试；真实 SDK 专项验证不同账号收入不混合、API/DOM 不出现原业务标识、选定保留窗口内注册后严格晚于注册的正收入转化与英文控件，纳入 9cd7 的 180/15。历史匿名不自动缝合为隐私选择；窗口外注册/付费不补算；每日盐禁止身份缝合，身份分析当前不支持入口路径/渠道/UTM 过滤并明确提示。
 
 - `baize.identify('user_123')`（登录后调用）；服务端 identity_map（visitor_id↔user_id），历史会话缝合到 user_id（抄 Umami session_link）。
 - 看板：登录用户行为路径、注册→付费转化。
@@ -243,7 +247,7 @@
 - 状态：已实现已测（真实HTTP/PG；UI最终回归另记）
 - 实现文件：src/server/analytics.ts；src/web/main.tsx
 - 验收测试：analytics.test.ts（真实SSE/迟到/撤销权限）；tests/e2e/workflow.spec.ts
-- 边界/未实测：真实listener+cookie+viewer测试初始流、迟到事件经outbox序号交付与撤销成员后断流通过；真实浏览器实时视觉用例已纳入第二main隔离全套13/13快照（11浏览器流程、2日期检查），不将全套计数当成13项实时专项。
+- 边界/未实测：真实listener+cookie+viewer测试初始流、迟到事件经outbox序号交付与撤销成员后断流通过；真实浏览器实时视觉用例在第二 main 13/13 与第三 main 15/15 fresh 快照均通过；这些全套计数不等于实时专项数量。
 
 - 当前在线（近 5 分钟有心跳的去重访客）；30 分钟事件流（SSE 推送：时间/页面/来源/地域/设备）；实时 Top 页面/来源。
 - 实现：SSE 端点 /api/realtime/stream；明细查询限定近 30 分钟 + Redis 在线集合。
@@ -283,7 +287,7 @@
 - 状态：已实现已测（真实浏览器/接口/资产）
 - 实现文件：src/server/geography-analytics.ts；packages/geography；src/web/ExtendedAnalysis.tsx
 - 验收测试：geography-analytics.test.ts；content-analytics.test.ts；docs/ACCEPTANCE_CONTENT.md
-- 边界/未实测：真实国家→四川→成都PV2/UV1和unknown coverage0.5；官方ECharts包34省资产带LICENSE/SHA，ECharts6真实SSR兼容通过。真实官方SVG四川点击→真实region API→省地图与unknown城市提示已13项E2E通过；真实MaxMind四川/城市实测与坐标准确性未测。
+- 边界/未实测：真实国家→四川→成都PV2/UV1和unknown coverage0.5；官方ECharts包34省资产带LICENSE/SHA，ECharts6真实SSR兼容通过。真实官方 SVG 四川点击→真实 region API→省地图与 unknown 城市提示已纳入 9cd7 全 15 项 fresh-E2E 通过；真实MaxMind四川/城市实测与坐标准确性未测。
 
 - 设备/浏览器/OS/屏幕/语言分布；地域：中国地图下钻到省（ECharts + 内置 china.json）。
 - 实现：预聚合维度查询。
@@ -310,10 +314,10 @@
 
 ## F-29 漏斗分析【P1】
 
-- 状态：已实现已测（真实浏览器/漏斗/流失）
-- 实现文件：src/server/analytics.ts；content-analytics.ts；src/web/ExtendedAnalysis.tsx
-- 验收测试：analytics.test.ts；content-analytics.test.ts；workflow.spec.ts
-- 边界/未实测：严格/宽松有序唯一访客漏斗及真实流失集合Top来源/设备已补PG测试，按最早入组会话首步归属，全量sampleRate1；真实E2E两人进入/一人流失及来源设备通过；保留期外coverage0、每日盐跨日unsupported。
+- 状态：部分实现：有序漏斗及基础流失本地验收；完整上下文/typed 属性增强在制
+- 实现文件：src/server/analytics.ts；content-analytics.ts；funnel-analysis.ts（新增）；src/web/ExtendedAnalysis.tsx；FunnelDropoff.tsx（新增）
+- 验收测试：analytics.test.ts；content-analytics.test.ts；workflow.spec.ts；新增 funnel-analysis.test.ts（真实 PG 4/4）；funnel-dropoff.spec.ts（本批 fresh-E2E 未最终）
+- 边界/未实测：9cd7 的 180/15 已验证严格/宽松漏斗及基础来源/设备流失。新增独立端点以完整保留会话上下文和去重访客集合分析，不拼接不同会话；boolean true 与字符串 true 分桶、有/缺失属性样本、Top10/事件上限/隐私/保留边界已独立 PG 验证。当前已在工作区注册、接专用 UI 和新增第 16 项真实 SDK 用例，但本批完整索引与 fresh-E2E 尚待验证。UI 请求结束截到 now 并保留 requested/effective metadata；该专用端点目前不支持入口路径/渠道/UTM 条件，明确提示清除，不静默忽略；超保留/上下文不完整/截断/每日盐跨日不展示伪零。
 
 - 多步骤（如 首页→商品页→下单→支付），每步转化率/流失数/流失用户特征（Top 来源/设备）。
 - 实现：按会话 pageview/event 序列有序匹配；支持严格/宽松顺序；抽样 + 预计算 funnel_stats 日表。
@@ -428,7 +432,7 @@
 - 状态：已实现已测（本地）
 - 实现文件：src/server/sites.ts；src/web/main.tsx
 - 验收测试：core-api.test.ts；tests/e2e/workflow.spec.ts
-- 边界/未实测：站点/时区/隐私/追踪代码、行级权限已测；新真实E2E13项含标签修改和按组筛选通过；website_id为随机24hex而非规格UUID，功能偏差明确保留。
+- 边界/未实测：站点/时区/隐私/追踪代码、行级权限已测；9cd7 全 15 项 fresh-E2E 中的实际标签修改与按组筛选通过；website_id为随机24hex而非规格UUID，功能偏差明确保留。
 
 - sites 表（name/domain/timezone/privacy_config）；分组 tags；每站点独立 website_id（UUID）与追踪代码片段生成页。
 
@@ -495,7 +499,7 @@
 - 状态：部分实现；Google外部未实测
 - 实现文件：src/server/external.ts；external-worker.ts；src/web/Connectors.tsx
 - 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：OAuth及分页聚合导入/覆盖声明已模拟PG验证；真实GA账号未测，历史PV按站点时区逐日虚线叠加UI已接入，不累加源UV；对应UI已纳入第二main13/13快照；Google响应仍为显式注入的模拟数据，不能记真实Google账号导入已验收。
+- 边界/未实测：OAuth及分页聚合导入/覆盖声明已模拟PG验证；真实GA账号未测，历史PV按站点时区逐日虚线叠加UI已接入，不累加源UV；界面代码随当前 main 快照提供，但完整套件计数不代表 GA4 虚线叠加专项浏览器断言；Google响应仍为显式注入的模拟数据，不能记真实Google账号导入已验收。
 
 - 用户授权 Google 账号 → GA4 Data API 拉历史**聚合报表**（按日/周的 PV/UV/会话/来源 Top）→ ga_import 表；看板"历史对比"叠加虚线。
 - 边界（诚实说明）：Data API 只能读到聚合报表，**不能还原完整事件流、访客身份与漏斗历史**；因此这是"历史聚合报表导入"，不是"迁移零成本"。导入器必须说明来源、覆盖时间、丢失字段与可用分析范围。
@@ -673,23 +677,24 @@
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：部分实现（新增应用镜像/选择性读切换本地实际验收）：真实PG/CH/Redis完整脱敏schema可靠镜像，analytics保留边界/过滤、content/geo选择性读取；高水位/epoch/count不符明示PGfallback。删除/恢复屏障与上传删除竞态/日志失败重放/旧快照清理已有专项通过（14集成+3单元，后续views/lease/deadline/cache合测22项），见docs/ACCEPTANCE_CLICKHOUSE.md。当前在制不属于b56b7e9索引。worker/rollups/governance/identity/realtime/事件属性仍PG；PG仅元数据、增量partition、更全面读切换、历史迁移/CH集群备份及大容量仍未完成，不能仅以镜像模块验收代替P2全部目标。
-- P2-02 隐私优先会话回放：部分实现（核心已测）：optin、严格服务端遮罩校验、page实例/序号、真实rrweb播放器；跨页完整播放/真实复杂站点兼容待扩展。证据 governance.test.ts、tracker-browser.test.ts、ACCEPTANCE_WEB.md。
-- P2-03 热力图：部分实现（核心已测）：optin与0.01精度归一化点击、SVG热图真实数据；复杂响应式/滚动坐标浏览器专项验收未完整记录。
-- P2-04 A/B 实验归因：部分实现：确定性visitor分组/目标计数/API与UI集成；固定周期双比例检验/Bonferroni多重修正/Wilson区间/样本不足保护已真实PG与单元测试；实际共享cookie A→B identify/goal、删除A保留B、旧贡献回灌journal重放真实浏览器/PG已通过；贡献event_id+ts幂等，API不信converted缓存，旧无明细历史标partial_unavailable禁显著性。
-- P2-05 微信小程序 SDK：部分实现：wx.request注入SDK、无WebCrypto UUID、同意/幂等重试/每日盐限制已有本地测试；真实微信设备/账号未实测。
-- P2-06 WordPress 插件：已实现，本地实际运行通过：官方 WordPress 6.9.4/PHP 8.3.31/MariaDB，真实 ZIP 上传安装、启用/设置/停用/再启用、Chromium→HTTP202→PG→worker，以及同意/撤回；见 docs/test-evidence/wordpress-actual-runtime.json。更多主题/CMP/插件冲突未实测。
-- P2-07 企业微信扫码 SSO：连接器已实现、真实企业未实测：显式成员映射、一次state/session、禁止自动提权，真实PG模拟OAuth测试通过；不创建企业凭据。
-- P2-08 多语言 UI：部分实现：中文主体及英文核心UI；高级治理表单/回放Play及speed实际英文交互已测；全量后台错误文本/开发审计报告仍非完整多语言。
-- P2-09 Ollama 本地模型：连接器已实现、真实Ollama推理未实测：明确登记窄范围内网例外与真实本地HTTP模拟传输测试；未运行真实模型。
-- P2-10 Cookie 同意横幅：已实现且本地真实浏览器验收，与F-50同一功能/同一证据：独立tracker-consent.js构建、真实点击前无ID无PG数据、点击后采集通过tracker-hooks.test.ts。不能在F-50标通过而此处保留“部分实现”。更多真实CMP/主题组合未实测，不是核心横幅尚未实现。
+- P2-01 ClickHouse 明细可选迁移：**部分实现，本地阶段验收通过**。9cd7 的 180 项全量测试包含真实 PG/CH/Redis 完整脱敏镜像、选择性读切换、租约/epoch/count fencing、故障明确 PG fallback、删除/恢复屏障、启动隐私失败关闭和独立副本恢复隔离；新 f8dc Docker 同源代码与 25 迁移已验证。详见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)。PG 仍是权威；worker/rollups/governance/identity/realtime/事件属性等仍 PG。PG 仅存元数据、全面查询切换、增量分区/历史迁移、CH 集群备份与大容量验收仍未完成；不能把镜像阶段标作全部 P2 完成。
+- P2-02 隐私优先会话回放：**已实现且本地专项验收**。opt-in、服务端严格遮罩、真实 rrweb sandbox player 已测；9cd7 专项进一步验证多 SPA/多标签三页面实例各自完整 snapshot、独立播放/Play/Pause、私密文本不进入播放器与 API、真实 metadata/过滤。证据 tracker-collector.test.ts、tracker-replay-heatmap.test.ts、third-main-tests.json、ACCEPTANCE_WEB.md。复杂真实站点/CSS 还原兼容与更多浏览器未全矩阵实测；当前是保守结构回放，不恢复远端资源或遮罩文本。
+- P2-03 热力图：**已实现且本地专项验收**。真实 opt-in 点击/四档滚动、不同页面与 1000/400 CSS 视口独立分桶、敏感 input/select/private 排除、不可变重试计数不增、真实 API 过滤及 SVG 呈现已验。包含 9cd7 全 180 项与 15 项 fresh-E2E；一次异步滚动失败及修正后的重测保留证据。坐标为文档百分比，不使用演示底图或宿主截图；任意复杂响应式/无限滚动、真实站点兼容仍未全矩阵验证。
+- P2-04 A/B 实验归因：**已实现且本地专项验收**。真实同意门控、确定性 visitor 分组、实际 SDK 目标→唯一转化访客、停止/继续分配且保留历史与稳定 variant、权限/审计已测。双比例检验/Bonferroni 修正/Wilson 转化率区间和不足样本保护、账号 A→B 删除保留 B/独立日志重放、event_id+ts 幂等、旧无明细历史禁显著性均有真实 PG/浏览器证明，纳入 9cd7 的 180/15。固定周期是统计方法约定，当前不由平台强制锁定结束时间；观察归因不证明真实支付或因果。
+- P2-05 微信小程序 SDK：**部分实现；真实微信设备/账号未实测**。wx.request 注入 SDK、无 WebCrypto UUID、同意/幂等重试/每日盐限制已有本地测试；不能把注入传输测试当微信发布/真机验收。
+- P2-06 WordPress 插件：**已实现且本地实际运行通过**。官方 WordPress 6.9.4/PHP 8.3.31/MariaDB，真实 ZIP 上传安装、启用/设置/停用/再启用、Chromium→HTTP202→PG→worker 和同意/撤回通过，见 [wordpress-actual-runtime.json](test-evidence/wordpress-actual-runtime.json)。更多主题/CMP/插件冲突未实测。
+- P2-07 企业微信扫码 SSO：**连接器本地验收；真实企业未实测**。显式成员映射、一次 state/session、禁止自动提权，真实 PG 模拟 OAuth 测试通过；未创建企业凭据。
+- P2-08 多语言 UI：**部分实现，本地已有交互通过**。中文主体、英文核心及高级治理/收入/身份/实验/回放 Play 与 speed 等控件已随 9cd7 的 fresh 15 项执行；24 个稳定外部错误英文映射及本地安全错误测试已接入，但全量后台错误、导出任务原因、嵌入与高级一致性仍在制，不能标成全量语言覆盖完成。用户内容/模型事实不伪翻译；开发规格与审计报告仍主要中文。
+- P2-09 Ollama 本地模型：**连接器本地验收；真实 Ollama 推理未实测**。管理员明确登记窄范围内网例外，真实本地 HTTP 模拟传输测试通过；未运行真实模型。
+- P2-10 Cookie 同意横幅：**已实现且本地真实浏览器验收**，与 F-50 同功能同证据。独立 tracker-consent.js 构建，真实点击前无 ID/PG 数据、点击后采集及撤回通过 tracker-hooks.test.ts。与 F-50 状态一致；更多真实 CMP/主题组合未实测，不能把核心横幅继续列为未实现。
 
 ## 集中剩余清单（不代表全部验收）
 
-- 可自主补齐的功能：尚需完成全量后台错误英文和高级一致性（web/external正在实施及测试）、跨设备身份专用注册→付费视图（专项验收在制）、ClickHouse完整可选迁移（可靠镜像及选择性读取已有新增本地专项通过；PG仅元数据/更多模块读切换/增量与历史迁移/CH备份仍在制，不能使用b56b7e9快照当全部P2通过）。新下载/404/事件/目标/漏斗/地域/规则/UTM接口及UI已实现；新增UI交互13项真实E2E通过。
-- 必须补专项证据：Windows安装入口、持续混合写删及更大单站规模分布。100k和1M PG-only真实 HTTP→outbox→worker→queryStats/SQL 对账均已通过，见docs/validation-scale.md与full-pipeline-1000000.json；1M启动cb72a7e+当时WIP，不冒充精确最新SHA、CH容量或1C2G/5分钟延迟保证。WordPress 本地真实运行已通过，更多主题/CMP冲突未实测。实际A→B身份删除/恢复与实验贡献已浏览器验证，匿名历史不自动缝合为隐私选择。
-- 等最终集成结果：已提交b56b7e9快照的148应用测试/13E2E及lint/type/build通过；现工作区后续改动必须另跑最终集成，不能沿用148证明新增功能。ops旧6c66镜像增强恢复/回滚EXIT0不覆盖024及当前工作区，新镜像全矩阵尚待运行。
-- 真实外部未实测：Google GA4/GSC、MaxMind授权下载、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业SSO、商业AI及真实Ollama模型；安全连接器与模拟集成通过不能替代外部验收。F52官方接口可行性未核验。
-- 规模/实现偏差：exact访客集合代替HLL、持久PG任务代替BullMQ、部分精确范围查询重建保留期明细；这些选择已测试正确性，但内存/吞吐规模和超保留期精度边界必须持续披露。
+- **已实现且本地证明**：9cd7 精确索引 lint/type/build、180 应用测试和 15 fresh-E2E 通过；收入趋势/归因专页、事件时间身份/明确跨设备注册→正收入专页、回放/响应式热图/A/B 专项、WordPress 实际运行与 Cookie 横幅均有对应本地证据，不再列为待实现。新 f8dc Docker 170 条源码 hash、25 条迁移与完整生命周期 EXIT0；该矩阵不代表新增 Docker-Chromium 或真实外部账户验收。
+- **第四批已实现且本地验收**：F29完整会话流失特征/API/UI、F30成熟期留存与缺口诚实标记、F22完整实时Top与SSE更新、38张表安全全站导出、稳定中英错误、明确白名单跨子域身份与撤回、真实本地SEO整改复检均纳入66文件237测试与fresh18E2E通过。025增量CH副本/PG尾部混合读取已测；不能称PG-only或全面P2迁移。第四新镜像bf77已build，完整生命周期仍执行，不能提前记EXIT0。最新单连接错误分支及邀请原子审计已专项3/3通过但尚在下一批工作树；028历史复制/恢复尚未接应用删除/权限闭环，不纳入本批。
+- **持续后台性能已有限实测，仍非资源/SLO承诺**：100k/1M PG-only顺序链路证据保留，百万40站先采集后聚合，不能称实时负载。旧9cd7真实分区维护40P01已防御修复并真实PG回归；912单站10k EXIT0、四站20k暴露调度饥饿及最终查询采样缺陷（失败保留），027公平调度后不可变77d5f615四站20k持续后台采集+查询 EXIT0，每站水位在写入期间前进、最终PG/HTTP/outbox一致。发布水位滞后p95 8.836秒、Node峰值约791MiB；共享主机、非1C2G隔离，无实时SLO承诺。详见 [validation-continuous-scale.md](validation-continuous-scale.md)。Windows安装在Linux未运行，更多真实设备/CMP/复杂站点组合未全验。
+- **真实外部未实测**：Google GA4/GSC、MaxMind 授权下载及地域准确率、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业 SSO、商业 AI 和真实 Ollama 模型；安全连接器、模拟集成及本地 HTTP 返回不替代外部账号验收。F52 官方流量/关键词接口可行性仍未核验：官方文档读取被既有代理 CONNECT 403 阻断（origin 000），并非百度拒绝或无 API 的证明；证据见 [BAIDU_API_FEASIBILITY.md](BAIDU_API_FEASIBILITY.md)。不杜撰端点、不以 SERP/referrer 替代、不购买或创建生产凭据。
+- **远端/发布边界**：GitHub托管CI因账号计费/额度在执行前阻断，尚未运行；CNB私有镜像配置4386ec2已保存，本地Git同步7分支验证，但provider调度/密钥绑定/托管执行尚未验证；父线程已创建私有空仓，未依赖Actions。本地命令通过不代表托管run。仓库保持私有，未外网部署、不改其他仓库。
+- **实现与规模偏差持续披露**：exact 访客集合代替 HLL、持久 PG 任务代替 BullMQ、部分精确时间/过滤查询重建保留明细。正确性已本地测试，但事件内存/吞吐、持续混合写删、超保留边界、CH 128 MiB 源预算和大站增量设计仍需继续验收。
 
-当前新发现的验收缺陷：真实PG不等样本分位合并（25×100 + 1×10000 的p75错误5430）正在analytics修复与复验；此前测试快照不覆盖该缺陷，不能据其标全部统计正确。
+25×100 + 1×10000 的真实不等样本 p75 缺陷已按 weighted-centroid Type7 修复，collector→worker→stats 与尾部/6 点专项已纳入 9cd7 的 180 测试通过；t-digest 质心均值仍为近似分位方法，不宣称任意分布精确分位或用每日 p75 平均替代合并。

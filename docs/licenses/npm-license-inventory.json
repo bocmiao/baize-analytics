@@ -1,6 +1,6 @@
 {
   "source": "package-lock.json",
-  "sha256": "5374bd06b9f65a615aa01992078ff01c87072abf71f50ea5520fc8bfeaf25494",
+  "sha256": "f562c2ecd8667dc6e9aa948ecc2b431a3dffd6895a2c1c5950d96f46842228c7",
   "scope": "Lockfile metadata only; not a legal or release compliance audit",
   "packages": [
     {
@@ -3062,6 +3062,24 @@
       "optional": false,
       "integrity": "sha512-LgO3D9yZJjApUiuUfl9iFAwrtaX4+lok3wJIqttGoKCHlWUqHqbQpnxCf82L8FjgKsh4iGo78hqJwgL8F6To2A==",
       "path": "node_modules/tinyrainbow"
+    },
+    {
+      "name": "tldts",
+      "version": "7.4.18",
+      "license": "MIT",
+      "development": false,
+      "optional": false,
+      "integrity": "sha512-somxA8xKAUzlAxl0TX/jMSYIbRNFIVGnI96pVGJPeMc5BsHmfVXn6mOJT6U++ELnl04eGfzpfcEuZe8WiASkXg==",
+      "path": "node_modules/tldts"
+    },
+    {
+      "name": "tldts-core",
+      "version": "7.4.18",
+      "license": "MIT",
+      "development": false,
+      "optional": false,
+      "integrity": "sha512-KI2PKvCmvQI/xD6ypPqkU0i7oxNXR/O58RLRaHR4svsgVUQ2JE/XC8BtMbG6PSehD27I8sZJRcC1ASnCy6lp3g==",
+      "path": "node_modules/tldts-core"
     },
     {
       "name": "toad-cache",

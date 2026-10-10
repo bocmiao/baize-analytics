@@ -33,3 +33,13 @@ Web Vitals 官方 attribution、rrweb 回放和匿名网格位置热图分别放
 每日盐模式的已知稳定属性别名由独立 MIT `src/privacy.ts` 统一过滤，浏览器、微信 SDK 与服务器入口使用同一规则，包括 `customer_id`、`device_id`、`uuid`、`contact`、属性里的 `page_id` / `pageId` 及邮箱形字符串。协议必需的顶层页面实例 ID 保留，由服务器再按站点本地日期隔离；任意业务自定义字段仍不应包含个人身份信息。
 
 应用回放播放器支持 `createReplayPlayer(container, events, {language: 'en'})`；默认语言为 `zh-CN`，语言只影响控件和隐私说明，不改变采集协议。
+
+小程序本地运行时回归见 `tests/integration/mini-runtime.test.ts`：真实独立 SDK bundle 在无 DOM / Web Crypto 的 Node VM 中运行，注入安全 UUIDv7，使用微信形态的 request 回调经真实本地 HTTP 接入 Fastify / PostgreSQL。测试通过实际断开首次已接受请求的 socket 验证原样重试和幂等，并验证同意前无 ID、每日盐身份禁止与属性清洗。该测试不是微信官方开发者工具或真实设备验收；官方运行时、账号登录、网络域名白名单与真机兼容性仍未实测。
+
+跨子域第一方标识默认关闭（Cookie 为 host-only）。需要共享时，在同一站点的管理员设置中显式登记每个 `allowed_hosts`，嵌入脚本增加 `data-cookie-domain="example.com"`，或独立 SDK 配置 `cookieDomain: 'example.com'`。只支持已登记、同可注册父域的 HTTPS 页面；可信配置端点使用完整公共后缀列表（含 GitHub Pages 等私有托管后缀）校验，客户端再次检查域名范围。公共后缀、IP、无效域名、无关域或未登记子域不获共享授权，回退 host-only；不会自动允许所有子域访问采集入口。
+
+显式共享范围的撤回会清除同 Domain 的 UID，并写入按站点隔离的布尔拒绝 Cookie（不含身份）。其他已打开子域在下一次采集、发送或重试检查时停止、清空队列并取消待发请求；新页面不会隐式清除拒绝，只有显式 grantConsent 才重新开启。已经发送并持久化的 HTTP 请求无法由撤回倒收。每日盐模式不使用共享 UID 或拒绝 Cookie。
+
+共享 UID 的 Cookie 名为 `_baize_uid_shared`；默认 host-only 继续使用 `_baize_uid`，因此移除共享选项不会隐式沿用旧共享 ID。共享拒绝名为 `_baize_denied_shared_<URL编码站点ID>`，仅存布尔值 `1`。撤回或再次同意的 wire 协议保持不变。
+
+真实本地跨子域回归见 `tests/integration/tracker-subdomain.test.ts`：Playwright 只路由提供两个 HTTPS 宿主页面；SDK、配置与采集均访问真实本地应用和 PostgreSQL。隔离 BrowserContext 明确授予 `local-network-access`（类似浏览器用户允许测试 HTTPS 页面访问 loopback），不关闭 CORS/TLS 或改变环境网络策略。首轮未授此权限被 Chromium address-space 检查拒绝，不能当作采集器故障；授予后实际共享、两页面撤回停止、默认 host-only、未知/HTTP 子域拒绝和私有公共后缀拒绝均有真实链路断言。

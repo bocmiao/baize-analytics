@@ -339,6 +339,8 @@ name,version,license,development,optional,path
 "tinyexec","1.3.1","MIT","true","false","node_modules/tinyexec"
 "tinyglobby","0.2.17","MIT","true","false","node_modules/tinyglobby"
 "tinyrainbow","3.2.0","MIT","true","false","node_modules/tinyrainbow"
+"tldts","7.4.18","MIT","false","false","node_modules/tldts"
+"tldts-core","7.4.18","MIT","false","false","node_modules/tldts-core"
 "toad-cache","3.7.4","MIT","false","false","node_modules/toad-cache"
 "toidentifier","1.0.1","MIT","false","false","node_modules/toidentifier"
 "ts-api-utils","2.5.0","MIT","true","false","node_modules/ts-api-utils"

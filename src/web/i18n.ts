@@ -1,3 +1,4 @@
+import {ownValue} from './dictionary';
 import { advancedEnglish } from './i18n-extra';
 const english:Record<string,string>={
 '总览':'Overview','实时':'Realtime','页面':'Pages','来源':'Sources','受众':'Audience','事件':'Events','已识别用户':'Identified users','目标':'Goals','漏斗':'Funnels','留存':'Retention','路径':'Paths','性能':'Performance','报表':'Reports','分享':'Sharing','告警':'Alerts','成员':'Members','API 令牌':'API tokens','审计':'Audit','隐私与数据':'Privacy & data','数据导出':'Data export','通知渠道':'Notification channels','推送计划':'Schedules','热图':'Heatmaps','回放':'Replay','实验':'Experiments','SEO':'SEO','AI':'AI','搜索关键词':'Search queries','历史导入':'Historical import','排名监控':'Rank monitoring','建议复检':'Suggestion verification','站点设置':'Site settings',
@@ -7,5 +8,5 @@ const english:Record<string,string>={
 '地域下钻':'Geographic drilldown','渠道 × 落地页交叉分析':'Channel × landing page','全部国家':'All countries','省/区域':'Province / region','全部区域':'All regions','全部页面':'All pages','全部渠道':'All channels','去重访客':'Distinct visitors','事件属性分布':'Event property distribution','选择事件':'Select event','属性值':'Property value','匿名点击热图':'Anonymous click heatmap','视口宽度':'Viewport width','全部视口（仅归一化总览）':'All viewports (normalized overview only)','点击密度图':'Click density','尚无真实热图数据。':'No actual heatmap data yet.','永久删除访客数据':'Permanently delete visitor data','创建导出任务':'Create export job','创建推送计划':'Create schedule','创建告警规则':'Create alert rule','创建实验':'Create experiment','检查关键词排名':'Check keyword position','自然语言问数':'Ask analytics','基于证据创建建议':'Create evidence-based suggestion','整改与复检':'Implementation & verification','建议 ID':'Suggestion ID','更新整改状态':'Update implementation status','复检证据与效果':'Verify evidence & effects','只读分享':'Read-only share','查看分享看板':'View shared dashboard','分享密码':'Share password','打开只读看板':'Open read-only dashboard','加入站点团队':'Join a site team','设置密码':'Set password','注册并接受邀请':'Register and accept invitation','已有账号，接受邀请':'Accept with existing account',
 };
 export function language():string{return localStorage.getItem('baize_language')==='en'?'en':'zh-CN';}
-export function t(text:string):string{return language()==='en'?(english[text]||advancedEnglish[text]||text):text;}
+export function t(text:string):string{return language()==='en'?(ownValue(english,text)||ownValue(advancedEnglish,text)||text):text;}
 export function changeLanguage(next:string){localStorage.setItem('baize_language',next);location.reload();}

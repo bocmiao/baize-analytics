@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-10T07:35:50Z",
+  "feature": "F52",
+  "officialPublicSite": "https://ziyuan.baidu.com/",
+  "requestCount": 1,
+  "requestCommand": "curl --silent --show-error --max-time 15 --max-redirs 0 --dump-header /tmp/baize-baidu-official.headers --output /tmp/baize-baidu-official.body --write-out %{http_code} https://ziyuan.baidu.com/",
+  "proxyConnectStatus": 403,
+  "originHttpCode": "000",
+  "curlTransportErrorNumber": 56,
+  "stderr": "curl: (56) CONNECT tunnel failed, response 403",
+  "proxyResponseHeaders": {
+    "server": "envoy",
+    "content-type": "text/plain",
+    "content-length": "16",
+    "connection": "close",
+    "date": "Sat, 10 Oct 2026 07:35:50 GMT"
+  },
+  "originBodyDownloaded": false,
+  "documentationVerified": false,
+  "networkPolicyVersion": 1,
+  "baiduListedInCurrentPolicy": false,
+  "status": "blocked_by_current_network_policy",
+  "accountCreated": false,
+  "productionCredentialCreated": false,
+  "paidServicePurchased": false,
+  "networkPolicyChanged": false,
+  "directConnectionBypassAttempted": false,
+  "retryAttempted": false,
+  "implementationAudit": {
+    "baiduConnectorImplemented": false,
+    "responseStatus": "unsupported-unverified",
+    "inventedEndpointPresent": false,
+    "baiduMockTreatedAsOfficial": false,
+    "referrerKeywordParsingIsOfficialSearchApi": false
+  },
+  "conclusion": "Official traffic/keyword API capability remains unverified. A proxy block does not establish that the provider lacks an API."
+}

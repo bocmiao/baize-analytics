@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-10",
+  "source": "frozen staged application snapshot exported to /tmp/baize-full-ci.WPkl6i; pre-next-batch single-client/history changes",
+  "application_tests": {
+    "unit": 76,
+    "integration": 161,
+    "files": 66,
+    "passed": 237,
+    "failed": 0,
+    "skipped": 0
+  },
+  "e2e": {
+    "passed": 18,
+    "failed": 0,
+    "browser_workflows": 16,
+    "date_functions": 2,
+    "seconds": 42.4,
+    "fresh_admin_wizard": true,
+    "compiled_entrypoint": true
+  },
+  "checks": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "sdk_protocol": "passed",
+    "independent_journal": "passed",
+    "license_inventory": {
+      "packages": 366,
+      "unknown": 0
+    }
+  },
+  "services": {
+    "integration": "disposable actual PostgreSQL17/ClickHouse25.8/Redis7",
+    "e2e": "fresh isolated schema in actual dev PG and separate Redis DB14; Chromium /usr/bin/chromium"
+  },
+  "preserved_failures": [
+    "first shared CI: 014 historical fixture invokes scheduler requiring 027 column; corrected only fixture to real rebuilder using older lease contract",
+    "second shared CI: 237 tests pass, browser17/18; obsolete realtime sentence selector; real event and exact online count in error context; corrected selector, fresh18/18 pass"
+  ],
+  "runner_status": "shared script attempts EXIT1 preserved; all component commands passed after fixes, complete final script EXIT0 not claimed",
+  "docker": "new bf77 image build passed; full lifecycle still running at this source milestone",
+  "remote_ci": {
+    "github_actions": "not run; account billing/quota blocks before steps",
+    "cnb": "not run; parent authorized private repository and login; provider schema/secrets/runtime pending"
+  },
+  "remaining": [
+    "CH PG-only metadata / bounded worker / full history integration and canonical CH disaster recovery",
+    "latest max1 worker/export/invite fixes in next worktree batch; dedicated real PG 3/3 passed, not this frozen snapshot",
+    "real external accounts, models, official Baidu feasibility; Windows/complex devices/site compatibility unmeasured"
+  ]
+}
