@@ -6,7 +6,7 @@ The single read-only official-doc request returned HTTP403. `.cnb.yml` was YAML-
 
 ## One-direction synchronization
 
-The owner has created the PRIVATE empty mirror `https://cnb.cool/bankermiao/baize-analytics`. After the source CI configuration is committed, explicitly set `SYNC_BOOTSTRAP_EMPTY=1` for the first synchronization. The script requires a successful complete refs listing with zero refs before a normal initial main push. Authentication/network failure or any nonempty repository lacking main is rejected. Do not create an unrelated README commit; subsequent updates require ordinary fast-forward ancestry. The manual synchronization job alone imports `https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml` for the owner-managed `GH_SOURCE_TOKEN`. Its current allow_slugs authorization is limited to this target repository and main/web_trigger; no secret event access is expanded. The import contents must not be read or logged. Regular push has no imports. Use only the built-in `CNB_TOKEN` input and fixed Git username `cnb`; its write permission still requires owner verification. No separate long-lived mirror token or username variable is created. Set only the credential-free `CNB_MIRROR_URL=https://cnb.cool/bankermiao/baize-analytics` repository URL. Tokens are read by a temporary Git credential helper from environment; they are never placed in remote URLs, command arguments, tracked files or normal script output. Temporary helper/config are removed on exit. Disable command tracing around secrets.
+The owner has created the PRIVATE empty mirror `https://cnb.cool/bankermiao/baize-analytics`. After the source CI configuration is committed, explicitly set `SYNC_BOOTSTRAP_EMPTY=1` for the first synchronization. The script requires a successful complete refs listing with zero refs before a normal initial main push. Authentication/network failure or any nonempty repository lacking main is rejected. Do not create an unrelated README commit; subsequent updates require ordinary fast-forward ancestry. The manual synchronization job alone imports `https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml` for the owner-managed `GH_SOURCE_TOKEN`. The owner has officially verified the dedicated import personal-environment scope: `use_in_slugs: bankermiao/baize-analytics` and `allow_events: web_trigger/vscode/crontab`. No other repository or event scope is added. The import contents must not be read or logged. Regular push has no imports. Use only built-in `CNB_TOKEN` input and fixed Git username `cnb`. The owner has verified that the trusted empty-repository vscode runtime token has `repo-code:rw`; this does not establish every pipeline event token permission. No separate long-lived mirror token or username variable is created. Set only the credential-free `CNB_MIRROR_URL=https://cnb.cool/bankermiao/baize-analytics` repository URL. Tokens are read by a temporary Git credential helper from environment; they are never placed in remote URLs, command arguments, tracked files or normal script output. Temporary helper/config are removed on exit. Disable command tracing around secrets.
 
 `scripts/sync-main-cnb.sh` fetches source main and mirror main into an isolated temporary repository. Equal SHAs skip push and regular CI. It permits only an ordinary fast-forward after `git merge-base --is-ancestor`; diverged or unavailable main fails closed. It uses no force push and does not update GitHub or the current checkout.
 
@@ -29,8 +29,52 @@ export CNB_MIRROR_URL=https://cnb.cool/bankermiao/baize-analytics
 export SYNC_BOOTSTRAP_EMPTY=1 # Only the owner's explicitly approved empty bootstrap
 # GH_SOURCE_TOKEN: existing read-only source credential, supplied by the owner/secret store
 # GH_SOURCE_TOKEN is supplied by the owner-scoped import, never read in this task
-# CNB_TOKEN is provider built-in input; fixed username cnb; write access not yet verified
+# CNB_TOKEN is built-in; trusted vscode repo-code:rw verified by the owner; username cnb
 bash scripts/sync-main-cnb.sh
 ```
 
-No token value belongs in this example, YAML or shell history. The import URL is a reference only: no import contents were fetched. `services` is a sibling of `docker` and `stages`, following the user's official schema feedback; YAML parsing does not prove hosted behavior. The built-in token's write permission and hosted execution remain unverified. Local file-only tests cover explicit empty bootstrap, refusal without opt-in, tags-only missing-main refusal, unavailable-target refusal, unchanged skip, fast-forward and divergence refusal. No remote credential or CNB write was exercised.
+No token value belongs in this example, YAML or shell history. The import URL is a reference only: no import contents were fetched. `services` is a sibling of `docker` and `stages`, following the user's official schema feedback; YAML parsing does not prove hosted behavior. The trusted vscode token's repo-code:rw permission has been officially verified by the owner; hosted push/web-trigger runtime and scheduled execution remain unverified. Local file-only tests cover explicit empty bootstrap, refusal without opt-in, tags-only missing-main refusal, unavailable-target refusal, unchanged skip, fast-forward and divergence refusal. No remote credential or CNB write was exercised.
+
+## Copyable empty-repository vscode bootstrap
+
+The authorized empty-repository vscode environment must have `CNB_BRANCH=main`, owner-scoped imported `GH_SOURCE_TOKEN`, and its trusted built-in `CNB_TOKEN`. Do not fetch or display `github.yml` contents. No separate token, new README commit, network change or paid service is needed. Paste the entire block below into that authorized terminal. It writes only a temporary executable, fetches GitHub main into another temporary repository with full history, then invokes the synchronization script **from the fetched main**. No unauthenticated curl is used to download a private script, and token values never appear in arguments or URLs. The final push remains normal, explicit-empty-only and divergence-protected.
+
+```sh
+bootstrap_entry="$(mktemp /tmp/baize-bootstrap-entry.XXXXXX)"
+cat > "$bootstrap_entry" <<'BAIZE_BOOTSTRAP'
+#!/usr/bin/env bash
+# Paste this complete script into the authorized empty-repository vscode terminal.
+set -euo pipefail
+set +x
+[ "${CNB_BRANCH:-}" = main ] || { echo 'Bootstrap requires CNB_BRANCH=main' >&2; exit 1; }
+: "${GH_SOURCE_TOKEN:?Owner-scoped imported GitHub read credential required}"
+: "${CNB_TOKEN:?Trusted vscode repo-code:rw built-in input required}"
+work="$(mktemp -d "${TMPDIR:-/tmp}/baize-cnb-bootstrap.XXXXXX")"
+trap 'rm -rf "$work"' EXIT
+umask 077
+cat > "$work/github-helper" <<'HELPER'
+#!/usr/bin/env bash
+set +x
+host='';while IFS='=' read -r key value;do [ -n "$key" ] || break;[ "$key" != host ] || host="$value";done
+[ "${1:-}" = get ] || exit 0
+[ "$host" = github.com ] || exit 1
+printf 'username=x-access-token\npassword=%s\n' "$GH_SOURCE_TOKEN"
+HELPER
+chmod 700 "$work/github-helper"
+export GIT_TERMINAL_PROMPT=0
+git init --quiet "$work/source"
+git -C "$work/source" config credential.helper ''
+git -C "$work/source" config --add credential.helper "!$work/github-helper"
+git -C "$work/source" remote add source https://github.com/bocmiao/baize-analytics.git
+git -C "$work/source" fetch --quiet source refs/heads/main:refs/heads/main
+git -C "$work/source" checkout --quiet main
+cd "$work/source"
+CNB_MIRROR_URL=https://cnb.cool/bankermiao/baize-analytics SYNC_BOOTSTRAP_EMPTY=1 SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
+BAIZE_BOOTSTRAP
+bash "$bootstrap_entry"
+bootstrap_status=$?
+rm -f "$bootstrap_entry"
+( exit "$bootstrap_status" )
+```
+
+The heredoc is the checked-in `scripts/bootstrap-cnb.sh` entry point. `scripts/ops-sync-test.sh` now actually invokes it with file-only remapped repositories and verifies identical main history in the new mirror; non-main branch context rejects before pushing. These tests do not contact CNB/GitHub or exercise real tokens. Crontab's exact configuration key/time remains pending explicit official instructions; this bootstrap does not enable a scheduler.

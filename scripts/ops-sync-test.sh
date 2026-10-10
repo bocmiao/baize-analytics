@@ -45,4 +45,17 @@ printf 'third\n' >> "$work/source/test"
 git -C "$work/source" -c commit.gpgsign=false commit -qam third
 if bash "$root/scripts/sync-main-cnb.sh" > "$work/diverged.log" 2>&1; then echo 'Diverged mirror accepted!' >&2; exit 1; fi
 [ "$(git -C "$work/mirror" rev-parse main)" = "$old" ]
-echo 'Actual local Git empty-bootstrap/opt-in/missing-main/unavailable/unchanged/fast-forward/divergence-refusal checks passed; no network or remote mirror changed.'
+# Invoke the actual outer bootstrap against the fetched authoritative scripts.
+mkdir "$work/bootstrap-mirror"
+git init -q --bare "$work/bootstrap-mirror"
+cp "$root/scripts/sync-main-cnb.sh" "$work/source/sync-main-cnb.sh"
+mkdir -p "$work/source/scripts"
+mv "$work/source/sync-main-cnb.sh" "$work/source/scripts/sync-main-cnb.sh"
+git -C "$work/source" add scripts/sync-main-cnb.sh
+git -C "$work/source" -c commit.gpgsign=false commit -qm fetched-bootstrap-script
+export GIT_CONFIG_KEY_1="url.$work/bootstrap-mirror.insteadOf" GIT_CONFIG_VALUE_1=https://cnb.cool/bankermiao/baize-analytics
+if CNB_BRANCH=other bash "$root/scripts/bootstrap-cnb.sh" > "$work/non-main-bootstrap.log" 2>&1;then echo 'Non-main bootstrap accepted' >&2;exit 1;fi
+[ -z "$(git -C "$work/bootstrap-mirror" show-ref)" ]
+CNB_BRANCH=main bash "$root/scripts/bootstrap-cnb.sh" > "$work/outer-bootstrap.log"
+[ "$(git -C "$work/bootstrap-mirror" rev-parse main)" = "$(git -C "$work/source" rev-parse main)" ]
+echo 'Actual local Git empty-bootstrap/opt-in/missing-main/unavailable/unchanged/fast-forward/divergence-refusal/fetched-bootstrap/non-main-rejection checks passed; no network or remote mirror changed.'
