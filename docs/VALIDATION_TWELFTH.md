@@ -45,3 +45,11 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 完整冻结 `19d97afcd6ad4c7adf08437bf82c1124d4057f8d` 实际EXIT0。51文件191单元、152文件404真实集成，共595应用检查全部PASS/0FAIL/0skip；30检查=28真实Chromium+2日期函数全PASS/0skip（runner1.6分钟）。lint/types/SDK/build、55文件实际迁移、全新PG/CH/Redis卷、compiled入口及owned Compose cleanup通过。原始JSON、日志、source摘要见 `test-evidence/main-19d97af-*`；不将其他定向或负载数量加到全轮。
 
 最新中文workspace总览/SEO/AI桌面1440与手机390，以及独立overview1440/375实截图保存 `screenshots/19d97af/`，hash和完整源码归属记录在summary；旧图/旧FAIL仍保留。真实本地数据库/HTTP/Chrome，Google/GSC及模型运输模拟。原生恢复真实证据不等于最新生产镜像通过；新镜像、托管、跨宿主灾备均未在本轮执行，独立1000/5000负载另由root记录，不提前标绿。
+
+## 19d97af 最新生产镜像与受影响运维路径
+
+root实际唯一串行镜像runner EXIT0。新镜像 `sha256:760e1bb3c1ce31da32f32c7c3ea91f72d6971c764db081c31ac7f8ca87e5a80f` 对应不可变 `19d97afcd6ad4c7adf08437bf82c1124d4057f8d`；387项source/image逐文件一致，源码manifest SHA256 `3a8370eaa1d28bb7125cba281c295aa58997d560e5f6284d878aeb96fa6f9fb2`。真实安装/build、compiled Node健康与HTTP采集通过，55个迁移文件实际应用，054 receipt为1、两个准确nonunique lookup索引安装/valid/ready断言为2。
+
+完整AGPL/MIT notice实际镜像检查通过；tracker core gzip5087B符合5KiB但超过十进制5000B，min4506B均符合，不混用口径。真实PG快照与签名原生恢复覆盖非空36/43/44/47/48、049receipt与050–053五表metadata；最新journal精准A删B留、7→90前向保留期与canonical/028回放物理裁剪、缺失/tamper/future/非空目标拒绝、worker真SQL失败拒绝及恢复均通过。独立目标CH服务器和卷无发布端口，源正文/epoch/history保持；仍为同物理宿主，不是跨宿主灾备。owned应用/PG/Redis/目标CH及卷网络已清理。
+
+安全摘要及manifest/native/notices/index/cleanup证据见 `test-evidence/main-19d97af-image-*`；不复制state/env/密钥或原始service日志。旧f4基础升级/故障回滚矩阵EXIT0单独沿用，未在本轮无限重跑，也不把旧FAIL抹掉。托管CI/同步未执行。
