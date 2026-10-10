@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "be95373",
+  "exit": 1,
+  "unit": {
+    "passed": 163,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "passed": 396,
+    "failed": 2,
+    "skipped": 0,
+    "files": 149
+  },
+  "browser": "not_run_after_integration_failure",
+  "cleanup": "owned_compose_removed_actual_docker_ps_only_original_three",
+  "failures": [
+    "ai-question-api: missing original SEO finding prevents actual deletion callback",
+    "governance-full-export: new bot_observations not populated by exhaustive fixture"
+  ],
+  "scope": "fresh owned PG17 CH25.8 Redis7; lint/type/build passed; real local only; no hosted CI"
+}

@@ -104,3 +104,16 @@ Final command `TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev
 第二轮视图源码已补：`SeoScans` 接版本化扫描边界与观察/建议详情，独立 `SeoRecheckView` 显示 fixed/persists/unknown 与原/新扫描 ID；`GscCoverageView` 区分 PT、不保证上游完整、本地成功窗口和展示截断。GSC/recheck 需要 main 唯一负责人接用；新 `tests/e2e/seo-gsc-evidence.spec.ts` 使用真实本地 HTTP 页面/响应头/robots、真实隔离 PG/app/browser，只 Google transport 明确模拟。该浏览器测试尚未运行。静态两文件 16/16（7 新 + 9 原）通过；UI/fixture 类型与 scoped lint 通过，不能冒称 PG/浏览器验收。
 
 SEO/GSC v2 真实 PG 收尾：父 7ace 冻结空库验收先报 GET GSC internal_error；在原快照独立 PG 重现，实际 SQL 为 42702（SELECT * 与 day::text 同名输出导致 ORDER BY day 歧义）。仅改显式字段 projection。首次修后旧三文件 11 项通过，新 fixture 最后断言误期望400而既有状态冲突409，已按固定错误契约改为409并加强 exact code，保留拒绝 unknown 验证安全断言。新不可变私有变体仅两处差异（sourceCommit=null + 全文件hash）最终四文件 12/12 通过、0 skip；whole types/scoped lint 通过，测试隔离 schema 残留0。旧失败日志保留，证据 `test-evidence/seo-gsc-v2-fixed.json` 与 source manifest；本轮没运行浏览器、没新建容器、Google transport 仅模拟，不声称真实账号已测。
+
+第二轮研究与交付映射（be95373 全量冻结验收进行中；仅本段状态覆盖前文阶段性 pending，不改历史失败）：
+
+| 研究范围 | 已交付入口/契约 | 实际证据与边界 |
+| --- | --- | --- |
+| SEO 规则解释与响应证据 | `seo-evidence` 共享 schema/helper；051 `seo_scans.metadata`；HTTP Link canonical、meta/X-Robots-Tag、观察/呈现建议/索引意图 | 新7项单位测试和旧9项静态通过；canonical 非阻断、noindex 意图确认、不保证排名；不是浏览器渲染或索引报告 |
+| 原 URL 定点复检与 unknown | `crawlEvidence` 同源、robots、30请求预算、原始HTML；旧扫描ID读取原目标；fixed/persists/unknown，SEO unknown 不允许 verified | 修复变体真实 PG/native HTTP 四文件12/12通过；原扫描不改；运输失败/robots/预算缺失不能被当作修复；既有 SQL/fixture 失败史保留 |
+| GSC 来源、完整性与原子窗口 | 052 `gsc_import_windows`；原25k分页；请求 byPage/final/web/date×query×page、PT、not-guaranteed；site级发布串行、配置改变拒绝、重叠旧窗口metadata失效 | 新真实PG专项已通过（包含1002行展示截断、非法越窗响应失败不破坏旧窗口）；Google仅模拟transport。没有新增日总量/独立页面总量来源，query+page和不能冒充完整点击 |
+| SEO/GSC 视图 | `SeoScans`→`SeoEvidenceView`；main已接`GscCoverageView`与`SeoRecheckView`；固定中英观察、规则级复检、PT/本地状态/展示上限 | `seo-gsc-evidence.spec.ts`已迁到分组导航helper，含真实本地HTML响应头/robots与真实PG，Google模拟；当前 be95373 全量浏览器尚在进行，未记 PASS |
+| 已保存连接设置与按需开关 | Model/Google/SERP GET非秘密初值、留空保留secret、automaticAnomaly/dailyGsc；显式已保存模型测试入口 | `connector-settings.spec.ts`已迁分组导航；模型transport明确模拟。模型测试仍使用真实聚合/权限/epoch/预算，不是纯ping；当前全量浏览器结果未到，不记 PASS |
+| AI 可信解释/范围 | 既有只读工具数字与图表、证据引用、不保证收益，本轮扫描元数据与规则引用可核对 | 沿用已验收问数工具，不新增模型质量或因果验证承诺。研究建议的进一步结构化模型解释卡片及真实模型质量对照未实施/未实测 |
+
+性能基准、CH HTTP 完成语义/累计预算、TEMP ANALYZE 由其他模块负责人独立实施验收，本外部模块不把其研究建议当作本模块已通过结果。真实 Google/GSC/GA4、商业AI、SERP、百度官方接口仍保持原未实测/未证实边界，无新 OAuth/生产凭据/付费操作。
