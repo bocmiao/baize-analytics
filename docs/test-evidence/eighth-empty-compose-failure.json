@@ -1,0 +1,70 @@
+{
+  "baseline": "fa3e82873d9b9e3cb1b139fbea3db9c742995a48",
+  "hosted": {
+    "provider": "CNB",
+    "run": "cnb-a80-1k4in2s09",
+    "url": "https://cnb.cool/bankermiao/baize-analytics/-/build/logs/cnb-a80-1k4in2s09",
+    "exit": 1,
+    "source": "parent downloaded full hosted log and read actual test summary; 2026-10-10",
+    "unit_passed": 84,
+    "integration_files": 65,
+    "integration_files_failed": 4,
+    "integration_files_passed": 61,
+    "integration_total": 234,
+    "integration_passed": 222,
+    "integration_failed": 3,
+    "integration_skipped": 9,
+    "e2e": "not run",
+    "errors": [
+      {
+        "file": "external.test.ts",
+        "setup": "relation users does not exist",
+        "teardown": "relation sites does not exist",
+        "dependent_skips": 9
+      },
+      {
+        "file": "external-alert.test.ts",
+        "error": "relation notification_jobs does not exist"
+      },
+      {
+        "file": "external-suggestions.test.ts",
+        "error": "relation sites does not exist"
+      },
+      {
+        "file": "privacy-aggregate-migration.test.ts",
+        "error": "relation canonical_event_authority does not exist",
+        "stack": "event-store canonicalAuthority -> streamSiteEventBatches -> pre031-worker rebuildSite"
+      }
+    ]
+  },
+  "local_empty_compose": {
+    "command": "CI_BROWSER_MODE=system CI_RUNNER_IN_COMPOSE=1 bash scripts/ci-common.sh regular",
+    "unit_passed": 88,
+    "integration_passed": 271,
+    "integration_failed": 6,
+    "integration_skipped": 9,
+    "integration_total": 286,
+    "exit": 1,
+    "compiled_app": "not reached",
+    "e2e": "not reached"
+  },
+  "previous_local_attempt": {
+    "default_browser_download": "403 Domain forbidden from existing Playwright CDN proxy policy",
+    "exit": 1,
+    "integration": "not reached"
+  },
+  "failure_log": "eighth-empty-compose-first-failures.txt",
+  "github_actions": "disabled, no rerun/dispatch",
+  "local_second_attempt": {
+    "command": "CI_BROWSER_MODE=system CI_RUNNER_IN_COMPOSE=1 bash scripts/ci-common.sh regular",
+    "unit_passed": 88,
+    "integration_passed": 288,
+    "integration_failed": 1,
+    "integration_skipped": 0,
+    "integration_total": 289,
+    "exit": 1,
+    "compiled_app": "not reached",
+    "e2e": "not reached",
+    "failure": "site-fact-config.test.ts: manually changed CH authority with old PG fact head now correctly returns aggregate_source_changed; after explicitly aligning fixture provenance, original aggregate_members_unavailable assertion is also retained"
+  }
+}

@@ -1,6 +1,6 @@
 # 标准 MCP 只读站点分析
 
-当前开发工作树新增 `registerMcp(app,ctx)`，路由 `/api/sites/:siteId/mcp`。独立真实PG/nativeHTTP/官方 `@modelcontextprotocol/sdk` 1.32.1 Client验收已通过；根集成注册及下一不可变main全量验收前，不能假定旧安装镜像包含此入口。本文不是前一版HTTP typed-query接口的改名：它实际提供JSON-RPC2的MCP初始化、工具发现和调用，并使用官方StreamableHTTP客户端执行。
+当前开发工作树新增 `registerMcp(app,ctx)`，路由 `/api/sites/:siteId/mcp`。独立真实PG/nativeHTTP/官方 `@modelcontextprotocol/sdk` 1.32.1 Client验收已通过；默认应用已注册；下一不可变main全量验收前，不能假定旧安装镜像包含此入口。本文不是前一版HTTP typed-query接口的改名：它实际提供JSON-RPC2的MCP初始化、工具发现和调用，并使用官方StreamableHTTP客户端执行。
 
 ## 连接
 

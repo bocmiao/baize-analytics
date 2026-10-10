@@ -1,0 +1,8 @@
+2026-10-10 UTC actual failures, history-app.test.ts daily regression:
+11:27:29 working tree: 3 passed 1 failed.
+11:28:15 frozen artifact /tmp/baize-eighth-stable.ghuvybos: 3 passed 1 failed.
+SyntaxError Expected ':' after property name in JSON at position 771.
+HistoryStore.read -> rebaseDeletedHistory -> sanitizeSiteHistoryPrivacy -> createApp.
+Fixture: actual collector accepted3 + current worker real PV2/signup1, known alias corruption injected in generated aggregates, then raw/key pruned and startup privacy cleanup. CH ALTER String query parameter consumed JSON backslash escaping and persisted malformed JSON.
+Repair: retain SQL parameterization; escape backslash once in HTTP param values. Added real Unicode/quote/backslash business property preservation plus CH checksum verification.
+Final artifact run11:29:23 4/4 PASS; working tree11:29:24 4/4 PASS. ESLint two files and full TypeScript exited0.

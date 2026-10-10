@@ -1,0 +1,11 @@
+# Durable BYOK quota acceptance
+
+Migration035 adds `ai_reservations`, an operational ledger without prompt, model text, visitor identifier or ai_calls foreign key. Privacy invalidation can delete calls/evidence while preserving accounting. Reservation/settlement/expiry CAS and budget changes share the caller's site-gated transaction; no held-client pool borrow is introduced. Fifteen-minute expiry consumes the reserved upper bound once, conservatively: this is a user-configured token quota, not an assertion of provider billing or actual token use. Late replies cannot complete an expired question or double-debit. Background reaping uses one client per site.
+
+The forward migration preserves pre-existing reserved quota in synthetic immediately expirable ledger entries and fails legacy reserved calls. It cannot reconstruct lost per-call amounts. Existing published migrations are unchanged. Deployment must stop older writers before migrating. Full PostgreSQL backups retain the ledger; site JSON exports explicitly exclude operational reservations. Restoring unsettled quota must expire conservatively rather than erase cost.
+
+Actual isolated PostgreSQL tests cover concurrent reservation capacity, one-time settlement, forward migration from pre035 state and an actual child process committing a reservation then receiving SIGKILL. After call deletion, concurrent reapers debit once, late settlement returns false and no deleted call is resurrected. Production API max1 tests additionally expire a reservation during the injected model response and reject completion without evidence or leaked prose. These are real database/process tests with simulated model transport, not real provider account verification.
+
+The corrected8-file affected group passed31/31 at10:37:57 UTC. A later four-file retry passed8 budget/unit tests but was blocked before importing two suites by a concurrent worker syntax edit. Final API token-overflow retry remains pending until recorded in question evidence acceptance.
+
+Final owned retry after the worker syntax fix:4 files20/20 PASS at10:42:55 UTC,7.19s, including actual production max1 oversized provider usage rejection and immediate one-time conservative settlement. TypeScript and owned ESLint exited0. No real provider billing/credentials or Docker restore was exercised in this batch.

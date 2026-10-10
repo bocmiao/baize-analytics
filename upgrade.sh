@@ -35,7 +35,7 @@ rollback() {
   docker compose exec -T postgres pg_restore -U baize -d baize --exit-on-error --no-owner < "$backup_dir/database.dump"
   scripts/ops-restore-volume.sh "$backup_dir" "$old_image"
   BAIZE_IMAGE="$old_image" docker compose up -d app
-  docker compose exec -T app node --import tsx scripts/restore-runtime.ts
+  docker compose exec -T --env CANONICAL_SAME_DB_ROLLBACK=1 app node --import tsx scripts/restore-runtime.ts
   BAIZE_IMAGE="$old_image" docker compose up -d --wait --wait-timeout 120 app
 }
 trap 'rollback' ERR

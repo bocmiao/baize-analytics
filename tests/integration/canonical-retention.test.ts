@@ -1,0 +1,28 @@
+import {randomUUID} from 'node:crypto';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {Pool} from 'pg';
+import {beforeAll,afterAll,it,expect,describe} from 'vitest';
+import {migrate} from '../../src/server/db.js';
+import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
+import {retireCanonicalSiteEvents} from '../../src/server/canonical-retention.js';
+import type {StoredEvent} from '../../src/server/clickhouse-store.js';
+describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('application deletion with real canonical PG CH',()=>{
+ const database=process.env.TEST_DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev',schema='canonical_ret_'+randomUUID().replaceAll('-',''),admin=new Pool({connectionString:database}),pool=new Pool({connectionString:database,max:1,options:`-c search_path=${schema},public`});const site=randomUUID(),other=randomUUID(),epoch=randomUUID();let dir:string;
+ const ch=new CanonicalClickHouse({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'});
+ beforeAll(async()=>{dir=await mkdtemp(join(tmpdir(),'canonical-ret-'));await admin.query(`CREATE SCHEMA ${schema}`);await migrate(pool);await ch.initialize();installCanonicalStore(pool,ch);await pool.query("INSERT INTO sites(id,name,domain,salt_secret) VALUES($1,'canonical','example.test','safe')",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);await pool.query("INSERT INTO canonical_event_authority(site_id,epoch,authority,raw_pruned) VALUES($1,$2,'clickhouse',true)",[site,epoch]);});
+ afterAll(async()=>{const client=await pool.connect();try{await client.query('BEGIN');await ch.deleteSegments(client,site,[{visitorId:'A'},{visitorId:'B'}],async()=>{});await ch.deleteSegments(client,other,[{visitorId:'other'}],async()=>{});await client.query('COMMIT');}finally{client.release();}await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});});
+ it('expires only site-local old canonical rows and orphans after physical ACK, retaining boundary rows, keys, live outbox and tombstones',async()=>{
+  const cutoff=new Date(Date.now()-86400000);const events=[{visitor:'A',ts:new Date(+cutoff-1)},{visitor:'B',ts:cutoff}].map(({visitor,ts})=>({site_id:site,event_id:randomUUID(),page_id:randomUUID(),visitor_id:visitor,ts:ts.toISOString(),type:'pageview',path:'/',payload:{},dimensions:{}} as StoredEvent));
+  const client=await pool.connect();try{await client.query('BEGIN');for(const event of events)await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site,event.event_id,'accepted',event.ts,event.visitor_id]);await ch.publishBatch(client,site,randomUUID(),epoch,events.map(event=>({event,acceptedHash:'accepted'})));await client.query('COMMIT');
+   await client.query('BEGIN');await client.query("INSERT INTO sites(id,name,domain,salt_secret,retention_days) VALUES($1,'long retention','example.test','safe',365)",[other]);await client.query("INSERT INTO canonical_event_authority(site_id,epoch,authority) VALUES($1,$2,'clickhouse')",[other,epoch]);const long={...events[0]!,site_id:other,event_id:randomUUID(),visitor_id:'other'};await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[other,long.event_id,'accepted',long.ts,long.visitor_id]);await ch.publishBatch(client,other,randomUUID(),epoch,[{event:long,acceptedHash:'accepted'}]);await client.query('COMMIT');
+   const orphan={...events[0]!,event_id:randomUUID(),visitor_id:'orphan'};await client.query('BEGIN');await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site,orphan.event_id,'accepted',orphan.ts,orphan.visitor_id]);await ch.publishBatch(client,site,randomUUID(),epoch,[{event:orphan,acceptedHash:'accepted'}]);await client.query('ROLLBACK');
+   for(const status of ['done','queued'])await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id,status) VALUES($1,$2,$3,$4,$5)',[site,randomUUID(),events[0]!.ts,'A',status]);
+   await client.query("INSERT INTO tombstones(site_id,visitor_id) VALUES($1,'deleted')",[site]);
+   await client.query('BEGIN');expect(await retireCanonicalSiteEvents(client,pool,site,cutoff)).toMatchObject({authority:'clickhouse',removed:1,physicalAck:true});await client.query('COMMIT');expect((await client.query('SELECT visitor_id FROM canonical_event_members WHERE site_id=$1',[site])).rows).toEqual([{visitor_id:'B'}]);expect((await client.query('SELECT visitor_id FROM event_keys WHERE site_id=$1',[site])).rows).toEqual([{visitor_id:'B'}]);expect((await client.query('SELECT visitor_id FROM tombstones')).rows).toEqual([{visitor_id:'deleted'}]);expect((await client.query('SELECT status FROM outbox')).rows).toEqual([{status:'queued'}]);
+   await client.query('BEGIN');const actual:StoredEvent[]=[];for await(const batch of ch.streamCommitted(client,site))actual.push(...batch);expect(actual.map(e=>e.visitor_id)).toEqual(['B']);const retained:StoredEvent[]=[];for await(const batch of ch.streamCommitted(client,other))retained.push(...batch);expect(retained.map(e=>e.visitor_id)).toEqual(['other']);await client.query('COMMIT');
+   installCanonicalStore(pool,null);await client.query('BEGIN');await expect(retireCanonicalSiteEvents(client,pool,site,new Date(+cutoff+1))).rejects.toThrow('STORE_REQUIRED');await client.query('ROLLBACK');installCanonicalStore(pool,ch);expect((await client.query('SELECT visitor_id FROM canonical_event_members WHERE site_id=$1',[site])).rows).toEqual([{visitor_id:'B'}]);
+  }finally{client.release();}
+ },10000);
+});

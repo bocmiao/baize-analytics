@@ -1,5 +1,6 @@
 import type {PoolClient} from 'pg';
 import {dayOf,type GoalDefinition,type FunnelDefinition} from './analytics.js';
+import {publishFactHourReferences,pruneUnreferencedFactRuns} from './fact-member-query.js';
 import {assertFactRunPublication,readFactBuckets,readFactDefinitions} from './session-facts.js';
 
 export interface FactPublicationOptions {
@@ -10,6 +11,7 @@ export interface FactPublicationOptions {
 /** Caller owns fresh BEGIN/COMMIT/ROLLBACK. All reads and writes reuse its single connection. */
 export async function publishSessionFacts(client:PoolClient,options:FactPublicationOptions):Promise<void>{
  const {siteId,generation,outboxHighWatermark}=await assertFactRunPublication(client,options.run,options.leaseOwner);
+ const relational=(await client.query('SELECT query_version FROM analytics_fact_runs WHERE id=$1',[options.run])).rows[0].query_version===2;
  const floor=new Date(Math.floor(+options.retainedFrom/3600000)*3600000);
  const replaceHour=new Date(+floor+(+floor<+options.retainedFrom?3600000:0));
  const replaceDay=dayOf(new Date(+options.retainedFrom+86400000),options.timezone);
@@ -19,15 +21,17 @@ export async function publishSessionFacts(client:PoolClient,options:FactPublicat
  FROM analytics_session_facts WHERE run_id=$1
  ON CONFLICT(id) DO UPDATE SET last_active=excluded.last_active,exit_path=excluded.exit_path,pageviews=excluded.pageviews,duration_s=excluded.duration_s,visible_ms=excluded.visible_ms,bounced=excluded.bounced,generation=excluded.generation`,[options.run,siteId,generation]);
  await client.query('DELETE FROM stats_hourly WHERE site_id=$1 AND hour>=$2',[siteId,replaceHour]);
- for await(const {bucket,data}of readFactBuckets(client,options.run,'hourly',options.maxBucketBytes))if(+new Date(bucket)>=+replaceHour)await client.query('INSERT INTO stats_hourly VALUES($1,$2,$3,$4)',[siteId,bucket,JSON.stringify(data),generation]);
+ for await(const {bucket,data}of readFactBuckets(client,options.run,'hourly',options.maxBucketBytes,!relational))if(+new Date(bucket)>=+replaceHour)await client.query('INSERT INTO stats_hourly VALUES($1,$2,$3,$4)',[siteId,bucket,JSON.stringify(relational?{...data,relationalVersion:2}:data),generation]);
  await client.query('DELETE FROM stats_daily WHERE site_id=$1 AND day>=$2',[siteId,replaceDay]);
  await client.query('DELETE FROM page_vitals WHERE site_id=$1 AND day>=$2',[siteId,replaceDay]);
- for await(const {bucket,data}of readFactBuckets(client,options.run,'daily',options.maxBucketBytes))if(bucket>=replaceDay){await client.query('INSERT INTO stats_daily VALUES($1,$2,$3,$4)',[siteId,bucket,JSON.stringify(data),generation]);for(const [key,digest]of Object.entries(data.vitals)){const [path,metric]=JSON.parse(key) as string[];await client.query('INSERT INTO page_vitals VALUES($1,$2,$3,$4,$5,$6)',[siteId,bucket,path,metric,JSON.stringify(digest),digest.reduce((n,c)=>n+c.n,0)]);}}
+ for await(const {bucket,data}of readFactBuckets(client,options.run,'daily',options.maxBucketBytes,!relational))if(bucket>=replaceDay){await client.query('INSERT INTO stats_daily VALUES($1,$2,$3,$4)',[siteId,bucket,JSON.stringify(relational?{...data,relationalVersion:2}:data),generation]);for(const [key,digest]of Object.entries(data.vitals)){const [path,metric]=JSON.parse(key) as string[];await client.query('INSERT INTO page_vitals VALUES($1,$2,$3,$4,$5,$6)',[siteId,bucket,path,metric,JSON.stringify(digest),digest.reduce((n,c)=>n+c.n,0)]);}}
  if(!options.privacy)await client.query(`INSERT INTO visitor_first_seen(site_id,visitor_id,first_date) SELECT $2,visitor_id,min(bucket)::date FROM analytics_member_facts WHERE run_id=$1 AND bucket_kind='daily' AND metric='pageVisitor' GROUP BY visitor_id ON CONFLICT(site_id,visitor_id) DO UPDATE SET first_date=LEAST(visitor_first_seen.first_date,excluded.first_date)`,[options.run,siteId]);
+ if(relational)await publishFactHourReferences(client,siteId,options.run,replaceHour);
  const definitions=await readFactDefinitions(client,options.run,options.goals,options.funnels);
  await client.query('INSERT INTO analytics_definitions VALUES($1,$2,$3) ON CONFLICT(site_id) DO UPDATE SET data=excluded.data,generation=excluded.generation',[siteId,JSON.stringify(definitions),generation]);
  await client.query(`UPDATE aggregation_state SET processed_generation=$2,watermark=(SELECT source_watermark FROM analytics_fact_runs WHERE id=$3),lease_owner=NULL,lease_until=NULL,attempts=0,last_error=NULL,dead_letter_at=NULL WHERE site_id=$1`,[siteId,generation,options.run]);
  await client.query("UPDATE outbox SET status='done' WHERE site_id=$1 AND id<=$2",[siteId,outboxHighWatermark]);
  await client.query("UPDATE analytics_fact_runs SET status='published' WHERE id=$1",[options.run]);
- await client.query("DELETE FROM analytics_fact_runs WHERE site_id=$1 AND id<>$2 AND generation<=$3 AND status<>'staging'",[siteId,options.run,generation]);
+ if(relational)await pruneUnreferencedFactRuns(client,siteId);
+ await client.query("DELETE FROM analytics_fact_runs WHERE site_id=$1 AND id<>$2 AND generation<=$3 AND status<>'staging' AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.run_id=analytics_fact_runs.id)",[siteId,options.run,generation]);
 }

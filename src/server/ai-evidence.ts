@@ -4,10 +4,9 @@ import {z} from 'zod';
 import {aiReadQuerySchema,aiToolEvidenceSchema,aiQuestionEvidenceSchema,type AiReadQuery,type AiToolEvidence,type AiQuestionEvidence} from '../../packages/contracts/ai-evidence.js';
 import {ExternalError} from './external-errors.js';
 import {lockSite} from './db.js';
-import {emptyBucket,type Bucket} from './analytics.js';
+import {queryAiPublishedSeries} from './ai-fact-query.js';
 export type QuestionScope={siteId:string;start:string;end:string};
-export type QuestionResult=AiToolEvidence['result']|{status:'unsupported';reason:'daily-salt-cross-day-uv'|'joint-dimensions-unavailable'};
-const aliases={source:'channel',page:'path',device:'device',os:'os'} as const;
+export type QuestionResult=AiToolEvidence['result']|{status:'unsupported';reason:string};
 function validateQuery(input:unknown,scope:QuestionScope){const parsed=aiReadQuerySchema.safeParse(input);if(!parsed.success||parsed.data.start<scope.start||parsed.data.end>scope.end)throw new ExternalError('aggregate_range_invalid');return parsed.data;}
 /** Takes an internal site scope, never a model-provided table, SQL statement or site ID. */
 export async function readQuestionAggregate(pool:Pool,scope:QuestionScope,input:unknown):Promise<QuestionResult>{
@@ -16,17 +15,13 @@ export async function readQuestionAggregate(pool:Pool,scope:QuestionScope,input:
   const site=(await client.query('SELECT timezone,privacy_mode FROM sites WHERE id=$1',[scope.siteId])).rows[0];if(!site)throw new ExternalError('evidence_missing');
   const state=(await client.query('SELECT generation::text,processed_generation::text,epoch,watermark FROM aggregation_state WHERE site_id=$1',[scope.siteId])).rows[0];if(!state||state.generation!==state.processed_generation)throw new ExternalError('aggregation_pending');
   if(q.metric==='uv'&&site.privacy_mode==='daily_salt'&&q.start!==q.end){await client.query('COMMIT');return {status:'unsupported',reason:'daily-salt-cross-day-uv'};}
-  const rows=(await client.query('SELECT day::text,data FROM stats_daily WHERE site_id=$1 AND day BETWEEN $2 AND $3 ORDER BY day',[scope.siteId,q.start,q.end])).rows as {day:string;data:Bucket}[];
-  const days=new Map(rows.map(r=>[r.day,r.data])),grouped=new Map<string,{pv:number;visitors:Set<string>;sessions:number;conversions:number}>();const filtered=Object.entries(q.filters??{}).filter(([,v])=>v!==undefined);
-  function add(label:string,pv:number,visitors:string[],sessions:number,goals:Record<string,number>){const value=grouped.get(label)??{pv:0,visitors:new Set<string>(),sessions:0,conversions:0};value.pv+=pv;for(const id of visitors)value.visitors.add(id);value.sessions+=sessions;value.conversions+=Object.values(goals).reduce((n,x)=>n+x,0);grouped.set(label,value);}
-  for(let at=Date.parse(q.start+'T00:00:00Z');at<=Date.parse(q.end+'T00:00:00Z');at+=86400000){const day=new Date(at).toISOString().slice(0,10),b=days.get(day)??emptyBucket();
-   if(q.dimension==='day'&&!filtered.length){add(day,b.pv,b.visitors,b.sessions,b.goals);continue;}
-   if(b.pv>0&&!Object.keys(b.segments??{}).length){await client.query('COMMIT');return {status:'unsupported',reason:'joint-dimensions-unavailable'};}
-   if(q.dimension==='day')add(day,0,[],0,{});
-   for(const [encoded,segment] of Object.entries(b.segments??{})){const dimensions=z.record(z.string(),z.unknown()).parse(JSON.parse(encoded));if(!filtered.every(([key,value])=>dimensions[aliases[key as keyof typeof aliases]]===value))continue;const dimensionValue=dimensions[aliases[q.dimension as keyof typeof aliases]],label=q.dimension==='day'?day:typeof dimensionValue==='string'?dimensionValue:'unknown';add(label,segment.pv,segment.visitors,segment.sessions,segment.goals);}
-  }
-  const values=[...grouped].map(([label,r])=>({label,value:q.metric==='uv'?r.visitors.size:q.metric==='conversion_rate'?(r.sessions?r.conversions/r.sessions:null):r[q.metric],...(q.metric==='conversion_rate'?{numerator:r.conversions,denominator:r.sessions}:{})}));values.sort((a,b)=>q.dimension==='day'?a.label.localeCompare(b.label):(b.value??-1)-(a.value??-1)||a.label.localeCompare(b.label));
-  const result:AiToolEvidence['result']={status:'ok',series:{metric:q.metric,dimension:q.dimension,unit:q.metric==='conversion_rate'?'ratio':'count',points:values.slice(0,q.limit),truncated:values.length>q.limit,totalGroups:values.length,timezone:site.timezone,precision:'site-calendar-day'},storage:{source:'postgresql-preaggregate',generation:state.generation,epoch:state.epoch,watermark:state.watermark?new Date(state.watermark).toISOString():null,coverage:1}};
+  const bounds=(await client.query("SELECT $1::date::timestamp AT TIME ZONE $3 AS from_at,($2::date+1)::timestamp AT TIME ZONE $3 AS to_at",[q.start,q.end,site.timezone])).rows[0];
+  const exact=await queryAiPublishedSeries(client,scope.siteId,{from:new Date(bounds.from_at).toISOString(),to:new Date(bounds.to_at).toISOString(),dimension:q.dimension,metric:q.metric,filters:q.filters},site.timezone);
+  if(exact.status!=='ok'||exact.coverage!==1){await client.query('COMMIT');return {status:'unsupported',reason:exact.reason??'relational_backing_unavailable'};}
+  const grouped=new Map(exact.rows.map(row=>[row.key,{label:row.key,value:row.value,...(q.metric==='conversion_rate'?{numerator:row.numerator,denominator:row.denominator}:{})}]));
+  if(q.dimension==='day')for(let at=Date.parse(q.start+'T00:00:00Z');at<=Date.parse(q.end+'T00:00:00Z');at+=86400000){const day=new Date(at).toISOString().slice(0,10);if(!grouped.has(day))grouped.set(day,{label:day,value:q.metric==='conversion_rate'?null:0,...(q.metric==='conversion_rate'?{numerator:0,denominator:0}:{})});}
+  const values=[...grouped.values()];values.sort((a,b)=>q.dimension==='day'?a.label.localeCompare(b.label):(b.value??-1)-(a.value??-1)||a.label.localeCompare(b.label));
+  const result:AiToolEvidence['result']={status:'ok',series:{metric:q.metric,dimension:q.dimension,unit:q.metric==='conversion_rate'?'ratio':'count',points:values.slice(0,q.limit),truncated:values.length>q.limit,totalGroups:values.length,timezone:site.timezone,precision:'site-calendar-day',...(q.metric==='conversion_rate'?{conversionSemantics:'distinct_any_goal_completed_sessions_in_start_cohort_and_completion_window' as const}:{})},storage:{source:'postgresql-preaggregate',generation:state.generation,epoch:state.epoch,watermark:state.watermark?new Date(state.watermark).toISOString():null,coverage:1}};
   aiToolEvidenceSchema.shape.result.parse(result);await client.query('COMMIT');return result;
  }catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}
 }

@@ -55,9 +55,9 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       for(const [index,rawEvent] of envelope.events.entries()){
         const parsed=eventSchema.safeParse(rawEvent);if(!parsed.success){rejected.push({index,event_id:(rawEvent as any)?.event_id,reason:'invalid_event'});continue;}
         const wire=parsed.data;
-        // These projections still depend on mutable PG event bodies. Never acknowledge
-        // canonical identity/replay until their independent integration is complete.
-        if(canonicalTarget&&(wire.type==='identify'||wire.user_id||wire.type==='replay'))throw new ApplicationError('canonical_unavailable');
+        // Replay still depends on PG raw chunk storage; identity uses its metadata
+        // ledger and canonical readers project temporal ownership without body mutation.
+        if(canonicalTarget&&wire.type==='replay')throw new ApplicationError('canonical_unavailable');
         if(site.privacy_mode==='daily_salt'&&wire.type==='identify'){rejected.push({index,event_id:wire.event_id,reason:'identify_unsupported_in_daily_salt'});continue;}
         if(wire.ts>Date.now()+86400000){rejected.push({index,event_id:wire.event_id,reason:'future_event'});continue;}
         if(wire.ts<Date.now()-Number(site.retention_days)*86400000){rejected.push({index,event_id:wire.event_id,reason:'outside_retention'});continue;}

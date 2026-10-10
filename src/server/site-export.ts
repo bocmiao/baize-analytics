@@ -1,4 +1,7 @@
-import type {PoolClient} from 'pg';
+import type {Pool,PoolClient} from 'pg';
+import type {StoredEvent} from './clickhouse-store.js';
+import {readSiteEvents} from './event-store.js';
+import {ApplicationError} from '../shared/error-codes.js';
 import {stableIdentityKey} from '../../packages/tracker/src/privacy.js';
 export const EXPORT_ROW_LIMIT=100000;
 // Static SQL only. Runtime input can never select another relation or column.
@@ -28,7 +31,7 @@ export const SITE_EXPORT_QUERIES={
  notification_channels:'SELECT id,site_id,kind FROM notification_channels WHERE site_id=$1',
  report_schedules:'SELECT id,site_id,report_id,channel_id,cadence,next_at,enabled FROM report_schedules WHERE site_id=$1',
  alert_rules:'SELECT id,site_id,kind,config,channel_id,next_at,consecutive,silenced_until,last_fired FROM alert_rules WHERE site_id=$1',
- notification_jobs:'SELECT id,site_id,channel_id,body,dedupe_key,status,attempts,next_at FROM notification_jobs WHERE site_id=$1',
+ notification_jobs:"SELECT id,site_id,channel_id,body,dedupe_key,status,attempts,next_at FROM notification_jobs WHERE site_id=$1 AND (NOT(COALESCE(body->>'kind','') IN ('traffic','goal','funnel') OR COALESCE(dedupe_key,'') LIKE 'report:%') OR (body->>'aggregationEpoch'=(SELECT epoch::text FROM aggregation_state WHERE site_id=$1) AND status<>'revoked' AND COALESCE(body->>'invalidated','false')<>'true'))",
  notification_logs:'SELECT id,job_id,site_id,success,created_at FROM notification_logs WHERE site_id=$1',
  share_links:'SELECT id,site_id,expires_at,revoked,frame_origins,created_at FROM share_links WHERE site_id=$1',
  audit_logs:'SELECT id,site_id,action,target,created_at FROM audit_logs WHERE site_id=$1',
@@ -64,14 +67,48 @@ export function scrubExportRows(table:string,rows:Record<string,unknown>[],daily
  if(dailySalt&&noDailyIdentity.has(table))return [];
  return rows.filter(row=>!(table==='event_data'&&(secretKey(String(row.data_key))||dailySalt&&(stableIdentityKey(String(row.data_key))||email(row.string_value))))).map(row=>Object.fromEntries(Object.entries(row).filter(([key])=>!secretKey(key)&&!(dailySalt&&key==='user_id')).map(([key,value])=>[key,jsonColumns.has(key)?scrubExportJson(value,dailySalt):value])));
 }
-export async function readFullSiteFacts(client:PoolClient,siteId:string,dailySalt:boolean):Promise<Record<string,Record<string,unknown>[]>>{
+// Reconstruct the legacy EAV contract from committed, sanitized event properties.
+// Boolean true and string "true" remain distinct; unsupported values fail closed.
+export function canonicalEventData(events:StoredEvent[],siteId:string):Record<string,unknown>[] {
+ const rows:Record<string,unknown>[]=[];
+ for(const event of events){
+  if(event.site_id!==siteId)throw new ApplicationError('canonical_unavailable');
+  const props=event.payload?.props;if(props===undefined)continue;
+  if(props===null||typeof props!=='object'||Array.isArray(props))throw new ApplicationError('canonical_unavailable');
+  for(const [key,value] of Object.entries(props)){
+   const type=typeof value;if(type!=='string'&&type!=='boolean'&&!(type==='number'&&Number.isFinite(value)))throw new ApplicationError('canonical_unavailable');
+   rows.push({site_id:siteId,event_id:event.event_id,ts:event.ts,data_key:key,data_type:type==='string'?'s':type==='boolean'?'b':'n',string_value:type==='string'?value:null,number_value:type==='number'?decimalString(value as number):null,boolean_value:type==='boolean'?value:null,date_value:null});
+   if(rows.length>EXPORT_ROW_LIMIT)throw new Error('Export table exceeds 100000 rows');
+  }
+ }
+ return rows;
+}
+function decimalString(value:number):string {
+ const text=String(value);if(!/[eE]/.test(text))return text;
+ const [mantissa,exponent]=text.split(/[eE]/);const negative=mantissa!.startsWith('-');const unsigned=negative?mantissa!.slice(1):mantissa!;const [whole,fraction='']=unsigned.split('.');const digits=whole!+fraction;const point=whole!.length+Number(exponent);
+ return (negative?'-':'')+(point<=0?'0.'+'0'.repeat(-point)+digits:point>=digits.length?digits+'0'.repeat(point-digits.length):digits.slice(0,point)+'.'+digits.slice(point));
+}
+export async function readFullSiteFacts(client:PoolClient,siteId:string,dailySalt:boolean,options:{pool?:Pool;canonicalReplayRows?:Record<string,unknown>[]}={}):Promise<Record<string,Record<string,unknown>[]>>{
  const result:Record<string,Record<string,unknown>[]>=Object.create(null);const sourceCounts:Record<string,number>=Object.create(null);
+ const authority=(await client.query('SELECT authority FROM canonical_event_authority WHERE site_id=$1',[siteId])).rows[0]?.authority;
+ let canonicalRows:Record<string,unknown>[]|undefined;let eventDataRead:Record<string,unknown>={source:'postgres',method:'event_data_join_events',coverage:1};
+ if(authority==='clickhouse'){
+  if(!options.pool)throw new ApplicationError('canonical_unavailable');
+  const read=await readSiteEvents(options.pool,siteId,{client,includeBots:true,limit:EXPORT_ROW_LIMIT});
+  if(read.truncated)throw new Error('Export table exceeds 100000 rows');
+  if(read.coverage!==1||read.authority!=='clickhouse')throw new ApplicationError('canonical_unavailable');
+  canonicalRows=canonicalEventData(read.events,siteId);eventDataRead={source:read.source,method:'committed_sanitized_event_properties',coverage:read.coverage,epoch:read.epoch,deletion_epoch:read.deletionEpoch,watermark:read.watermark,retention_boundary:read.retentionBoundary};
+ }
  const invalid=(await client.query(`SELECT EXISTS(SELECT 1 FROM ai_suggestions s JOIN ai_calls c ON c.id=s.evidence_id WHERE s.site_id=$1 AND c.site_id<>$1) OR EXISTS(SELECT 1 FROM experiment_contributions c JOIN experiments e ON e.id=c.experiment_id WHERE c.site_id=$1 AND e.site_id<>$1) OR EXISTS(SELECT 1 FROM notification_jobs j JOIN notification_channels c ON c.id=j.channel_id WHERE j.site_id=$1 AND c.site_id<>$1) OR EXISTS(SELECT 1 FROM notification_logs l JOIN notification_jobs j ON j.id=l.job_id WHERE l.site_id=$1 AND j.site_id<>$1) OR EXISTS(SELECT 1 FROM alert_rules r JOIN notification_channels c ON c.id=r.channel_id WHERE r.site_id=$1 AND c.site_id<>$1) OR EXISTS(SELECT 1 FROM report_schedules s JOIN reports r ON r.id=s.report_id JOIN notification_channels c ON c.id=s.channel_id WHERE s.site_id=$1 AND (r.site_id<>$1 OR c.site_id<>$1)) AS invalid`,[siteId])).rows[0];if(invalid.invalid)throw new Error('Export site relationship mismatch');
  for(const [table,query] of Object.entries(SITE_EXPORT_QUERIES)){
-  const visitorTables=new Set(['sessions','visitor_first_seen','identity_map','identity_bindings','event_keys','revenue_orders','experiment_assignments','experiment_contributions']);const guarded=visitorTables.has(table)?`SELECT x.* FROM (${query}) x WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=x.visitor_id)`:query;const rows=(await client.query(guarded+' LIMIT 100001',[siteId])).rows;
+  const visitorTables=new Set(['sessions','visitor_first_seen','identity_map','identity_bindings','event_keys','revenue_orders','experiment_assignments','experiment_contributions']);const guarded=visitorTables.has(table)?`SELECT x.* FROM (${query}) x WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=x.visitor_id)`:query;let rows:Record<string,unknown>[];
+  if(authority==='clickhouse'&&table==='replay_chunks'){
+   if(!options.canonicalReplayRows)throw new ApplicationError('canonical_unavailable');
+   rows=options.canonicalReplayRows;if(rows.some(row=>row.site_id!==siteId))throw new ApplicationError('canonical_unavailable');
+  }else rows=table==='event_data'&&canonicalRows!==undefined?canonicalRows:(await client.query(guarded+' LIMIT 100001',[siteId])).rows;
   if(rows.length>EXPORT_ROW_LIMIT)throw new Error('Export table exceeds 100000 rows');
   sourceCounts[table]=rows.length;result[table]=scrubExportRows(table,rows,dailySalt);
  }
- result.export_manifest=[{version:1,site_id:siteId,scope:'site-facts-and-nonsecret-configuration',row_limit:EXPORT_ROW_LIMIT,tables:Object.keys(SITE_EXPORT_QUERIES),core_tables:['site','events','storage'],source_row_counts:sourceCounts,exported_row_counts:Object.fromEntries(Object.entries(result).map(([table,rows])=>[table,rows.length])),excluded:['users','auth_sessions','site_members','api_tokens','site_invites','oauth_states','sso_config','sso_mappings','sso_states','instance_settings','instance_keyring','outbox','aggregation_state_leases','event_store_internal_state','export_jobs_and_files','credential_columns'],privacy_omissions:dailySalt?[...noDailyIdentity]:[],privacy_mode:dailySalt?'daily_salt':'standard',restore_policy:'Facts only. Reconfigure credentials and permissions; do not replay old jobs or leases. Apply independent deletion journal before serving restored data.'}];
+ result.export_manifest=[{version:1,site_id:siteId,scope:'site-facts-and-nonsecret-configuration',row_limit:EXPORT_ROW_LIMIT,row_limit_scope:'per_table',table_read_metadata:{event_data:eventDataRead,replay_chunks:authority==='clickhouse'?{source:'clickhouse',method:'canonical_committed_replay',coverage:1,created_at:'not_recorded'}:{source:'postgres',method:'replay_chunks',coverage:1}},tables:Object.keys(SITE_EXPORT_QUERIES),core_tables:['site','events','storage'],source_row_counts:sourceCounts,exported_row_counts:Object.fromEntries(Object.entries(result).map(([table,rows])=>[table,rows.length])),excluded:['users','auth_sessions','site_members','api_tokens','site_invites','oauth_states','sso_config','sso_mappings','sso_states','instance_settings','instance_keyring','ai_reservations','replay_retention_jobs','outbox','aggregation_state_leases','event_store_internal_state','export_jobs_and_files','credential_columns'],exclusion_reasons:{ai_reservations:'quota-ledger-operational-state',replay_retention_jobs:'retention-authorization-operational-state'},privacy_omissions:dailySalt?[...noDailyIdentity]:[],privacy_mode:dailySalt?'daily_salt':'standard',restore_policy:'Facts only. Reconfigure credentials and permissions; do not replay old jobs or leases. Apply independent deletion journal before serving restored data.'}];
  return result;
 }

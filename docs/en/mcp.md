@@ -1,6 +1,6 @@
 # Standard MCP read-only site analytics
 
-The current development addition exports `registerMcp(app,ctx)` at `/api/sites/:siteId/mcp`. Real PostgreSQL/native HTTP and official `@modelcontextprotocol/sdk`1.32.1 client tests have passed. Root application registration and the next immutable full acceptance are still required; do not assume an older image has this endpoint. This is real JSON-RPC2 MCP initialization/tool discovery/calling, not renaming the earlier typed HTTP query.
+The current development addition exports `registerMcp(app,ctx)` at `/api/sites/:siteId/mcp`. Real PostgreSQL/native HTTP and official `@modelcontextprotocol/sdk`1.32.1 client tests have passed. Default application registration is present; the next immutable full acceptance is still being consolidated; do not assume an older image has this endpoint. This is real JSON-RPC2 MCP initialization/tool discovery/calling, not renaming the earlier typed HTTP query.
 
 ## Connect safely
 

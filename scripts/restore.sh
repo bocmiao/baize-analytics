@@ -18,9 +18,12 @@ docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/tombstones.jsonl"
 docker compose cp app:/app/data/tombstones.watermark.json "$restore_dir/tombstones.watermark.json"
 node scripts/ops-validate-journal.mjs "$restore_dir/tombstones.jsonl" "$restore_dir/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
 source_replica="$(docker compose exec -T app printenv CLICKHOUSE_URL)"
+canonical_restore=0
+if [ -f "$backup_dir/canonical/index.json" ]; then canonical_restore=1; fi
 target_replica="${BAIZE_RESTORE_CLICKHOUSE_URL:-}"
-SOURCE_REPLICA="$source_replica" TARGET_REPLICA="$target_replica" node --input-type=module -e '
-if(process.env.TARGET_REPLICA){const t=new URL(process.env.TARGET_REPLICA),s=process.env.SOURCE_REPLICA?new URL(process.env.SOURCE_REPLICA):null;if(s&&t.origin===s.origin&&t.pathname.replace(/\/+$/,"")===s.pathname.replace(/\/+$/,""))throw Error("Restore target cannot share source ClickHouse endpoint");}'
+SOURCE_REPLICA="$source_replica" TARGET_REPLICA="$target_replica" CANONICAL_RESTORE="$canonical_restore" node --input-type=module -e '
+if(process.env.CANONICAL_RESTORE==="1"&&!process.env.TARGET_REPLICA)throw Error("Canonical restore requires explicit independent target CH database");
+if(process.env.TARGET_REPLICA){const t=new URL(process.env.TARGET_REPLICA),s=process.env.SOURCE_REPLICA?new URL(process.env.SOURCE_REPLICA):null;if(process.env.CANONICAL_RESTORE!=="1"&&s&&t.origin===s.origin&&t.pathname.replace(/\/+$/,"")===s.pathname.replace(/\/+$/,""))throw Error("Restore target cannot share source ClickHouse endpoint");}'
 exists="$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$new_db'")"
 [ "$exists" = 0 ] || { echo 'Target already exists; refusing overwrite.' >&2; exit 1; }
 project="${COMPOSE_PROJECT_NAME:-baize-analytics}"
@@ -31,6 +34,7 @@ for target in "$volume" "$keys_volume"; do
   if docker volume inspect "$target" >/dev/null 2>&1; then echo 'Target volume already exists; refusing overwrite.' >&2; exit 1; fi
 done
 tar -xzf "$backup_dir/app-data.tar.gz" -C "$restore_dir"
+if [ "$canonical_restore" = 1 ]; then cp -a "$backup_dir/canonical" "$restore_dir/app-data/restore-canonical"; fi
 cp "$backup_dir/tombstones.jsonl" "$restore_dir/restore-backup-tombstones.jsonl"
 docker volume create --label "baize.restore.database=$new_db" "$volume" >/dev/null
 docker volume create --label "baize.restore.database=$new_db" "$keys_volume" >/dev/null
@@ -53,13 +57,27 @@ own("/target");own("/target-keys");fs.chmodSync("/target",0o700);fs.chmodSync("/
 docker compose exec -T postgres createdb -U baize "$new_db"
 target_created=1
 docker compose exec -T postgres pg_restore -U baize -d "$new_db" --exit-on-error --no-owner < "$backup_dir/database.dump"
+if [ "$canonical_restore" = 1 ]; then
+  docker compose run --rm --no-deps --entrypoint node \
+    --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data \
+    --env "CLICKHOUSE_URL=$target_replica" --env "CLICKHOUSE_USER=${BAIZE_RESTORE_CLICKHOUSE_USER:-default}" \
+    --env "CLICKHOUSE_PASSWORD=${BAIZE_RESTORE_CLICKHOUSE_PASSWORD:-}" \
+    --volume "$volume:/restore-data" app --import tsx scripts/canonical-ops-runtime.ts restore /restore-data/restore-canonical
+fi
 docker compose run --rm --no-deps --entrypoint node \
   --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data --env KEYS_DIR=/restore-keys \
-  --env REQUIRE_DELETION_JOURNAL=1 \
+  --env REQUIRE_DELETION_JOURNAL=1 --env "CANONICAL_RESTORE_VERIFIED=$canonical_restore" \
   --env "CLICKHOUSE_URL=$target_replica" --env "CLICKHOUSE_USER=${BAIZE_RESTORE_CLICKHOUSE_USER:-default}" \
   --env "CLICKHOUSE_PASSWORD=${BAIZE_RESTORE_CLICKHOUSE_PASSWORD:-}" --env RESTORE_CLICKHOUSE_EXPLICIT=1 \
   --env "RESTORE_SOURCE_CLICKHOUSE_URL=$source_replica" \
   --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/restore-runtime.ts
+# A concurrent source deletion after the copied journal invalidates this attempt.
+# Preserve the isolated target for diagnosis; retry from a fresh verified journal.
+mkdir "$restore_dir/latest-journal"
+docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/latest-journal/tombstones.jsonl"
+docker compose cp app:/app/data/tombstones.watermark.json "$restore_dir/latest-journal/tombstones.watermark.json"
+node scripts/ops-validate-journal.mjs "$restore_dir/latest-journal/tombstones.jsonl" "$restore_dir/latest-journal/tombstones.watermark.json" "$restore_dir/tombstones.jsonl"
+cmp -s "$restore_dir/latest-journal/tombstones.jsonl" "$restore_dir/tombstones.jsonl" || { echo 'Source deletion journal changed during restore; target retained, no success marker.' >&2; exit 1; }
 mkdir -p .baize/restores
 printf '{"database":"%s","dataVolume":"%s","keysVolume":"%s","trafficSwitched":false}\n' "$new_db" "$volume" "$keys_volume" > ".baize/restores/$new_db.json"
 printf 'Restored %s with independent target data/key volumes; deletion journal verified and replayed. No production traffic switched.\n' "$new_db"

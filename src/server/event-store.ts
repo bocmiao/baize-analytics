@@ -1,3 +1,5 @@
+import {beginSiteSnapshot} from './site-snapshot.js';
+import {projectEventIdentity} from './identity.js';
 import {ApplicationError} from '../shared/error-codes.js';
 import {CanonicalClickHouse,installCanonicalStore,getCanonicalStore} from './canonical-clickhouse.js';
 import {randomUUID} from 'node:crypto';
@@ -114,11 +116,14 @@ export async function* streamSiteEventBatches(pool:Pool,siteId:string,options:Ev
 /** Exact canonical manifests staged on disk in PG; no whole event array. */
 async function* canonicalBatches(pool:Pool,siteId:string,options:EventReadOptions,batchSize:number):AsyncGenerator<EventReadResult>{
  const store=getCanonicalStore(pool);if(!store)throw new ApplicationError('canonical_unavailable');const owned=!options.client,client=options.client||await pool.connect();const table='canonical_read_'+randomUUID().replaceAll('-',''),cursor='canonical_cursor_'+randomUUID().replaceAll('-','');let started=false,opened=false;
- try{if(owned){await beginPartitionSnapshot(client);started=true;await client.query('SELECT pg_advisory_xact_lock_shared(hashtextextended($1,0))',[siteId]);}
+ try{if(owned){await beginSiteSnapshot(client,siteId);started=true;}
   const metadata=await store.captureReadState(client,siteId);await client.query(`CREATE TEMP TABLE ${table}(site_id text,event_id uuid,ts timestamptz,visitor_id text,type text,path text,payload jsonb,is_bot boolean,body jsonb) ON COMMIT DROP`);
-  for await(const events of store.streamCommitted(client,siteId,{snapshotEpoch:metadata.epoch})){await client.query(`INSERT INTO ${table} SELECT x->>'site_id',(x->>'event_id')::uuid,(x->>'ts')::timestamptz,x->>'visitor_id',x->>'type',x->>'path',x->'payload',COALESCE((x->>'is_bot')::boolean,false),x FROM jsonb_array_elements($1::jsonb) x`,[JSON.stringify(events)]);}
+  for await(const events of store.streamCommitted(client,siteId,{snapshotEpoch:metadata.epoch})){const projected=await projectEventIdentity(client,siteId,events);await client.query(`INSERT INTO ${table} SELECT x->>'site_id',(x->>'event_id')::uuid,(x->>'ts')::timestamptz,x->>'visitor_id',x->>'type',x->>'path',x->'payload',COALESCE((x->>'is_bot')::boolean,false),x FROM jsonb_array_elements($1::jsonb) x`,[JSON.stringify(projected)]);}
   const {sql,params}=pgEventQuery(siteId,options);await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR `+sql.replace('SELECT e.*','SELECT e.body').replace('FROM events e',`FROM ${table} e`),params);opened=true;
-  while(true){const rows=(await client.query(`FETCH FORWARD ${batchSize} FROM ${cursor}`)).rows;if(!rows.length)break;yield {events:rows.map(r=>r.body as StoredEvent),source:'clickhouse',mode:'canonical_clickhouse',coverage:1,epoch:metadata.epoch,canonicalEpoch:metadata.epoch,canonicalDeletionEpoch:metadata.deletionEpoch,deletionEpoch:metadata.deletionEpoch,authority:'clickhouse',watermark:metadata.watermark};}
+  let yielded=false;
+  const readMetadata={source:'clickhouse' as const,mode:'canonical_clickhouse',coverage:1,epoch:metadata.epoch,canonicalEpoch:metadata.epoch,canonicalDeletionEpoch:metadata.deletionEpoch,deletionEpoch:metadata.deletionEpoch,authority:'clickhouse' as const,watermark:metadata.watermark};
+  while(true){const rows=(await client.query(`FETCH FORWARD ${batchSize} FROM ${cursor}`)).rows;if(!rows.length)break;yielded=true;yield {events:rows.map(r=>r.body as StoredEvent),source:'clickhouse',mode:'canonical_clickhouse',coverage:1,epoch:metadata.epoch,canonicalEpoch:metadata.epoch,canonicalDeletionEpoch:metadata.deletionEpoch,deletionEpoch:metadata.deletionEpoch,authority:'clickhouse',watermark:metadata.watermark};}
+  if(!yielded)yield {...readMetadata,events:[]};
   await client.query(`CLOSE ${cursor}`);opened=false;await client.query(`DROP TABLE ${table}`);if(owned){await client.query('COMMIT');started=false;const fresh=await canonicalAuthority(pool,siteId,client);if(fresh?.authority!=='clickhouse'||fresh.epoch!==metadata.epoch||fresh.deletion_epoch!==metadata.deletionEpoch)throw new ApplicationError('canonical_unavailable');}
  }catch{if(started)await client.query('ROLLBACK').catch(()=>{});throw new ApplicationError('canonical_unavailable');}finally{if(opened)await client.query(`CLOSE ${cursor}`).catch(()=>{});if(started)await client.query('ROLLBACK').catch(()=>{});if(owned)client.release();}
 }

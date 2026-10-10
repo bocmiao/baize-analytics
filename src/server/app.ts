@@ -1,9 +1,11 @@
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
 import {invalidateSiteFacts} from './session-facts.js';
+import {sanitizeCanonicalSitePrivacy} from './canonical-privacy-cleanup.js';
+import {sanitizeSiteHistoryPrivacy} from './history-privacy.js';
 import type {Transport} from './outbound.js';
 import {cleanupHistoryBackupFiles} from './history-security.js';
-import {HistoryStore,installHistoryStore,expireHistorySnapshots,cleanupHistoryFailures,historyDeletionBarrier} from './history-store.js';
+import {HistoryStore,installHistoryStore,expireHistorySnapshots,cleanupHistoryFailures} from './history-store.js';
 import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
 import staticFiles from '@fastify/static';
@@ -37,7 +39,7 @@ import {ClickHouseStore} from './clickhouse-store.js';
 import {ClickHouseMirror,registerClickHouseRoutes} from './clickhouse-mirror.js';
 import {EventStore,installEventStore} from './event-store.js';
 import {ExternalError} from './external-errors.js';
-import {ApplicationError,resolveApiError} from '../shared/error-codes.js';
+import {resolveApiError} from '../shared/error-codes.js';
 export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport }
 export async function createApp(options:AppOptions={}){
   const pool=options.pool??createPool();const dataDir=resolve(options.dataDir??process.env.DATA_DIR??'data');
@@ -59,8 +61,28 @@ export async function createApp(options:AppOptions={}){
   if(history)await history.initialize();
   if(history!==undefined)installHistoryStore(pool,history);
   const replay=await replayDeletionJournal(pool,dataDir,undefined,ctx.clickhouseMirror?(client,siteId)=>ctx.clickhouseMirror!.withDeletionBarrier(client,siteId,{all:true}):undefined);for(const siteId of replay.sites)await invalidateSiteCache(ctx,siteId);
-  for(const site of (await pool.query("SELECT id FROM sites WHERE config->>'privacy_cleanup_version' ~ '^[1-9][0-9]*$'")).rows){
-    await transaction(pool,async client=>{await lockSite(client,site.id);const authority=(await client.query('SELECT authority FROM canonical_event_authority WHERE site_id=$1',[site.id])).rows[0];if(authority?.authority==='clickhouse')throw new ApplicationError('canonical_unavailable');await ctx.clickhouseMirror?.withDeletionBarrier(client,site.id,{all:true});await historyDeletionBarrier(client,pool,site.id);await invalidateSiteAi(client,site.id);await invalidateSiteFacts(client,site.id);});
+  for(const site of (await pool.query("SELECT id,config FROM sites WHERE config->>'privacy_cleanup_version' ~ '^[1-9][0-9]*$'")).rows){
+    await transaction(pool,async client=>{
+      await lockSite(client,site.id);
+      const current=(await client.query('SELECT config FROM sites WHERE id=$1',[site.id])).rows[0].config;
+      const pending=String(current.privacy_cleanup_applied_version??'')!==String(current.privacy_cleanup_version);
+      const authority=(await client.query('SELECT authority FROM canonical_event_authority WHERE site_id=$1',[site.id])).rows[0];
+      let changed=0;
+      if(authority?.authority==='clickhouse'){
+        // Authoritative CH and historical raw may be the only surviving body.
+        // Sanitize known aliases in place; never use a disposable mirror wipe.
+        changed+=(await sanitizeCanonicalSitePrivacy(client,pool,site.id)).changed;
+        changed+=(await sanitizeSiteHistoryPrivacy(client,pool,site.id)).changed;
+      }else{
+        // A restored disposable replica can reappear after this migration was applied.
+        // Keep the physical barrier durable; invalidate published facts only once.
+        await ctx.clickhouseMirror?.withDeletionBarrier(client,site.id,{all:true});
+        if(pending)await invalidateSiteFacts(client,site.id);
+        changed+=(await sanitizeSiteHistoryPrivacy(client,pool,site.id)).changed;
+      }
+      if(pending||changed)await invalidateSiteAi(client,site.id);
+      await client.query("UPDATE sites SET config=config||jsonb_build_object('privacy_cleanup_applied_version',config->>'privacy_cleanup_version') WHERE id=$1",[site.id]);
+    });
     await invalidateSiteCache(ctx,site.id);
   }
   await runFileCleanup(ctx);

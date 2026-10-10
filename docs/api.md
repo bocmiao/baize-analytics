@@ -221,7 +221,7 @@ English operational rule: inspect both HTTP status and the stable error code; re
 
 ## 删除AI派生信息：下一批在制 / AI derived-data deletion: pending batch
 
-当前工作树031拟在整站派生失效时撤销/清除AI历史答案、工具证据、建议及相关导出文件，保留月度预算/计量账本防止通过删除重置费用。该修改及物理清理hooks须新不可变完整验收，不能据此声称旧镜像已经删除这些派生信息。
+当前应用删除和journal重放路径已接 invalidateSiteAi：保守清除整站AI历史答案、最终工具证据和建议，并撤销相关导出；保留月度预算/计量账本防止删除重置费用。独立真实PG已验证失效与预算保留；新不可变完整compiled-app/镜像验收仍待根线程汇总，不据此声称旧镜像已含这些hooks。
 
 The pending031 change invalidates site-derived AI answers/tool evidence/suggestions and associated exports, while retaining monthly budget/accounting to prevent cost-reset abuse. New physical cleanup hooks require the next immutable acceptance batch; older images must not be described as already enforcing this behavior.
 
@@ -231,4 +231,21 @@ The pending031 change invalidates site-derived AI answers/tool evidence/suggesti
 
 As of2026-10-10, official search-analysis product documentation describes clicks/impressions/keywords/rank/popular pages, but a publicly documented read API for ordinary site owners has not been established. This does not prove no such API exists. URL-submission APIs and Baidu Tongji PV/UV search-word reports are different capabilities. A2015 download article is not a current native CSV sample; custom templates/column mapping must not be advertised as native compatibility without samples.
 
-HTTP typed语义查询与模型function tool不等于标准MCP server。当前尚未交付标准MCP协议入口或真实第三方客户端兼容验收，不应据本手册配置不存在的MCP endpoint。 / The typed HTTP query and model function tool are not a standard MCP protocol server. No standard MCP endpoint/client acceptance is delivered; do not configure an invented endpoint.
+## 标准 MCP 与权威存储开发边界
+
+POST `/api/sites/:siteId/mcp` 已在默认应用注册。它提供标准 JSON-RPC2 的 initialize、ping、tools/list、tools/call，不是 HTTP typed-query 的改名；无状态 Streamable HTTP、POST JSON 响应，notification成功202，已鉴权 GET/DELETE 为405并返回 Allow: POST。每请求检查该站点 read 权限，工具读取前与返回前再次检查；提供 Origin 时须精确匹配 PUBLIC_URL。
+
+唯一工具 query_analytics 只接受已授权站点的31个包含端点日历日、最多100分组的 typed 只读聚合，不提供 SQL、其他站点选择器、raw 数据或副作用。成功返回 content 与 structuredContent；工具运行/范围失败返回 MCP isError，权限失败为HTTP401/403。JSON-RPC协议错误用 -32700/-32600/-32601/-32602，不能套用所有普通API的错误JSON。官方 SDK1.32.1 真实HTTP/PG客户端已验证协议2025-11-25；服务声明2025-11-25、2025-06-18、2025-03-26，后两版以及其他桌面客户端不算已测。完整连接样例见[中文MCP](mcp.md)/[English MCP](en/mcp.md)。独立4项通过；默认注册已静态确认，第七完整compiled-app验收仍由根线程汇总，不假定旧镜像包含新入口。
+
+当前普通安装仍用 PG 权威。032 canonical adapter、033 normalized facts、034 replay metadata索引及治理权威读取为独立开发切片；整个 canonical activation guard 仍关闭。不要修改数据库 authority 字段或删除PG raw 来绕过保护。已选择canonical的隔离测试中，CH故障返回503 canonical_unavailable，不能回退空PG数据；这不改变可选副本模式允许显式PG fallback的既有契约。
+
+034仅存 replay chunk 索引、事件/页面标识、hash和记录时间范围，不存 rrweb payload；canonical回放读取上限1000 chunks/128MiB，完整导出沿用每表100k。用量中的 canonical bytes:null 表示没有实际CH磁盘测量，logical_bytes仅是事件JSON大小。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。定向结果见[治理切片](ACCEPTANCE_CANONICAL_GOVERNANCE.md)，不是不可变main全量或部署验收。
+
+
+新增035 durable AI reservation账本仅保存费用保留/结算状态，无模型正文或visitor FK；删除AI派生内容不能删除该账本而重置费用。站点facts导出排除该内部操作状态（ai_reservations，原因quota-ledger-operational-state），不改变已有ai_budget数字事实策略；PG整库backup自然包含账本。该新增切片的定向与下一完整阶段结果单列，不假定旧镜像已有035。
+
+治理运行期回放保留新增定向实现（工作树，非第七main）：canonical-replay-retention按min(站点保留,30天)的rrweb记录时间执行不可变替换与旧body物理ACK，保留新记录；PG chunk metadata在物理ACK及事务提交前保留为可靠重试指针，故障回滚可恢复已核验replacement孤儿。时间策略清理不是个人删除请求，不伪称已fsync个人journal。每站访客上限10k、每visitor chunk上限10k，超预算失败保留指针而不先删索引。minute治理任务已接线，原生canonical guard仍关闭，新全量与安装迁移验收待下一批。
+
+037 replay_retention_jobs新增持久单调cutoff：调度在任何partition/site gate前独立提交，以GREATEST保留已授权清理范围，随后P→site→job获取锁、同client物理清理；失败保存固定错误码与指数退避，不存rrweb正文或伪造个人journal。延长站点保留不能撤销已经授权的旧cutoff。当前工作树真实PG/CH5项回放保留加1项genericretention共6PASS（2.28s），含ACK后回滚→7天改90天→可靠重试；lint/type通过。旧备份恢复必须另核验并保留源最新单调cutoff，不能仅用旧PGsnapshot或个人删除journal声称已覆盖此操作账本；该恢复集成尚待下一批，canonical guard仍关闭。
+
+最新运行期保留证明已补工作树实现：canonical-replay-retention-proof以稳定v1实例key签名sourceScope/签发时间/完整canonical站点cutoff集合，最多5000站点，默认10分钟有效；独立源调度提交后RR捕获，私有文件fsync。恢复先验证缺失、完整性、签名、来源和时效，再同client GREATEST合并；目标正文发布后须在同一未提交事务执行物理过滤，完成后才允许提交/暴露。真实PG/CH两项专项通过（1.61s）：实际canonical备份文件→独立CH目标与旧PG元数据→源7天改90天仍保留最新7天授权→目标旧记录物理消失且源CH不改。CLI/shell与完整Docker生命周期接线由ops继续，此结果不能冒充完整安装恢复验收或新main。

@@ -1,4 +1,6 @@
+import {removeReplayKeySegments} from './replay-key-cleanup.js';
 import type {PoolClient} from 'pg';
+import type {StoredEvent} from './clickhouse-store.js';
 export interface IdentityDeletionRecord {site_id:string;visitor_id:string;user_id:string;started_at:string;ended_at:string|null;deleted_at:string;source:'identity-segment'}
 /** Caller holds the site's advisory transaction lock; temporal attribution never uses ingestion time. */
 export async function checkIdentity(client:PoolClient,site:string,visitor:string,ts:number|Date,claimedUser:string|null=null,allowTransition=false){
@@ -14,6 +16,8 @@ export async function checkIdentity(client:PoolClient,site:string,visitor:string
 /** A→B appends a new episode and closes A at B's event time; late transitions only split their temporal interval. */
 export async function registerIdentity(client:PoolClient,site:string,visitor:string,user:string,ts:number|Date):Promise<boolean>{
  const at=ts instanceof Date?ts:new Date(ts);
+ const siteState=(await client.query('SELECT s.privacy_mode,a.authority FROM sites s LEFT JOIN canonical_event_authority a ON a.site_id=s.id WHERE s.id=$1',[site])).rows[0];
+ if(!siteState||siteState.privacy_mode!=='standard')return false;
  const existing=(await client.query('SELECT user_id FROM identity_bindings WHERE site_id=$1 AND visitor_id=$2 AND started_at=$3',[site,visitor,at])).rows[0];
  if(existing)return existing.user_id===user;
  await client.query('INSERT INTO identity_bindings(site_id,visitor_id,user_id,started_at) VALUES($1,$2,$3,$4)',[site,visitor,user,at]);
@@ -21,7 +25,7 @@ export async function registerIdentity(client:PoolClient,site:string,visitor:str
  const newest=(await client.query('SELECT user_id,started_at FROM identity_bindings WHERE site_id=$1 AND visitor_id=$2 ORDER BY started_at DESC LIMIT 1',[site,visitor])).rows[0];
  await client.query('INSERT INTO identity_map(site_id,visitor_id,user_id,created_at) VALUES($1,$2,$3,$4) ON CONFLICT(site_id,visitor_id) DO UPDATE SET user_id=excluded.user_id,created_at=excluded.created_at',[site,visitor,newest.user_id,newest.started_at]);
  // Correct delayed events already accepted in the newly split interval, without relabeling earlier owners.
- await client.query(`UPDATE events e SET payload=jsonb_set(e.payload,'{user_id}',to_jsonb(b.user_id),true) FROM identity_bindings b WHERE e.site_id=$1 AND e.visitor_id=$2 AND b.site_id=e.site_id AND b.visitor_id=e.visitor_id AND e.ts>=b.started_at AND (b.ended_at IS NULL OR e.ts<b.ended_at)`,[site,visitor]);
+ if(siteState.authority!=='clickhouse')await client.query(`UPDATE events e SET payload=jsonb_set(e.payload,'{user_id}',to_jsonb(b.user_id),true) FROM identity_bindings b WHERE e.site_id=$1 AND e.visitor_id=$2 AND b.site_id=e.site_id AND b.visitor_id=e.visitor_id AND e.ts>=b.started_at AND (b.ended_at IS NULL OR e.ts<b.ended_at)`,[site,visitor]);
  return true;
 }
 export async function userDeletionRecords(client:PoolClient,site:string,userHash:string):Promise<IdentityDeletionRecord[]>{
@@ -30,6 +34,8 @@ export async function userDeletionRecords(client:PoolClient,site:string,userHash
 }
 /** Persist interval tombstones before precise purge. A deleted episode cannot be revived by an anonymous old retry. */
 export async function purgeIdentity(client:PoolClient,site:string,records:IdentityDeletionRecord[]){
+ if(records.some(r=>r.site_id!==site))throw Error('Identity deletion site mismatch');
+ const replayIndexCleanup=await removeReplayKeySegments(client,site,records.map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
  for(const record of records){
   if(record.site_id!==site)throw Error('Identity deletion site mismatch');
   const args=[site,record.visitor_id,record.started_at,record.ended_at,record.user_id];
@@ -55,4 +61,35 @@ export async function purgeIdentity(client:PoolClient,site:string,records:Identi
   await client.query(`UPDATE replay_chunks r SET payload=COALESCE((SELECT jsonb_agg(e) FROM jsonb_array_elements(r.payload) e WHERE NOT ((e->>'timestamp')::numeric>=extract(epoch FROM $3::timestamptz)*1000 AND ($4::timestamptz IS NULL OR (e->>'timestamp')::numeric<extract(epoch FROM $4::timestamptz)*1000))),'[]'::jsonb) WHERE site_id=$1 AND session_id LIKE $2`,[site,record.visitor_id+':%',record.started_at,record.ended_at]);
   await client.query("DELETE FROM replay_chunks WHERE site_id=$1 AND session_id LIKE $2 AND payload='[]'::jsonb",[site,record.visitor_id+':%']);
  }
+ return replayIndexCleanup;
+}
+
+
+/** Same snapshot client as the canonical reader, AFTER immutable body verification.
+ * Identity is a temporal metadata projection, never a mutation of CH body/hash.
+ * Deleted intervals are filtered even while physical CH cleanup awaits retry. */
+export async function projectEventIdentity(client:PoolClient,site:string,events:StoredEvent[]):Promise<StoredEvent[]>{
+ if(!events.length)return [];
+ if(events.length>1000||events.some(e=>e.site_id!==site))throw Error('IDENTITY_PROJECTION_SCOPE_INVALID');
+ const rows=(await client.query(`SELECT e.event_id,s.privacy_mode,b.user_id,
+ EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND (t.visitor_id=e.visitor_id OR (b.user_id IS NOT NULL AND t.user_id=b.user_id)))
+ OR EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=e.visitor_id AND t.started_at<=e.ts AND t.ended_at>e.ts) AS deleted
+ FROM jsonb_to_recordset($2::jsonb) AS e(event_id text,visitor_id text,ts timestamptz)
+ JOIN sites s ON s.id=$1 LEFT JOIN LATERAL(SELECT user_id FROM identity_bindings i WHERE i.site_id=$1 AND i.visitor_id=e.visitor_id AND i.started_at<=e.ts AND (i.ended_at IS NULL OR i.ended_at>e.ts) ORDER BY i.started_at DESC LIMIT 1) b ON true`,[site,JSON.stringify(events.map(e=>({event_id:e.event_id,visitor_id:e.visitor_id,ts:new Date(e.ts).toISOString()})))])).rows;
+ const byId=new Map(rows.map(r=>[String(r.event_id),r]));
+ return events.flatMap(event=>{const row=byId.get(event.event_id);if(!row||row.deleted)return [];
+  const payload={...event.payload};delete payload.user_id;
+  if(row.privacy_mode==='standard'&&row.user_id)payload.user_id=String(row.user_id);
+  return [{...event,payload}];
+ });
+}
+
+/** Accepted event-time first-seen metadata. Does not require any PG event body. */
+export async function identityFirstSeen(client:PoolClient,site:string,visitor:string):Promise<Date|null>{
+ const row=(await client.query(`SELECT min(ts) AS first_seen FROM (
+ SELECT k.ts FROM event_keys k WHERE k.site_id=$1 AND k.visitor_id=$2
+ UNION ALL SELECT m.ts FROM canonical_event_members m JOIN canonical_event_batches b USING(site_id,batch_id) JOIN canonical_event_authority a ON a.site_id=m.site_id AND a.epoch=b.epoch WHERE m.site_id=$1 AND m.visitor_id=$2
+ ) accepted WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=$2)
+ AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=$2 AND t.started_at<=accepted.ts AND t.ended_at>accepted.ts)`,[site,visitor])).rows[0];
+ return row?.first_seen??null;
 }

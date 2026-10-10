@@ -82,3 +82,5 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev ./node_modules
 ```
 
 全应用错误处理及英文界面映射由集成负责人/前端负责；此处不将尚未运行的全应用浏览器翻译验收算作通过。
+
+2026-10-10 normalized-fact regression follow-up: the first affected old compatibility run failed4/12 at10:25:05 (F59 funnel reads/F38 UV JSON reads, unpublished fixture backing and a test deleting protected quota). Exact published relational reads now supply F59 summaries and aligned UTC-hour distinct UV; assertions PV20/UV20/baseline1/calls3 and actual25→5 funnel remain unchanged. Compatibility passed12/12 at10:30:45; corrected isolated combined8-file group passed31/31 at10:37:57. Initial outer URL search_path isolation failure and a later concurrent worker syntax import block are preserved in ACCEPTANCE_AI_QUESTION_EVIDENCE.md. Final owned AI/ledger/schema retry passed20/20 at10:42:55 after token overflow handling. Real external Google/model/SERP accounts remain untested; tests explicitly inject provider transport while exercising actual PG/auth/collector/worker/schedules/evidence.

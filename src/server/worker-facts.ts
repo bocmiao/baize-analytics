@@ -2,6 +2,7 @@ import {Client,type Pool,type PoolClient} from 'pg';
 import {beginPartitionSnapshot} from './db.js';
 import {sessionTimeoutMs,type GoalDefinition,type FunnelDefinition} from './analytics.js';
 import {captureEventReadState,streamSiteEventBatches} from './event-store.js';
+import {createFactEffectSink} from './fact-provenance.js';
 import {buildSessionFacts} from './session-facts.js';
 import {publishSessionFacts} from './session-facts-publication.js';
 import type {Claim} from './worker.js';
@@ -34,7 +35,7 @@ export async function rebuildSiteFacts(pool:Pool,claim:Claim,hooks:WorkerFactHoo
  const retainedFrom=new Date(Date.now()-Number(site.retention_days)*86400000),timezone=String(site.timezone),privacy=site.privacy_mode!=='standard';
  const sourceState=await captureEventReadState(pool,claim.site_id,{client:source});
  await hooks.afterSourceStarted?.(source);
- run=await buildSessionFacts(source,{siteId:claim.site_id,epoch:claim.epoch,generation:claim.generation,outboxHighWatermark:high,sourceAuthority:sourceState.authority??'postgres',canonicalEpoch:sourceState.canonicalEpoch,canonicalDeletionEpoch:sourceState.deletionEpoch},{timezone,privacy,timeoutMs:sessionTimeoutMs(site.config),goals,funnels},(async function*(){for await(const batch of streamSiteEventBatches(pool,claim.site_id,{client:source,from:retainedFrom}))yield batch.events;})());
+ run=await buildSessionFacts(source,{siteId:claim.site_id,epoch:claim.epoch,generation:claim.generation,outboxHighWatermark:high,sourceAuthority:sourceState.authority??'postgres',canonicalEpoch:sourceState.canonicalEpoch,canonicalDeletionEpoch:sourceState.deletionEpoch},{timezone,privacy,timeoutMs:sessionTimeoutMs(site.config),goals,funnels,effects:createFactEffectSink(source,retainedFrom)},(async function*(){for await(const batch of streamSiteEventBatches(pool,claim.site_id,{client:source,from:retainedFrom}))yield batch.events;})());
  options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels};
  await source.query('COMMIT');
  }catch(error){await source.query('ROLLBACK');throw error;}finally{source.release();}

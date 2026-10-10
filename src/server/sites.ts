@@ -1,5 +1,5 @@
 import {invalidateSiteAi} from './ai-invalidation.js';
-import {invalidateSiteFacts} from './session-facts.js';
+import {invalidateSiteFactConfiguration,siteHasHistoricalIdentity} from './site-fact-config.js';
 import {validSiteAliases,siteAllowsOrigin} from './site-hosts.js';
 import {validateCookieDomain} from './cookie-domain-server.js';
 import type { FastifyInstance } from 'fastify';
@@ -20,9 +20,9 @@ export async function registerSites(app:FastifyInstance,ctx:AppContext){
     const {siteId}=req.params as {siteId:string};const u=await ctx.authorize(req,siteId,'admin');
     const row=await transaction(ctx.pool,async client=>{await lockSite(client,siteId);const before=(await client.query('SELECT * FROM sites WHERE id=$1',[siteId])).rows[0];
       const input=req.body as Record<string,unknown>;const body=schema.parse({...before,...input,config:{...before.config,...input.config as object}});
-      if(before.privacy_mode!==body.privacy_mode&&Number((await client.query('SELECT count(*) FROM event_keys WHERE site_id=$1',[siteId])).rows[0].count)>0)throw new HttpError(409,'站点已有事件，不能混用访客模式；请新建站点');
+      if(before.privacy_mode!==body.privacy_mode&&await siteHasHistoricalIdentity(client,siteId))throw new HttpError(409,'站点已有事件，不能混用访客模式；请新建站点');
       const config={...before.config,...body.config};const result=await client.query('UPDATE sites SET name=$2,domain=$3,timezone=$4,retention_days=$5,tags=$6,config=$7,privacy_mode=$8 WHERE id=$1 RETURNING *',[siteId,body.name,body.domain,body.timezone,body.retention_days,JSON.stringify(body.tags),JSON.stringify(config),body.privacy_mode]);
-      if(before.timezone!==body.timezone||before.privacy_mode!==body.privacy_mode||before.config.session_timeout_minutes!==config.session_timeout_minutes){await invalidateSiteAi(client,siteId);await invalidateSiteFacts(client,siteId);await dirtySite(client,siteId);}return result.rows[0];
+      if(before.timezone!==body.timezone||before.privacy_mode!==body.privacy_mode||before.config.session_timeout_minutes!==config.session_timeout_minutes){await invalidateSiteAi(client,siteId);await invalidateSiteFactConfiguration(client,siteId);await dirtySite(client,siteId);}return result.rows[0];
     });await ctx.audit(u.id,siteId,'site.update',{fields:Object.keys(req.body as object)});return {site:publicSite(row)};
   });
   app.post('/api/v1/sites/:siteId/write-key',async req=>{const {siteId}=req.params as {siteId:string};const u=await ctx.authorize(req,siteId,'admin');const key=randomBytes(32).toString('base64url');const {hashToken}=await import('./security.js');await transaction(ctx.pool,async client=>{await lockSite(client,siteId);await client.query("UPDATE sites SET config=config||jsonb_build_object('write_key_hash',$2::text) WHERE id=$1",[siteId,hashToken(key)]);});await ctx.audit(u.id,siteId,'write_key.rotate',{});return {key,signature:'HMAC-SHA256 over canonical sorted-key envelope JSON; X-Baize-Signature hex'};});

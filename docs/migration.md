@@ -121,10 +121,28 @@ capture返回manifest id，backup返回签名backup id/bytes/integrity，restore
 
 ## 下一批AI删除与百度手动迁移边界 / Pending AI deletion and Baidu import boundary
 
-工作树031整site失效拟清AI派生答案/证据/建议与相关导出，保留预算账本；新的物理清理hooks未纳第五272/19和第六pre-deletefix289/20。恢复须重放最新journal后失效这些旧衍生内容，待新完整验收，不把旧镜像假称已支持。
+当前删除与journal重放路径已清除整站AI派生答案/证据/建议并撤销导出，保留预算账本；这些hooks未纳第五272/19和第六pre-deletefix289/20，独立真实PG专项与下一完整compiled-app阶段须分开。恢复重放最新journal后亦失效旧衍生内容，不把旧镜像假称已支持。
 
-Pending031 invalidates site-derived AI answers/evidence/suggestions/exports while retaining budget accounting. Physical cleanup hooks are not part of fifth272/19 or sixth pre-deletefix289/20. Restored historical derivatives must be invalidated after latest-journal replay; acceptance is pending.
+Current deletion/journal replay invalidates site-derived AI answers/evidence/suggestions/exports while retaining accounting. These hooks are not part of fifth272/19 or sixth pre-deletefix289/20; targeted real-PG checks and the next complete compiled-app stage must remain separate. Historical derivatives must also be invalidated after latest-journal replay.
 
 百度普通站长搜索分析公开读取API截至2026-10-10未证实，官方产品说明可读不等于API可用。2015关键词下载说明没有当前CSV样本；通用自定义模板+列映射不可宣称原生百度兼容。搜索资源URL提交、百度统计PV/UV搜索词和自然搜索展现/排名是不同数据，不能互相冒充。详见[官方搜索分析](https://ziyuan.baidu.com/college/articleinfo?id=3415)、[2015下载说明](https://ziyuan.baidu.com/wiki/571)、[统计搜索词API](https://tongji.baidu.com/api/manual/Chapter1/source_searchword_a.html)。
 
 Baidu public search-analysis read access remains unverified; available product documentation is not an API contract. No current native CSV sample is available. Custom import templates/column mapping cannot be described as native compatibility. URL submission, Tongji PV/UV search words and natural-search impressions/rank must remain separate sources.
+
+## 032–034 开发切片：不要手动切换权威
+
+032 新增 canonical manifest、event members和删除epoch；033新增规范事件时间贡献/SQL精确去重事实；034新增 replay chunk keys，保存标识、序号、hash和记录时间边界，PG不存canonical rrweb正文。这些是forward migrations，不是许可手动把 authority 改为 clickhouse 的操作指令。当前 CANONICAL_ACTIVATION_READY=false；普通安装和已部署旧镜像继续PG权威。
+
+在隔离专项里选择canonical后，CH正文、manifest、checksum与PG删除状态共同决定可读事件，CH不可用返回503而非回空PG。独立canonical备份/恢复模块已测，但尚未纳入安装器和完整应用恢复；既有history-cli恢复仍为隔离副本，不激活canonical。新的工具和迁移不能替代PG全库备份、文件/版本key备份及独立最新journal。
+
+混合身份的一批回放必须按rrweb记录时间判定删除，不能只按wire ts删整个chunk；索引重叠清理不等于CH物理擦除。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。若曾在开发版本写入非规范键序hash，只能从已核验权威body重算，不能盲目更新hash忽略完整性失败。30天回放物理保留已有下述工作树定向闭环，不用只清PG索引冒充完成，也不提前声称全量已交付。
+
+治理读取先取得session partition共享与site共享锁，等DDL/删除完成后才固定RR快照，随后转事务锁并释放session锁；持client期间不借同pool。默认应用已注册标准[MCP只读入口](mcp.md)，独立官方SDK4项通过。新AI trace/chart与删除派生hooks已接入当前路径，删除后清整站答案/证据/建议并撤销相关导出，保留预算账本；恢复重放latest journal后亦须失效旧衍生信息。上述定向实现与测试不代表第七不可变compiled-app/镜像全集已验收，具体阶段以主验收记录为准。
+
+新增035 durable AI reservation账本仅保存费用保留/结算状态，无模型正文或visitor FK；删除AI派生内容不能删除该账本而重置费用。站点facts导出排除该内部操作状态（ai_reservations，原因quota-ledger-operational-state），不改变已有ai_budget数字事实策略；PG整库backup自然包含账本。该新增切片的定向与下一完整阶段结果单列，不假定旧镜像已有035。
+
+治理运行期回放保留新增定向实现（工作树，非第七main）：canonical-replay-retention按min(站点保留,30天)的rrweb记录时间执行不可变替换与旧body物理ACK，保留新记录；PG chunk metadata在物理ACK及事务提交前保留为可靠重试指针，故障回滚可恢复已核验replacement孤儿。时间策略清理不是个人删除请求，不伪称已fsync个人journal。每站访客上限10k、每visitor chunk上限10k，超预算失败保留指针而不先删索引。minute治理任务已接线，原生canonical guard仍关闭，新全量与安装迁移验收待下一批。
+
+037 replay_retention_jobs新增持久单调cutoff：调度在任何partition/site gate前独立提交，以GREATEST保留已授权清理范围，随后P→site→job获取锁、同client物理清理；失败保存固定错误码与指数退避，不存rrweb正文或伪造个人journal。延长站点保留不能撤销已经授权的旧cutoff。当前工作树真实PG/CH5项回放保留加1项genericretention共6PASS（2.28s），含ACK后回滚→7天改90天→可靠重试；lint/type通过。旧备份恢复必须另核验并保留源最新单调cutoff，不能仅用旧PGsnapshot或个人删除journal声称已覆盖此操作账本；该恢复集成尚待下一批，canonical guard仍关闭。
+
+最新运行期保留证明已补工作树实现：canonical-replay-retention-proof以稳定v1实例key签名sourceScope/签发时间/完整canonical站点cutoff集合，最多5000站点，默认10分钟有效；独立源调度提交后RR捕获，私有文件fsync。恢复先验证缺失、完整性、签名、来源和时效，再同client GREATEST合并；目标正文发布后须在同一未提交事务执行物理过滤，完成后才允许提交/暴露。真实PG/CH两项专项通过（1.61s）：实际canonical备份文件→独立CH目标与旧PG元数据→源7天改90天仍保留最新7天授权→目标旧记录物理消失且源CH不改。CLI/shell与完整Docker生命周期接线由ops继续，此结果不能冒充完整安装恢复验收或新main。

@@ -44,7 +44,20 @@ npm run test:unit
 node --import tsx scripts/ops-sdk-test.ts
 node scripts/ops-journal-test.mjs
 npm run build
-if [ "${CI_SKIP_BROWSER_INSTALL:-0}" != 1 ]; then npm exec playwright -- install --with-deps chromium; fi
+case "${CI_BROWSER_MODE:-bundled}" in
+ bundled)
+  if [ "${CI_SKIP_BROWSER_INSTALL:-0}" != 1 ]; then npm exec playwright -- install --with-deps chromium; fi
+  ;;
+ system)
+  # Optional local validation when the existing proxy denies Playwright's CDN.
+  # Install only inside the disposable runner, using signed distro packages.
+  [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] || { echo 'System browser installation is restricted to the disposable CI container' >&2; exit 1; }
+  apt-get update
+  apt-get install -y --no-install-recommends chromium
+  export PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium
+  ;;
+ *) echo 'Unknown CI browser mode' >&2; exit 2 ;;
+esac
 if [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] && [ ! -e /usr/bin/chromium ]; then
  # Dedicated disposable test container only: use the actual installed browser
  # where integration tests intentionally select the system-Chromium location.

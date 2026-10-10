@@ -1,3 +1,4 @@
+import {publishedMemberSource} from './fact-member-query.js';
 import type {PoolClient} from 'pg';
 import type {AppContext} from './context.js';
 import {readSiteEvents} from './event-store.js';
@@ -24,7 +25,14 @@ export async function queryRetention(ctx:Pick<AppContext,'pool'>,siteId:string,f
  const dayFormat=new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone,year:'numeric',month:'2-digit',day:'2-digit'});
  const activities=new Map<string,Set<string>>();for(const event of raw.events){const day=dayFormat.format(new Date(event.ts));const set=activities.get(day)??new Set<string>();set.add(event.visitor_id);activities.set(day,set);}
  const archived=(await db.query('SELECT hour,data FROM stats_hourly WHERE site_id=$1 AND hour >= $2 AND hour < $3 ORDER BY hour',[siteId,new Date(Math.floor(requestedFrom/3600000)*3600000),new Date(Math.ceil(effectiveTo/3600000)*3600000)])).rows;
+ const unavailableArchiveHours=new Set<number>(archived.filter(row=>row.data?.relationalUnavailable).map(row=>+new Date(row.hour)));
  const archivedHours=new Map<number,string[]>();for(const row of archived)if(Array.isArray(row.data?.activity))archivedHours.set(+new Date(row.hour),row.data.activity);
+ const relational=((await db.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' AND query_version=2 LIMIT 1",[siteId])).rowCount??0)>0;
+ const archiveReturns=new Map<string,number>();
+ if(relational){const source=publishedMemberSource(siteId,from,new Date(effectiveTo).toISOString());const first=source.values.length+1,last=first+1,zone=last+1;
+  const counts=(await db.query(`SELECT f.first_date::text AS cohort_day,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)::int AS n,count(DISTINCT e.visitor_id)::int AS returned FROM (${source.sql}) e JOIN visitor_first_seen f ON f.site_id=$1 AND f.visitor_id=e.visitor_id WHERE e.metric='visitors' AND f.first_date BETWEEN $${first}::date AND $${last}::date AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts) GROUP BY f.first_date,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)`,[...source.values,calendar.first_day,calendar.last_day,site.timezone])).rows;
+  for(const row of counts)archiveReturns.set(JSON.stringify([row.cohort_day,String(row.n)]),Number(row.returned));
+ }
  const deletedSegments=(await db.query('SELECT visitor_id,started_at,ended_at FROM identity_tombstones WHERE site_id=$1 AND started_at<$3 AND ended_at>$2',[siteId,from,new Date(effectiveTo)])).rows;
  const boundaries=(await db.query("SELECT d::date::text AS cohort_day,n,(d::date+n)::timestamp AT TIME ZONE $3 AS begin_at,(d::date+n+1)::timestamp AT TIME ZONE $3 AS end_at FROM generate_series($1::date,$2::date,interval '1 day') d CROSS JOIN generate_series(1,30) n",[calendar.first_day,calendar.last_day,site.timezone])).rows;
  const cohorts:Record<string,RetentionCohort>={};const membership=new Map<string,Set<string>>();for(const member of members){const set=membership.get(member.day)??new Set<string>();set.add(member.visitor_id);membership.set(member.day,set);}
@@ -35,10 +43,11 @@ export async function queryRetention(ctx:Pick<AppContext,'pool'>,siteId:string,f
   if(end>now)status='not_mature';else if(begin<requestedFrom||end>effectiveTo)status='outside_observation_window';else if(changed)status='source_changed';else if(pending)status='aggregation_pending';else if(begin<cutoff){
    const hours=Array.from({length:Math.ceil((end-begin)/3600000)},(_,i)=>Math.floor(begin/3600000)*3600000+i*3600000);
    if(begin%3600000!==0||end%3600000!==0||!hours.every(hour=>archivedHours.has(hour)))status='outside_retention';
-   else if(deletedSegments.some(segment=>+new Date(segment.started_at)<end&&(segment.ended_at===Infinity||segment.ended_at==='infinity'?Infinity:+new Date(segment.ended_at))>begin))status='unavailable_archive';
+   else if(hours.some(hour=>unavailableArchiveHours.has(hour)))status='unavailable_archive';
+   else if(!relational&&deletedSegments.some(segment=>+new Date(segment.started_at)<end&&(segment.ended_at===Infinity||segment.ended_at==='infinity'?Infinity:+new Date(segment.ended_at))>begin))status='unavailable_archive';
    else {observed=new Set(hours.flatMap(hour=>archivedHours.get(hour)!));}
   }else if(raw.truncated||raw.coverage===0)status='truncated';
-  const returned=status==='complete'?[...visitors].filter(visitor=>observed.has(visitor)).length:null;cohort.days[day]=returned;cohort.observations[day]={returned,rate:returned===null?null:returned/visitors.size,status,coverage:returned===null?0:1,from:new Date(begin).toISOString(),to:new Date(end).toISOString()};total++;if(returned!==null)available++;
+  const returned=status==='complete'?(begin<cutoff&&relational?(archiveReturns.get(JSON.stringify([row.cohort_day,day]))??0):[...visitors].filter(visitor=>observed.has(visitor)).length):null;cohort.days[day]=returned;cohort.observations[day]={returned,rate:returned===null?null:returned/visitors.size,status,coverage:returned===null?0:1,from:new Date(begin).toISOString(),to:new Date(end).toISOString()};total++;if(returned!==null)available++;
  }
  return {cohorts,retention:{...metadata,status:changed?'source_changed':pending?'aggregation_pending':available<total?'partial_unavailable':'complete',coverage:changed||pending?0:total?available/total:1,storage:{source:raw.source,mode:raw.mode,truncated:raw.truncated,coverage:raw.coverage}}};
 }
