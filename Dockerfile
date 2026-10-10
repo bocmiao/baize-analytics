@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=secret,id=proxy_ca NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm ci --strict-ssl=true
 COPY . .
-RUN npm run build && chmod -R a+rX dist public src scripts sdk packages db package.json package-lock.json tsconfig*.json vite.config.ts
+RUN npm run build && chmod -R a+rX dist public src scripts sdk packages plugins db LICENSE package.json package-lock.json tsconfig*.json vite.config.ts
 FROM node:24-bookworm-slim
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000 DATA_DIR=/app/data KEYS_DIR=/app/keys
 WORKDIR /app
