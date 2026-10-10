@@ -1,3 +1,4 @@
+import {registerManualSearchImport} from './manual-search-import.js';
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
 import {invalidateSiteFacts} from './session-facts.js';
@@ -107,7 +108,7 @@ export async function createApp(options:AppOptions={}){
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
-  await registerMcp(app,ctx);
+  await registerMcp(app,ctx);await registerManualSearchImport(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}

@@ -6,6 +6,8 @@ import {stableIdentityKey} from '../../packages/tracker/src/privacy.js';
 export const EXPORT_ROW_LIMIT=100000;
 // Static SQL only. Runtime input can never select another relation or column.
 export const SITE_EXPORT_QUERIES={
+ manual_search_imports:'SELECT id,site_id,label,digest,mapping,start_day,end_day,row_count,created_at FROM manual_search_imports WHERE site_id=$1',
+ manual_search_rows:'SELECT r.import_id,r.site_id,r.row_number,r.day,r.query,r.page,r.clicks,r.impressions,r.position FROM manual_search_rows r JOIN manual_search_imports i ON i.id=r.import_id AND i.site_id=r.site_id WHERE r.site_id=$1 AND i.site_id=$1',
  event_data:'SELECT d.site_id,d.event_id,d.ts,d.data_key,d.data_type,d.string_value,d.number_value,d.boolean_value,d.date_value FROM event_data d JOIN events e USING(site_id,event_id,ts) WHERE d.site_id=$1 AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id AND t.started_at<=e.ts AND t.ended_at>e.ts)',
  replay_chunks:'SELECT site_id,session_id,seq,payload,created_at FROM replay_chunks WHERE site_id=$1',
  heatmap_points:'SELECT site_id,path,kind,x,y,viewport,count FROM heatmap_points WHERE site_id=$1',
