@@ -3,6 +3,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 mode="${1:-regular}"
 case "$mode" in regular|heavy-ops|heavy-million) ;; *) echo 'Unknown CI mode' >&2; exit 2;; esac
+if [ "$mode" = regular ] && [ "${CI_RUNNER_IN_COMPOSE:-0}" = 1 ]; then
+ # Delegate before npm/browser work. Inner job uses service-name endpoints.
+ exec bash scripts/ci-compose-runner.sh
+fi
 if [ "${CI_SKIP_INSTALL:-0}" != 1 ]; then npm ci; fi
 if [ "$mode" = heavy-ops ]; then exec bash scripts/ops-lifecycle-test.sh; fi
 if [ "$mode" = heavy-million ]; then
@@ -41,12 +45,18 @@ node --import tsx scripts/ops-sdk-test.ts
 node scripts/ops-journal-test.mjs
 npm run build
 if [ "${CI_SKIP_BROWSER_INSTALL:-0}" != 1 ]; then npm exec playwright -- install --with-deps chromium; fi
+if [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] && [ ! -e /usr/bin/chromium ]; then
+ # Dedicated disposable test container only: use the actual installed browser
+ # where integration tests intentionally select the system-Chromium location.
+ bundled_chromium="$(node --input-type=module -e 'import {chromium} from "@playwright/test";import {accessSync,constants} from "node:fs";const path=chromium.executablePath();accessSync(path,constants.X_OK);process.stdout.write(path)')"
+ ln -s "$bundled_chromium" /usr/bin/chromium
+fi
 npm run db:migrate
 npm run test:integration
 # Exercise the compiled production entrypoint, including JSON module imports.
 node dist/server/src/server/main.js > "$ci_dir/app.log" 2>&1 & app_pid=$!
 healthy=0
-for attempt in $(seq 1 40); do if curl --fail --silent "$PUBLIC_URL/healthz" >/dev/null; then healthy=1; break; fi; if ! kill -0 "$app_pid" 2>/dev/null; then break; fi; sleep 1; done
+for attempt in $(seq 1 40); do if node -e 'fetch(process.env.PUBLIC_URL+"/healthz").then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))'; then healthy=1; break; fi; if ! kill -0 "$app_pid" 2>/dev/null; then break; fi; sleep 1; done
 [ "$healthy" = 1 ] || { echo "Compiled application startup failed; diagnostic log: $ci_dir/app.log" >&2; exit 1; }
 npm run test:e2e
 printf 'Shared regular CI passed; logs retained at %s\n' "$ci_dir"

@@ -7,7 +7,7 @@ main:
       services: [docker]
       stages:
         - name: regular-application-validation
-          script: CI_START_SERVICES=1 bash scripts/ci-common.sh regular
+          script: CI_RUNNER_IN_COMPOSE=1 bash scripts/ci-common.sh regular
   web_trigger:
     - imports:
         - https://cnb.cool/bankermiao/baize-ci-secrets/-/blob/main/github.yml

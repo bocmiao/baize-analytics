@@ -11,3 +11,10 @@ data-keys/
 keys/
 .env.*
 **/master*.key
+
+**/node_modules
+**/.git
+**/.env
+**/.env.*
+**/*.key
+secrets/

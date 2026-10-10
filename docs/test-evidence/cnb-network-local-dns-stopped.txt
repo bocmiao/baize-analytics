@@ -1,0 +1,179 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 540B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.ci
+#2 transferring dockerfile: 456B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24-bookworm-slim
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 222B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/node:24-bookworm-slim
+#5 CACHED
+
+#6 [internal] load build context
+#6 transferring context: 6.44MB 0.2s done
+#6 DONE 0.2s
+
+#7 [2/4] WORKDIR /workspace
+#7 DONE 1.2s
+
+#8 [3/4] COPY . .
+#8 DONE 1.4s
+
+#9 [4/4] RUN chmod -R a+rX /workspace
+#9 DONE 2.1s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 0.9s done
+#10 writing image sha256:a1c4d12b7f7a1841e5f764fd35e6990746e928242973b65dcadc86a87315f84b done
+#10 naming to docker.io/library/baize-cnb-ci:baize_cnb_1461_23836 done
+#10 DONE 0.9s
+
+#11 resolving provenance for metadata file
+#11 DONE 0.0s
+ baize-cnb-ci:baize_cnb_1461_23836  Built
+CI runner image: sha256:a1c4d12b7f7a1841e5f764fd35e6990746e928242973b65dcadc86a87315f84b
+ Network baize_cnb_1461_23836_default  Creating
+ Network baize_cnb_1461_23836_default  Created
+ Container baize_cnb_1461_23836-clickhouse-1  Creating
+ Container baize_cnb_1461_23836-redis-1  Creating
+ Container baize_cnb_1461_23836-postgres-1  Creating
+ Container baize_cnb_1461_23836-redis-1  Created
+ Container baize_cnb_1461_23836-clickhouse-1  Created
+ Container baize_cnb_1461_23836-postgres-1  Created
+ Container baize_cnb_1461_23836-runner-1  Creating
+ Container baize_cnb_1461_23836-runner-1  Created
+Attaching to clickhouse-1, postgres-1, redis-1, runner-1
+redis-1  | 1:C 10 Oct 2026 08:52:14.769 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis-1  | 1:C 10 Oct 2026 08:52:14.769 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1  | 1:C 10 Oct 2026 08:52:14.769 * Redis version=7.4.11, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1  | 1:C 10 Oct 2026 08:52:14.769 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1  | 1:M 10 Oct 2026 08:52:14.769 * monotonic clock: POSIX clock_gettime
+redis-1  | 1:M 10 Oct 2026 08:52:14.770 * Running mode=standalone, port=6379.
+redis-1  | 1:M 10 Oct 2026 08:52:14.770 * Server initialized
+redis-1  | 1:M 10 Oct 2026 08:52:14.771 * Ready to accept connections tcp
+postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  |
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  |
+postgres-1  | Data page checksums are disabled.
+postgres-1  |
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default "max_connections" ... 100
+postgres-1  | selecting default "shared_buffers" ... 128MB
+postgres-1  | selecting default time zone ... Etc/UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+clickhouse-1  | /entrypoint.sh: create new user 'baize' instead 'default'
+clickhouse-1  | Processing configuration file '/etc/clickhouse-server/config.xml'.
+clickhouse-1  | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
+clickhouse-1  | Logging trace to /var/log/clickhouse-server/clickhouse-server.log
+clickhouse-1  | Logging errors to /var/log/clickhouse-server/clickhouse-server.err.log
+postgres-1    | performing post-bootstrap initialization ... ok
+postgres-1    | initdb: warning: enabling "trust" authentication for local connections
+postgres-1    | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres-1    | syncing data to disk ... ok
+postgres-1    |
+postgres-1    |
+postgres-1    | Success. You can now start the database server using:
+postgres-1    |
+postgres-1    |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1    |
+postgres-1    | waiting for server to start....2026-10-10 08:52:15.460 UTC [48] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+postgres-1    | 2026-10-10 08:52:15.461 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1    | 2026-10-10 08:52:15.463 UTC [51] LOG:  database system was shut down at 2026-10-10 08:52:15 UTC
+postgres-1    | 2026-10-10 08:52:15.465 UTC [48] LOG:  database system is ready to accept connections
+postgres-1    |  done
+postgres-1    | server started
+postgres-1    | CREATE DATABASE
+postgres-1    |
+postgres-1    |
+postgres-1    | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1    |
+postgres-1    | waiting for server to shut down....2026-10-10 08:52:15.625 UTC [48] LOG:  received fast shutdown request
+postgres-1    | 2026-10-10 08:52:15.625 UTC [48] LOG:  aborting any active transactions
+postgres-1    | 2026-10-10 08:52:15.626 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+postgres-1    | 2026-10-10 08:52:15.627 UTC [49] LOG:  shutting down
+postgres-1    | 2026-10-10 08:52:15.627 UTC [49] LOG:  checkpoint starting: shutdown immediate
+postgres-1    | 2026-10-10 08:52:15.711 UTC [49] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.077 s, total=0.085 s; sync files=301, longest=0.002 s, average=0.001 s; distance=4238 kB, estimate=4238 kB; lsn=0/190A9C0, redo lsn=0/190A9C0
+postgres-1    | 2026-10-10 08:52:15.716 UTC [48] LOG:  database system is shut down
+postgres-1    |  done
+postgres-1    | server stopped
+postgres-1    |
+postgres-1    | PostgreSQL init process complete; ready for start up.
+postgres-1    |
+postgres-1    | 2026-10-10 08:52:15.741 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+postgres-1    | 2026-10-10 08:52:15.742 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1    | 2026-10-10 08:52:15.742 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1    | 2026-10-10 08:52:15.742 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1    | 2026-10-10 08:52:15.745 UTC [64] LOG:  database system was shut down at 2026-10-10 08:52:15 UTC
+postgres-1    | 2026-10-10 08:52:15.747 UTC [1] LOG:  database system is ready to accept connections
+postgres-1    | 2026-10-10 08:52:16.821 UTC [75] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:18.895 UTC [83] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:20.968 UTC [91] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:23.044 UTC [99] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:25.113 UTC [107] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:27.188 UTC [115] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:29.260 UTC [123] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:31.335 UTC [131] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:33.414 UTC [139] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:35.485 UTC [147] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:37.563 UTC [155] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:39.639 UTC [163] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:41.715 UTC [171] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:43.794 UTC [179] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:45.875 UTC [189] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:47.963 UTC [197] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:50.046 UTC [205] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:52.117 UTC [214] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:54.194 UTC [222] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:56.354 UTC [230] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:52:58.456 UTC [238] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:53:00.534 UTC [246] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:53:02.601 UTC [254] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:53:04.681 UTC [262] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:53:06.759 UTC [270] FATAL:  database "baize" does not exist
+postgres-1    | 2026-10-10 08:53:08.846 UTC [278] FATAL:  database "baize" does not exist
+
+runner-1 exited with code 143
+Aborting on container exit...
+ Container baize_cnb_1461_23836-runner-1  Stopping
+ Container baize_cnb_1461_23836-runner-1  Stopped
+ Container baize_cnb_1461_23836-postgres-1  Stopping
+ Container baize_cnb_1461_23836-clickhouse-1  Stopping
+ Container baize_cnb_1461_23836-redis-1  Stopping
+postgres-1    | 2026-10-10 08:53:10.223 UTC [1] LOG:  received fast shutdown request
+postgres-1    | 2026-10-10 08:53:10.224 UTC [1] LOG:  aborting any active transactions
+postgres-1    | 2026-10-10 08:53:10.226 UTC [1] LOG:  background worker "logical replication launcher" (PID 67) exited with exit code 1
+postgres-1    | 2026-10-10 08:53:10.227 UTC [62] LOG:  shutting down
+postgres-1    | 2026-10-10 08:53:10.227 UTC [62] LOG:  checkpoint starting: shutdown immediate
+redis-1       | 1:signal-handler (1791622390) Received SIGTERM scheduling shutdown...
+postgres-1    | 2026-10-10 08:53:10.232 UTC [62] LOG:  checkpoint complete: wrote 45 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.003 s, total=0.006 s; sync files=12, longest=0.001 s, average=0.001 s; distance=263 kB, estimate=263 kB; lsn=0/194C938, redo lsn=0/194C938
+postgres-1    | 2026-10-10 08:53:10.237 UTC [1] LOG:  database system is shut down
+redis-1       | 1:M 10 Oct 2026 08:53:10.296 * User requested shutdown...
+redis-1       | 1:M 10 Oct 2026 08:53:10.296 * Saving the final RDB snapshot before exiting.
+redis-1       | 1:M 10 Oct 2026 08:53:10.298 * DB saved on disk
+redis-1       | 1:M 10 Oct 2026 08:53:10.298 # Redis is now ready to exit, bye bye...
+ Container baize_cnb_1461_23836-postgres-1  Stopped
+
+postgres-1 exited with code 0
+ Container baize_cnb_1461_23836-redis-1  Stopped
+
+redis-1 exited with code 0
+ Container baize_cnb_1461_23836-clickhouse-1  Stopped
+
+clickhouse-1 exited with code 0
+
+Containerized shared regular CI exit=143; logs: /tmp/baize-cnb-ci-logs.TvtY4a

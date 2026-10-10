@@ -1,0 +1,7 @@
+# Test image only: source is transferred as build context to the remote daemon.
+FROM node:24-bookworm-slim
+WORKDIR /workspace
+COPY . .
+# Public source/config only; .dockerignore excludes credentials and live data.
+RUN chmod -R a+rX /workspace
+CMD ["bash", "-c", "if [ -f /tmp/baize-public-proxy-ca.pem ]; then export NODE_EXTRA_CA_CERTS=/tmp/baize-public-proxy-ca.pem; fi; exec bash scripts/ci-common.sh regular"]
