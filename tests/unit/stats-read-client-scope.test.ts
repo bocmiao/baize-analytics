@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';
+import type {PoolClient} from 'pg';
+import {registerStatsMirrorSnapshot,permitsStatsMirrorSnapshot} from '../../src/server/stats-read-client-scope';
+it('capability is client and site scoped, unavailable to arbitrary supplied clients',()=>{const client={} as PoolClient,worker={} as PoolClient;expect(permitsStatsMirrorSnapshot(client,'a')).toBe(false);const revoke=registerStatsMirrorSnapshot(client,'a');expect(permitsStatsMirrorSnapshot(client,'a')).toBe(true);expect(permitsStatsMirrorSnapshot(client,'b')).toBe(false);expect(permitsStatsMirrorSnapshot(worker,'a')).toBe(false);revoke();expect(permitsStatsMirrorSnapshot(client,'a')).toBe(false);});
+it('nested scope cleanup restores the parent without granting a different site',()=>{const client={} as PoolClient;const parent=registerStatsMirrorSnapshot(client,'a'),child=registerStatsMirrorSnapshot(client,'b');expect(permitsStatsMirrorSnapshot(client,'a')).toBe(false);child();expect(permitsStatsMirrorSnapshot(client,'a')).toBe(true);parent();expect(permitsStatsMirrorSnapshot(client,'a')).toBe(false);});

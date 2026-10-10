@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "de7222edfd6baa7478a4e32e22f6b5399fc34daf",
+  "exit": 1,
+  "unit": {
+    "files": 54,
+    "passed": 209,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "files": 154,
+    "passedFiles": 153,
+    "failedFiles": 1,
+    "passed": 415,
+    "failed": 2,
+    "skipped": 0
+  },
+  "browser": "NOT RUN",
+  "image": "NOT RUN",
+  "failure": "two clickhouse stats-source regressions in immutable source; narrow fix in progress",
+  "cleanup": "owned Compose completed",
+  "rawLogSha256": "6efc04dd25f4d6a1a3c6a4191ad1039339cece3db853eb0ba4ae8c92c9e35e49",
+  "rawLogBytes": 39391,
+  "archiveBinding": {
+    "exit": 0,
+    "sourceCommit": "de7222edfd6baa7478a4e32e22f6b5399fc34daf",
+    "trackedFilesVerified": 1112,
+    "method": "git-ls-tree/blob-hash; untracked dependency symlink excluded"
+  },
+  "reporterTotals": {
+    "unit": {
+      "numTotalTests": 209,
+      "numPassedTests": 209,
+      "numFailedTests": 0,
+      "numPendingTests": 0,
+      "success": true
+    },
+    "integration": {
+      "numTotalTests": 417,
+      "numPassedTests": 415,
+      "numFailedTests": 2,
+      "numPendingTests": 0,
+      "success": false
+    }
+  },
+  "excluded": [
+    "raw services logs",
+    "state/env/master-key values"
+  ],
+  "priorFailuresPreserved": true
+}

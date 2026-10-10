@@ -1,0 +1,25 @@
+{
+  "sourceCommit": null,
+  "sourceKind": "precommit WIP",
+  "scopedSourceHashes": {
+    "src/server/event-store.ts": "6f1526fd932863bf5458377e459991203db3406873c2ea2ee14f48258eaf74b5",
+    "src/server/stats-read-snapshot.ts": "0cf8fadebfa349c74f0e47ae7c09dfb795cc5705dc4403173a637845da42989d",
+    "src/server/analytics.ts": "63a62744c74950f589f97eb7d3a895cce8ab5f76d3d1a947100546d23ff743b3",
+    "tests/integration/stats-replica-budget.test.ts": "4526e0a76e203f61a77df8325ae45874f14e3e338f0f2058d111ac2f698904ce",
+    "tests/integration/clickhouse.test.ts": "569906df5ffdc6d62d18085297ecd4bd9ae2841bbe4de43bd055312e2edbb41a"
+  },
+  "beforeAfterUnchanged": true,
+  "runs": [
+    {
+      "file": "stats-replica-budget.test.ts",
+      "exitCode": 0
+    },
+    {
+      "file": "clickhouse.test.ts",
+      "exitCode": 0,
+      "redisEnabled": true
+    }
+  ],
+  "oldAssertionsUnchanged": true,
+  "remainingOwnedSchemas": 0
+}

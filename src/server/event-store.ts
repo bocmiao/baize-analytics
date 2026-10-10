@@ -1,3 +1,4 @@
+import {permitsStatsMirrorSnapshot} from './stats-read-client-scope.js';
 import {beginSiteSnapshot} from './site-snapshot.js';
 import {projectEventIdentity} from './identity.js';
 import {ApplicationError} from '../shared/error-codes.js';
@@ -7,7 +8,7 @@ import {beginPartitionSnapshot} from './db.js';
 import type {Pool, PoolClient} from 'pg';
 import type {SnapshotReadOptions,StoredEvent} from './clickhouse-store.js';
 import {ClickHouseStore} from './clickhouse-store.js';
-export interface EventReadOptions extends SnapshotReadOptions {client?: PoolClient}
+export interface EventReadOptions extends SnapshotReadOptions {client?: PoolClient;statsMirrorRead?:boolean}
 export interface EventReadResult {events: StoredEvent[]; source: 'postgres' | 'clickhouse' | 'hybrid'; mode: string; fallbackReason?: string; generation?: string; epoch?: string; watermark?: Date | string | null; coverage: number;consistency?:'captured_pg_rr'|'verified_current_replica';replicaGeneration?:string;deltaRows?:number;capturedOutboxId?:string;retentionBoundary?:string;rangeStatus?:string;uvStatus?:string;truncated?:boolean;limit?:number;canonicalEpoch?:string;canonicalDeletionEpoch?:string;deletionEpoch?:string;authority?:'postgres'|'clickhouse'}
 function pgEventQuery(siteId:string,options:EventReadOptions){
   const params: unknown[] = [siteId]; const clauses = ['e.site_id=$1'];
@@ -52,9 +53,9 @@ export class EventStore {
    return {...metadata,events,source:'clickhouse',mode:'canonical_clickhouse',coverage:1};
   }
 
-  if (options.client) return this.postgres(siteId, options, {fallbackReason: 'transaction_snapshot_requires_postgres'});
+  if (options.client&&!(options.statsMirrorRead&&permitsStatsMirrorSnapshot(options.client,siteId))) return this.postgres(siteId, options, {fallbackReason: 'transaction_snapshot_requires_postgres'});
   if (!this.clickhouse) return this.postgres(siteId, options, {fallbackReason: 'clickhouse_not_configured'});
-  const state = (await this.pool.query('SELECT e.*,a.generation::text AS current_generation,a.epoch::text AS current_epoch FROM aggregation_state a LEFT JOIN event_store_state e USING(site_id) WHERE a.site_id=$1', [siteId])).rows[0];
+  const state = (await (options.client||this.pool).query('SELECT e.*,a.generation::text AS current_generation,a.epoch::text AS current_epoch FROM aggregation_state a LEFT JOIN event_store_state e USING(site_id) WHERE a.site_id=$1', [siteId])).rows[0];
   const meta = {mode: state?.mode || 'postgres', generation: state?.current_generation, epoch: state?.current_epoch, watermark: state?.watermark};
   const fallback = (reason: string) => this.postgres(siteId, options, {...meta, fallbackReason: reason});
   if (!state || state.mode !== 'prefer_clickhouse') return fallback(state?.mode === 'mirror' ? 'mirror_only' : 'postgres_selected');
@@ -66,18 +67,18 @@ export class EventStore {
    // Missing/externally truncated replicas must never silently answer zero events.
    if (await this.clickhouse.countSnapshot(identity) !== Number(state.snapshot_count)) return fallback('mirror_integrity_mismatch');
    const events=await this.clickhouse.readSnapshot(identity,options);const scoped=await this.clickhouse.countSelected(identity,options);if(events.length!==Math.min(options.limit??Infinity,scoped))return fallback('mirror_integrity_mismatch');
-   const current = (await this.pool.query('SELECT a.generation::text AS generation,a.epoch::text AS epoch,e.mode,e.snapshot_id FROM aggregation_state a JOIN event_store_state e USING(site_id) WHERE a.site_id=$1', [siteId])).rows[0];
+   const current = (await (options.client||this.pool).query('SELECT a.generation::text AS generation,a.epoch::text AS epoch,e.mode,e.snapshot_id FROM aggregation_state a JOIN event_store_state e USING(site_id) WHERE a.site_id=$1', [siteId])).rows[0];
    if (!current || current.epoch !== identity.epoch || current.generation !== identity.generation || current.mode !== 'prefer_clickhouse' || current.snapshot_id !== identity.snapshotId) return fallback('source_changed_during_read');
-   const tombstones = (await this.pool.query('SELECT visitor_id FROM tombstones WHERE site_id=$1', [siteId])).rows;
-   const segments = (await this.pool.query('SELECT visitor_id,started_at,ended_at FROM identity_tombstones WHERE site_id=$1', [siteId])).rows;
+   const tombstones = (await (options.client||this.pool).query('SELECT visitor_id FROM tombstones WHERE site_id=$1', [siteId])).rows;
+   const segments = (await (options.client||this.pool).query('SELECT visitor_id,started_at,ended_at FROM identity_tombstones WHERE site_id=$1', [siteId])).rows;
    const deleted = new Set(tombstones.map(row => row.visitor_id));
    const safe = events.filter(event => event.site_id === siteId && !deleted.has(event.visitor_id) && !segments.some(segment => segment.visitor_id === event.visitor_id && +new Date(event.ts) >= +new Date(segment.started_at) && +new Date(event.ts) < +new Date(segment.ended_at)));
    return {events: safe, source: 'clickhouse', ...meta, coverage: 1};
   } catch {return fallback('clickhouse_unavailable');}
  }
  private async hybrid(siteId:string,options:EventReadOptions):Promise<EventReadResult>{
-  const client=await this.pool.connect();let reason='clickhouse_unavailable';let answer:EventReadResult|undefined;
-  try{await beginPartitionSnapshot(client);const state=(await client.query('SELECT e.*,a.generation::text AS current_generation,a.epoch::text AS current_epoch FROM event_store_state e JOIN aggregation_state a USING(site_id) WHERE e.site_id=$1',[siteId])).rows[0];
+  const owned=!options.client,client=options.client||await this.pool.connect();let reason='clickhouse_unavailable';let answer:EventReadResult|undefined;
+  try{if(owned)await beginPartitionSnapshot(client);const state=(await client.query('SELECT e.*,a.generation::text AS current_generation,a.epoch::text AS current_epoch FROM event_store_state e JOIN aggregation_state a USING(site_id) WHERE e.site_id=$1',[siteId])).rows[0];
    if(!state||state.mode!=='prefer_clickhouse'||state.replica_format!=='incremental_v1'||!state.snapshot_id||state.snapshot_epoch!==state.current_epoch){reason='mirror_epoch_mismatch';throw Error('REPLICA_FENCE');}
    const tail=(await client.query("SELECT COALESCE(max(o.id),0)::text id,count(*)::int n,max(o.ts) AS tail_watermark,bool_or(e.type='identify') identity_rewrite FROM outbox o JOIN events e USING(site_id,event_id,ts) WHERE o.site_id=$1 AND o.id>$2::bigint",[siteId,state.captured_outbox_id])).rows[0];
    if(tail.identity_rewrite===true||String(state.snapshot_generation)!==state.current_generation&&Number(tail.n)===0){reason='mirror_requires_rebuild';throw Error('REPLICA_FENCE');}
@@ -85,9 +86,9 @@ export class EventStore {
    if(await this.clickhouse!.countSnapshot(identity)!==Number(state.snapshot_count)){reason='mirror_integrity_mismatch';throw Error('REPLICA_FENCE');}
    const base=await this.clickhouse!.readSnapshot(identity,options);const scoped=await this.clickhouse!.countSelected(identity,options);if(base.length!==Math.min(options.limit??Infinity,scoped)){reason='mirror_integrity_mismatch';throw Error('REPLICA_FENCE');}const query=pgEventQuery(siteId,options);query.params.push(state.captured_outbox_id,tail.id);query.sql=query.sql.replace('FROM events e WHERE','FROM events e JOIN outbox o USING(site_id,event_id,ts) WHERE').replace(' ORDER BY',` AND o.id>$${query.params.length-1}::bigint AND o.id<=$${query.params.length}::bigint ORDER BY`);const delta=(await client.query(query.sql,query.params)).rows as StoredEvent[];
    const tombstones=(await client.query('SELECT visitor_id FROM tombstones WHERE site_id=$1',[siteId])).rows;const segments=(await client.query('SELECT visitor_id,started_at,ended_at FROM identity_tombstones WHERE site_id=$1',[siteId])).rows;const deleted=new Set(tombstones.map(t=>t.visitor_id));const merged=new Map([...base,...delta].map(e=>[JSON.stringify([e.event_id,+new Date(e.ts)]),e]));const safe=[...merged.values()].filter(e=>!deleted.has(e.visitor_id)&&!segments.some(t=>t.visitor_id===e.visitor_id&&+new Date(e.ts)>=+new Date(t.started_at)&&(t.ended_at===Infinity||+new Date(e.ts)<+new Date(t.ended_at))));safe.sort((a,b)=>(options.order==='desc'?-1:1)*(+new Date(a.ts)-+new Date(b.ts)||a.event_id.localeCompare(b.event_id)));
-   await client.query('COMMIT');const current=(await client.query('SELECT a.epoch::text,e.mode,e.replica_format FROM aggregation_state a JOIN event_store_state e USING(site_id) WHERE site_id=$1',[siteId])).rows[0];if(!current||current.epoch!==state.current_epoch||current.mode!=='prefer_clickhouse'||current.replica_format!=='incremental_v1'){reason='source_changed_during_read';throw Error('REPLICA_FENCE');}
+   if(owned)await client.query('COMMIT');const current=(await client.query('SELECT a.epoch::text,e.mode,e.replica_format FROM aggregation_state a JOIN event_store_state e USING(site_id) WHERE site_id=$1',[siteId])).rows[0];if(!current||current.epoch!==state.current_epoch||current.mode!=='prefer_clickhouse'||current.replica_format!=='incremental_v1'){reason='source_changed_during_read';throw Error('REPLICA_FENCE');}
    answer={events:options.limit===undefined?safe:safe.slice(0,options.limit),source:Number(tail.n)?'hybrid':'clickhouse',mode:'prefer_clickhouse',consistency:'captured_pg_rr',epoch:state.current_epoch,generation:state.current_generation,replicaGeneration:String(state.snapshot_generation),capturedOutboxId:String(tail.n?tail.id:state.captured_outbox_id),deltaRows:delta.length,watermark:tail.tail_watermark&&(!state.watermark||+new Date(tail.tail_watermark)>+new Date(state.watermark))?tail.tail_watermark:state.watermark,coverage:1};
-  }catch{await client.query('ROLLBACK').catch(()=>{});}finally{client.release();}
+  }catch{if(owned)await client.query('ROLLBACK').catch(()=>{});}finally{if(owned)client.release();}
   return answer||this.postgres(siteId,options,{mode:'prefer_clickhouse',fallbackReason:reason});
  }
 
