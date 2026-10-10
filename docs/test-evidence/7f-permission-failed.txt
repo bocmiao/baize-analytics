@@ -1,0 +1,200 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.07kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.3s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:24-bookworm-slim
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 222B done
+#5 DONE 0.0s
+
+#6 [build 1/6] FROM docker.io/library/node:24-bookworm-slim
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 47.07kB 0.0s done
+#7 DONE 0.0s
+
+#8 [build 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [build 3/6] COPY package.json package-lock.json ./
+#9 CACHED
+
+#10 [build 4/6] RUN --mount=type=secret,id=proxy_ca NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm ci --strict-ssl=true
+#10 2.854 npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+#10 5.492 npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+#10 7.563 npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+#10 9.100
+#10 9.100 added 396 packages, and audited 397 packages in 8s
+#10 9.100
+#10 9.100 139 packages are looking for funding
+#10 9.100   run `npm fund` for details
+#10 9.106
+#10 9.106 2 high severity vulnerabilities
+#10 9.106
+#10 9.106 To address all issues (including breaking changes), run:
+#10 9.106   npm audit fix --force
+#10 9.106
+#10 9.106 Run `npm audit` for details.
+#10 9.107 npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+#10 9.107 npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+#10 9.107 npm warn install-scripts
+#10 9.107 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+#10 9.109 npm notice
+#10 9.109 npm notice New major version of npm available! 11.19.0 -> 12.2.0
+#10 9.109 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+#10 9.109 npm notice To update run: npm install -g npm@12.2.0
+#10 9.109 npm notice
+#10 DONE 9.2s
+
+#11 [build 5/6] COPY . .
+#11 DONE 1.3s
+
+#12 [build 6/6] RUN npm run build && chmod -R a+rX dist public src scripts sdk packages db package.json package-lock.json tsconfig*.json vite.config.ts
+#12 1.421
+#12 1.421 > baize-analytics@0.1.0 build
+#12 1.421 > npm run build:tracker && vite build && tsc -p tsconfig.server.json
+#12 1.421
+#12 1.536
+#12 1.536 > baize-analytics@0.1.0 build:tracker
+#12 1.536 > tsx scripts/build-tracker.ts
+#12 1.536
+#12 2.042 tracker: Zopfli gzip 5087; default zlib gzip 5282
+#12 2.352 tracker-min: Zopfli gzip 4506; default zlib gzip 4690
+#12 2.684 tracker-vitals: Zopfli gzip 5316; default zlib gzip 5503
+#12 4.029 tracker-replay: Zopfli gzip 57320; default zlib gzip 59511
+#12 4.418 tracker-heatmap: Zopfli gzip 1122; default zlib gzip 1170
+#12 4.433 tracker-consent: Zopfli gzip 1196; default zlib gzip 1230
+#12 4.434 {
+#12 4.434   tracker: 5087,
+#12 4.434   'tracker-min': 4506,
+#12 4.434   'tracker-vitals': 5316,
+#12 4.434   'tracker-replay': 57320,
+#12 4.434   'tracker-heatmap': 1122,
+#12 4.434   'tracker-consent': 1196
+#12 4.434 }
+#12 4.611 vite v8.3.4 building client environment for production...
+#12 4.626 transforming...
+#12 4.787 ✓ 769 modules transformed.
+#12 4.895 rendering chunks...
+#12 5.018 computing gzip size...
+#12 5.038 dist/web/index.html                          0.41 kB │ gzip:   0.31 kB
+#12 5.038 dist/web/assets/index-BmarzjlC.css           5.34 kB │ gzip:   1.83 kB
+#12 5.038 dist/web/assets/aomen-DXLsqBrz.js            1.78 kB │ gzip:   0.72 kB
+#12 5.038 dist/web/assets/xianggang-B-GwqNoD.js       11.67 kB │ gzip:   4.78 kB
+#12 5.038 dist/web/assets/shanghai-D5fADUyQ.js        11.94 kB │ gzip:   5.88 kB
+#12 5.038 dist/web/assets/ningxia-Bpe_w3T9.js         12.15 kB │ gzip:   7.40 kB
+#12 5.038 dist/web/assets/tianjin-BIND3J0Y.js         12.34 kB │ gzip:   6.51 kB
+#12 5.038 dist/web/assets/beijing-6J6D0v26.js         21.11 kB │ gzip:  10.70 kB
+#12 5.038 dist/web/assets/shanxi-sF6r9BMA.js          22.38 kB │ gzip:  13.82 kB
+#12 5.038 dist/web/assets/jiangsu-CfAV2ncg.js         22.88 kB │ gzip:  13.91 kB
+#12 5.038 dist/web/assets/hainan-ByIDMKTK.js          28.66 kB │ gzip:  16.29 kB
+#12 5.038 dist/web/assets/taiwan-DuhSbPaK.js          29.36 kB │ gzip:   8.04 kB
+#12 5.038 dist/web/assets/anhui-BSaniTrc.js           30.61 kB │ gzip:  18.31 kB
+#12 5.038 dist/web/assets/shanxi1-B0i8biAP.js         30.90 kB │ gzip:  18.59 kB
+#12 5.038 dist/web/assets/jiangxi-CMNmFB4L.js         31.85 kB │ gzip:  18.52 kB
+#12 5.038 dist/web/assets/guizhou-BUdXZdgN.js         31.94 kB │ gzip:  19.18 kB
+#12 5.038 dist/web/assets/henan-ByBj5SKi.js           35.56 kB │ gzip:  21.02 kB
+#12 5.038 dist/web/assets/hubei-CbKDql3J.js           38.20 kB │ gzip:  22.44 kB
+#12 5.038 dist/web/assets/hebei-T7l9OzzS.js           39.20 kB │ gzip:  22.67 kB
+#12 5.038 dist/web/assets/jilin-i0ZAtsll.js           41.10 kB │ gzip:  23.34 kB
+#12 5.038 dist/web/assets/fujian-CnXpqkhe.js          42.82 kB │ gzip:  22.41 kB
+#12 5.038 dist/web/assets/qinghai-Bql4kmYY.js         43.59 kB │ gzip:  26.52 kB
+#12 5.038 dist/web/assets/hunan-CWxspgVh.js           45.15 kB │ gzip:  26.21 kB
+#12 5.038 dist/web/assets/guangxi-B63_XU_1.js         46.52 kB │ gzip:  26.82 kB
+#12 5.038 dist/web/assets/gansu-Bi_VQQwS.js           46.94 kB │ gzip:  28.39 kB
+#12 5.038 dist/web/assets/chongqing-Cl1EA9FX.js       47.72 kB │ gzip:  25.78 kB
+#12 5.038 dist/web/assets/liaoning-CQP2PqVX.js        49.47 kB │ gzip:  27.61 kB
+#12 5.038 dist/web/assets/shandong-G1nzS6sL.js        49.98 kB │ gzip:  28.33 kB
+#12 5.038 dist/web/assets/zhejiang-DSbk7J7A.js        50.65 kB │ gzip:  25.95 kB
+#12 5.038 dist/web/assets/neimenggu-CwzZW05h.js       57.11 kB │ gzip:  35.95 kB
+#12 5.038 dist/web/assets/yunnan-z_D5KTxc.js          62.07 kB │ gzip:  35.74 kB
+#12 5.038 dist/web/assets/guangdong-CX_QD5Pr.js       71.46 kB │ gzip:  38.25 kB
+#12 5.038 dist/web/assets/heilongjiang-BpPsHrM9.js    78.21 kB │ gzip:  44.62 kB
+#12 5.038 dist/web/assets/sichuan-BiKg7TEf.js         83.55 kB │ gzip:  47.33 kB
+#12 5.038 dist/web/assets/xinjiang-CVqQoyx6.js        87.53 kB │ gzip:  54.44 kB
+#12 5.038 dist/web/assets/Charts-Bg8XdSxE.js         120.93 kB │ gzip:  41.60 kB
+#12 5.038 dist/web/assets/GeographicMap-BomXZjec.js  127.02 kB │ gzip:  67.34 kB
+#12 5.038 dist/web/assets/ReplayViewer-DL9Nl526.js   260.88 kB │ gzip:  80.55 kB
+#12 5.038 dist/web/assets/install-Bly274N7.js        436.12 kB │ gzip: 147.88 kB
+#12 5.038 dist/web/assets/index-EOgSvyao.js          517.81 kB │ gzip: 164.25 kB
+#12 5.038 dist/web/assets/xizang-C9xTaVmy.js         686.05 kB │ gzip: 127.65 kB
+#12 5.038
+#12 5.039 ✓ built in 424ms
+#12 5.040 [plugin builtin:vite-reporter]
+#12 5.040 (!) Some chunks are larger than 500 kB after minification. Consider:
+#12 5.040 - Using dynamic import() to code-split the application
+#12 5.040 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#12 5.040 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#12 DONE 11.7s
+
+#13 [stage-1 3/4] RUN mkdir -p /app/data /app/keys && chown -R node:node /app/data /app/keys && chmod 1777 /app/data /app/keys
+#13 CACHED
+
+#14 [stage-1 4/4] COPY --from=build /app /app
+#14 DONE 1.3s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 2.1s done
+#15 writing image sha256:d388cf919e3fe377a36493daeb00e6e6ec4b2c8cfcf8486a463faa0de358c26d done
+#15 naming to docker.io/library/baize-analytics:local done
+#15 DONE 2.1s
+ Network baize_lifecycle_9881_default  Creating
+ Network baize_lifecycle_9881_default  Created
+ Volume baize_lifecycle_9881_postgres_data  Creating
+ Volume baize_lifecycle_9881_postgres_data  Created
+ Volume baize_lifecycle_9881_redis_data  Creating
+ Volume baize_lifecycle_9881_redis_data  Created
+ Volume baize_lifecycle_9881_app_data  Creating
+ Volume baize_lifecycle_9881_app_data  Created
+ Volume baize_lifecycle_9881_app_keys  Creating
+ Volume baize_lifecycle_9881_app_keys  Created
+ Container baize_lifecycle_9881-redis-1  Creating
+ Container baize_lifecycle_9881-postgres-1  Creating
+ Container baize_lifecycle_9881-redis-1  Created
+ Container baize_lifecycle_9881-postgres-1  Created
+ Container baize_lifecycle_9881-app-1  Creating
+ Container baize_lifecycle_9881-app-1  Created
+ Container baize_lifecycle_9881-redis-1  Starting
+ Container baize_lifecycle_9881-postgres-1  Starting
+ Container baize_lifecycle_9881-redis-1  Started
+ Container baize_lifecycle_9881-postgres-1  Started
+ Container baize_lifecycle_9881-redis-1  Waiting
+ Container baize_lifecycle_9881-postgres-1  Waiting
+ Container baize_lifecycle_9881-redis-1  Healthy
+ Container baize_lifecycle_9881-postgres-1  Healthy
+ Container baize_lifecycle_9881-app-1  Starting
+ Container baize_lifecycle_9881-app-1  Started
+ Container baize_lifecycle_9881-app-1  Waiting
+ Container baize_lifecycle_9881-postgres-1  Waiting
+ Container baize_lifecycle_9881-redis-1  Waiting
+ Container baize_lifecycle_9881-postgres-1  Healthy
+ Container baize_lifecycle_9881-redis-1  Healthy
+ Container baize_lifecycle_9881-app-1  Healthy
+Baize is listening locally. Open your configured PUBLIC_URL and create the administrator.
+node:internal/fs/promises:1661
+  const result = await PromisePrototypeThen(
+                 ^
+
+Error: EACCES: permission denied, scandir 'plugins'
+    at async readdir (node:internal/fs/promises:1661:18)
+    at async walk (file:///app/scripts/ops-artifact-manifest.mjs:5:51)
+    at async file:///app/scripts/ops-artifact-manifest.mjs:6:67 {
+  errno: -13,
+  code: 'EACCES',
+  syscall: 'scandir',
+  path: 'plugins'
+}
+
+Node.js v24.21.0
