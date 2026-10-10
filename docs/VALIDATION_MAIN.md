@@ -1,10 +1,12 @@
 # main 开发里程碑验收（保留历史结果）
 
-以下 b56b7e9 为历史第二批；最新第八空Compose377/20与未完成范围见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)，第七318/20见 [VALIDATION_SEVENTH.md](VALIDATION_SEVENTH.md)。
+当前已完成整轮为10eb88a：180单元+402真实集成、30检查（28真实Chromium+2日期）全部PASS/0skip，fresh local EXIT0/cleanup。当前19d97af冻结全轮实际EXIT0：51文件191单元+152文件404真实集成=595 PASS；30检查（28真实Chromium+2日期）全PASS/0fail/0skip，浏览器1.6分钟，lint/type/SDK/build/migrate/compiledapp/Compose cleanup均0；最新生产镜像、新同口径负载与最终托管不预称通过，托管暂停不触发。完整七筛选已经实现。
+
+以下所有旧阶段正文是历史时点记录，旧“在制/未注册/guard false/镜像待”只描述当时源码，不能用来否定后续已完成实现；旧失败与计数原样保留，不相加。严格CH主体、隐私/恢复、多语言、F29和身份收入已由后续7f/10eb对应冻结验收，不新增真实外部账号通过声明。b56b7e9 为历史第二批；第八377/20见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)，第七318/20见 [VALIDATION_SEVENTH.md](VALIDATION_SEVENTH.md)，7f494/22见 [VALIDATION_TENTH.md](VALIDATION_TENTH.md)。
 
 b56b7e9 当时结果：最新独立索引快照实际通过 36 文件、148 应用测试（59 单元/89 集成）和 13 Playwright 用例（11 浏览器流程/2 日期纯函数检查），均 0 失败、0 跳过。精确日志见 `test-evidence/second-main-tests.json`、`test-evidence/second-main-e2e.txt`。真实 WordPress 本地运行栈已验收通过，不能再列为未验收。以下首批结果为历史记录，不能代表所有后续在制修改。
 
-当前在制：ClickHouse 全应用切换/隐私故障验证、多语言外部错误语义、身份收入专项界面及新的最终镜像矩阵，均须单独记录后续结果。100k与1M真实完整管线均已通过。1M的1,000,000条/20,000批真实HTTP全部202（687.65秒），worker416.703秒，outbox全done，40站点dirty/uncovered/attempts均0，SQL/queryStats一致PV1M/UV2万/会话2万、coverage1，CLI EXIT0，独立schema已清除。证据full-pipeline-1000000.json/validation-scale.md；启动cb72a7e+当时WIP，非精确最新SHA，PG-only且CH关闭，RSS2,180,997,120byte，不能证明1C2G/持续混合写删/5分钟延迟保证。真实 GSC/GA4/MaxMind/SERP/商业模型/企业微信账号仍未实测。
+历史第二批当时在制：ClickHouse 全应用切换/隐私故障验证、多语言外部错误语义、身份收入专项界面及新的最终镜像矩阵，均须单独记录后续结果。100k与1M真实完整管线均已通过。1M的1,000,000条/20,000批真实HTTP全部202（687.65秒），worker416.703秒，outbox全done，40站点dirty/uncovered/attempts均0，SQL/queryStats一致PV1M/UV2万/会话2万、coverage1，CLI EXIT0，独立schema已清除。证据full-pipeline-1000000.json/validation-scale.md；启动cb72a7e+当时WIP，非精确最新SHA，PG-only且CH关闭，RSS2,180,997,120byte，不能证明1C2G/持续混合写删/5分钟延迟保证。真实 GSC/GA4/MaxMind/SERP/商业模型/企业微信账号仍未实测。
 
 ## 首个 main 里程碑（历史快照）
 
@@ -80,3 +82,5 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 父页面后续确认CNB223e887实际托管CI成功：cnb-bnd-1k4igl82q，regular7分31秒EXIT0、真实集成/compiled入口/18E2E与清理通过。owner-page来源记录cnb-hosted-223e887-owner-confirmed.json；完整下载日志尚未提供，不推算应用总数，也不把该旧源证明当8b61fc0的272/19。cron已注册但授权待用户确认，未验收定时。
 
 第五新production Docker c61030b4已实际build+完整生命周期EXIT0，201source/image SHA严格一致且与main8b61fc0对照0差异，真实PG30迁移含028/029。独立新库新文件卷/最新journal/worker SQL故障拒绝/升级/missing-image与schema+503真回滚通过，owned栈已清理。docker-fifth-main.json及hash/log记录边界；后续030/AI/语言与4ed81compose变更不在该快照，可选CH history模式未另在Docker开启，不能扩大为全部P2验收。
+
+19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。本轮新1000→5000负载正在运行、结果待，最终最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。

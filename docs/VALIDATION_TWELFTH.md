@@ -39,3 +39,9 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 当前短范围中文workspace总览、SEO、AI1440/390实截图在 `screenshots/10eb88a/`；另存响应式overview1440/375，375不改名冒称390。图像hash入summary，旧08/c7图保留。Google/GSC及模型transport仍模拟，本地PGCHRedis/HTTP/Chromium真实。新生产镜像、托管及跨宿主DR仍待。
 
 后续不可变b65aefa959066a45444b668f02614ce1568c5dbe事实pair真实PG/CH专项3文件13检查实际12PASS/1FAIL/0skip、EXIT1。Unicode正文真实往返通过，但新rollback留下2行CH orphan，旧sweep断言expected1实际3；analytics正在按own run物理清理，不降低旧断言。证据 `test-evidence/main-b65aefa-fact-pair-failed*` 保留；不能称全部pair已通过，不改写10eb完整全轮结果。
+
+## 19d97af 054与bulk完整本地全轮
+
+完整冻结 `19d97afcd6ad4c7adf08437bf82c1124d4057f8d` 实际EXIT0。51文件191单元、152文件404真实集成，共595应用检查全部PASS/0FAIL/0skip；30检查=28真实Chromium+2日期函数全PASS/0skip（runner1.6分钟）。lint/types/SDK/build、55文件实际迁移、全新PG/CH/Redis卷、compiled入口及owned Compose cleanup通过。原始JSON、日志、source摘要见 `test-evidence/main-19d97af-*`；不将其他定向或负载数量加到全轮。
+
+最新中文workspace总览/SEO/AI桌面1440与手机390，以及独立overview1440/375实截图保存 `screenshots/19d97af/`，hash和完整源码归属记录在summary；旧图/旧FAIL仍保留。真实本地数据库/HTTP/Chrome，Google/GSC及模型运输模拟。原生恢复真实证据不等于最新生产镜像通过；新镜像、托管、跨宿主灾备均未在本轮执行，独立1000/5000负载另由root记录，不提前标绿。
