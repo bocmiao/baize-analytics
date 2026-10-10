@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "0a0c171fc17e647fecf38dd55d4bc8e0f0144fbb",
+  "trackedBlobs": 1191,
+  "exit": 2,
+  "command": "APP_ROOT=/tmp/baize-0a0c171-full.lbxuhziv SOURCE_SHA=0a0c171fc17e647fecf38dd55d4bc8e0f0144fbb bash /tmp/baize-final-full-runner.sh",
+  "lint": "PASS",
+  "typecheck": "FAIL TS2749 tests/unit/stats-read-budget.test.ts lines13/14 EventEmitter value used as type",
+  "unit": "NOT RUN",
+  "integration": "NOT RUN",
+  "browser": "NOT RUN",
+  "image": "NOT RUN",
+  "cleanup": "owned Compose completed",
+  "rawLogSha256": "83103cd2c8d3b6db9fe707b7b7e687000bb8464bd9ada89d7b719609871e5985",
+  "subsequentFix": "test-only InstanceType<typeof EventEmitter>; not yet whole pass",
+  "priorFailuresPreserved": true
+}

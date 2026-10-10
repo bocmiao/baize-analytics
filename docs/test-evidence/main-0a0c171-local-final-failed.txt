@@ -1,0 +1,21 @@
+
+> baize-analytics@0.1.0 lint
+> eslint .
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> baize-analytics@0.1.0 typecheck
+> tsc --noEmit
+
+tests/unit/stats-read-budget.test.ts(13,282): error TS2749: 'EventEmitter' refers to a value, but is being used as a type here. Did you mean 'typeof EventEmitter'?
+tests/unit/stats-read-budget.test.ts(14,330): error TS2749: 'EventEmitter' refers to a value, but is being used as a type here. Did you mean 'typeof EventEmitter'?
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Local final acceptance exit=2; evidence=/tmp/baize-final-local.zCGDis

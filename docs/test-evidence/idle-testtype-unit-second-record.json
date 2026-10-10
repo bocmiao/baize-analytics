@@ -1,0 +1,20 @@
+{
+  "baseCommit": "0a0c171fc17e647fecf38dd55d4bc8e0f0144fbb",
+  "sourceCommit": null,
+  "sourceKind": "precommit test-only WIP",
+  "commandsExit": 0,
+  "typecheck": "passed",
+  "lint": "passed",
+  "unit": {
+    "total": 215,
+    "passed": 215,
+    "failed": 0,
+    "skipped": 0
+  },
+  "hashes": {
+    "tests/unit/stats-read-budget.test.ts": "9f8c06849144dcbadedadd4937529ccfdfaa20c40b4156923dfe3a2e7ecfd129",
+    "tests/unit/stats-read-snapshot.test.ts": "5cc4ae714a5681dc374e505d627f2d638c3dbed9dbdb4e01bb47c98c8864b015",
+    "src/server/stats-read-budget.ts": "3d0b67aed28a1194794c5f961da84bba91f5c0f1edde6a4f21194db2f3bfdb19"
+  },
+  "scope": "test-only type and event-capable PG mock fixes; production code unchanged from 0a0c171; not whole final acceptance"
+}

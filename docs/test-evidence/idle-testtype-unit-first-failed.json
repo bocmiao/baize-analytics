@@ -1,0 +1,2922 @@
+{
+  "numTotalTestSuites": 87,
+  "numPassedTestSuites": 86,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 215,
+  "numPassedTests": 213,
+  "numFailedTests": 2,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1791671620260,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "fixed adapter transport duration includes normal EOF with one original body read",
+          "status": "passed",
+          "title": "fixed adapter transport duration includes normal EOF with one original body read",
+          "duration": 19.77995200000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671626220,
+      "endTime": 1791671626239.78,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/adapter-performance-eof.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "F60 provider orchestration explicitly simulated; deterministic evidence contract"
+          ],
+          "fullName": "F60 provider orchestration explicitly simulated; deterministic evidence contract rejects content-only answers despite provider ignoring required tool choice",
+          "status": "passed",
+          "title": "rejects content-only answers despite provider ignoring required tool choice",
+          "duration": 5.760816000000034,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "F60 provider orchestration explicitly simulated; deterministic evidence contract"
+          ],
+          "fullName": "F60 provider orchestration explicitly simulated; deterministic evidence contract rejects SQL/foreign site/unknown filters/out-of-range and unsupported-only answers",
+          "status": "passed",
+          "title": "rejects SQL/foreign site/unknown filters/out-of-range and unsupported-only answers",
+          "duration": 3.8838389999999663,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "F60 provider orchestration explicitly simulated; deterministic evidence contract"
+          ],
+          "fullName": "F60 provider orchestration explicitly simulated; deterministic evidence contract retains actual server numbers and rejects duplicate tool IDs",
+          "status": "passed",
+          "title": "retains actual server numbers and rejects duplicate tool IDs",
+          "duration": 5.090111999999976,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "F60 provider orchestration explicitly simulated; deterministic evidence contract"
+          ],
+          "fullName": "F60 provider orchestration explicitly simulated; deterministic evidence contract never completes after permission revocation and bounds inclusive dates",
+          "status": "passed",
+          "title": "never completes after permission revocation and bounds inclusive dates",
+          "duration": 0.8792180000000371,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "F60 provider orchestration explicitly simulated; deterministic evidence contract"
+          ],
+          "fullName": "F60 provider orchestration explicitly simulated; deterministic evidence contract requires exact distinct-cohort ratio semantics and mathematical numerator/denominator",
+          "status": "passed",
+          "title": "requires exact distinct-cohort ratio semantics and mathematical numerator/denominator",
+          "duration": 0.5904919999999834,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671626687,
+      "endTime": 1791671626702.8792,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/ai-evidence.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness matches fixture A despite arrival disorder and late bridging",
+          "status": "passed",
+          "title": "matches fixture A despite arrival disorder and late bridging",
+          "duration": 4.759862999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness uses event gaps and joins late events rather than arrival time",
+          "status": "passed",
+          "title": "uses event gaps and joins late events rather than arrival time",
+          "duration": 0.6895920000000046,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness splits at timezone midnight only for daily privacy identifiers",
+          "status": "passed",
+          "title": "splits at timezone midnight only for daily privacy identifiers",
+          "duration": 13.08014700000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness deduplicates event and heartbeat segments per page instance, including multiple tabs",
+          "status": "passed",
+          "title": "deduplicates event and heartbeat segments per page instance, including multiple tabs",
+          "duration": 1.080282000000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness uses exact period distinct sets instead of summed daily UV",
+          "status": "passed",
+          "title": "uses exact period distinct sets instead of summed daily UV",
+          "duration": 0.9992599999999925,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness preserves unequal repeated point masses at the body and tail without centroid-centre interpolation",
+          "status": "passed",
+          "title": "preserves unequal repeated point masses at the body and tail without centroid-centre interpolation",
+          "duration": 1.823063999999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness merges unequal-size tdigest samples instead of averaging daily quantiles",
+          "status": "passed",
+          "title": "merges unequal-size tdigest samples instead of averaging daily quantiles",
+          "duration": 1.6997879999999554,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness implements strict and loose ordered funnels",
+          "status": "passed",
+          "title": "implements strict and loose ordered funnels",
+          "duration": 1.1926220000000285,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "event-time analytics correctness"
+          ],
+          "fullName": "event-time analytics correctness keeps boolean event property groups",
+          "status": "passed",
+          "title": "keeps boolean event property groups",
+          "duration": 0.4635810000000333,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "goal and heartbeat semantics"
+          ],
+          "fullName": "goal and heartbeat semantics counts each converted session once per goal rather than every custom event",
+          "status": "passed",
+          "title": "counts each converted session once per goal rather than every custom event",
+          "duration": 0.47148200000003726,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "goal and heartbeat semantics"
+          ],
+          "fullName": "goal and heartbeat semantics deduplicates identical heartbeat intervals even with different event ids",
+          "status": "passed",
+          "title": "deduplicates identical heartbeat intervals even with different event ids",
+          "duration": 0.3425879999999779,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "bucket boundary page instances"
+          ],
+          "fullName": "bucket boundary page instances keeps visible duration and completion in the heartbeat bucket across an hour",
+          "status": "passed",
+          "title": "keeps visible duration and completion in the heartbeat bucket across an hour",
+          "duration": 0.25751900000000205,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "untrusted dictionary names"
+          ],
+          "fullName": "untrusted dictionary names keeps prototype-looking event, property, dimension, goal and funnel keys as ordinary data across JSON persistence",
+          "status": "passed",
+          "title": "keeps prototype-looking event, property, dimension, goal and funnel keys as ordinary data across JSON persistence",
+          "duration": 1.6397780000000353,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "revenue currency and attribution"
+          ],
+          "fullName": "revenue currency and attribution keeps currencies independent, deduplicates orders, and attributes the latest page with last non-direct source",
+          "status": "passed",
+          "title": "keeps currencies independent, deduplicates orders, and attributes the latest page with last non-direct source",
+          "duration": 0.8310559999999896,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "revenue currency and attribution"
+          ],
+          "fullName": "revenue currency and attribution does not discard revenue without a preceding pageview",
+          "status": "passed",
+          "title": "does not discard revenue without a preceding pageview",
+          "duration": 0.2115389999999593,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "revenue page instance across tabs"
+          ],
+          "fullName": "revenue page instance across tabs keeps the purchase page linked to its own instance while retaining latest non-direct acquisition",
+          "status": "passed",
+          "title": "keeps the purchase page linked to its own instance while retaining latest non-direct acquisition",
+          "duration": 0.2557159999999499,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671625176,
+      "endTime": 1791671625207.2556,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/analytics.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "locates saved site-calendar notes only on actual finite observed bins without manufacturing points",
+          "status": "passed",
+          "title": "locates saved site-calendar notes only on actual finite observed bins without manufacturing points",
+          "duration": 17.408939000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not guess dates from malformed labels or missing metrics and preserves the server 200-row cap",
+          "status": "passed",
+          "title": "does not guess dates from malformed labels or missing metrics and preserves the server 200-row cap",
+          "duration": 0.6679790000000025,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627097,
+      "endTime": 1791671627115.668,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/annotation-trend.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "fixed bilingual API error boundary"
+          ],
+          "fullName": "fixed bilingual API error boundary does not expose dynamic internal or client exception text",
+          "status": "passed",
+          "title": "does not expose dynamic internal or client exception text",
+          "duration": 2.123488999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "fixed bilingual API error boundary"
+          ],
+          "fullName": "fixed bilingual API error boundary matches legacy messages only with the exact admitted status and keeps collection wire codes",
+          "status": "passed",
+          "title": "matches legacy messages only with the exact admitted status and keeps collection wire codes",
+          "duration": 0.3371390000000076,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "fixed bilingual API error boundary"
+          ],
+          "fullName": "fixed bilingual API error boundary maps all trusted codes to fixed Chinese and English semantics without deriving text from errors",
+          "status": "passed",
+          "title": "maps all trusted codes to fixed Chinese and English semantics without deriving text from errors",
+          "duration": 5.952155000000005,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627392,
+      "endTime": 1791671627399.9521,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/api-errors.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects a oversized line and a truncated tail before parsing",
+          "status": "passed",
+          "title": "rejects a oversized line and a truncated tail before parsing",
+          "duration": 9.100072000000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627933,
+      "endTime": 1791671627942.1,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/backup-lines.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "sliding window detects request 21 but normal batches and tracker retries are requests rather than events",
+          "status": "passed",
+          "title": "sliding window detects request 21 but normal batches and tracker retries are requests rather than events",
+          "duration": 3.8544650000000047,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "AI UA classification takes priority over generic bots; library is operator maintainable and rejects unsafe inputs",
+          "status": "passed",
+          "title": "AI UA classification takes priority over generic bots; library is operator maintainable and rejects unsafe inputs",
+          "duration": 0.9695549999999855,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "Redis receives only HMAC key and random request ID, never raw IP or user agent",
+          "status": "passed",
+          "title": "Redis receives only HMAC key and random request ID, never raw IP or user agent",
+          "duration": 0.6504419999999982,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "Redis outage falls back to the active bounded local request window",
+          "status": "passed",
+          "title": "Redis outage falls back to the active bounded local request window",
+          "duration": 0.8813220000000115,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671628374,
+      "endTime": 1791671628379.8813,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/bot-filter.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "canonical export EAV"
+          ],
+          "fullName": "canonical export EAV preserves primitive types and numeric PG decimal representation",
+          "status": "passed",
+          "title": "preserves primitive types and numeric PG decimal representation",
+          "duration": 1.8964660000000038,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "canonical export EAV"
+          ],
+          "fullName": "canonical export EAV rejects foreign-site bodies and malformed properties rather than claiming empty success",
+          "status": "passed",
+          "title": "rejects foreign-site bodies and malformed properties rather than claiming empty success",
+          "duration": 0.9902560000000165,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "canonical export EAV"
+          ],
+          "fullName": "canonical export EAV fails at the per-table limit without silently truncating",
+          "status": "passed",
+          "title": "fails at the per-table limit without silently truncating",
+          "duration": 62.22070600000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671623748,
+      "endTime": 1791671623813.2207,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/canonical-event-data.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "canonical retry chain fails closed"
+          ],
+          "fullName": "canonical retry chain fails closed rejects a loop without reading any orphan body",
+          "status": "passed",
+          "title": "rejects a loop without reading any orphan body",
+          "duration": 3.877319,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "canonical retry chain fails closed"
+          ],
+          "fullName": "canonical retry chain fails closed caps a chain at 64 links instead of following unbounded metadata",
+          "status": "passed",
+          "title": "caps a chain at 64 links instead of following unbounded metadata",
+          "duration": 0.9374870000000328,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671630352,
+      "endTime": 1791671630356.9375,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/canonical-retry-receipt.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "matches original canonical bytes including Unicode, prototype keys and typed nested values",
+          "status": "passed",
+          "title": "matches original canonical bytes including Unicode, prototype keys and typed nested values",
+          "duration": 10.040713999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not reuse bytes between validations after a different normalized record is produced",
+          "status": "passed",
+          "title": "does not reuse bytes between validations after a different normalized record is produced",
+          "duration": 0.23306199999998967,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "reuses an immutable normalized subtree within only one validation",
+          "status": "passed",
+          "title": "reuses an immutable normalized subtree within only one validation",
+          "duration": 0.15184999999999604,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not cache later wire provenance or envelope objects",
+          "status": "passed",
+          "title": "does not cache later wire provenance or envelope objects",
+          "duration": 0.19154999999997813,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627800,
+      "endTime": 1791671627811.1917,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/canonical-validation.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response accepts empty or chunked ASCII whitespace only after EOF",
+          "status": "passed",
+          "title": "accepts empty or chunked ASCII whitespace only after EOF",
+          "duration": 6.174080000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response rejects 200 error text, interruption and overlimit without exposing content",
+          "status": "passed",
+          "title": "rejects 200 error text, interruption and overlimit without exposing content",
+          "duration": 2.4591259999999977,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 1.0563270000000102,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 0.604693999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 0.5316630000000089,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 0.6402369999999848,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 0.5725259999999821,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name refuses HTTP 200 execution failure",
+          "status": "passed",
+          "title": "adapter $name refuses HTTP 200 execution failure",
+          "duration": 0.47773200000000315,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.7309549999999945,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.3783120000000224,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.22792400000000157,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.19563599999997905,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.13134900000000016,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response adapter $name accepts bounded whitespace command acknowledgements",
+          "status": "passed",
+          "title": "adapter $name accepts bounded whitespace command acknowledgements",
+          "duration": 0.15957099999999969,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "ClickHouse complete command response"
+          ],
+          "fullName": "ClickHouse complete command response real local HTTP chunked completion rejects late 200 exception",
+          "status": "passed",
+          "title": "real local HTTP chunked completion rejects late 200 exception",
+          "duration": 19.878530000000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671624602,
+      "endTime": 1791671624636.8784,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/clickhouse-command-response.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "observes full EOF and actual byte count without changing result",
+          "status": "passed",
+          "title": "observes full EOF and actual byte count without changing result",
+          "duration": 24.986710000000016,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "preserves bounded failures with and without a failing sink",
+          "status": "passed",
+          "title": "preserves bounded failures with and without a failing sink",
+          "duration": 2.623925000000014,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671626063,
+      "endTime": 1791671626090.624,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/clickhouse-observed-body.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits uses fractional seconds without adding result/scan/memory settings",
+          "status": "passed",
+          "title": "uses fractional seconds without adding result/scan/memory settings",
+          "duration": 1.9135710000000188,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits canonical opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "canonical opts SELECT in but leaves mutation calls unchanged",
+          "duration": 24.763452,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits mirror opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "mirror opts SELECT in but leaves mutation calls unchanged",
+          "duration": 1.68843099999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits facts opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "facts opts SELECT in but leaves mutation calls unchanged",
+          "duration": 1.4738680000000102,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits cache opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "cache opts SELECT in but leaves mutation calls unchanged",
+          "duration": 1.3155690000000106,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits headers opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "headers opts SELECT in but leaves mutation calls unchanged",
+          "duration": 1.0337319999999863,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits remaining opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "remaining opts SELECT in but leaves mutation calls unchanged",
+          "duration": 1.195586999999989,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit SELECT server timeout preserves transport limits"
+          ],
+          "fullName": "explicit SELECT server timeout preserves transport limits transport opts SELECT in but leaves mutation calls unchanged",
+          "status": "passed",
+          "title": "transport opts SELECT in but leaves mutation calls unchanged",
+          "duration": 0.876215000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671624864,
+      "endTime": 1791671624898.8762,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/clickhouse-select-budget.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "binds hostile identifiers and UTC date parameters without embedding credentials in URLs or SQL",
+          "status": "passed",
+          "title": "binds hostile identifiers and UTC date parameters without embedding credentials in URLs or SQL",
+          "duration": 21.287769999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects cross-site snapshot writes before transport and rejects credential URLs",
+          "status": "passed",
+          "title": "rejects cross-site snapshot writes before transport and rejects credential URLs",
+          "duration": 1.4193349999999896,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "hides downstream response details on failure and never treats a failure as an empty successful replica",
+          "status": "passed",
+          "title": "hides downstream response details on failure and never treats a failure as an empty successful replica",
+          "duration": 4.108699999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671625527,
+      "endTime": 1791671625554.1086,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/clickhouse.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "groups actual downloads by URL and extension, preserves 404 origins and safe prototype event trends",
+          "status": "passed",
+          "title": "groups actual downloads by URL and extension, preserves 404 origins and safe prototype event trends",
+          "duration": 3.293087000000014,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "counts funnel loss from ordered sessions and goal channels at actual completion times",
+          "status": "passed",
+          "title": "counts funnel loss from ordered sessions and goal channels at actual completion times",
+          "duration": 9.444361999999956,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627662,
+      "endTime": 1791671627674.4443,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/content-analytics.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "uses full ICANN/private PSL and explicit site hosts to reject public suffix, IP, deceptive parent and unregistered subdomains",
+          "status": "passed",
+          "title": "uses full ICANN/private PSL and explicit site hosts to reject public suffix, IP, deceptive parent and unregistered subdomains",
+          "duration": 2.7647380000000084,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631550,
+      "endTime": 1791671631552.7646,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/cookie-domain.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "daily known identifier policy"
+          ],
+          "fullName": "daily known identifier policy cleans every known payload string and nested alias, preserving controlled protocol columns",
+          "status": "passed",
+          "title": "cleans every known payload string and nested alias, preserving controlled protocol columns",
+          "duration": 2.498896000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "daily known identifier policy"
+          ],
+          "fullName": "daily known identifier policy cleans dimension aliases/email while retaining device enum and business values",
+          "status": "passed",
+          "title": "cleans dimension aliases/email while retaining device enum and business values",
+          "duration": 0.34292800000000057,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671630880,
+      "endTime": 1791671630882.4988,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/daily-privacy-policy.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "uses domain boundaries for search, AI and social instead of substring matches",
+          "status": "passed",
+          "title": "uses domain boundaries for search, AI and social instead of substring matches",
+          "duration": 16.245490000000018,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "applies ordered explicit host and UTM rule conjunctions and configurable AI hosts",
+          "status": "passed",
+          "title": "applies ordered explicit host and UTM rule conjunctions and configurable AI hosts",
+          "duration": 3.2762600000000077,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps all UTM dimensions and removes directly identifying search terms",
+          "status": "passed",
+          "title": "keeps all UTM dimensions and removes directly identifying search terms",
+          "duration": 1.3277960000000064,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "parses actual terminal UA, CSS screen and density without inventing devices for unknown UA",
+          "status": "passed",
+          "title": "parses actual terminal UA, CSS screen and density without inventing devices for unknown UA",
+          "duration": 0.7779150000000072,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "marks advertising origin without retaining click IDs",
+          "status": "passed",
+          "title": "marks advertising origin without retaining click IDs",
+          "duration": 0.3099080000000072,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671625901,
+      "endTime": 1791671625923.3098,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/dimensions.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "external API error contract"
+          ],
+          "fullName": "external API error contract uses bounded public messages and stable statuses without accepting provider payloads",
+          "status": "passed",
+          "title": "uses bounded public messages and stable statuses without accepting provider payloads",
+          "duration": 4.4243960000000015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671630486,
+      "endTime": 1791671630490.4243,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/external-errors.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "GeoIP official download verification with explicitly invalid local artifact fixtures"
+          ],
+          "fullName": "GeoIP official download verification with explicitly invalid local artifact fixtures unknown remains unknown without a valid mmdb; never fabricates a region",
+          "status": "passed",
+          "title": "unknown remains unknown without a valid mmdb; never fabricates a region",
+          "duration": 2.6864999999999952,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GeoIP official download verification with explicitly invalid local artifact fixtures"
+          ],
+          "fullName": "GeoIP official download verification with explicitly invalid local artifact fixtures valid archive checksum does not bypass mmdb format validation or overwrite prior artifact",
+          "status": "passed",
+          "title": "valid archive checksum does not bypass mmdb format validation or overwrite prior artifact",
+          "duration": 23.395575000000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GeoIP official download verification with explicitly invalid local artifact fixtures"
+          ],
+          "fullName": "GeoIP official download verification with explicitly invalid local artifact fixtures rejects an official-checksum-shaped response whose archive bytes do not match",
+          "status": "passed",
+          "title": "rejects an official-checksum-shaped response whose archive bytes do not match",
+          "duration": 1.0023539999999969,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671625703,
+      "endTime": 1791671625730.0024,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/external-geoip.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails encrypts with fresh nonce and rejects tampering and wrong key",
+          "status": "passed",
+          "title": "encrypts with fresh nonce and rejects tampering and wrong key",
+          "duration": 3.725529999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails blocks private, metadata, IPv4-mapped IPv6 and loopback",
+          "status": "passed",
+          "title": "blocks private, metadata, IPv4-mapped IPv6 and loopback",
+          "duration": 2.1916519999999764,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails rejects private URL and non-HTTPS without connecting",
+          "status": "passed",
+          "title": "rejects private URL and non-HTTPS without connecting",
+          "duration": 2.2176509999999894,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails real local HTTP transport pins DNS, bounds body/time and isolates Ollama exception",
+          "status": "passed",
+          "title": "real local HTTP transport pins DNS, bounds body/time and isolates Ollama exception",
+          "duration": 46.10128699999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails normalizes model base and full completion endpoint without duplication",
+          "status": "passed",
+          "title": "normalizes model base and full completion endpoint without duplication",
+          "duration": 0.42145700000003217,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "external secrets and outbound guardrails"
+          ],
+          "fullName": "external secrets and outbound guardrails accepts only bounded semantic DSL, rejects SQL and unknown sites",
+          "status": "passed",
+          "title": "accepts only bounded semantic DSL, rejects SQL and unknown sites",
+          "duration": 3.5854289999999764,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "SEO and aggregate provider integration fixtures (not real accounts)"
+          ],
+          "fullName": "SEO and aggregate provider integration fixtures (not real accounts) detects health issues and obeys robots without crawling foreign domain",
+          "status": "passed",
+          "title": "detects health issues and obeys robots without crawling foreign domain",
+          "duration": 10.13935200000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "SEO and aggregate provider integration fixtures (not real accounts)"
+          ],
+          "fullName": "SEO and aggregate provider integration fixtures (not real accounts) paginates GSC aggregate reports preserving query/page dimensions",
+          "status": "passed",
+          "title": "paginates GSC aggregate reports preserving query/page dimensions",
+          "duration": 35.35658000000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "SEO and aggregate provider integration fixtures (not real accounts)"
+          ],
+          "fullName": "SEO and aggregate provider integration fixtures (not real accounts) GA4 requests aggregate metrics and rejects invalid property identifiers",
+          "status": "passed",
+          "title": "GA4 requests aggregate metrics and rejects invalid property identifiers",
+          "duration": 0.9938410000000886,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671622031,
+      "endTime": 1791671622135.994,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/external.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "publishes 100 fresh receipts with one typed insert and no conflict suppression",
+          "status": "passed",
+          "title": "publishes 100 fresh receipts with one typed insert and no conflict suppression",
+          "duration": 3.243621999999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects a rowCount mismatch and propagates actual PK/FK failures unchanged",
+          "status": "passed",
+          "title": "rejects a rowCount mismatch and propagates actual PK/FK failures unchanged",
+          "duration": 1.371813000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects empty and oversized input before SQL",
+          "status": "passed",
+          "title": "rejects empty and oversized input before SQL",
+          "duration": 0.5798259999999971,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629218,
+      "endTime": 1791671629223.5798,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/fact-member-publication.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "groups reverse transport scopes in manifest order and exact row order without changing bytes",
+          "status": "passed",
+          "title": "groups reverse transport scopes in manifest order and exact row order without changing bytes",
+          "duration": 1.952069999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects invalid/noncanonical base64 and invalid UTF8 rather than replacement decoding",
+          "status": "passed",
+          "title": "rejects invalid/noncanonical base64 and invalid UTF8 rather than replacement decoding",
+          "duration": 1.2507599999999854,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects unknown attempts and duplicate keys while keeping empty scope visible for original count verification",
+          "status": "passed",
+          "title": "rejects unknown attempts and duplicate keys while keeping empty scope visible for original count verification",
+          "duration": 0.4812379999999905,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "preserves each manifest sentinel even if total rows fit the pair budget",
+          "status": "passed",
+          "title": "preserves each manifest sentinel even if total rows fit the pair budget",
+          "duration": 0.661248999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects oversized single encoded body before allocating decoded bytes",
+          "status": "passed",
+          "title": "rejects oversized single encoded body before allocating decoded bytes",
+          "duration": 1.4690809999999885,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "supports exactly three manifests and preserves per-attempt order, empty and sentinel checks",
+          "status": "passed",
+          "title": "supports exactly three manifests and preserves per-attempt order, empty and sentinel checks",
+          "duration": 1.0813940000000173,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "three largest compatible UTF8 bodies keep byte identity under the fixed response cap",
+          "status": "passed",
+          "title": "three largest compatible UTF8 bodies keep byte identity under the fixed response cap",
+          "duration": 110.321686,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671620418,
+      "endTime": 1791671620535.3218,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/fact-pair-response.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "one authenticated batch uses one bound JSON parameter and one write despite duplicate identity envelopes",
+          "status": "passed",
+          "title": "one authenticated batch uses one bound JSON parameter and one write despite duplicate identity envelopes",
+          "duration": 4.92441199999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects 101 rows before any batch write and cleans temporary relations",
+          "status": "passed",
+          "title": "rejects 101 rows before any batch write and cleans temporary relations",
+          "duration": 1.4188840000000198,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671628532,
+      "endTime": 1791671628538.419,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/fact-source-batch-cte.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "GA4 provider report validation with explicit simulated transport"
+          ],
+          "fullName": "GA4 provider report validation with explicit simulated transport uses actual short-page length for offset, enforces stable rowCount and never adds distinct users",
+          "status": "passed",
+          "title": "uses actual short-page length for offset, enforces stable rowCount and never adds distinct users",
+          "duration": 19.212434000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GA4 provider report validation with explicit simulated transport"
+          ],
+          "fullName": "GA4 provider report validation with explicit simulated transport rejects early-empty pages, inconsistent headers, unsafe numeric metrics, invalid ISO weeks and timezone conflicts",
+          "status": "passed",
+          "title": "rejects early-empty pages, inconsistent headers, unsafe numeric metrics, invalid ISO weeks and timezone conflicts",
+          "duration": 4.706353000000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GA4 provider report validation with explicit simulated transport"
+          ],
+          "fullName": "GA4 provider report validation with explicit simulated transport bounds range and property before outbound calls and clips cross-year ISO weeks exactly",
+          "status": "passed",
+          "title": "bounds range and property before outbound calls and clips cross-year ISO weeks exactly",
+          "duration": 0.7892129999999895,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671625364,
+      "endTime": 1791671625388.7893,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/ga4-import.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "unions exact visitor sets when one visitor appears in multiple cities and normalizes only known provinces",
+          "status": "passed",
+          "title": "unions exact visitor sets when one visitor appears in multiple cities and normalizes only known provinces",
+          "duration": 4.24163999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "never invents locations for unknown and does not claim cross-day daily-salt UV",
+          "status": "passed",
+          "title": "never invents locations for unknown and does not claim cross-day daily-salt UV",
+          "duration": 0.36205699999999297,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671630752,
+      "endTime": 1791671630757.362,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/geography-analytics.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "verifies every original map checksum and renders genuine Chinese provinces in current ECharts",
+          "status": "passed",
+          "title": "verifies every original map checksum and renders genuine Chinese provinces in current ECharts",
+          "duration": 70.95694800000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671623265,
+      "endTime": 1791671623335.957,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/geography-assets.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security exports only typed portable configuration without unknown secret keys",
+          "status": "passed",
+          "title": "exports only typed portable configuration without unknown secret keys",
+          "duration": 4.9161889999999175,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security renders localized real metrics and escapes notification content",
+          "status": "passed",
+          "title": "renders localized real metrics and escapes notification content",
+          "duration": 0.8296940000000177,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security uses fixed-horizon significance and refuses small samples",
+          "status": "passed",
+          "title": "uses fixed-horizon significance and refuses small samples",
+          "duration": 1.0478539999999157,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security encrypts and authenticates channel credentials",
+          "status": "passed",
+          "title": "encrypts and authenticates channel credentials",
+          "duration": 1.7965149999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security hashes unique access tokens and verifies salted passwords",
+          "status": "passed",
+          "title": "hashes unique access tokens and verifies salted passwords",
+          "duration": 105.55910899999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security escapes CSV formulas, quotes and newlines",
+          "status": "passed",
+          "title": "escapes CSV formulas, quotes and newlines",
+          "duration": 0.4585930000000644,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security requires exact CSP origins",
+          "status": "passed",
+          "title": "requires exact CSP origins",
+          "duration": 0.666447000000062,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "governance security"
+          ],
+          "fullName": "governance security rejects replay plaintext and sensitive names",
+          "status": "passed",
+          "title": "rejects replay plaintext and sensitive names",
+          "duration": 0.6374930000000631,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671621414,
+      "endTime": 1791671621530.6375,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/governance.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "accepts only named 054 lookup migration without changing signed body scope",
+          "status": "passed",
+          "title": "accepts only named 054 lookup migration without changing signed body scope",
+          "duration": 2.7405609999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "054 consists of the two nonunique receipt lookup indexes only",
+          "status": "passed",
+          "title": "054 consists of the two nonunique receipt lookup indexes only",
+          "duration": 0.8769860000000023,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631138,
+      "endTime": 1791671631140.877,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/history-namespace-schema-compatibility.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "fixed intake schedule is independent of slow low-frequency queries and bounds queue",
+          "status": "passed",
+          "title": "fixed intake schedule is independent of slow low-frequency queries and bounds queue",
+          "duration": 42.81270699999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "drain timeout is separate from successful fresh final assertions",
+          "status": "passed",
+          "title": "drain timeout is separate from successful fresh final assertions",
+          "duration": 7.436547999999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "phase metrics use fixed labels and bounded aggregate histograms without event state",
+          "status": "passed",
+          "title": "phase metrics use fixed labels and bounded aggregate histograms without event state",
+          "duration": 12.387599999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "records real observations without treating a final source exception as success",
+          "status": "passed",
+          "title": "records real observations without treating a final source exception as success",
+          "duration": 1.9589200000000062,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "continues independent bounded queries during drain and measures final separately with fake monotonic clock",
+          "status": "passed",
+          "title": "continues independent bounded queries during drain and measures final separately with fake monotonic clock",
+          "duration": 3.142247999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not count late drain completion as reached or schedule queries beyond the drain deadline",
+          "status": "passed",
+          "title": "does not count late drain completion as reached or schedule queries beyond the drain deadline",
+          "duration": 0.8988180000000057,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671623467,
+      "endTime": 1791671623535.899,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/independent-benchmark.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "recovery never creates a replacement for a missing independent deletion journal",
+          "status": "passed",
+          "title": "recovery never creates a replacement for a missing independent deletion journal",
+          "duration": 4.324445000000026,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects a reset journal and accepts only a complete crash extension of the acknowledged prefix",
+          "status": "passed",
+          "title": "rejects a reset journal and accepts only a complete crash extension of the acknowledged prefix",
+          "duration": 8.30102400000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "requires a pre-existing watermark for a nonempty legacy log and validates identity interval bounds",
+          "status": "passed",
+          "title": "requires a pre-existing watermark for a nonempty legacy log and validates identity interval bounds",
+          "duration": 2.2682679999999777,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671626967,
+      "endTime": 1791671626982.2683,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/journal.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "minimizes visible public text to 50 Unicode codepoints after whitespace and obvious identity redaction",
+          "status": "passed",
+          "title": "minimizes visible public text to 50 Unicode codepoints after whitespace and obvious identity redaction",
+          "duration": 2.479036000000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671632078,
+      "endTime": 1791671632080.479,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/link-text.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "custom search CSV"
+          ],
+          "fullName": "custom search CSV reads BOM, quoted multiline/comma/doubled quotes and deterministic digest",
+          "status": "passed",
+          "title": "reads BOM, quoted multiline/comma/doubled quotes and deterministic digest",
+          "duration": 5.827956999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "custom search CSV"
+          ],
+          "fullName": "custom search CSV rejects malformed CSV, dates, numbers and foreign/credential page URLs",
+          "status": "passed",
+          "title": "rejects malformed CSV, dates, numbers and foreign/credential page URLs",
+          "duration": 1.8303760000000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "custom search CSV"
+          ],
+          "fullName": "custom search CSV enforces decoded byte and row caps",
+          "status": "passed",
+          "title": "enforces decoded byte and row caps",
+          "duration": 28.725189,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "custom search CSV"
+          ],
+          "fullName": "custom search CSV neutralizes spreadsheet formula cells including leading spaces and escapes quotes",
+          "status": "passed",
+          "title": "neutralizes spreadsheet formula cells including leading spaces and escapes quotes",
+          "duration": 1.2272539999999879,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671624340,
+      "endTime": 1791671624377.2273,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/manual-search-parser.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "manual dates are real calendar dates, bounded text and never raw evidence fields",
+          "status": "passed",
+          "title": "manual dates are real calendar dates, bounded text and never raw evidence fields",
+          "duration": 3.9998950000000093,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "read windows are ordered and bounded, with no arbitrary schema keys",
+          "status": "passed",
+          "title": "read windows are ordered and bounded, with no arbitrary schema keys",
+          "duration": 1.0726509999999791,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629880,
+      "endTime": 1791671629886.0728,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/operations-observations.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "isolates concurrent scopes and nested operations without leaking arbitrary metadata",
+          "status": "passed",
+          "title": "isolates concurrent scopes and nested operations without leaking arbitrary metadata",
+          "duration": 3.670718000000022,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "preserves exact callback result and thrown error and records only failure status",
+          "status": "passed",
+          "title": "preserves exact callback result and thrown error and records only failure status",
+          "duration": 1.1065319999999872,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not let synchronous or asynchronous observer failures change business outcomes",
+          "status": "passed",
+          "title": "does not let synchronous or asynchronous observer failures change business outcomes",
+          "duration": 2.3883089999999925,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671628223,
+      "endTime": 1791671628229.3884,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/performance-observation.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "remaining fact transport boundaries"
+          ],
+          "fullName": "remaining fact transport boundaries authenticates complete ownership and immutable source provenance",
+          "status": "passed",
+          "title": "authenticates complete ownership and immutable source provenance",
+          "duration": 8.202776,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "remaining fact transport boundaries"
+          ],
+          "fullName": "remaining fact transport boundaries rejects malformed responses and bounded oversized bodies without raw error disclosure",
+          "status": "passed",
+          "title": "rejects malformed responses and bounded oversized bodies without raw error disclosure",
+          "duration": 41.654045999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671623948,
+      "endTime": 1791671623997.654,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/remaining-fact-transport.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "bounded exact owner batch SQL"
+          ],
+          "fullName": "bounded exact owner batch SQL uses one session statement and preserves every row including duplicate-looking values",
+          "status": "passed",
+          "title": "uses one session statement and preserves every row including duplicate-looking values",
+          "duration": 6.1922679999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "bounded exact owner batch SQL"
+          ],
+          "fullName": "bounded exact owner batch SQL uses two checkpoint inserts and one exact key anti-join",
+          "status": "passed",
+          "title": "uses two checkpoint inserts and one exact key anti-join",
+          "duration": 1.0588300000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "bounded exact owner batch SQL"
+          ],
+          "fullName": "bounded exact owner batch SQL rejects any missing owner and propagates uniqueness errors",
+          "status": "passed",
+          "title": "rejects any missing owner and propagates uniqueness errors",
+          "duration": 1.682582999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "bounded exact owner batch SQL"
+          ],
+          "fullName": "bounded exact owner batch SQL accepts zero and rejects 101 before SQL",
+          "status": "passed",
+          "title": "accepts zero and rejects 101 before SQL",
+          "duration": 0.5649040000000127,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "batch numeric/member owner resolution"
+          ],
+          "fullName": "batch numeric/member owner resolution selects once and authenticates each missing distinct session only once",
+          "status": "passed",
+          "title": "selects once and authenticates each missing distinct session only once",
+          "duration": 1.0884149999999977,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "batch numeric/member owner resolution"
+          ],
+          "fullName": "batch numeric/member owner resolution does not replace missing or failed authenticated ownership with guessed intervals",
+          "status": "passed",
+          "title": "does not replace missing or failed authenticated ownership with guessed intervals",
+          "duration": 0.694139000000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "batch numeric/member owner resolution"
+          ],
+          "fullName": "batch numeric/member owner resolution keeps the 100 input-row limit even if rows all have the same owner",
+          "status": "passed",
+          "title": "keeps the 100 input-row limit even if rows all have the same owner",
+          "duration": 0.44030499999999506,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671628071,
+      "endTime": 1791671628082.694,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/remaining-owner-batch.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "preserves legacy report dates and optional filters without migration",
+          "status": "passed",
+          "title": "preserves legacy report dates and optional filters without migration",
+          "duration": 4.085162999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "carries all seven typed filters without accepting arbitrary fields",
+          "status": "passed",
+          "title": "carries all seven typed filters without accepting arbitrary fields",
+          "duration": 1.394646999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629718,
+      "endTime": 1791671629723.3945,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/report-definition.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "versioned SEO observation and unknown boundaries"
+          ],
+          "fullName": "versioned SEO observation and unknown boundaries canonical absence is advice; HTTP canonical satisfies the rule; conflicting canonical is review",
+          "status": "passed",
+          "title": "canonical absence is advice; HTTP canonical satisfies the rule; conflicting canonical is review",
+          "duration": 10.35584,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "versioned SEO observation and unknown boundaries"
+          ],
+          "fullName": "versioned SEO observation and unknown boundaries header/meta noindex is observable but may be intentional; presentation is not a ranking promise",
+          "status": "passed",
+          "title": "header/meta noindex is observable but may be intentional; presentation is not a ranking promise",
+          "duration": 1.1384709999999814,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "versioned SEO observation and unknown boundaries"
+          ],
+          "fullName": "versioned SEO observation and unknown boundaries targets original URL, preserves robots unknown and distinguishes fixed/persists",
+          "status": "passed",
+          "title": "targets original URL, preserves robots unknown and distinguishes fixed/persists",
+          "duration": 2.9492270000000076,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "versioned SEO observation and unknown boundaries"
+          ],
+          "fullName": "versioned SEO observation and unknown boundaries 30-page budget and raw HTML boundaries never report page31 fixed",
+          "status": "passed",
+          "title": "30-page budget and raw HTML boundaries never report page31 fixed",
+          "duration": 81.52333700000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "versioned SEO observation and unknown boundaries"
+          ],
+          "fullName": "versioned SEO observation and unknown boundaries rejects cross-origin targets before transport and records transport failures unknown",
+          "status": "passed",
+          "title": "rejects cross-origin targets before transport and records transport failures unknown",
+          "duration": 1.6336979999999812,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GSC local import is not guaranteed provider completeness"
+          ],
+          "fullName": "GSC local import is not guaranteed provider completeness retains PT/final/byPage/query dimensions and only reports local completion",
+          "status": "passed",
+          "title": "retains PT/final/byPage/query dimensions and only reports local completion",
+          "duration": 4.509825000000035,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "GSC local import is not guaranteed provider completeness"
+          ],
+          "fullName": "GSC local import is not guaranteed provider completeness rejects out-of-window dates, duplicate keys, malformed URLs and non-finite metrics before publication",
+          "status": "passed",
+          "title": "rejects out-of-window dates, duplicate keys, malformed URLs and non-finite metrics before publication",
+          "duration": 1.0842190000000187,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671622434,
+      "endTime": 1791671622537.0842,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/seo-gsc-evidence.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "bounds all diagnostic state and never emits correlations or additional event fields",
+          "status": "passed",
+          "title": "bounds all diagnostic state and never emits correlations or additional event fields",
+          "duration": 71.28281600000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "invalid events are rejected without changing valid aggregates or throwing",
+          "status": "passed",
+          "title": "invalid events are rejected without changing valid aggregates or throwing",
+          "duration": 0.4601859999999931,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "real ALS observation emits fixed stage and observer errors never change business result/error",
+          "status": "passed",
+          "title": "real ALS observation emits fixed stage and observer errors never change business result/error",
+          "duration": 1.781060999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "discovers actual relational/numeric/member SQL hooks and keeps serialization uninstrumented",
+          "status": "passed",
+          "title": "discovers actual relational/numeric/member SQL hooks and keeps serialization uninstrumented",
+          "duration": 8.174002999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "adds bounded per-adapter aggregation while preserving original stage totals",
+          "status": "passed",
+          "title": "adds bounded per-adapter aggregation while preserving original stage totals",
+          "duration": 0.6292709999999886,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "observation accepts only fixed adapter labels and strips arbitrary caller metadata",
+          "status": "passed",
+          "title": "observation accepts only fixed adapter labels and strips arbitrary caller metadata",
+          "duration": 0.7787969999999973,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "manifest SQL stage reports configured versus observed without changing older counters",
+          "status": "passed",
+          "title": "manifest SQL stage reports configured versus observed without changing older counters",
+          "duration": 1.1244290000000206,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671622677,
+      "endTime": 1791671622762.1245,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/server-phase-metrics.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "starts only two reads and preserves order despite reverse completion",
+          "status": "passed",
+          "title": "starts only two reads and preserves order despite reverse completion",
+          "duration": 2.2809969999999993,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "waits for the other request before propagating the original failure",
+          "status": "passed",
+          "title": "waits for the other request before propagating the original failure",
+          "duration": 0.9320179999999993,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects larger scopes before reading and accepts an empty scope",
+          "status": "passed",
+          "title": "rejects larger scopes before reading and accepts an empty scope",
+          "duration": 1.417872999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631015,
+      "endTime": 1791671631019.418,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/settled-read-pair.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "explicit site host configuration"
+          ],
+          "fullName": "explicit site host configuration accepts exact registered aliases only within the same public/private registrable domain",
+          "status": "passed",
+          "title": "accepts exact registered aliases only within the same public/private registrable domain",
+          "duration": 2.7693649999999934,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "explicit site host configuration"
+          ],
+          "fullName": "explicit site host configuration preserves primary host semantics and requires exact HTTPS aliases without widening Origin defaults",
+          "status": "passed",
+          "title": "preserves primary host semantics and requires exact HTTPS aliases without widening Origin defaults",
+          "duration": 0.533836000000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631284,
+      "endTime": 1791671631286.7693,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/site-hosts.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "nested compare reuses cumulative SELECT budget and a new operation starts fresh",
+          "status": "passed",
+          "title": "nested compare reuses cumulative SELECT budget and a new operation starts fresh",
+          "duration": 3.3567120000000017,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "counts actual decoded chunks across individually small bodies without partial success",
+          "status": "passed",
+          "title": "counts actual decoded chunks across individually small bodies without partial success",
+          "duration": 17.480165,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "absolute deadline aborts inherited signal and rejects successful late result",
+          "status": "passed",
+          "title": "absolute deadline aborts inherited signal and rejects successful late result",
+          "duration": 2.4390060000000062,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "late pool acquisition releases its connection after operation deadline",
+          "status": "passed",
+          "title": "late pool acquisition releases its connection after operation deadline",
+          "duration": 1.2700189999999907,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "outside stats budget no implicit counters and validates optional limits",
+          "status": "passed",
+          "title": "outside stats budget no implicit counters and validates optional limits",
+          "duration": 0.7281099999999867,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "explicit SELECT response byte accounting includes direct json and never double counts helper reads",
+          "status": "passed",
+          "title": "explicit SELECT response byte accounting includes direct json and never double counts helper reads",
+          "duration": 7.4000230000000045,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "deployment configuration reads only fixed validated settings without leaking their values",
+          "status": "passed",
+          "title": "deployment configuration reads only fixed validated settings without leaking their values",
+          "duration": 0.5879490000000089,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects only explicit nonempty server exception envelopes, including HTTP200 partial data",
+          "status": "passed",
+          "title": "rejects only explicit nonempty server exception envelopes, including HTTP200 partial data",
+          "duration": 0.8660189999999943,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "captures idle pg fatal until end completes and returns a typed failure rather than an unhandled event",
+          "status": "passed",
+          "title": "captures idle pg fatal until end completes and returns a typed failure rather than an unhandled event",
+          "duration": 1.4456140000000062,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not mislabel an originally stricter idle timeout as budget success or failure",
+          "status": "passed",
+          "title": "does not mislabel an originally stricter idle timeout as budget success or failure",
+          "duration": 0.49392699999998513,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671624139,
+      "endTime": 1791671624175.494,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/stats-read-budget.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "capability is client and site scoped, unavailable to arbitrary supplied clients",
+          "status": "passed",
+          "title": "capability is client and site scoped, unavailable to arbitrary supplied clients",
+          "duration": 1.3572919999999868,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "nested scope cleanup restores the parent without granting a different site",
+          "status": "passed",
+          "title": "nested scope cleanup restores the parent without granting a different site",
+          "duration": 0.2353859999999912,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671632193,
+      "endTime": 1791671632194.3572,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/stats-read-client-scope.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "hydrates once for two callback reads on the same client and checks post-commit fences",
+          "status": "failed",
+          "title": "hydrates once for two callback reads on the same client and checks post-commit fences",
+          "duration": 5.15585200000001,
+          "failureMessages": [
+            "TypeError: client.on is not a function\n    at withBudgetedPgClient (/workspace/baize-analytics/src/server/stats-read-budget.ts:38:9)\n    at /workspace/baize-analytics/src/server/stats-read-snapshot.ts:12:105\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at /workspace/baize-analytics/src/server/stats-read-budget.ts:27:60\n    at withStatsReadBudget (/workspace/baize-analytics/src/server/stats-read-budget.ts:27:13)\n    at /workspace/baize-analytics/tests/unit/stats-read-snapshot.test.ts:8:551\n    at async file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+          ],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects a changed deletion epoch after cleanup rather than returning stale comparison",
+          "status": "failed",
+          "title": "rejects a changed deletion epoch after cleanup rather than returning stale comparison",
+          "duration": 5.499831,
+          "failureMessages": [
+            "Error: expected TypeError: client.on is not a function to match object { code: 'aggregate_source_changed' }\n    at _Assertion.__VITEST_REJECTS__ (file:///workspace/baize-analytics/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///workspace/baize-analytics/node_modules/chai/index.js:1607:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///workspace/baize-analytics/node_modules/chai/index.js:1696:22)\n    at /workspace/baize-analytics/tests/unit/stats-read-snapshot.test.ts:9:552\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+          ],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671630023,
+      "endTime": 1791671630033.4998,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/stats-read-snapshot.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "uses an explicit experimental threshold and rejects invalid counts",
+          "status": "passed",
+          "title": "uses an explicit experimental threshold and rejects invalid counts",
+          "duration": 2.0634179999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631951,
+      "endTime": 1791671631953.0635,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/temp-analyze-policy.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "renders fixed zh-CN consent and removes banner before grant or revoke",
+          "status": "passed",
+          "title": "renders fixed zh-CN consent and removes banner before grant or revoke",
+          "duration": 2.382281000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "renders fixed en consent and removes banner before grant or revoke",
+          "status": "passed",
+          "title": "renders fixed en consent and removes banner before grant or revoke",
+          "duration": 0.3625279999999975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631822,
+      "endTime": 1791671631825.3625,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/tracker-consent-banner.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "heatmap honors ignored, private, masked and editable ancestors before emission",
+          "status": "passed",
+          "title": "heatmap honors ignored, private, masked and editable ancestors before emission",
+          "duration": 6.12913300000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629339,
+      "endTime": 1791671629345.1292,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/tracker-heatmap-exclusions.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "optional consent installation"
+          ],
+          "fullName": "optional consent installation preserves ordinary single-script async installation",
+          "status": "passed",
+          "title": "preserves ordinary single-script async installation",
+          "duration": 1.497462999999982,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "optional consent installation"
+          ],
+          "fullName": "optional consent installation uses two ordered deferred scripts without async for optional consent",
+          "status": "passed",
+          "title": "uses two ordered deferred scripts without async for optional consent",
+          "duration": 0.86627900000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "optional consent installation"
+          ],
+          "fullName": "optional consent installation escapes HTML attributes and limits banner language to supported fixed strings",
+          "status": "passed",
+          "title": "escapes HTML attributes and limits banner language to supported fixed strings",
+          "duration": 0.37224299999999744,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631689,
+      "endTime": 1791671631692.3723,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/tracker-installation.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "independent tracker protocol"
+          ],
+          "fullName": "independent tracker protocol uses UUIDv7 timestamp and variant with unique random bits",
+          "status": "passed",
+          "title": "uses UUIDv7 timestamp and variant with unique random bits",
+          "duration": 5.184804999999983,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "independent tracker protocol"
+          ],
+          "fullName": "independent tracker protocol keeps boolean properties and caps at twenty",
+          "status": "passed",
+          "title": "keeps boolean properties and caps at twenty",
+          "duration": 1.2462830000000054,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "independent tracker protocol"
+          ],
+          "fullName": "independent tracker protocol does not queue mini-program events before consent and retains ids after failure",
+          "status": "passed",
+          "title": "does not queue mini-program events before consent and retains ids after failure",
+          "duration": 0.8743509999999901,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "replay removes attributes, text and sensitive query metadata recursively",
+          "status": "passed",
+          "title": "replay removes attributes, text and sensitive query metadata recursively",
+          "duration": 1.819739999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "mini SDK normalizes routes, preserves repeated grant and can disable stable IDs",
+          "status": "passed",
+          "title": "mini SDK normalizes routes, preserves repeated grant and can disable stable IDs",
+          "duration": 0.5315939999999841,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "daily mini-program identify does not allocate identifiers or expose stable properties",
+          "status": "passed",
+          "title": "daily mini-program identify does not allocate identifiers or expose stable properties",
+          "duration": 0.9872620000000154,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "shared daily privacy rules cover normalized identifiers while preserving analytical values",
+          "status": "passed",
+          "title": "shared daily privacy rules cover normalized identifiers while preserving analytical values",
+          "duration": 0.28028399999999465,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "mini transport synchronous failure preserves immutable retry and releases busy state",
+          "status": "passed",
+          "title": "mini transport synchronous failure preserves immutable retry and releases busy state",
+          "duration": 0.49776299999999196,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "cookie domain syntax gate allows only explicit parent DNS scopes and rejects unrelated hosts and IPs",
+          "status": "passed",
+          "title": "cookie domain syntax gate allows only explicit parent DNS scopes and rejects unrelated hosts and IPs",
+          "duration": 0.6795570000000168,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671627258,
+      "endTime": 1791671627269.6794,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/tracker.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "untrusted dictionary keys and public error localization"
+          ],
+          "fullName": "untrusted dictionary keys and public error localization does not resolve inherited constructor values",
+          "status": "passed",
+          "title": "does not resolve inherited constructor values",
+          "duration": 1.8179580000000044,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "untrusted dictionary keys and public error localization"
+          ],
+          "fullName": "untrusted dictionary keys and public error localization does not resolve inherited toString values",
+          "status": "passed",
+          "title": "does not resolve inherited toString values",
+          "duration": 0.28041399999997907,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "untrusted dictionary keys and public error localization"
+          ],
+          "fullName": "untrusted dictionary keys and public error localization does not resolve inherited __proto__ values",
+          "status": "passed",
+          "title": "does not resolve inherited __proto__ values",
+          "duration": 0.25261199999999917,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "untrusted dictionary keys and public error localization"
+          ],
+          "fullName": "untrusted dictionary keys and public error localization uses fixed messages in both languages and preserves HTTP status",
+          "status": "passed",
+          "title": "uses fixed messages in both languages and preserves HTTP status",
+          "duration": 0.31134099999999876,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671631429,
+      "endTime": 1791671631431.3113,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/web-errors.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "overview evidence semantics"
+          ],
+          "fullName": "overview evidence semantics formats site-local ranges without inventing unknown timestamps, including date boundaries and DST",
+          "status": "passed",
+          "title": "formats site-local ranges without inventing unknown timestamps, including date boundaries and DST",
+          "duration": 13.520872999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "overview evidence semantics"
+          ],
+          "fullName": "overview evidence semantics only displays zero for complete coverage, preserves unknown and uses explicit percentage units",
+          "status": "passed",
+          "title": "only displays zero for complete coverage, preserves unknown and uses explicit percentage units",
+          "duration": 3.1604360000000042,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "overview evidence semantics"
+          ],
+          "fullName": "overview evidence semantics suppresses changes for missing/zero baselines, partial scopes, unsupported UV and incomplete today",
+          "status": "passed",
+          "title": "suppresses changes for missing/zero baselines, partial scopes, unsupported UV and incomplete today",
+          "duration": 0.32593299999999203,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "overview evidence semantics"
+          ],
+          "fullName": "overview evidence semantics separates future, partial, filtered no-match and covered real zero without inferring installation",
+          "status": "passed",
+          "title": "separates future, partial, filtered no-match and covered real zero without inferring installation",
+          "duration": 0.22949700000000917,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671626399,
+      "endTime": 1791671626416.326,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/web-overview-state.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "responsive presentation safeguards"
+          ],
+          "fullName": "responsive presentation safeguards fixed small product labels meet WCAG AA on their declared backgrounds",
+          "status": "passed",
+          "title": "fixed small product labels meet WCAG AA on their declared backgrounds",
+          "duration": 2.7783279999999877,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "responsive presentation safeguards"
+          ],
+          "fullName": "responsive presentation safeguards resizes charts on container changes and releases every observer/listener",
+          "status": "passed",
+          "title": "resizes charts on container changes and releases every observer/listener",
+          "duration": 2.711817999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629098,
+      "endTime": 1791671629103.712,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/web-responsive.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "labels only explicit storage sources without inferring authority or resolving inherited keys",
+          "status": "passed",
+          "title": "labels only explicit storage sources without inferring authority or resolving inherited keys",
+          "duration": 1.9199710000000039,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671632321,
+      "endTime": 1791671632322.92,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/web-storage-evidence.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "workspace navigation URL contract"
+          ],
+          "fullName": "workspace navigation URL contract maps all 38 existing views exactly once, including pinned overview and realtime",
+          "status": "passed",
+          "title": "maps all 38 existing views exactly once, including pinned overview and realtime",
+          "duration": 2.3999670000000037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "workspace navigation URL contract"
+          ],
+          "fullName": "workspace navigation URL contract round trips site, report, civil dates and all seven real filter dimensions",
+          "status": "passed",
+          "title": "round trips site, report, civil dates and all seven real filter dimensions",
+          "duration": 1.5664770000000203,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "workspace navigation URL contract"
+          ],
+          "fullName": "workspace navigation URL contract never serializes unknown query keys, private questions, credentials or inherited filters",
+          "status": "passed",
+          "title": "never serializes unknown query keys, private questions, credentials or inherited filters",
+          "duration": 0.4046310000000233,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "workspace navigation URL contract"
+          ],
+          "fullName": "workspace navigation URL contract rejects malformed site/report/date and unordered periods without inventing timestamps",
+          "status": "passed",
+          "title": "rejects malformed site/report/date and unordered periods without inventing timestamps",
+          "duration": 0.7686709999999835,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "workspace navigation URL contract"
+          ],
+          "fullName": "workspace navigation URL contract bounds individual filters and rejects controls while retaining safe user values as text",
+          "status": "passed",
+          "title": "bounds individual filters and rejects controls while retaining safe user values as text",
+          "duration": 0.3025169999999946,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1791671629523,
+      "endTime": 1791671629528.7686,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/baize-analytics/tests/unit/workspace-route.test.ts"
+    }
+  ]
+}

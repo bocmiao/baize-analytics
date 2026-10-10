@@ -75,3 +75,7 @@ c890be3c2a458d9a7934cd1d8133fbe3ec2032bd完整本地runner实际EXIT1/cleanup：
 安全summary/manifest/native/index/probe/notices/HTTP/cleanup证据 `test-evidence/main-1c1cb65-image-*`；不复制state、env/keys或raw services。旧FAIL保留，旧f4未变化故障矩阵单列不重数。托管未运行；root同源固定负载另行记录，镜像通过不能代替性能达标。
 
 bd3f51fc1f7dba84a1fdbde75edfcdbecfcf24e8完整本地runner实际EXIT1/cleanup。213单元PASS；424集成423PASS/0断言失败/1skip，另有uncaught PG FATAL25P04（idle transaction终止）使实际失败，不能以JSON success=true或0断言失败记全绿。strict-identity-restore因runner缺BAIZE_OPS_POSTGRES_CONTAINER跳过；浏览器/image未跑。lint/types/SDK/build已过。安全原report结构（client/credential脱敏）、原loghash及实际summary在 `test-evidence/main-bd3f51f-*`，不复制serialized PGclient或service原始日志；旧FAIL保留。下一tempfullrunner使用原validate-local-final.sh明确ownPGcontainer变量，不改产品skip条件。
+
+0a0c171fc17e647fecf38dd55d4bc8e0f0144fbb正式全轮实际EXIT2/owned cleanup。lint通过，typecheck在stats-read-budget.test.ts13/14因EventEmitter value/type TS2749失败；unit/integration/browser/image均未运行，不把此前19定向或10单元计作本全轮。1191blob归属、实际命令/失败日志/原hash见 `test-evidence/main-0a0c171-*`。root下一test-only InstanceType修复尚需新冻结验证，原源码失败不改写；服务原始日志/秘密未复制。
+
+0a之后test-type修复WIP首轮完整单元实际EXIT1：215中213PASS/2FAIL，snapshot fake PGclient缺.on事件接口；type/lint通过。sourceCommit=null，基于0a并有未提交测试修复，不能冒某提交完整验收。reporter与summary `test-evidence/idle-testtype-unit-first-failed*` 保存，后续test-only EventEmitter mock修复第二轮尚在跑，不预称通过。
