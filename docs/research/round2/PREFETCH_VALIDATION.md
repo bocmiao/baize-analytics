@@ -32,3 +32,8 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 仅将 044 source 每批最多100个已认证 envelope 的 identity 和 target 两次写入合为一个 MATERIALIZED CTE，JSON 只序列化一次。identity 保留 ON CONFLICT 去重；target 直接读取完整 envelope，不依赖去重后的 RETURNING，故同 event 的多条 effect 不丢失。真实205条同 event 不同 key、跨3批身份冲突与旧 PG contribution 精确对账；身份区间过滤、零 kind、缺正文、source/repair fence 和事务清理保持。101行单元拒绝并清理 TEMP。HTTP 正文 EOF、原请求限额、哈希/HMAC 和精确统计均未更改。
 
 本片尚无同口径负载实测，不宣称性能收益或 SLO 达标；0c3ca6a 的5000失败及其他原始结果保持不变。
+
+
+## 33e005a 实际1000 PASS（5000 pending）
+
+[原JSON](../../test-evidence/main-33e005a-independent-strict-1000.json)、[解释](../../test-evidence/main-33e005a-independent-summary.md)。981blobs/sourcecleanup通过，六strict断言通过。HTTPfacts CH/auth/TEMP均1103，证明每批1PGcommand而旧2；不等于性能达标。finalHTTP7.143s vs旧7.625s仅共享主机两单轮，样本/时段有别不能因果或SLO结论。drainP956.297s；5000等待实际结束。
