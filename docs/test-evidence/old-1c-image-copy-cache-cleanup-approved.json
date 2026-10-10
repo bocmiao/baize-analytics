@@ -1,0 +1,33 @@
+{
+  "imageRemove": {
+    "id": "sha256:a5d495d6cc78a419963dc43a0aa8549577ede1876c39d8b32377f38966c21c1b",
+    "exit": 0,
+    "stdout": "Deleted: sha256:a5d495d6cc78a419963dc43a0aa8549577ede1876c39d8b32377f38966c21c1b\n",
+    "stderr": ""
+  },
+  "dfBefore": "Filesystem       1B-blocks        Used  Available Use% Mounted on\noverlay        33770192896 28475940864 3559489536  89% /workspace\n",
+  "cacheAfterImage": [
+    {
+      "CreatedAt": "2026-10-10 22:05:59.146646231 +0000 UTC",
+      "Description": "[stage-1 4/4] COPY --from=build /app /app",
+      "ID": "pqowjngkka2cyiczq0g0716vc",
+      "LastUsedAt": "48 minutes ago",
+      "Mutable": false,
+      "Parents": [
+        "fxuhtgmixe9cxmx735hfwoods"
+      ],
+      "Reclaimable": true,
+      "Shared": false,
+      "Size": "307.1MB",
+      "Type": "regular",
+      "UsageCount": 1
+    }
+  ],
+  "prune": {
+    "id": "pqowjngkka2cyiczq0g0716vc",
+    "exit": 0,
+    "stdout": "ID:\t\tpqowjngkka2cyiczq0g0716vc\nParent:\t\tfxuhtgmixe9cxmx735hfwoods\nCreated at:\t2026-10-10 22:05:59.146646231 +0000 UTC\nMutable:\tfalse\nReclaimable:\ttrue\nShared:\t\tfalse\nSize:\t\t307.1MB\nDescription:\t[stage-1 4/4] COPY --from=build /app /app\nUsage count:\t1\nLast used:\t48 minutes ago\n\nTotal:\t307.1MB\n",
+    "stderr": ""
+  },
+  "dfAfter": "Filesystem       1B-blocks        Used  Available Use% Mounted on\noverlay        33770192896 27869478912 4165951488  87% /workspace\n"
+}

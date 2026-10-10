@@ -1,0 +1,4 @@
+import {it,expect} from 'vitest';
+import {needsFactIdentityWrite} from '../../src/server/fact-store-source';
+it('omits the identity write only for both actual complete kinds of the same captured run',()=>{expect(needsFactIdentityWrite([{kind:'effects',state:'complete'},{kind:'vitals',state:'complete'}])).toBe(false);expect(needsFactIdentityWrite([{kind:'vitals',state:'complete'},{kind:'effects',state:'complete'}])).toBe(false);});
+it('keeps unfiltered identity provenance for every PG or mixed/incomplete fallback',()=>{for(const markers of [[],[{kind:'effects',state:'complete'}],[{kind:'vitals',state:'complete'}],[{kind:'effects',state:'complete'},{kind:'vitals',state:'staging'}],[{kind:'effects',state:'staging'},{kind:'vitals',state:'complete'}],[{kind:'other',state:'complete'}]])expect(needsFactIdentityWrite(markers)).toBe(true);});

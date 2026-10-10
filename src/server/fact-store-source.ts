@@ -10,6 +10,8 @@ import {bindFactReadRelations,hasFactReadSource,factReadRelations} from './fact-
 
 export interface FactReadSource {source:'postgres'|'clickhouse'|'hybrid';effectsRelation:string;vitalsRelation:string;cleanup:()=>Promise<void>}
 export interface FactSourceOptions {forRebuild?:boolean;forAuthorityTransition?:boolean;cutoverRepair?:CutoverPrivacyRepairToken}
+/** Same-run metadata only: a legacy PG vital still needs unfiltered authenticated identity provenance. */
+export function needsFactIdentityWrite(markers:readonly {kind:string;state:string}[]){return !(['effects','vitals'] as const).every(kind=>markers.some(marker=>marker.kind===kind&&marker.state==='complete'));}
 export async function assertFactReadSourceFence(client:PoolClient,siteId:string,options:FactSourceOptions={}){
  const head=(await client.query(`SELECT r.id,r.source_authority,c.authority,r.epoch=a.epoch AS epoch_matches,a.generation>a.processed_generation AS dirty,${factAuthorityMatches} AS authority_matches,(r.source_authority='clickhouse' AND c.authority='clickhouse' AND r.canonical_epoch=c.epoch AND r.canonical_deletion_epoch<c.deletion_epoch) AS deletion_advanced FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id LEFT JOIN canonical_event_authority c ON c.site_id=r.site_id WHERE r.site_id=$1 AND r.query_version=2 AND r.status='published' ORDER BY r.generation DESC,r.created_at DESC LIMIT 1`,[siteId])).rows[0];
  let transitionInput=false;
@@ -44,9 +46,9 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
  try{
   await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT r.id FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selectedRuns} ORDER BY r.id`,[siteId]);opened=true;
   while(true){const runs=(await client.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!runs.length)break;
-   for(const run of runs)for(const kind of['effects','vitals'] as const){
+   for(const run of runs){const markers=(await client.query('SELECT kind,state FROM analytics_fact_store_runs WHERE site_id=$1 AND run_id=$2',[siteId,run.id])).rows as {kind:string;state:string}[];const writeIdentity=needsFactIdentityWrite(markers);for(const kind of['effects','vitals'] as const){
     const target=kind==='effects'?effects:vitals,base=kind==='effects'?effectsBase:vitalsBase;
-    const marker=(await client.query('SELECT state FROM analytics_fact_store_runs WHERE site_id=$1 AND run_id=$2 AND kind=$3',[siteId,run.id,kind])).rows[0];
+    const marker=markers.find(marker=>marker.kind===kind);
     if(marker&&marker.state!=='complete')throw Error('FACT_STORE_KIND_INCOMPLETE');
     const migrated=Boolean(marker);
     if(!migrated){if(strict)throw Error('FACT_STORE_SOURCE_NOT_MIGRATED');hasPG=true;
@@ -65,14 +67,16 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
      for(const record of records)if(record.kind!==kind||record.row.run_id!==run.id||!record.visitorId||!record.sessionId)throw Error('FACT_STORE_RECORD_SCOPE');
      if(!records.length)continue;
      const columns=kind==='effects'?'run_id uuid,event_id uuid,event_ts timestamptz,session_id uuid,visitor_id text,event_path text,dimensions jsonb,metric text,key jsonb,value double precision,member boolean':'run_id uuid,event_id uuid,event_ts timestamptz,event_path text,dimensions jsonb,metric text,value double precision';
+     // Legacy PG vitals require the original identity write. Complete CH kinds
+     // consume authenticated envelope identity directly, so no identity index write is needed.
      // Both writes consume the same authenticated <=100-row batch. The target
      // uses envelope identity, not newly inserted rows, so conflict dedupe cannot
      // drop multiple effects/vitals belonging to one event. Full authentication
      // above retains the original envelope; SQL consumes only row and visitorId.
-     await measurePerformanceStage('temp_fill',()=>client.query(`WITH envelopes AS MATERIALIZED (SELECT * FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text)), identity_write AS (INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM envelopes envelope ON CONFLICT DO NOTHING RETURNING run_id) INSERT INTO ${target} SELECT r.* FROM envelopes envelope CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records.map(({row,visitorId})=>({row,visitorId})))]),{adapter:'facts'});
+     await measurePerformanceStage('temp_fill',()=>client.query(`WITH envelopes AS MATERIALIZED (SELECT * FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text))${writeIdentity?`, identity_write AS (INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM envelopes envelope ON CONFLICT DO NOTHING RETURNING run_id)`:''} INSERT INTO ${target} SELECT r.* FROM envelopes envelope CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records.map(({row,visitorId})=>({row,visitorId})))]),{adapter:'facts'});
 
     }
-   }
+   }}
   }
   await client.query(`CLOSE ${cursor}`);opened=false;
   return {source:hasCH?(hasPG?'hybrid':'clickhouse'):'postgres',effectsRelation:`pg_temp.${effects}`,vitalsRelation:`pg_temp.${vitals}`,cleanup};
