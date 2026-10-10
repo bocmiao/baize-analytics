@@ -1,3 +1,4 @@
+import {configureClickHouseSelect} from './clickhouse-select-budget.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {readObservedClickHouseBody} from './clickhouse-observed-body.js';
 import {consumeClickHouseCommand} from './clickhouse-command-response.js';
@@ -34,19 +35,20 @@ export async function lockSessionHeaders(client:PoolClient,siteId:string){await 
 
 export class ClickHouseSessionHeaderStore {
  constructor(private readonly config:ClickHouseStoreConfig){}
- private async request(query:string,params:Record<string,string>={},body?:string){
+ private async request(query:string,params:Record<string,string>={},body?:string,operation?:'select'){
   const url=new URL(this.config.url);if(!['http:','https:'].includes(url.protocol)||url.username||url.password)throw Error('SESSION_HEADER_ENDPOINT_INVALID');
-  url.searchParams.set('query',query);for(const [key,value]of Object.entries(params))url.searchParams.set('param_'+key,value);
+  url.searchParams.set('query',query);if(operation==='select')configureClickHouseSelect(url,this.config.timeoutMs??30000);for(const [key,value]of Object.entries(params))url.searchParams.set('param_'+key,value);
   const response=await(this.config.fetch??fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:AbortSignal.timeout(this.config.timeoutMs??30000)});
   if(!response.ok){await response.body?.cancel();throw Error('SESSION_HEADER_CH_UNAVAILABLE');}return response;
  }
+ private selectRequest(query:string,params:Record<string,string>={}){return this.request(query,params,undefined,'select');}
  private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'SESSION_HEADER_CH_UNAVAILABLE');},{batches:1,adapter:'session_headers'});}
  private async rows(query:string,params:Record<string,string>={}){
-  const text=await readObservedClickHouseBody(()=>this.request(query+' FORMAT JSON',params),16*1024*1024,'SESSION_HEADER_CH_UNAVAILABLE','SESSION_HEADER_READ_LIMIT','session_headers');
+  const text=await readObservedClickHouseBody(()=>this.selectRequest(query+' FORMAT JSON',params),16*1024*1024,'SESSION_HEADER_CH_UNAVAILABLE','SESSION_HEADER_READ_LIMIT','session_headers');
   return (JSON.parse(text) as {data:{body:string;body_hash:string;event_id:string}[]}).data;
  }
  async assertEmptyRun(siteId:string,runId:string){
-  const response=await this.request('SELECT count() n FROM baize_session_headers_v1 WHERE site_id={site:String} AND run_id={run:UUID} FORMAT JSON',{site:siteId,run:runId});
+  const response=await this.selectRequest('SELECT count() n FROM baize_session_headers_v1 WHERE site_id={site:String} AND run_id={run:UUID} FORMAT JSON',{site:siteId,run:runId});
   if(Number((await response.json() as {data:{n:string}[]}).data[0]?.n)!==0)throw Error('SESSION_HEADER_TARGET_NOT_EMPTY');
  }
  async initialize(){await this.command("CREATE TABLE IF NOT EXISTS baize_session_headers_v1(site_id String,run_id UUID,attempt_id UUID,event_id UUID,visitor_id String,event_ts DateTime64(3,'UTC'),session_id UUID,body String,body_hash String) ENGINE=MergeTree PARTITION BY toDate(event_ts) ORDER BY(site_id,run_id,attempt_id,event_ts,event_id)");}
@@ -152,7 +154,7 @@ export class ClickHouseSessionHeaderStore {
   if(segments.length>1000||segments.some(segment=>!segment.visitorId))throw Error('SESSION_HEADER_DELETE_SCOPE');await lockSessionHeaders(client,siteId);
   for(const segment of segments){const params:Record<string,string>={site:siteId,visitor:segment.visitorId},clauses=['site_id={site:String}','visitor_id={visitor:String}'];if(segment.from){params.from=time(segment.from).replace('T',' ').replace('Z','');clauses.push("event_ts>={from:DateTime64(3,'UTC')}");}if(segment.to){params.to=time(segment.to).replace('T',' ').replace('Z','');clauses.push("event_ts<{to:DateTime64(3,'UTC')}");}const where=clauses.join(' AND ');
    await this.command('ALTER TABLE baize_session_headers_v1 DELETE WHERE '+where+' SETTINGS mutations_sync=2',params);
-   const response=await this.request('SELECT count() n FROM baize_session_headers_v1 WHERE '+where+' FORMAT JSON',params);if(Number((await response.json() as {data:{n:string}[]}).data[0]?.n)!==0)throw Error('SESSION_HEADER_DELETE_NOT_ACKNOWLEDGED');
+   const response=await this.selectRequest('SELECT count() n FROM baize_session_headers_v1 WHERE '+where+' FORMAT JSON',params);if(Number((await response.json() as {data:{n:string}[]}).data[0]?.n)!==0)throw Error('SESSION_HEADER_DELETE_NOT_ACKNOWLEDGED');
    await client.query('DELETE FROM analytics_header_members m USING analytics_fact_runs r WHERE r.id=m.run_id AND r.site_id=$1 AND m.visitor_id=$2 AND ($3::timestamptz IS NULL OR m.event_ts>=$3) AND ($4::timestamptz IS NULL OR m.event_ts<$4)',[siteId,segment.visitorId,segment.from??null,segment.to??null]);
   }await client.query('UPDATE analytics_header_runs h SET row_count=(SELECT count(*) FROM analytics_header_members m WHERE m.run_id=h.run_id) WHERE h.site_id=$1',[siteId]);return {physicalAck:true};
  }
@@ -173,7 +175,7 @@ export class ClickHouseSessionHeaderStore {
    const params={site:siteId,attempts:'['+orphan.map(id=>"'"+id+"'").join(',')+']'};
    const where='site_id={site:String} AND attempt_id IN {attempts:Array(UUID)}';
    await this.command('ALTER TABLE baize_session_headers_v1 DELETE WHERE '+where+' SETTINGS mutations_sync=2',params);
-   const response=await this.request('SELECT count() n FROM baize_session_headers_v1 WHERE '+where+' FORMAT JSON',params);
+   const response=await this.selectRequest('SELECT count() n FROM baize_session_headers_v1 WHERE '+where+' FORMAT JSON',params);
    if(Number((await response.json() as {data:{n:string}[]}).data[0]?.n)!==0)throw Error('SESSION_HEADER_ORPHAN_NOT_ACKNOWLEDGED');
   }
   const next=candidates.length>1000?selected[999]!:null;
