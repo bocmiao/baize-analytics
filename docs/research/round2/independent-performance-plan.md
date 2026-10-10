@@ -43,3 +43,10 @@ bootstrap 现向实际 createApp 传入同步有界 `serverPhases.sink`，消费
 新调度器让独立单在途10秒查询定时器在intake和drain持续工作（probe await不会阻塞定时器），没有请求补偿队列；忙时明确querySkippedBusy。每个query sample记录发出时所属窗口，分别给sample count/P95、各窗口相对起止时刻。drain deadline后不再开始新的查询，越过deadline才完成的probe不算drainReached；已在途查询等待结束后才运行fresh final。final assertion总时长独立记录，bootstrap metadata另记录实际fresh final HTTP时长，不混入周期查询P95。
 
 新增2个纯fake-monotonic-clock调度测试：drain中确实继续查询、单在途/无残留定时器，以及晚到drain probe不能把deadline算成通过。组合 **10 PASS**：`/tmp/baize-independent-drain-deadline-unit.json`。尚未执行这次窗口修复的任何负载；父代理后续不可变测量才是实际性能证据。
+
+
+## 固定适配器阶段标签（轻量工程证据）
+
+原 operation/stage 聚合保持不变，另加 canonical、facts、session_headers、remaining、cache、mirror、other 七个固定标签的独立汇总，上限 7×8×4=224 组。仅为已有 transport/authentication/TEMP 计时传入字面标签；无额外请求、正文读取、SQL或身份字段。传输仍测正常完整 EOF，不能以头响应代替正文完成；嵌套并行时长仍不能当 CPU 或墙钟比例。
+
+三个文件单元组合 13 PASS/0 FAIL：`/tmp/baize-adapter-performance-unit-final.json`，包括固定空间标签验证及 15ms 正常 EOF 单次读取测试。owned ESLint EXIT0、全仓 typecheck EXIT0（`/tmp/baize-adapter-performance-lint-final.log`、`/tmp/baize-adapter-performance-types-final.log`）。首次 typecheck 误插错误构造器参数的失败保留于 `/tmp/baize-adapter-performance-types-first.log`；已恢复原错误语义。没有启动 DB、浏览器、构建或负载；每适配器真实性能结论需后续不可变测量，旧 JSON 和 continuous 脚本未改。

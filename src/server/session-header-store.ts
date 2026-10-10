@@ -40,9 +40,9 @@ export class ClickHouseSessionHeaderStore {
   const response=await(this.config.fetch??fetch)(url,{method:'POST',headers:{'X-ClickHouse-User':this.config.username,'X-ClickHouse-Key':this.config.password},body,signal:AbortSignal.timeout(this.config.timeoutMs??30000)});
   if(!response.ok){await response.body?.cancel();throw Error('SESSION_HEADER_CH_UNAVAILABLE');}return response;
  }
- private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'SESSION_HEADER_CH_UNAVAILABLE');},{batches:1});}
+ private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'SESSION_HEADER_CH_UNAVAILABLE');},{batches:1,adapter:'session_headers'});}
  private async rows(query:string,params:Record<string,string>={}){
-  const text=await readObservedClickHouseBody(()=>this.request(query+' FORMAT JSON',params),16*1024*1024,'SESSION_HEADER_CH_UNAVAILABLE','SESSION_HEADER_READ_LIMIT');
+  const text=await readObservedClickHouseBody(()=>this.request(query+' FORMAT JSON',params),16*1024*1024,'SESSION_HEADER_CH_UNAVAILABLE','SESSION_HEADER_READ_LIMIT','session_headers');
   return (JSON.parse(text) as {data:{body:string;body_hash:string;event_id:string}[]}).data;
  }
  async assertEmptyRun(siteId:string,runId:string){
@@ -143,9 +143,9 @@ export class ClickHouseSessionHeaderStore {
    for(const row of uploaded){const receipt=allowed.get(row.event_id);if(!receipt)continue;if(found.has(row.event_id)||digest(row.body)!==row.body_hash||row.body_hash!==receipt.body_hash)throw Error('SESSION_HEADER_BODY_UNAVAILABLE');found.add(row.event_id);
     const header=JSON.parse(row.body) as SessionEventHeaderRecord;if(sessionHeaderBody(header)!==row.body)throw Error('SESSION_HEADER_RECORD_SHAPE');if(header.run_id!==runId||header.event_id.toLowerCase()!==row.event_id||header.visitor_id!==receipt.visitor_id||header.session_id!==receipt.session_id||time(header.event_ts)!==time(receipt.event_ts))throw Error('SESSION_HEADER_BODY_UNAVAILABLE');
     if(options.sessionId&&header.session_id!==options.sessionId||options.from&&+new Date(header.event_ts)<+new Date(options.from)||options.to&&+new Date(header.event_ts)>=+new Date(options.to))continue;
-    result.push(header);if(result.length===100){await measurePerformanceStage('authentication',()=>verifySessionEventHeaderRecords(client,siteId,result),{rows:result.length});yield result;result=[];}
+    result.push(header);if(result.length===100){await measurePerformanceStage('authentication',()=>verifySessionEventHeaderRecords(client,siteId,result),{rows:result.length,adapter:'session_headers'});yield result;result=[];}
    }
-   if(found.size!==members.length)throw Error('SESSION_HEADER_BODY_UNAVAILABLE');if(result.length){await measurePerformanceStage('authentication',()=>verifySessionEventHeaderRecords(client,siteId,result),{rows:result.length});yield result;}
+   if(found.size!==members.length)throw Error('SESSION_HEADER_BODY_UNAVAILABLE');if(result.length){await measurePerformanceStage('authentication',()=>verifySessionEventHeaderRecords(client,siteId,result),{rows:result.length,adapter:'session_headers'});yield result;}
   }}finally{await client.query(`CLOSE ${cursor}`);}
  }
  async eraseSegments(client:PoolClient,siteId:string,segments:HeaderSegment[]){

@@ -15,3 +15,7 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 516ce9d四浏览器专项2PASS/2FAIL（总览和SEO截图通过）。AI附加截图受到真实预算429保护；时区更新后旧事实受到503保护，background:false fixture未重算。窄修只配置模拟模型测试站点预算及真实worker重算，不削产品guard；旧失败保留 main-516ce9d-four-browser-failed.json。
 
 比较期读取复用专项：新增同一站点事务共享已认证事实SQL TEMP，严格等长当前/上一窗口与相同path过滤各自计算；只normalized比较，legacy与单范围保持原行为。真实HTTP route/PG/CH1项+2单元通过，max1无借池等待；删除epoch变化与物理丢失正文仍拒绝。该定向结果不加到ef55e12全轮568计数；不声称普通查询提速。证据comparison-shared-snapshot-real.json。
+
+2bf840d 最新整套浏览器30/30 PASS（28真实Chromium+2日期），97.83秒、0 skip，EXIT0。包含预算429不增加provider调用、模拟fixture预算明确调整后真实1PV/0÷1图表、时区修改后真实worker重算，再完成原备注/诊断/权限断言。owned Compose清理验证。证据main-2bf840d-browser.json。
+
+实际图像复核发现AI调用记录仍早于问数，本次下一切片进一步前置问数、后置技术记录；存储固定枚举计时标签也在下一冻结，均尚未被2bf浏览器或ef全轮覆盖。观察标签轻量13单位通过、types/lint通过；首次类型参数错误保留，不改变EOF/SQL/超时/池行为。
