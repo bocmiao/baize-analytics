@@ -55,3 +55,7 @@ root实际唯一串行镜像runner EXIT0。新镜像 `sha256:760e1bb3c1ce31da32f
 安全摘要及manifest/native/notices/index/cleanup证据见 `test-evidence/main-19d97af-image-*`；不复制state/env/密钥或原始service日志。旧f4基础升级/故障回滚矩阵EXIT0单独沿用，未在本轮无限重跑，也不把旧FAIL抹掉。托管CI/同步未执行。
 
 ac86cd322ef3d89d791c62f3c50cfc269cf66755完整浏览器套件实际EXIT0：30检查=28真实Chromium+2日期全PASS/0FAIL/0skip，fresh本地Compose/build/migrate/compiled入口及cleanup。原始reporter与日志见 `test-evidence/main-ac86cd3-browser-*`。此为浏览器范围，不能继承19d97af的191/404单元集成计数，ac新镜像未执行；新预算/标记仍待最终冻结。Google/模型transport模拟，托管未触发，旧FAIL保留。
+
+## de7222e 预算联合全轮（失败保留）
+
+完整不可变 `de7222edfd6baa7478a4e32e22f6b5399fc34daf` 本地全轮实际EXIT1，owned Compose cleanup完成。54文件209单元PASS/0FAIL/0skip；154集成文件153PASS/1FAIL，417检查415PASS/2FAIL/0skip，两失败均CH stats source回归。浏览器与新镜像**未运行**，不能记新预算完整回归通过。原始unit/integration JSON、1112tracked blob源码归属、source摘要及原日志hash保存在 `test-evidence/main-de7222e-*`；不复制raw service/密钥内容，旧FAIL均保留。C/A窄修另在新源码验收，不改写本冻结失败。
