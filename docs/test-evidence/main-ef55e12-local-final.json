@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "ef55e12ce545dfc8c12e0ec09da2dd4bae00b850",
+  "exit": 0,
+  "unit": 168,
+  "integration": 400,
+  "failed": 0,
+  "skipped": 0,
+  "browserChecks": 29,
+  "realChromium": 27,
+  "dateFunctionChecks": 2,
+  "ownedComposeCleanupVerified": true,
+  "lint": "passed",
+  "typecheck": "passed",
+  "build": "passed",
+  "sdk": "passed",
+  "compiledApp": "passed",
+  "hostedCi": "not run",
+  "evidencePath": "/tmp/baize-final-local.snjT0F"
+}
