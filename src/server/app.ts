@@ -10,6 +10,7 @@ import {registerIntakeStatus} from './intake-status.js';
 import {registerBotObservations} from './bot-observations.js';
 import {registerSelfHostDiagnostics} from './self-host-diagnostics.js';
 import {registerSiteAnnotations} from './site-annotations.js';
+import {withPerformanceObservation,type PerformanceSink} from './performance-observation.js';
 import {registerCanonicalOperations} from './canonical-routes.js';
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
@@ -53,7 +54,7 @@ import {ClickHouseMirror,registerClickHouseRoutes} from './clickhouse-mirror.js'
 import {EventStore,installEventStore} from './event-store.js';
 import {ExternalError} from './external-errors.js';
 import {resolveApiError} from '../shared/error-codes.js';
-export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport }
+export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport;performanceSink?:PerformanceSink }
 export async function createApp(options:AppOptions={}){
   const pool=options.pool??createPool();const dataDir=resolve(options.dataDir??process.env.DATA_DIR??'data');
   const redis=options.redis!==undefined?options.redis:process.env.REDIS_URL?new Redis(process.env.REDIS_URL,{maxRetriesPerRequest:1}):null;
@@ -108,6 +109,7 @@ export async function createApp(options:AppOptions={}){
   if(geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
   const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});
   await app.register(cookie);
+  if(options.performanceSink)app.addHook('onRequest',(_req,_reply,done)=>{withPerformanceObservation('http_request',options.performanceSink,()=>done());});
   app.addHook('onRequest',async(req,reply)=>{
     reply.header('X-Content-Type-Options','nosniff').header('Referrer-Policy','strict-origin-when-cross-origin');
     if(!req.url.startsWith('/embed/'))reply.header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
@@ -128,7 +130,7 @@ export async function createApp(options:AppOptions={}){
   if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));}
   app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
   let busy=false;let lastMaintenance=0;let timer:NodeJS.Timeout|undefined;
-  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await runWorkerOnce(pool);await ctx.clickhouseMirror?.runOnce();if(Date.now()-lastMaintenance>60000){await runGovernance(ctx);await enforceRetention(pool);if(history){await expireHistorySnapshots(pool,history);await cleanupHistoryFailures(pool,history);}await cleanupHistoryBackupFiles(pool,dataDir);await dropEmptyHistoricalPartitions(pool);await external.runJobs();await cleanupSessionHeaderOrphans(pool);await cleanupFactStoreOrphans(pool);await cleanupRemainingFactStoreOrphans(pool);await cleanupCacheStoreOrphans(pool);lastMaintenance=Date.now();}}catch{/* Durable work remains queued; no raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
+  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await withPerformanceObservation('background_worker',options.performanceSink,async()=>{await runWorkerOnce(pool);await ctx.clickhouseMirror?.runOnce();if(Date.now()-lastMaintenance>60000){await runGovernance(ctx);await enforceRetention(pool);if(history){await expireHistorySnapshots(pool,history);await cleanupHistoryFailures(pool,history);}await cleanupHistoryBackupFiles(pool,dataDir);await dropEmptyHistoricalPartitions(pool);await external.runJobs();await cleanupSessionHeaderOrphans(pool);await cleanupFactStoreOrphans(pool);await cleanupRemainingFactStoreOrphans(pool);await cleanupCacheStoreOrphans(pool);lastMaintenance=Date.now();}});}catch{/* Durable work remains queued; no raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
   app.addHook('onClose',async()=>{if(timer)clearInterval(timer);while(busy)await new Promise(r=>setTimeout(r,20));if(!options.pool)await pool.end();if(options.redis===undefined)await redis?.quit();});
   return {app,ctx};
 }

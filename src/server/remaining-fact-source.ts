@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import {insertRemainingOwnerBatch,resolveRemainingOwnerBatch,type RemainingOwnerRow} from './remaining-owner-batch.js';
 import {createHash,randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
@@ -53,7 +54,7 @@ export async function prepareRemainingFactReadSource(client:PoolClient,pool:Pool
  let pg=false,ch=false,opened=false;const cursor=`remaining_runs_${randomUUID().replaceAll('-','')}`;
  async function validateAndInsert(kind:RemainingFactKind,run:string,input:RemainingFactRecord[]){
   if(input.length>100)throw Error('REMAINING_FACT_BATCH_LIMIT');
-  const records=input.map(item=>normalizeRemainingRecord(kind,item));
+  const records=await measurePerformanceStage('authentication',()=>input.map(item=>normalizeRemainingRecord(kind,item)),{rows:input.length});
   const ownerRows:RemainingOwnerRow[]=[];
   for(const record of records){if(record.row.run_id!==run)throw Error('REMAINING_FACT_SCOPE');
    if(kind==='carry_checkpoints'){
@@ -67,7 +68,7 @@ export async function prepareRemainingFactReadSource(client:PoolClient,pool:Pool
    if(kind==='carry_keys')ownerRows.push({sessionId:record.sessionId,visitorId:record.visitorId});
   }
   if(kind==='sessions'||kind==='carry_checkpoints'||kind==='carry_keys')await insertRemainingOwnerBatch(client,{owners,carryOwners:cpOwners},run,kind,ownerRows);
-  if(records.length)await client.query(`INSERT INTO ${temp[kind]} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"from" timestamptz,"to" timestamptz) CROSS JOIN LATERAL jsonb_populate_record(NULL::${base[kind]},envelope.row) r WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=envelope."to" AND t.ended_at>envelope."from")`,[siteId,JSON.stringify(records)]);
+  if(records.length)await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${temp[kind]} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"from" timestamptz,"to" timestamptz) CROSS JOIN LATERAL jsonb_populate_record(NULL::${base[kind]},envelope.row) r WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=envelope."to" AND t.ended_at>envelope."from")`,[siteId,JSON.stringify(records)]),{rows:records.length});
  }
  try{
   await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT r.id FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selected} ORDER BY r.id`,[siteId]);opened=true;

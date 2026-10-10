@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import {randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import {verifyCanonicalCutoverReceipt,verifyCutoverPrivacyRepairInput,type CutoverPrivacyRepairToken} from './cutover-receipt.js';
@@ -55,7 +56,7 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
      const identity=kind==='effects'?'e.visitor_id':'p.visitor_id';
      const join=kind==='effects'?'':`JOIN LATERAL(SELECT DISTINCT visitor_id FROM ${identities} p WHERE p.run_id=e.run_id AND p.event_id=e.event_id) p ON true`;
      if(kind==='vitals'&&(await client.query(`SELECT 1 FROM ${base} e WHERE e.run_id=$1 AND NOT EXISTS(SELECT 1 FROM ${identities} p WHERE p.run_id=e.run_id AND p.event_id=e.event_id) LIMIT 1`,[run.id])).rowCount)throw Error('FACT_STORE_VITAL_PROVENANCE_MISSING');
-     await client.query(`INSERT INTO ${target} SELECT e.* FROM ${base} e ${join} WHERE e.run_id=$2 AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=${identity}) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=${identity} AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts)`,[siteId,run.id]);
+     await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${target} SELECT e.* FROM ${base} e ${join} WHERE e.run_id=$2 AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=${identity}) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=${identity} AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts)`,[siteId,run.id]));
      continue;
     }
     hasCH=true;
@@ -63,9 +64,9 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
      if(records.length>100)throw Error('FACT_STORE_BATCH_LIMIT');
      for(const record of records)if(record.kind!==kind||record.row.run_id!==run.id||!record.visitorId||!record.sessionId)throw Error('FACT_STORE_RECORD_SCOPE');
      if(!records.length)continue;
-     await client.query(`INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM jsonb_to_recordset($1) envelope(row jsonb,"visitorId" text) ON CONFLICT DO NOTHING`,[JSON.stringify(records)]);
+     await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM jsonb_to_recordset($1) envelope(row jsonb,"visitorId" text) ON CONFLICT DO NOTHING`,[JSON.stringify(records)]));
      const columns=kind==='effects'?'run_id uuid,event_id uuid,event_ts timestamptz,session_id uuid,visitor_id text,event_path text,dimensions jsonb,metric text,key jsonb,value double precision,member boolean':'run_id uuid,event_id uuid,event_ts timestamptz,event_path text,dimensions jsonb,metric text,value double precision';
-     await client.query(`INSERT INTO ${target} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"sessionId" text) CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records)]);
+     await measurePerformanceStage('temp_fill',()=>client.query(`INSERT INTO ${target} SELECT r.* FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"sessionId" text) CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records)]));
     }
    }
   }

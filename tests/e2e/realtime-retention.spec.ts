@@ -1,3 +1,4 @@
+import {navigateWorkspace} from './navigation';
 import {expect,test} from '@playwright/test';
 import {randomUUID} from 'node:crypto';
 test('complete realtime Top exceeds 200-row preview and retention never renders immature days as zero',async({page})=>{
@@ -10,10 +11,10 @@ test('complete realtime Top exceeds 200-row preview and retention never renders 
  await collect([...visitors.map(visitor=>event(visitor,at(-3),'/cohort')),event(visitors[0]!,at(-2),'/returned'),event(visitors[1]!,at(-1),'/returned')]);
  const range=`from=${day(-3)}T00:00:00.000Z&to=${new Date(now).toISOString()}`;
  await expect.poll(async()=>{const r=await page.request.get(`/api/v1/sites/${site.id}/stats?${range}`);const s=await r.json();return s.cohorts?.[day(-3)]?.observations?.['1']?.status==='complete';},{timeout:30000}).toBe(true);
- await page.goto('/app');await page.getByLabel('选择站点').selectOption(site.id);await page.getByLabel('开始',{exact:true}).fill(day(-3));await page.getByRole('button',{name:'留存',exact:true}).click();
+ await page.goto('/app');await page.getByLabel('选择站点').selectOption(site.id);await page.getByLabel('开始',{exact:true}).fill(day(-3));await navigateWorkspace(page, "留存");
  const cohort=page.getByRole('heading',{name:'首访同期群留存热图'}).locator('..');const row=cohort.getByRole('row').filter({has:page.getByRole('rowheader',{name:day(-3),exact:true})});
  await expect(row.getByRole('cell',{name:'33.3%',exact:true})).toHaveCount(2);await expect(row.getByRole('cell').nth(3)).toHaveText('—');await expect(row.getByRole('cell').nth(3)).toHaveAttribute('title','尚未成熟');
- await page.getByRole('button',{name:'实时',exact:true}).click();await expect(page.getByTestId('realtime-total')).toHaveText('0');
+ await navigateWorkspace(page, "实时");await expect(page.getByTestId('realtime-total')).toHaveText('0');
  for(let batch=0;batch<5;batch++)await collect(Array.from({length:48},(_,index)=>event(randomUUID(),Date.now(),index<40?'/popular':'/other')));
  await expect(page.getByTestId('realtime-total')).toHaveText('240',{timeout:30000});
  const top=page.getByRole('region',{name:'实时Top页面'});await expect(top.getByRole('row').filter({has:page.getByRole('cell',{name:'/popular',exact:true})}).getByRole('cell',{name:'200',exact:true})).toHaveCount(2);await expect(top.getByRole('cell',{name:'/other',exact:true})).toBeVisible();await expect(page.getByText('下方事件仅为最近200条预览，不能作为完整流量或Top统计。')).toBeVisible();

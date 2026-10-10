@@ -39,3 +39,7 @@ APP_ROOT="$APP_ROOT" FROZEN_SOURCE_SHA=<exact-sha> \
 只读观察 `/workspace` 32GiB，当前约11GiB可用（观察时点，非执行保证）。构建前、目标server启动前、恢复/故障派生前再次核对，保留2GiB最低余量。估算一次新image/buildstage加独立CH/PG测试卷可能消耗数GiB，Docker存储驱动copy-up使`docker system df`不足以代表宿主余量；以宿主`df`为闸。保持当前已验fallback image，不做global prune。空间不足时停止昂贵阶段，报告明确owned image/cache/volume ID后由root批准精确清理；不得降闸或删其他代理服务。唯一heavy owner由root指定，CI/browser/负载与镜像矩阵串行。
 
 050–053接线准备已落实：namespace guard仅新增四个准确文件名；新版scope明确增加intake/bot、SEO evidence、GSC window、annotations，对五张表的完整PG行以有界cursor纳入签名快照fingerprint。旧049及更早包继续其原始fingerprint口径，不把旧包声明为包含第二轮元数据。native入口夹具已增加真实非空五表种子及恢复后断言，尚未运行。目录当前预期54个迁移文件（010有两个不同文件）；最终必须由实际runner输出文件列表与count，不用最大序号53冒称53个文件。
+
+最终串行harness已准备为 `/tmp/baize-round2-final-image.sh`，仅 `bash -n` 静态通过，未执行。它要求root提供冻结APP_ROOT、完整SHA和已授权本地PG/CH fixture环境；输出source/image manifest、Dockerfile/lock摘要、54文件精确列表、镜像ID、完整notice与gzip双口径、安装/真实HTTP采集、独立target无端口证明、原生签名恢复全输出和cleanup日志。每个失败保留自己的阶段日志且退出非零；success JSON仅所有步骤完成后写入。暂不把它纳入产品安装入口，也不把本机/tmp预备脚本宣称发行物。
+
+050/051/052/053现在目录真实合计54迁移文件（含两个010）。源码/DDL存在及静态类型通过只证明接线准备，不证明新源镜像、真实PG新迁移或五metadata签名恢复已验收。第二轮CH transport/认证/TEMP观测是已标记阶段子集，不宣称全部CH请求总量或已定位负载根因；默认无sink，不新增配置/访客数据持久化。

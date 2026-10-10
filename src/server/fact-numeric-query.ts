@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import {factReadSql} from './fact-read-context.js';
 import {sessionVitalContributionPredicate} from './session-contribution-overlay.js';
 import {randomUUID} from 'node:crypto';
@@ -17,16 +18,17 @@ function add(b:Bucket,metric:string,k:string[],n:number){
 
 /** Event-time numerics and filtered vitals use SQL reduction and bounded digest cursors, never raw event arrays. */
 export async function queryPublishedNumericBuckets(client:PoolClient,siteId:string,from:string,to:string,filters:ContentFilters={},maxBytes=16*1024*1024):Promise<Map<string,Bucket>>{
+ const query=(sql:string,values?:unknown[])=>measurePerformanceStage('aggregate_sql',()=>client.query(sql,values));
  const selected=factSelection(from,to,filters),params=[siteId,...selected.values],buckets=new Map<string,Bucket>();let bytes=0;
  const bucket=(key:string)=>{if(buckets.size>=10000&&!buckets.has(key))throw new ApplicationError('analytics_query_limit');let b=buckets.get(key);if(!b){b=emptyBucket();buckets.set(key,b);}return b;};
  const consume=(row:unknown)=>{bytes+=Buffer.byteLength(JSON.stringify(row));if(bytes>maxBytes)throw new ApplicationError('analytics_query_limit');};
  const cursor=`numbers_${randomUUID().replaceAll('-','')}`;
- await client.query(factReadSql(client,`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT date_trunc('hour',e.event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,metric,key,sum(value) AS n FROM analytics_effect_facts e WHERE ${publishedFactPredicate} AND NOT member AND ${selected.sql} GROUP BY 1,metric,key ORDER BY 1,metric,key`),params);
- try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!rows.length)break;for(const row of rows){consume(row);add(bucket(new Date(row.hour).toISOString()),row.metric,row.key,Number(row.n));}}}finally{await client.query(`CLOSE ${cursor}`);}
- const vc=`samples_${randomUUID().replaceAll('-','')}`;await client.query(factReadSql(client,`DECLARE ${vc} NO SCROLL CURSOR FOR SELECT date_trunc('hour',e.event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,event_path,metric,value FROM analytics_vital_samples e WHERE ${sessionVitalContributionPredicate} AND ${selected.sql} ORDER BY 1,event_path,metric,event_ts,event_id`),params);
+ await query(factReadSql(client,`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT date_trunc('hour',e.event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,metric,key,sum(value) AS n FROM analytics_effect_facts e WHERE ${publishedFactPredicate} AND NOT member AND ${selected.sql} GROUP BY 1,metric,key ORDER BY 1,metric,key`),params);
+ try{while(true){const rows=(await query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!rows.length)break;for(const row of rows){consume(row);add(bucket(new Date(row.hour).toISOString()),row.metric,row.key,Number(row.n));}}}finally{await query(`CLOSE ${cursor}`);}
+ const vc=`samples_${randomUUID().replaceAll('-','')}`;await query(factReadSql(client,`DECLARE ${vc} NO SCROLL CURSOR FOR SELECT date_trunc('hour',e.event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,event_path,metric,value FROM analytics_vital_samples e WHERE ${sessionVitalContributionPredicate} AND ${selected.sql} ORDER BY 1,event_path,metric,event_ts,event_id`),params);
  let prior:{hour:string;path:string;metric:string}|undefined,digest=new TDigest(),count=0;
  const save=()=>{if(!prior)return;digest.compress();const values=digest.toArray();consume(values);bucket(prior.hour).vitals[JSON.stringify([prior.path,prior.metric])]=values;};
- try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${vc}`)).rows;if(!rows.length)break;for(const row of rows){const current={hour:new Date(row.hour).toISOString(),path:String(row.event_path),metric:String(row.metric)};if(!prior||current.hour!==prior.hour||current.path!==prior.path||current.metric!==prior.metric){save();prior=current;digest=new TDigest();count=0;}digest.push(Number(row.value));if(++count%100===0)digest.compress();}}save();}finally{await client.query(`CLOSE ${vc}`);}
+ try{while(true){const rows=(await query(`FETCH FORWARD 100 FROM ${vc}`)).rows;if(!rows.length)break;for(const row of rows){const current={hour:new Date(row.hour).toISOString(),path:String(row.event_path),metric:String(row.metric)};if(!prior||current.hour!==prior.hour||current.path!==prior.path||current.metric!==prior.metric){save();prior=current;digest=new TDigest();count=0;}digest.push(Number(row.value));if(++count%100===0)digest.compress();}}save();}finally{await query(`CLOSE ${vc}`);}
  for(const b of buckets.values()){b.revenue=singleCurrencyAmount(b.revenueByCurrency)??0;for(const segment of Object.values(b.segments))segment.revenue=singleCurrencyAmount(segment.revenueByCurrency)??0;}
  return buckets;
 }

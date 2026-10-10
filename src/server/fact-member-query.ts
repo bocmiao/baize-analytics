@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import {factReadSql} from './fact-read-context.js';
 import {sessionContributionPredicate as publishedFactPredicate} from './session-contribution-overlay.js';
 import type {PoolClient} from 'pg';
@@ -17,11 +18,12 @@ export interface RelationalMembers {uv:number;pageUV:Record<string,number>;segme
 export {sessionContributionPredicate as publishedFactPredicate} from './session-contribution-overlay.js';
 /** Exact union performed in spill-capable SQL, with no visitor values returned to JavaScript. */
 async function readMembers(client:PoolClient,sourceSql:string,params:unknown[],usePublishedSource=true):Promise<RelationalMembers>{
+ const query=(sql:string,values?:unknown[])=>measurePerformanceStage('aggregate_sql',()=>client.query(sql,values));
  const result:RelationalMembers={uv:0,pageUV:dictionary(),segmentUV:dictionary(),eventUV:dictionary(),funnels:dictionary(),trendUV:dictionary()};
- const rows=(await client.query(`SELECT metric,key,count(DISTINCT visitor_id)::text AS n FROM (${usePublishedSource?factReadSql(client,sourceSql):sourceSql}) facts GROUP BY metric,key ORDER BY metric,key LIMIT 10001`,params)).rows;
+ const rows=(await query(`SELECT metric,key,count(DISTINCT visitor_id)::text AS n FROM (${usePublishedSource?factReadSql(client,sourceSql):sourceSql}) facts GROUP BY metric,key ORDER BY metric,key LIMIT 10001`,params)).rows;
  if(rows.length>10000||Buffer.byteLength(JSON.stringify(rows))>8*1024*1024)throw new ApplicationError('analytics_query_limit');
  for(const row of rows){const key=row.key as string[],n=Number(row.n);switch(row.metric){case 'visitors':result.uv=n;break;case 'pageVisitor':result.pageUV[key[0]!]=n;break;case 'segmentVisitor':result.segmentUV[key[0]!]=n;break;case 'eventVisitor':result.eventUV[key[0]!]=n;break;case 'funnel':{const counts=result.funnels[key[0]!]??=[];while(counts.length<=Number(key[1]))counts.push(0);counts[Number(key[1])]=n;break;}}}
- const hours=(await client.query(`SELECT date_trunc('hour',event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,count(DISTINCT visitor_id)::text AS n FROM (${usePublishedSource?factReadSql(client,sourceSql):sourceSql}) facts WHERE metric='visitors' GROUP BY 1 ORDER BY 1 LIMIT 10001`,params)).rows;
+ const hours=(await query(`SELECT date_trunc('hour',event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour,count(DISTINCT visitor_id)::text AS n FROM (${usePublishedSource?factReadSql(client,sourceSql):sourceSql}) facts WHERE metric='visitors' GROUP BY 1 ORDER BY 1 LIMIT 10001`,params)).rows;
  if(hours.length>10000)throw new ApplicationError('analytics_query_limit');for(const row of hours)result.trendUV[new Date(row.hour).toISOString()]=Number(row.n);
  return result;
 }

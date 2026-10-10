@@ -1,0 +1,8 @@
+import {describe,expect,it,vi} from 'vitest';
+import {overviewValue,comparisonChange} from '../../src/web/OverviewDashboard.js';
+import {analysisState} from '../../src/web/AnalysisState.js';
+describe('overview evidence semantics',()=>{
+ it('only displays zero for complete coverage, preserves unknown and uses explicit percentage units',()=>{vi.stubGlobal('localStorage',{getItem:()=> 'en'});try{expect(overviewValue('pv',0,1)).toBe('0');expect(overviewValue('pv',0,0)).toBe('—');expect(overviewValue('uv',null,1)).toBe('—');expect(overviewValue('averageDuration',undefined,1)).toBe('—');expect(overviewValue('pv',Number.NaN,1)).toBe('—');expect(overviewValue('bounceRate',.25,1)).toBe('25.0%');expect(overviewValue('pv',12,0)).toBe('12');}finally{vi.unstubAllGlobals();}});
+ it('suppresses changes for missing/zero baselines, partial scopes, unsupported UV and incomplete today',()=>{expect(comparisonChange(20,10,1,1,false)).toBe('100.0%');for(const [now,before,c,p,f] of [[null,1,1,1,false],[0,0,1,1,false],[1,1,0,1,false],[1,1,1,0,false],[1,1,1,1,true],[1,undefined,1,1,false]])expect(comparisonChange(now,before,c,p,f)).toBeNull();});
+ it('separates future, partial, filtered no-match and covered real zero without inferring installation',()=>{expect(analysisState({coverage:0,rangeStatus:'future_only',totals:{pv:0}},false)).toBe('future');expect(analysisState({coverage:0,totals:{pv:0}},false)).toBe('partial');expect(analysisState({coverage:1,totals:{pv:0}},true)).toBe('no-match');expect(analysisState({coverage:1,totals:{pv:0}},false)).toBe('empty');expect(analysisState({coverage:1,totals:{pv:2}},false)).toBe('available');});
+});

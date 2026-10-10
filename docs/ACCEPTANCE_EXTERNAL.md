@@ -100,3 +100,7 @@ Final command `TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev
 前向 052 保存 GSC 请求窗口、date/query/page 维度、byPage、final、web、PT（America/Los_Angeles）、页数/返回行数和本地完成时间。已有 25k 分页保留；提供商明细完整性始终 not-guaranteed。本地导入在连接配置核对后原子替换，拒绝非法/越窗日期、重复键、非法 URL 与非有限指标；失败保留旧成功窗口。展示 1000+1 判 hasMore/displayTruncated，稳定并列排序；SEO 转化 clicks 标为已返回查询词的页面点击小计，非完整页面或站点点击，不拼接提供商与站点时区为精确转化率。
 
 静态单位测试 `npx vitest run tests/unit/seo-gsc-evidence.test.ts` 实际 7/7 通过（18:43:25，578ms）。新增真实隔离 PG/native HTTP fixture `tests/integration/seo-gsc-v2.test.ts` 仅外部 transport 模拟，源码已写但受串行资源窗口约束尚未运行；不得将它记为通过。真实 Google/外站账户未验证，无新账号/凭据/OAuth 范围/付费操作。
+
+第二轮视图源码已补：`SeoScans` 接版本化扫描边界与观察/建议详情，独立 `SeoRecheckView` 显示 fixed/persists/unknown 与原/新扫描 ID；`GscCoverageView` 区分 PT、不保证上游完整、本地成功窗口和展示截断。GSC/recheck 需要 main 唯一负责人接用；新 `tests/e2e/seo-gsc-evidence.spec.ts` 使用真实本地 HTTP 页面/响应头/robots、真实隔离 PG/app/browser，只 Google transport 明确模拟。该浏览器测试尚未运行。静态两文件 16/16（7 新 + 9 原）通过；UI/fixture 类型与 scoped lint 通过，不能冒称 PG/浏览器验收。
+
+SEO/GSC v2 真实 PG 收尾：父 7ace 冻结空库验收先报 GET GSC internal_error；在原快照独立 PG 重现，实际 SQL 为 42702（SELECT * 与 day::text 同名输出导致 ORDER BY day 歧义）。仅改显式字段 projection。首次修后旧三文件 11 项通过，新 fixture 最后断言误期望400而既有状态冲突409，已按固定错误契约改为409并加强 exact code，保留拒绝 unknown 验证安全断言。新不可变私有变体仅两处差异（sourceCommit=null + 全文件hash）最终四文件 12/12 通过、0 skip；whole types/scoped lint 通过，测试隔离 schema 残留0。旧失败日志保留，证据 `test-evidence/seo-gsc-v2-fixed.json` 与 source manifest；本轮没运行浏览器、没新建容器、Google transport 仅模拟，不声称真实账号已测。

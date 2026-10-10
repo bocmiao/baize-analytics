@@ -1,0 +1,53 @@
+{
+  "sourceCommit": null,
+  "baselineCommitPrefix": "7ace27e",
+  "baselineSnapshot": "/tmp/baize-main-7ace27e.xtw3kxyl",
+  "variant": "/tmp/baize-gsc-v2-final-6weqato2",
+  "sourceManifestSha256": "5e9a3efbfbdcf121e02091b180fcf7a4ef1208f03eac92034388ff1089f24881",
+  "files": {
+    "src/server/external.ts": "be3d6204b43c64460965a1f03406f28beedbfcd833fec95a940ac591fb1a9bb6",
+    "tests/integration/seo-gsc-v2.test.ts": "58471a422376fcc3e58a9530d309de680ce8ae56aa965ed82bae04eb7f89cf10"
+  },
+  "changes": [
+    "Explicit GSC projection avoids duplicated day output and PG42702 ambiguous ORDER BY",
+    "Unknown SEO verification asserts existing409 suggestion_transition_invalid rather than incorrect400; rejection remains required"
+  ],
+  "failuresPreserved": [
+    {
+      "log": "/tmp/baize-main-7ace27e-backend.log",
+      "scope": "parent actual empty Compose scoped integration failure; GSC GET internal_error"
+    },
+    {
+      "log": "/tmp/baize-gsc-v2-ambiguous-baseline.log",
+      "scope": "original frozen native PG fixture failure reproduced"
+    },
+    {
+      "log": "/tmp/baize-gsc-v2-fixed-integration.json",
+      "passed": 11,
+      "failed": 1,
+      "reason": "fixture expected400 but existing secure state contract409"
+    }
+  ],
+  "sqlReproduction": {
+    "code": "42702",
+    "message": "ORDER BY \"day\" is ambiguous"
+  },
+  "result": {
+    "files": 4,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "startedAt": "2026-10-10T18:55:26.998000+00:00",
+    "report": "/tmp/baize-gsc-v2-final-integration.json"
+  },
+  "verification": {
+    "types": "pass",
+    "scopedLint": "pass",
+    "remainingOwnedSchemas": 0,
+    "transport": "Google explicitly simulated; SEO local HTTP fixture actual",
+    "database": "existing dedicated local PG; each test own isolated schema/max1/cleanup",
+    "browser": "not run in this gate",
+    "containers": "none created or modified",
+    "externalAccounts": "not tested"
+  }
+}

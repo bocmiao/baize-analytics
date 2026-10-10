@@ -25,3 +25,13 @@ APP_ROOT=/tmp/immutable-snapshot SOURCE_REPOSITORY=/workspace/baize-analytics SO
 最终新HTTP读取逐站验证实际接受PV/coverage；strict另对真实认证canonical流验证PV/UV（含bootstrap）、九张PG正文表0、CH authority/strict、outbox完整done、gen=processed/attempt0/水位覆盖最后接受事件；PG路径另SQL exactPV/UV/session验证。断言执行列表与实际计数分别保存；失败只返回false，不把未执行部分假记通过。cleanup实际查询CH namespace与PGschema均已消失；cleanup异常标 failed 并保留结果。bootstrap异常也保存安全失败记录和cleanup状态，不丢JSON，不打印凭证或任意错误正文。
 
 源码已通过轻量单元 **4 PASS**、owned ESLint EXIT0、全仓类型检查 EXIT0（`/tmp/baize-independent-review-delivery-types.log`）。仍**未执行真实bootstrap或任何负载**；这些仅工程准备证据。
+
+## 可选生产观察 sink（仍未执行负载）
+
+bootstrap 现向实际 createApp 传入同步有界 `serverPhases.sink`，消费生产 `performance-observation.ts` 的事件；默认部署不配置 sink 的行为不改。仅8个固定stage×4个operation，最多32组聚合、固定9桶时长直方图、总样本256；每operation最多1024随机ALS correlation在内存中去重，超限scope数明确为lower bound，不输出correlation。scope数仅代表至少发出一次阶段事件的ALS调用，不是全部请求/worker tick。源快照中的字面measurePerformanceStage调用用于区分not_instrumented与instrumented_no_event；实际收到才标observed。
+
+度量没有site/visitor/session/SQL/URL/body/凭证字段。每个事件仅保留固定operation/stage、duration/result与可选rows/batches/bytes；未测count为null。同步sink不创建异步Promise队列；坏事件计数并丢弃，不影响业务。阶段包含嵌套与并行的inclusive时间，不能累加为CPU或墙钟占比。server观察与private HTTP/PG探针计量分别输出。
+
+纯单元新增3项：20000事件验证固定空间/上限、坏事件不污染汇总、真实ALS阶段回调与同步/异步observer异常不改变业务结果。连同原4项，**7 PASS**：`/tmp/baize-server-phase-metrics-unit.json`；ownedlint及全仓typecheck EXIT0，`/tmp/baize-server-phase-metrics-types.log`。尚未验证真实createApp PG/CH阶段数或实际性能；这属于后续父代理串行负载结果，未运行DB/browser/build。
+
+最后轻量 hook 复核：递归扫描不可变 `src/server`，仅固定stage白名单的字面 `measurePerformanceStage` 调用计为已配置。新增纯函数测试直接读取 relational-stats/fact-numeric-query/fact-member-query 三个当前源码，均发现 aggregate_sql；只有json_serialize枚举不视为hook。组合 **8 PASS**（`/tmp/baize-server-phase-hooks-final-unit.json`），lint/typecheck EXIT0（`/tmp/baize-server-phase-hooks-final-types.log`）。这些SQL计时包括实际参数化读取/metadata SQL，不称CPU归约时间。没有启动DB或负载。

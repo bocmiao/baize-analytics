@@ -1,0 +1,5 @@
+import {expect,type Page} from '@playwright/test';
+/** Uses actual link semantics and opens only the containing task group. */
+export async function openWorkspaceNavigation(page:Page){const nav=page.locator('#workspace-navigation');if(!await nav.isVisible()){await page.getByRole('button',{name:/^(Menu|菜单)$/}).click();}await expect(nav).toBeVisible();return nav;}
+export async function navigateWorkspace(page:Page,name:string){const nav=await openWorkspaceNavigation(page);const target=nav.getByRole('link',{name,exact:true});if(!await target.isVisible()){const group=nav.locator('.navigation-group').filter({has:page.getByRole('link',{name,exact:true,includeHidden:true})});await group.getByRole('button').click();}await expect(target).toBeVisible();await target.click();}
+export async function selectWorkspaceSite(page:Page,id:string){await openWorkspaceNavigation(page);const selector=page.getByLabel(/^(Select site|选择站点)$/);await selector.selectOption(id);await expect(selector).toHaveValue(id);}

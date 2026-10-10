@@ -1,3 +1,5 @@
+import {measurePerformanceStage} from './performance-observation.js';
+import {readObservedClickHouseBody} from './clickhouse-observed-body.js';
 import {consumeClickHouseCommand} from './clickhouse-command-response.js';
 import type {AnalyticsEvent} from './analytics.js';
 export interface ClickHouseStoreConfig {url: string; username: string; password: string; fetch?: typeof fetch; timeoutMs?: number}
@@ -20,7 +22,7 @@ export class ClickHouseStore {
   if (!response.ok) {await response.body?.cancel(); throw Error('CLICKHOUSE_HTTP_FAILURE');}
   return response;
  }
- private async command(query:string,params:Record<string,string>={},body?:string){const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'CLICKHOUSE_HTTP_FAILURE');}
+ private async command(query:string,params:Record<string,string>={},body?:string){await measurePerformanceStage('ch_transport',async()=>{const response=await this.request(query,params,body);await consumeClickHouseCommand(response,'CLICKHOUSE_HTTP_FAILURE');},{batches:1});}
  async initialize() {
   await this.command(`CREATE TABLE IF NOT EXISTS baize_event_snapshots_v1 (site_id String,snapshot_id UUID,epoch UUID,generation UInt64,event_id UUID,ts DateTime64(3,'UTC'),visitor_id String,page_id UUID,type LowCardinality(String),path String,payload String,dimensions String,is_bot Bool,created_at DateTime64(3,'UTC') DEFAULT now64(3)) ENGINE=ReplacingMergeTree(generation) PARTITION BY toYYYYMM(ts) ORDER BY (site_id,snapshot_id,event_id,ts)`);
  }
@@ -50,11 +52,7 @@ export class ClickHouseStore {
  async countSelected(identity:SnapshotIdentity,options:SnapshotReadOptions={}):Promise<number>{const {clauses,params}=this.selection(identity,options);const response=await this.request(`SELECT count() AS count FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} FORMAT JSON`,params);const result=await response.json() as {data:{count:string|number}[]};return Number(result.data[0]?.count||0);}
  async readSnapshot(identity: SnapshotIdentity, options:SnapshotReadOptions = {}): Promise<StoredEvent[]> {
   const {clauses,params}=this.selection(identity,options);
-  const response = await this.request(`SELECT site_id,toString(event_id) AS event_id,formatDateTime(ts,'%Y-%m-%dT%H:%i:%S.%fZ','UTC') AS event_ts,visitor_id,toString(page_id) AS page_id,type,path,payload,dimensions,is_bot FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} ORDER BY ts ${options.order==='desc'?'DESC':'ASC'},event_id ${options.order==='desc'?'DESC':'ASC'} ${options.limit!==undefined?'LIMIT {limit:UInt32}':''} FORMAT JSONEachRow`, params);
-  let bytes = 0; const chunks: Uint8Array[] = []; const reader = response.body?.getReader();
-  if (!reader) throw Error('CLICKHOUSE_EMPTY_RESPONSE');
-  try {while (true) {const chunk = await reader.read(); if (chunk.done) break; bytes += chunk.value.length; if (bytes > 128 * 1024 * 1024) throw Error('CLICKHOUSE_RESULT_LIMIT'); chunks.push(chunk.value);}} finally {await reader.cancel();}
-  const text = Buffer.concat(chunks).toString('utf8');
+  const text=await readObservedClickHouseBody(()=>this.request(`SELECT site_id,toString(event_id) AS event_id,formatDateTime(ts,'%Y-%m-%dT%H:%i:%S.%fZ','UTC') AS event_ts,visitor_id,toString(page_id) AS page_id,type,path,payload,dimensions,is_bot FROM baize_event_snapshots_v1 FINAL WHERE ${clauses.join(' AND ')} ORDER BY ts ${options.order==='desc'?'DESC':'ASC'},event_id ${options.order==='desc'?'DESC':'ASC'} ${options.limit!==undefined?'LIMIT {limit:UInt32}':''} FORMAT JSONEachRow`, params),128*1024*1024,'CLICKHOUSE_EMPTY_RESPONSE','CLICKHOUSE_RESULT_LIMIT');
   return text.trim() ? text.trim().split('\n').map(line => {const {event_ts, ...row} = JSON.parse(line); return {...row, ts: event_ts, payload: JSON.parse(row.payload), dimensions: JSON.parse(row.dimensions)} as StoredEvent;}) : [];
  }
  async countSnapshot(identity: SnapshotIdentity): Promise<number> {

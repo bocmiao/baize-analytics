@@ -1,3 +1,4 @@
+import {navigateWorkspace} from './navigation';
 import { expect, test, type Browser, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 async function trackerHost(browser: Browser, baseURL: string, siteId: string, path: string) {
@@ -30,22 +31,22 @@ test('actual tracker revenue keeps currencies separate and event-time account sw
         expect(identities.identities).toHaveLength(2); expect(identities.signupCount).toBe(1); expect(identities.paidAfterSignup).toBe(1); expect(identities.conversionRate).toBe(1);
         const a = identities.identities.find((row: { revenueByCurrency: { USD?: number } }) => row.revenueByCurrency.USD === 5); const b = identities.identities.find((row: { revenueByCurrency: { CNY?: number } }) => row.revenueByCurrency.CNY === 20);
         expect(a.revenueByCurrency.CNY).toBe(99); expect(b.revenueByCurrency.USD).toBeUndefined();
-        await page.goto('/app'); await page.getByLabel('选择站点').selectOption(current.id); await page.getByRole('button', { name: '收入归因', exact: true }).click();
+        await page.goto('/app'); await page.getByLabel('选择站点').selectOption(current.id); await navigateWorkspace(page, "收入归因");
         const income = page.getByRole('heading', { name: '收入归因与订单趋势', exact: true }).locator('..');
         await expect(income.getByRole('cell', { name: '119', exact: true }).first()).toBeVisible(); await page.getByLabel('选择收入币种').selectOption('USD'); await expect(income.getByRole('heading', { name: '末次非直接点击归因' }).locator('..').getByRole('cell', { name: 'email', exact: true })).toBeVisible();
-        await page.getByRole('button', { name: '已识别用户', exact: true }).click(); await expect(page.getByRole('heading', { name: '账号时间绑定内的活动' })).toBeVisible();
+        await navigateWorkspace(page, "已识别用户"); await expect(page.getByRole('heading', { name: '账号时间绑定内的活动' })).toBeVisible();
         await page.getByLabel('选择已识别账号').selectOption(b.userKey); const activities = page.getByRole('heading', { name: '账号时间绑定内的活动' }).locator('..'); await expect(activities.getByRole('cell', { name: '20', exact: true })).toBeVisible(); await expect(activities.getByRole('cell', { name: 'USD', exact: true })).toHaveCount(0);
         expect(await page.locator('body').innerText()).not.toContain(accountA); expect(await page.locator('body').innerText()).not.toContain(accountB);
-        await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await page.getByRole('button',{name:'Identified users',exact:true}).click(); await expect(page.getByRole('heading', { name: 'Activity within account bindings' })).toBeVisible(); await expect(page.getByLabel('Registration event name')).toBeVisible();
-        await page.getByRole('button', { name: 'Revenue attribution', exact: true }).click(); await expect(page.getByLabel('Select revenue currency')).toBeVisible(); await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
-        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await page.getByRole('button', { name: '刷新', exact: true }).click(); await page.getByLabel('选择站点').selectOption(daily.id); await page.getByRole('button', { name: '已识别用户', exact: true }).click(); await expect(page.getByText('每日盐模式不支持身份缝合，不列出业务账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
+        await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await navigateWorkspace(page, "Identified users"); await expect(page.getByRole('heading', { name: 'Activity within account bindings' })).toBeVisible(); await expect(page.getByLabel('Registration event name')).toBeVisible();
+        await navigateWorkspace(page, "Revenue attribution"); await expect(page.getByLabel('Select revenue currency')).toBeVisible(); await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
+        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await page.getByRole('button', { name: '刷新', exact: true }).click(); await page.getByLabel('选择站点').selectOption(daily.id); await navigateWorkspace(page, "已识别用户"); await expect(page.getByText('每日盐模式不支持身份缝合，不列出业务账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
     } finally { await context.close(); }
 });
 
 test('actual consented experiment assignment and tracker conversion survive stop and resume', async ({ page, browser, baseURL }) => {
     test.setTimeout(60000);
     const current = await site(page, baseURL!, `实验专项 ${Date.now()}`, { config: { consent_required: true, experiments: true } });
-    await page.goto('/app'); await page.getByLabel('选择站点').selectOption(current.id); await page.getByRole('button', { name: '实验', exact: true }).click();
+    await page.goto('/app'); await page.getByLabel('选择站点').selectOption(current.id); await navigateWorkspace(page, "实验");
     const name = `真实固定周期实验 ${Date.now()}`;
     await page.getByLabel('实验名称').fill(name); await page.getByLabel('变体名称（每行一个，至少两个）').fill('control\nvariant-b'); await page.getByLabel('真实转化事件名称').fill('actual-purchase');
     const created = page.waitForResponse(response => response.request().method() === 'POST' && response.url().endsWith(`/sites/${current.id}/experiments`));
@@ -63,7 +64,7 @@ test('actual consented experiment assignment and tracker conversion survive stop
         await result.getByRole('button', { name: '停止新访客分配' }).click(); await expect(result.getByText('实验状态：已停止分配')).toBeVisible(); expect((await assign()).status()).toBe(404);
         const stopped = await page.request.get(`/api/v1/sites/${current.id}/experiments`); expect((await stopped.json()).find((row: { variant: string }) => row.variant === variant).conversions).toBe(1);
         await result.getByRole('button', { name: '继续访客分配' }).click(); await expect(result.getByText('实验状态：采集中')).toBeVisible(); expect((await (await assign()).json()).variant).toBe(variant);
-        await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await page.getByRole('button', { name: 'Experiments', exact: true }).click();
+        await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await navigateWorkspace(page, "Experiments");
         await expect(page.getByRole('columnheader', { name: '95% conversion-rate interval' })).toBeVisible(); await expect(page.getByRole('button', { name: 'Stop new visitor assignments' })).toBeVisible(); await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
     } finally { await context.close(); }
 });
