@@ -1,0 +1,31 @@
+{
+  "sourceCommit": null,
+  "executionSource": "Pre-commit WIP, bound by sourceSha256; not later immutable full-suite evidence.",
+  "sourceSha256": {
+    "src/server/fact-store-source.ts": "7fa03029e5b02bbd10e92d47ae3049035c886bb9e56b72a8eee031d4d9177116",
+    "tests/unit/fact-source-batch-cte.test.ts": "9a45868f62c78e5b9a60b06aa581e366ca9f370d0b3553148ba82646afc5e4d2",
+    "tests/integration/fact-source-batch-cte.test.ts": "7d60a0f52fe3c7c4cd0ef4b6a33f8f10ae1296401c4f5c6bc43c887d60be0ddc"
+  },
+  "command": "TEST_DATABASE_URL=<authorized existing dev PG> CLICKHOUSE_TEST_URL=http://127.0.0.1:38123 node_modules/.bin/vitest run tests/integration/fact-source-batch-cte.test.ts tests/integration/fact-store-source.test.ts tests/integration/fact-store.test.ts --reporter=json --outputFile=/tmp/baize-fact-source-projection-real-first.json",
+  "real": {
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "unit": {
+    "passed": 2,
+    "failed": 0
+  },
+  "lintExitCode": 0,
+  "typesExitCode": 0,
+  "scope": "Only fully authenticated records are projected to {row,visitorId} for SQL TEMP parameter; all row fields, including session_id, are preserved. Original envelope kind/run/visitor/session validation unchanged. SQL identities and target consume only row and visitorId. Projection+JSON serialization stay inside temp_fill timing. No CH/HMAC/shape/source/limit/lock or 047 change.",
+  "measurements": {
+    "rows": 205,
+    "batches": 3,
+    "originalParameterBytes": 126173,
+    "projectedParameterBytes": 73283,
+    "reducedBytes": 52890
+  },
+  "performance": "Parameter-byte reduction only, not whole application latency, CH bytes, or SLO evidence."
+}

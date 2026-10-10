@@ -59,6 +59,13 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 
 044及047原PK均 `(run_id,kind,row_key)`，原identity索引不以batch_id开头，实际读取却按batch_id过滤、row_key排序。独立随机schema、max1、真实完整DDL上的synthetic receipt实验，25k/50k每批100行，前后完整行/字节/SHA摘要及PK/FK约束一致，schema清理后catalog残留为0。实际计划由Seq Scan变为Bitmap Heap Scan加100行排序。04425k逐批循环566.70→209.10ms、04725k609.28→293.44ms；04450k2099.31→408.78ms、04750k2292.68→454.53ms。index build138–263ms，后ANALYZE67–94ms，均计入原报告而不藏在query成本之外。
 
-054仅新增两个nonunique `(batch_id,row_key)` lookup索引，不修改PK/FK或production reader。报告 [实际计划及结果](../../test-evidence/054-baize-member-index-experiment-final.json)、[命令/来源与界限](../../test-evidence/054-member-index-record.json)；首次seed UUID参数推断42804的 [原失败日志](../../test-evidence/054-baize-member-index-experiment.log)保留，显式cast修复，ownschema cleanup完成。该证据仅PG metadata loop，不包含CH、EOF、正文认证或应用SLO，不能替代整应用性能验收。
+054仅新增两个nonunique `(batch_id,row_key)` lookup索引，不修改PK/FK或production reader。报告 [实际计划及结果](../../test-evidence/054-baize-member-index-experiment-final.json)、[命令/来源与界限](../../test-evidence/054-member-index-record.json)；首次seed UUID参数推断42804的 [原失败日志](../../test-evidence/054-member-index-initial-failure.log)保留，显式cast修复，ownschema cleanup完成。该证据仅PG metadata loop，不包含CH、EOF、正文认证或应用SLO，不能替代整应用性能验收。
 
 044 fresh receipt typed单次INSERT已真实PG/CH三文件14/14通过，首次EXIT0，无失败或跳过；单元3项、相关lint和类型检查通过。[原实际JSON](../../test-evidence/044-fresh-member-bulk-real-first.json)、[命令/源摘要](../../test-evidence/044-fresh-member-bulk-record.json)已保存，未发布源码以文件SHA绑定，sourceCommit=null。每批最多100个fresh成员，fresh CH读回/原SHA和checksum/fence后在原header lock/事务内单次jsonb_to_recordset INSERT，无ON CONFLICT，rowCount严格等于fresh.length。真实PK23505/FK23503保持，触发器RETURN NULL模拟短写严格拒绝并回滚，现有120个已认证CH正文前后完全一致；原Unicode/EOF/超限/source/删除/worker回归同轮通过。manifest_sql固定facts标签计时不重复计rows；不扩展047 bulk。尚无本片应用负载测量，不宣称性能收益或SLO达标。
+
+
+## 044 authenticated TEMP参数投影（提交前实际）
+
+仅已完成原认证的records向SQL传 `{row,visitorId}`，保留row所有字段及原row.session_id；封装kind/source/bodySeal/sessionId仍先参与原scope/HMAC校验，但SQL从未消费它们。原identity去重、多贡献target、tombstones、shape、100行界限和锁均保持。map与JSON序列化仍在temp_fill计时内部，没有将CPU移出观测。
+
+提交前WIP的真实三文件14/14通过、EXIT0、无跳过；专属2unit、lint/type通过。[原报告](../../test-evidence/044-temp-projection-real-first.json)、[文件SHA和命令](../../test-evidence/044-temp-projection-record.json)、[实际参数字节](../../test-evidence/044-temp-projection-bytes.json)已保存，sourceCommit=null不冒称后续提交全量。205真实sealed多贡献、3批，旧参数126173bytes，新参数73283bytes，少52890bytes；原缺正文/partial身份过滤、零vital、typed producer、near32KiB Unicode、EOF/超限/PKFK回归同轮通过。unit保留prototype维度、Unicode/null/boolean key及row.session_id。此为TEMP参数bytes，不是CH bytes/请求量或应用延迟证据；尚无本片同口径性能收益结论。
