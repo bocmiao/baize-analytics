@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-10T08:42:36.493691+00:00",
+  "command": "npx playwright test --config=/tmp/baize-ga4-playwright.config.ts",
+  "exitCode": 0,
+  "testFiles": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "testSeconds": 3.7,
+  "runnerSeconds": 6.5,
+  "scope": "Workspace source, isolated createApp and real PostgreSQL schema; Chromium /usr/bin/chromium; Vite-built current UI. Not immutable final artifact.",
+  "googleTransport": "explicit simulated Google OAuth token and five Data API runReport responses; no real Google account, credentials or provider execution",
+  "assertions": [
+    "Actual browser administrator/site/snippet setup",
+    "Encrypted saved connector credentials, no plaintext in stored envelope",
+    "Independent whole-period totalUsers7, daily6/5 not summed",
+    "Daily and weekly provider reports; America/Los_Angeles timezone",
+    "Safe constructor source name",
+    "Second import thresholding warning in Chinese and English",
+    "Different exact window unavailable, no stale users estimate",
+    "Viewer reads saved history; import denied403; membership removal denies English read403"
+  ],
+  "publicDeployment": false
+}

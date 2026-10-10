@@ -1,4 +1,4 @@
-import { t } from './i18n';
+import { t,language } from './i18n';
 import { useState, type FormEvent } from 'react';
 import { api, type Row } from './api';
 export function ModelSettings({ siteId, onSaved }: {
@@ -30,14 +30,14 @@ export function GoogleSettings({ siteId, onSaved }: {
     const [saved, setSaved] = useState(false);
     return <section className="panel"><h2>{t("Google 授权设置")}</h2><form onSubmit={async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const settings: Row = { clientId: f.get('clientId'), redirectUri: `${location.origin}/api/google/callback` }; if (f.get('property'))
         settings.property = f.get('property'); if (f.get('gaProperty'))
-        settings.gaProperty = f.get('gaProperty'); try {
+        settings.gaProperty = f.get('gaProperty'); settings.dailyGa4=f.get('dailyGa4')==='on'; try {
         await api(`/api/sites/${siteId}/external`, { kind: 'google', secret: JSON.stringify({ clientSecret: f.get('clientSecret') }), settings }, 'PUT');
         setSaved(true);
         onSaved();
     }
     catch (err) {
         setError((err as Error).message);
-    } }}><label>OAuth Client ID<input name="clientId" required/></label><label>OAuth Client Secret<input name="clientSecret" type="password" required autoComplete="off"/></label><label>{t("GSC 已验证资源")}<input name="property" placeholder="sc-domain:example.com"/></label><label>{t("GA4 属性 ID")}<input name="gaProperty" pattern="[0-9]+" placeholder="123456789"/></label><p>{t("在 Google 控制台登记回调地址：")}<code>{location.origin}/api/google/callback</code></p><button>{t("加密保存 Google 设置")}</button></form>{error && <p role="alert" className="error">{error}</p>}{saved && <p role="status">{t("设置已保存，可连接 Google 账号。")}</p>}</section>;
+    } }}><label>OAuth Client ID<input name="clientId" required/></label><label>OAuth Client Secret<input name="clientSecret" type="password" required autoComplete="off"/></label><label>{t("GSC 已验证资源")}<input name="property" placeholder="sc-domain:example.com"/></label><label>{t("GA4 属性 ID")}<input name="gaProperty" pattern="[0-9]+" placeholder="123456789"/></label><label className="check"><input type="checkbox" name="dailyGa4"/>{language()==='en'?'Opt in to daily GA4 import of the previous site-calendar day (provider timezone shown separately)':'启用每天导入上一站点日的 GA4 历史（另行显示提供商时区）'}</label><p>{t("在 Google 控制台登记回调地址：")}<code>{location.origin}/api/google/callback</code></p><button>{t("加密保存 Google 设置")}</button></form>{error && <p role="alert" className="error">{error}</p>}{saved && <p role="status">{t("设置已保存，可连接 Google 账号。")}</p>}</section>;
 }
 export function GoalEditor({ siteId, onSaved }: {
     siteId: string;

@@ -1,0 +1,2 @@
+// Display the exact reported ISO-week interval, clipped to the saved provider request.
+export function gaWeekBounds(value:string,start:string,end:string){const date=new Date(Date.UTC(Number(value.slice(0,4)),0,4));date.setUTCDate(date.getUTCDate()-((date.getUTCDay()+6)%7)+(Number(value.slice(4))-1)*7);const last=new Date(date);last.setUTCDate(last.getUTCDate()+6);const a=date.toISOString().slice(0,10),b=last.toISOString().slice(0,10);return `${a<start?start:a} — ${b>end?end:b}`;}

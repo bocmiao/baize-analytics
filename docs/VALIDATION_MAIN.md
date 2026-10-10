@@ -63,3 +63,14 @@ ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Red
 CNB配置4386ec2已直接main，GitHub私有main权威，父线程确认私有空仓；真实本地file-only7分支同步测试通过，空仓bootstrap为显式确认空refs后普通push。CNB_TOKEN兼容输入不保证权限，官方schema/密钥引用/调度和远端run未实测。GitHub账号级托管CI阻断继续单列，不改计费、不重跑。完整F/P2仍未完成，不能把可靠镜像称PG-only、将顺序百万称实时或1C2G承诺。
 
 补充 main 040b27e：worker/export失败分支复用已持client，邀请register/accept审计与业务原子同事务。旧真实max1连接池超时与旧register500证据保存；独立索引7文件37相关回归全部通过、lint/typecheck/build通过，fresh编译入口管理员向导→invited viewer专项1/1通过。不能将37与前批237相加为独立总数，也不能称bf77已覆盖这些新源码；下一批新镜像仍需实测。
+
+
+## 第五里程碑：历史快照闭环与GA4精确窗口
+
+冻结应用快照实际共享脚本 EXIT0：19单元文件80项+55真实PG/CH/Redis集成文件192项，共74文件272测试，0失败/0跳过；fresh独立PG schema、Redis14、真实管理员向导和compiled Node后19 Chromium检查通过（51.4秒，17浏览器流程、2日期函数）。lint/type/build/SDK/journal通过。仅复用已安装锁定依赖和系统Chromium，安装步骤未重跑，不称容器化/CNB整轮通过。见fifth-main-validation.json/fifth-shared-local-passed.txt。
+
+028新增历史snapshot/cursor/hash和签名备份，应用启动/删除/journal/privacy/权限/保留/失败清理/隔离恢复闭环；PG仍权威，不能称全部PG-only迁移完成。029 GA4五独立报告精确窗口与独立whole-period用户数、质量/timezone/分页/原子导入/定时opt-in/39表安全导出和中英文真实浏览器均通过；Google传输为明确注入模拟，真实Google账号未测。此前040错误路径、9c7 F06文字隐私也纳入本轮完整应用测试。下一生产新镜像矩阵正在执行，bf77不替代新源码证明。
+
+本地验证最初错误把URL-level search_path加入通用数据库URL，覆盖各fixture的Pool.options，发生12测试失败/2跳过，不能说产品journal缺陷。两轮主动中止EXIT143、第三轮EXIT1原日志保留。修共享脚本仅在集成结束后应用CI_APPLICATION_DATABASE_URL，再迁移/启动fresh app，最终原产品断言完整通过。没有关闭journal安全检查或弱化测试。
+
+CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；静态/9本地Git分支通过，实际CNB首轮ECONNREFUSED和cron精确事件鉴权失败保留。本地容器安装DNS EAI_AGAIN后主动停止143，0应用测试；托管适配仍待父执行。父已确认c1fa2e4归档无新增Actionsrun，永不enable/rerun/dispatch。F60工具证据和bounded-session planner仅独立工作区小模块，尚未接生产，不纳本轮272/19或Docker。全计划未完成。

@@ -51,8 +51,11 @@ if [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] && [ ! -e /usr/bin/chromium ]; then
  bundled_chromium="$(node --input-type=module -e 'import {chromium} from "@playwright/test";import {accessSync,constants} from "node:fs";const path=chromium.executablePath();accessSync(path,constants.X_OK);process.stdout.write(path)')"
  ln -s "$bundled_chromium" /usr/bin/chromium
 fi
-npm run db:migrate
 npm run test:integration
+# Integration fixtures own their schemas; apply the separate application URL only
+# after they finish, so URL search_path cannot override their Pool options.
+export DATABASE_URL="${CI_APPLICATION_DATABASE_URL:-$DATABASE_URL}"
+npm run db:migrate
 # Exercise the compiled production entrypoint, including JSON module imports.
 node dist/server/src/server/main.js > "$ci_dir/app.log" 2>&1 & app_pid=$!
 healthy=0

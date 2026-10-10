@@ -34,6 +34,7 @@ export const SITE_EXPORT_QUERIES={
  audit_logs:'SELECT id,site_id,action,target,created_at FROM audit_logs WHERE site_id=$1',
  gsc_stats:'SELECT site_id,day,query,page,clicks,impressions,position FROM gsc_stats WHERE site_id=$1',
  ga_import:'SELECT site_id,day,source,pv,uv,sessions,imported_at FROM ga_import WHERE site_id=$1',
+ ga_import_windows:'SELECT site_id,start_day,end_day,property_id,property_timezone,data,imported_at FROM ga_import_windows WHERE site_id=$1',
  seo_scans:'SELECT id,site_id,created_at,results FROM seo_scans WHERE site_id=$1',
  rank_history:'SELECT site_id,day,keyword,provider,position FROM rank_history WHERE site_id=$1',
  ai_budget:'SELECT site_id,month,reserved,used FROM ai_budget WHERE site_id=$1',

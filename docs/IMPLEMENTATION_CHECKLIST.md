@@ -2,11 +2,11 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-当前已推送精确快照为 main `9cd7cd0745cc0bf0440fcfbd8af9822f91e2f1f1`：45 文件、180 项应用测试通过（64 单元、116 集成），15 项 fresh-PG Playwright 检查通过（13 浏览器工作流、2 日期检查），0 失败、0 跳过；lint/typecheck/build 通过。证据为 [third-main-tests.json](test-evidence/third-main-tests.json)、[third-main-e2e.txt](test-evidence/third-main-e2e.txt)。真实 PostgreSQL、Redis、ClickHouse 与 Chromium 已参与本地验收；本地通过不能代替未运行的远端托管 CI。
+最新已推送 main `9c7f717`。最近完整应用基准已推进第五里程碑：74文件、272测试（80单元、192真实PG/CH/Redis集成）及19项fresh编译应用Chromium检查通过，0失败/0跳过；共享本地应用脚本EXIT0，复用现有依赖/浏览器，安装未重跑。失败/中止记录完整保留；见 [VALIDATION_MAIN.md](VALIDATION_MAIN.md) 与 fifth-main证据。
 
-同源新 Docker 镜像 `f8dc7f94dcd5fc86dfedfc841f8af64d528f54de798115e59307b311434f8e90` 全生命周期矩阵 EXIT0：170 条 source/image SHA 一致，25 条迁移（包含 024），实际 compiled Node 启动、安装/采集/导出、备份/独立新库新卷恢复、worker SQL 故障拒绝恢复成功、正常升级、缺失镜像与已提交 schema + HTTP503 回滚均验证。见 [docker-third-main.json](test-evidence/docker-third-main.json) 和 [validation-ops.md](validation-ops.md)。之前 Node JSON 导入属性、非 root 公开文件权限两次 EXIT1 保留证据；不再把旧 6c66 镜像当作当前版本。该 Docker 矩阵未额外重复 Chromium，浏览器证明来自同源 fresh 应用快照。
+后续 `040b27e` 单连接错误路径/邀请原子审计的37项相关回归和1项fresh邀请浏览器通过；`9c7f717` F06外链文字隐私的13项相关回归通过。这些重叠专项不能与237相加。028历史存储应用删除/权限/备份恢复闭环、029 GA4精确窗口现纳入第五完整本地验收；新生产Docker仍在运行。
 
-收入/身份专用视图、实际 SDK 注册→正收入与账号切换、回放/多 SPA/多标签、响应式热图和 A/B 停续已有本地专项通过。F29 新完整上下文/typed 属性增强及新增第 16 项浏览器用例正在工作区集成，尚无本批完整 fresh-E2E 结果；不由上述 180/15 证明。高级后台错误的完整中英文、ClickHouse 全迁移目标仍未完成。WordPress 与 Cookie 横幅的真实本地通过状态见对应条目。
+最近生产Docker `bf77b54e1ca7` 完整生命周期 EXIT0，189条 source/image SHA一致、28迁移包含024–027；不覆盖后续040/F06/028/029，下一批须新镜像。GitHub Actions已由父线程网页停用且活动YAML归档；父确认c1fa2e4未新增run。CNB私有镜像bootstrap成功，首轮常规CI迁移因daemon/pipeline loopback不同失败，cron已注册但精确事件密钥授权失败，均未宣称托管CI通过。完整F/P2仍未完成。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
@@ -73,10 +73,10 @@
 
 ## F-06 出站链接点击【P0】
 
-- 状态：部分实现（采集已实现）
-- 实现文件：packages/tracker/src/index.ts
-- 验收测试：tracker-collector.test.ts；packages/tracker/README.md
-- 边界/未实测：自动外链与data-baize-ignore；只保留origin/path，保守不采集链接文字；真实popup外链跳转不阻塞与PG采集专项tracker-hooks.test.ts通过。
+- 状态：已实现已测（本地，main 9c7f717）
+- 实现文件：packages/tracker/src/index.ts；packages/tracker/src/link-text.ts
+- 验收测试：link-text.test.ts；tracker-outbound-text.test.ts；tracker-hooks.test.ts；docs/test-evidence/outbound-final-tests.json
+- 边界/未实测：标准模式采公开可见文字前50个Unicode字符并脱敏已知邮箱/电话/IP；忽略private/mask/hidden/input子树；每日盐不采文字。真实Chromium→HTTP→PG/EAV→聚合→JSON/CSV导出已测，不保证任意业务文字匿名。
 
 - 做什么：自动记录跳往外部域名的点击。
 - 采集端：click 捕获阶段找最近 <a>；hostname 不同则 sendBeacon 发 click 事件（props 含 url、链接文字前 50 字）；不阻止跳转、不延迟。
@@ -691,10 +691,10 @@
 ## 集中剩余清单（不代表全部验收）
 
 - **已实现且本地证明**：9cd7 精确索引 lint/type/build、180 应用测试和 15 fresh-E2E 通过；收入趋势/归因专页、事件时间身份/明确跨设备注册→正收入专页、回放/响应式热图/A/B 专项、WordPress 实际运行与 Cookie 横幅均有对应本地证据，不再列为待实现。新 f8dc Docker 170 条源码 hash、25 条迁移与完整生命周期 EXIT0；该矩阵不代表新增 Docker-Chromium 或真实外部账户验收。
-- **第四批已实现且本地验收**：F29完整会话流失特征/API/UI、F30成熟期留存与缺口诚实标记、F22完整实时Top与SSE更新、38张表安全全站导出、稳定中英错误、明确白名单跨子域身份与撤回、真实本地SEO整改复检均纳入66文件237测试与fresh18E2E通过。025增量CH副本/PG尾部混合读取已测；不能称PG-only或全面P2迁移。第四新镜像bf77完整生命周期实际EXIT0，28迁移含025/026/027，189镜像hash一致；最新单连接错误分支与邀请原子审计040b27e另有7文件37回归、fresh邀请E2E1项通过，不在bf77镜像，下一新镜像仍需覆盖；028历史复制/恢复尚未接应用删除/权限闭环，不纳入本批。
+- **第四批已实现且本地验收**：F29完整会话流失特征/API/UI、F30成熟期留存与缺口诚实标记、F22完整实时Top与SSE更新、38张表安全全站导出、稳定中英错误、明确白名单跨子域身份与撤回、真实本地SEO整改复检均纳入66文件237测试与fresh18E2E通过。025增量CH副本/PG尾部混合读取已测；不能称PG-only或全面P2迁移。第四新镜像bf77完整生命周期实际EXIT0，28迁移含025/026/027，189镜像hash一致；最新单连接错误分支与邀请原子审计040b27e另有7文件37回归、fresh邀请E2E1项通过，不在bf77镜像，下一新镜像仍需覆盖；028历史复制/恢复与应用删除/权限/journal闭环现纳入第五272/19本地验收；仍非PG-only。
 - **持续后台性能已有限实测，仍非资源/SLO承诺**：100k/1M PG-only顺序链路证据保留，百万40站先采集后聚合，不能称实时负载。旧9cd7真实分区维护40P01已防御修复并真实PG回归；912单站10k EXIT0、四站20k暴露调度饥饿及最终查询采样缺陷（失败保留），027公平调度后不可变77d5f615四站20k持续后台采集+查询 EXIT0，每站水位在写入期间前进、最终PG/HTTP/outbox一致。发布水位滞后p95 8.836秒、Node峰值约791MiB；共享主机、非1C2G隔离，无实时SLO承诺。详见 [validation-continuous-scale.md](validation-continuous-scale.md)。Windows安装在Linux未运行，更多真实设备/CMP/复杂站点组合未全验。
 - **真实外部未实测**：Google GA4/GSC、MaxMind 授权下载及地域准确率、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业 SSO、商业 AI 和真实 Ollama 模型；安全连接器、模拟集成及本地 HTTP 返回不替代外部账号验收。F52 官方流量/关键词接口可行性仍未核验：官方文档读取被既有代理 CONNECT 403 阻断（origin 000），并非百度拒绝或无 API 的证明；证据见 [BAIDU_API_FEASIBILITY.md](BAIDU_API_FEASIBILITY.md)。不杜撰端点、不以 SERP/referrer 替代、不购买或创建生产凭据。
-- **远端/发布边界**：GitHub托管CI因账号计费/额度在执行前阻断，尚未运行；CNB私有镜像配置4386ec2已保存，本地Git同步7分支验证，但provider调度/密钥绑定/托管执行尚未验证；父线程已创建私有空仓，未依赖Actions。本地命令通过不代表托管run。仓库保持私有，未外网部署、不改其他仓库。
+- **远端/发布边界**：GitHub托管CI因账号计费/额度在执行前阻断，尚未运行；CNB私有镜像bootstrap普通push已由父验证，cron已注册但精确事件密钥鉴权失败未重试；885e4e8同网络修复及223e887按钮已推送，9本地Git分支通过，适配后托管CI/按钮待父验证。GitHubActions已停用归档，无启用/重跑。本地命令通过不代表托管run。仓库保持私有，未外网部署、不改其他仓库。
 - **实现与规模偏差持续披露**：exact 访客集合代替 HLL、持久 PG 任务代替 BullMQ、部分精确时间/过滤查询重建保留明细。正确性已本地测试，但事件内存/吞吐、持续混合写删、超保留边界、CH 128 MiB 源预算和大站增量设计仍需继续验收。
 
 25×100 + 1×10000 的真实不等样本 p75 缺陷已按 weighted-centroid Type7 修复，collector→worker→stats 与尾部/6 点专项已纳入 9cd7 的 180 测试通过；t-digest 质心均值仍为近似分位方法，不宣称任意分布精确分位或用每日 p75 平均替代合并。

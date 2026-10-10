@@ -1,3 +1,5 @@
+import {cleanupHistoryBackupFiles} from './history-security.js';
+import {historyDeletionBarrier} from './history-store.js';
 import type { AppContext } from './context.js';
 import type { Pool,PoolClient } from 'pg';
 import { mkdir,open,readFile,rename } from 'node:fs/promises';
@@ -64,11 +66,12 @@ export async function deleteVisitor(ctx:AppContext,siteId:string,input:{visitor_
     if(userId)records.push(...identityRecords,{site_id:siteId,visitor_id:`user:${userId}`,user_id:userId,deleted_at:new Date().toISOString(),source:'user'});
     await appendJournal(ctx.config.dataDir,records,client);
     await ctx.clickhouseMirror?.withDeletionBarrier(client,siteId,{all:true});
+    await historyDeletionBarrier(client,ctx.pool,siteId);
     for(const record of records.filter(r=>r.source!=='identity-segment'))await client.query('INSERT INTO tombstones(site_id,visitor_id,user_id,deleted_at,source) VALUES($1,$2,$3,$4,$5) ON CONFLICT(site_id,visitor_id) DO UPDATE SET user_id=COALESCE(excluded.user_id,tombstones.user_id)',[siteId,record.visitor_id,record.user_id,record.deleted_at,record.source]);
     if(identityRecords.length)await purgeIdentity(client,siteId,identityRecords);
     if(visitors.length)await purge(client,siteId,visitors,ctx.config.dataDir);else await invalidateDerived(client,siteId,ctx.config.dataDir);
     return records.length;
-  });const cleanup=await runFileCleanup(ctx,siteId);await invalidateSiteCache(ctx,siteId);await ctx.audit(actorId,siteId,'visitor.delete',{identifiers:deleted,journal:'fsync-complete'});return {deleted:true,identifiers:deleted,journal:'durable',fileCleanup:cleanup,aggregation:'pending-rebuild',historicalBoundary:'保留期外已无法重建，相关历史聚合标为不可用'};
+  });const historyBackups=await cleanupHistoryBackupFiles(ctx.pool,ctx.config.dataDir,{siteId});const cleanup=await runFileCleanup(ctx,siteId);await invalidateSiteCache(ctx,siteId);await ctx.audit(actorId,siteId,'visitor.delete',{identifiers:deleted,journal:'fsync-complete'});return {deleted:true,historyBackups,identifiers:deleted,journal:'durable',fileCleanup:cleanup,aggregation:'pending-rebuild',historicalBoundary:'保留期外已无法重建，相关历史聚合标为不可用'};
 }
 export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:string,replicaBarrier?:(client:PoolClient,siteId:string)=>Promise<void>){
   const prior=await pool.query('SELECT EXISTS(SELECT 1 FROM tombstones) OR EXISTS(SELECT 1 FROM identity_tombstones) AS present');const strict=process.env.REQUIRE_DELETION_JOURNAL==='1'||prior.rows[0].present;await initializeJournal(dataDir,strict);
@@ -79,6 +82,7 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
   for(const [siteId,list] of bySite)await transaction(pool,async client=>{
     await lockSite(client,siteId);if(!(await client.query('SELECT 1 FROM sites WHERE id=$1',[siteId])).rowCount)return;
     await replicaBarrier?.(client,siteId);
+    await historyDeletionBarrier(client,pool,siteId);
     let changed=false;const identityRecords=list.filter(r=>r.source==='identity-segment') as IdentityDeletionRecord[];
     for(const r of list.filter(r=>r.source!=='identity-segment')){const marker=await client.query('INSERT INTO tombstones(site_id,visitor_id,user_id,deleted_at,source) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING RETURNING visitor_id',[siteId,r.visitor_id,r.user_id,r.deleted_at,'restore-replay']);if(marker.rowCount)changed=true;}
     for(const r of identityRecords){const marker=await client.query('SELECT 1 FROM identity_tombstones WHERE site_id=$1 AND visitor_id=$2 AND user_id=$3 AND started_at=$4',[siteId,r.visitor_id,r.user_id,r.started_at]);const existing=await client.query(`SELECT 1 WHERE EXISTS(SELECT 1 FROM events WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM experiment_contributions WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM outbox WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM event_keys WHERE site_id=$1 AND visitor_id=$2 AND ts>=$3 AND ($4::timestamptz IS NULL OR ts<$4)) OR EXISTS(SELECT 1 FROM experiment_assignments a JOIN experiments e ON e.id=a.experiment_id WHERE e.site_id=$1 AND a.visitor_id=$2 AND a.converted IS DISTINCT FROM EXISTS(SELECT 1 FROM experiment_contributions c WHERE c.experiment_id=a.experiment_id AND c.visitor_id=a.visitor_id))`,[siteId,r.visitor_id,r.started_at,r.ended_at]);if(!marker.rowCount||existing.rowCount){await purgeIdentity(client,siteId,[r]);changed=true;}}
@@ -86,5 +90,5 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
     const existing=visitors.length?await client.query('SELECT 1 FROM events WHERE site_id=$1 AND visitor_id=ANY($2::text[]) LIMIT 1',[siteId,visitors]):null;
     if(existing?.rowCount){await purge(client,siteId,visitors,dataDir);changed=false;}
     if(changed)await invalidateDerived(client,siteId,dataDir);
-  });return {records:records.size,sites:[...bySite.keys()]};
+  });const historyCleanup=await cleanupHistoryBackupFiles(pool,dataDir);if(historyCleanup.pending)throw Error('History backup cleanup pending; queries remain closed');return {records:records.size,sites:[...bySite.keys()]};
 }

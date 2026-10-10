@@ -1,3 +1,4 @@
+import {registerHistoryRoutes} from './history-routes.js';
 import { createHash, randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import type { PoolClient } from 'pg';
@@ -71,7 +72,7 @@ const rangeSchema=contentFilterSchema.extend({from:z.iso.datetime().optional(),t
 const definition=z.object({name:z.string().min(1).max(100),type:z.enum(['event','page','duration']),config:z.record(z.string(),z.unknown())}).superRefine((g,c)=>{if(g.type==='event'&&(typeof g.config.event_name!=='string'||!g.config.event_name))c.addIssue({code:'custom',message:'event_name required'});if(g.type==='page'&&(typeof g.config.path!=='string'||!g.config.path.startsWith('/')))c.addIssue({code:'custom',message:'path required'});if(g.type==='duration'&&!(Number(g.config.seconds)>0))c.addIssue({code:'custom',message:'positive seconds required'});});
 const funnel=z.object({name:z.string().min(1).max(100),steps:z.array(z.object({type:z.enum(['page','event']),value:z.string().min(1).max(500)})).min(2).max(20),strict:z.boolean().default(false)});
 export async function registerAnalytics(app:FastifyInstance,ctx:AppContext){
- await registerFunnelAnalysis(app,ctx);
+ await registerFunnelAnalysis(app,ctx);await registerHistoryRoutes(app,ctx);
  await registerContentAnalytics(app,ctx);
  await registerGeographyAnalytics(app,ctx);
  await registerRevenueIdentity(app,ctx);
