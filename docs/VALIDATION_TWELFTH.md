@@ -73,3 +73,5 @@ c890be3c2a458d9a7934cd1d8133fbe3ec2032bd完整本地runner实际EXIT1/cleanup：
 实物完整AGPL/MIT notices通过；core tracker gzip5087B≤5KiB但>5000B，min4506B双口径符合。真实签名原生独立CH服务器恢复覆盖非空carry/header/fact/remaining/cache和最新metadata；源正文/epoch/history不变、最新journal A删B留、retention前向与物理回放裁剪、真实worker故障拒绝/恢复、缺失/tamper/未知schema/非空目标拒绝均通过。目标同物理宿主第二服务器独立卷、无hostports，不是跨宿主DR。owned stack/volumes/network清理完成。
 
 安全summary/manifest/native/index/probe/notices/HTTP/cleanup证据 `test-evidence/main-1c1cb65-image-*`；不复制state、env/keys或raw services。旧FAIL保留，旧f4未变化故障矩阵单列不重数。托管未运行；root同源固定负载另行记录，镜像通过不能代替性能达标。
+
+bd3f51fc1f7dba84a1fdbde75edfcdbecfcf24e8完整本地runner实际EXIT1/cleanup。213单元PASS；424集成423PASS/0断言失败/1skip，另有uncaught PG FATAL25P04（idle transaction终止）使实际失败，不能以JSON success=true或0断言失败记全绿。strict-identity-restore因runner缺BAIZE_OPS_POSTGRES_CONTAINER跳过；浏览器/image未跑。lint/types/SDK/build已过。安全原report结构（client/credential脱敏）、原loghash及实际summary在 `test-evidence/main-bd3f51f-*`，不复制serialized PGclient或service原始日志；旧FAIL保留。下一tempfullrunner使用原validate-local-final.sh明确ownPGcontainer变量，不改产品skip条件。
