@@ -1,5 +1,19 @@
 # main 开发里程碑验收（保留历史结果）
 
+## 当前状态（唯一当前入口）
+
+证据归档已随bb6a20c保存；下表按实际源码与执行阶段区分，不累加历史计数。
+
+| 源与阶段 | 当前实际结果 |
+|---|---|
+| c890后端 | 211单元+421真实集成=632 PASS/0skip，已实际执行 |
+| 1c1cb65浏览器 | 30检查=28真实Chromium+2日期全部PASS/0skip，92.6437秒，EXIT0/cleanup |
+| 两阶段源码关联 | src/db/packages与c890一致已核；不声称1c重跑后端 |
+| 1c新镜像与最终固定负载 | root正在执行，尚待结果；不得借19镜像或旧ac负载称通过/SLO达标 |
+| 托管/外部边界 | 不触发托管；真实外部账号、设备及模型未测边界保留 |
+
+日期标记和累计SELECT次数/decoded bytes/deadline预算两项有限缺口已有本地证明；预算不保证scan/heap或性能改善。以下各SHA原文为历史时点，不作为另一个“当前/最新”入口；所有FAIL、执行时间与原证据保持。
+
 当前已完成整轮为10eb88a：180单元+402真实集成、30检查（28真实Chromium+2日期）全部PASS/0skip，fresh local EXIT0/cleanup。当前19d97af冻结全轮实际EXIT0：51文件191单元+152文件404真实集成=595 PASS；30检查（28真实Chromium+2日期）全PASS/0fail/0skip，浏览器1.6分钟，lint/type/SDK/build/migrate/compiledapp/Compose cleanup均0；最新生产镜像、新同口径负载与最终托管不预称通过，托管暂停不触发。完整七筛选已经实现。
 
 以下所有旧阶段正文是历史时点记录，旧“在制/未注册/guard false/镜像待”只描述当时源码，不能用来否定后续已完成实现；旧失败与计数原样保留，不相加。严格CH主体、隐私/恢复、多语言、F29和身份收入已由后续7f/10eb对应冻结验收，不新增真实外部账号通过声明。b56b7e9 为历史第二批；第八377/20见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)，第七318/20见 [VALIDATION_SEVENTH.md](VALIDATION_SEVENTH.md)，7f494/22见 [VALIDATION_TENTH.md](VALIDATION_TENTH.md)。
@@ -93,7 +107,7 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 
 后续 `ac86cd3` TEMP投影有源码摘要绑定的14真实集成+2单元专项PASS；19d97af的191/404/30完整计数与镜像不外推为ac全轮或ac镜像通过。该句为当时历史状态；ac随后1000实际PASS5.316秒、5000实际FAIL（4800accepted/4unsent/42delayed/drain超时/final断言失败），当前ac browser专项30检查已PASS。真实外部未测及托管不触发规则保持，本段不新增功能范围。
 
-## 0f14当前源码与ac投影边界
+## 历史0f14源码与ac投影边界
 
 当前验收按各不可变源码分别记录，不将后续提交自动视为同源通过。最新已完成完整冻结仍为19d97af：191单元+404真实集成=595 PASS，30检查（28真实Chromium+2日期）全PASS；其生产镜像55条DDL、054两个索引、独立signed restore/source unchanged/cleanup实际EXIT0。此证据不外推后续源码。ac86cd3 TEMP投影只有源码摘要绑定14真实集成+2单元专项PASS；其独立1000 PASS、最终HTTP5.316秒，5000总体FAIL：4800accepted、4unsent、42delayed、drain超时且final断言失败。ac源码浏览器实际30检查（28Chromium+2日期）PASS/0skip，96.441秒、EXIT0，不称ac完整整轮或镜像通过。旧FAIL和外部未测保留，托管不触发。
 
@@ -103,7 +117,7 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 
 冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；该当时服务器行为3项是历史专项；后续de整操作/服务器/适配器真实13项已通过，完整新冻结仍待。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。
 
-## de7222e有限代码缺口实施状态
+## 历史de7222e有限代码缺口实施状态
 
 当前main已推 `de7222edfd6baa7478a4e32e22f6b5399fc34daf`：整操作预算及显式SELECT失败关闭已实作，真实专项13项（9 PG/CH+4服务器/适配器）PASS/0skip，单元17项PASS；root16项是其子集，不重复累加。预算限制SELECT次数、decoded bytes与deadline，不保证扫描行数、heap峰值或性能提升。aea2ece人工日期标记已接趋势、4单元PASS，浏览器仍待新冻结。de新完整空库/浏览器/镜像正在准备，不能称已过；19与ac历史证据及所有旧FAIL保留，托管不触发。
 
@@ -117,7 +131,7 @@ CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；
 
 当前c890冻结已结束，完整入口EXIT1、cleanup完成：55文件211单元+155文件421真实集成全部PASS/0skip=632应用通过；30浏览器检查29PASS/1FAIL（27真实Chromium+2日期通过），operations Chromium因固定x58画布点击点未命中失败，UI证明不完整。原FAIL保留，不能称全轮通过。root仅测试夹具1c1cb65按实际趋势/canvas几何窄修，焦点、PV、时区断言未降低；下一步同应用源码定向浏览器复验，不重复已过后端。新1c（含Compose预算配置前向传递）的镜像及性能仍待，不将632加旧源计数，托管不触发。
 
-## 当前同应用分阶段验收入口
+## 历史c890/1c分阶段记录（当前结果见顶栏）
 
 | 源/阶段 | 实际结果 | 边界 |
 |---|---|---|
