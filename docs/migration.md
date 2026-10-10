@@ -1,6 +1,14 @@
 # 安装、升级与数据迁移运行手册
 
-## 当前验收入口（唯一当前表）
+## 当前验收入口（66150be，唯一当前）
+
+正式全轮215单元+426真实集成=641PASS，30E2E（28真实Chromium+2日期）PASS，EXIT0/cleanup。固定1000PASS、finalHTTP5.047623651秒；固定5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/CH且六完整性断言PASS21.102973929秒，不是5000或SLO验收通过。
+
+新镜像实际EXIT1：CH target233/ENOSPC创建preprocessed_configs；build/install/manifest/budget/55DDL/licensing/seed已过，native阶段未开始，targetcleanup完成，F归档证据。不推测底层原因。本地01e2c5d已保存，不预称远端确认；托管不触发。下文全为按SHA保留的历史阶段与设计，预算不保证scan/heap或性能收益。
+
+## 历史SHA阶段记录与设计原文
+
+## 历史此前当前表
 
 | 源/阶段 | 实际证据与边界 |
 |---|---|

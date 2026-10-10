@@ -1,0 +1,1 @@
+clickhouse-target-1  | std::exception. Code: 1001, type: std::__1::filesystem::filesystem_error, e.what() = filesystem error: in create_directories: No space left on device ["/var/lib/clickhouse/preprocessed_configs"], Stack trace (when copying this message, always include the lines below):

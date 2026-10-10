@@ -85,3 +85,5 @@ bd3f51fc1f7dba84a1fdbde75edfcdbecfcf24e8完整本地runner实际EXIT1/cleanup。
 完整不可变 `66150be474e9988d0410256cde005d153e021680` 实际EXIT0/owned cleanup。55文件215单元、156文件426真实集成，共641应用检查PASS/0FAIL/0skip/0unhandled；30E2E=28真实Chromium+2日期全PASS/0skip。lint/types/SDK/build、55迁移、compiled入口、真实native operational恢复及fresh PG/CH/Redis通过。报告经敏感字段检查/脱敏，原loghash/source1198blob归属与summary见 `test-evidence/main-66150be-*`。浏览器本轮list-only日志，无reporterJSON则不伪造。
 
 最终中文workspace/SEO/AI1440/390、overview1440/375和annotation实图立即存 `screenshots/66150be/`，实际PNG像素、语言及hash入summary；annotation原case英文1280视口，不标中文390，metadata仅保存实际输出，不伪造附件。Google/模型运输模拟；所有旧FAIL不改写。661新image和当前fixedload完成尚未记录，托管/跨宿主DR未执行，不把完整性通过冒称性能达标。
+
+66150be新镜像首轮实际EXIT1：build/install/compiled健康、source-image一致、55DDL/0542索引/三budget默认/完整notice/真实HTTP已过，但owned目标CH启动退出233，实际filesystem报ENOSPC于preprocessed_configs；native独立签名恢复未运行，不称该新镜像完整运维PASS。cleanup后3.1GiB可用/inodes43%不能证明启动时峰值；没有线程失败证据，不改limit。安全先过阶段文件与目标错误摘录/原日志hash见 `test-evidence/main-66150be-image-first-failed-*`，不复制原services/state/keys；旧FAIL全部保留。

@@ -1,6 +1,14 @@
 # ClickHouse SELECT 预算设计（历史设计）
 
-## 当前验收入口（2818bd4）
+## 当前验收入口（66150be，唯一当前）
+
+正式全轮215单元+426真实集成=641PASS，30E2E（28真实Chromium+2日期）PASS，EXIT0/cleanup。固定1000PASS、finalHTTP5.047623651秒；固定5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/CH且六完整性断言PASS21.102973929秒，不是5000或SLO验收通过。
+
+新镜像实际EXIT1：CH target233/ENOSPC创建preprocessed_configs；build/install/manifest/budget/55DDL/licensing/seed已过，native阶段未开始，targetcleanup完成，F归档证据。不推测底层原因。本地01e2c5d已保存，不预称远端确认；托管不触发。下文全为按SHA保留的历史阶段与设计，预算不保证scan/heap或性能收益。
+
+## 历史SHA阶段记录与设计原文
+
+## 历史2818bd4验收入口
 
 c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000最终FAIL（4900accepted/2unsent/39delayed、排空超时、最终断言未执行），不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
 

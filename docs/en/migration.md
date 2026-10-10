@@ -1,6 +1,14 @@
 # Installation, upgrades and migration runbook
 
-## Current validation entry
+## Current validation entry (66150be)
+
+661 formal full:215 unit+426 real integration=641 PASS,30 E2E(28 real Chromium+2 date)PASS,EXIT0/cleanup. Fixed1000 PASS(finalHTTP5.047623651s). Fixed5000 overall FAIL:4350accepted/13unsent/35delayed,drainfalse120s;accepted4350 final PV4350/coverage1/CH and six integrity assertions PASS,21.102973929s.Not5000/SLO acceptance.
+
+New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/install/manifest/budget/55DDL/licensing/seed passed,native phase not started,targetcleanup complete.F archives evidence;no inferred root cause.Local01e2c5d saved,remote confirmation not claimed.Hosted workflows not triggered.All records below are historical SHA-bound stages.
+
+## Historical stage records and design
+
+## Historical preceding validation entry
 
 | Source/stage | Actual evidence and boundary |
 |---|---|
