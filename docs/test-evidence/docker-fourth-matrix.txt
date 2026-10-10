@@ -1,0 +1,445 @@
+ Network baize_lifecycle_27453_default  Creating
+ Network baize_lifecycle_27453_default  Created
+ Volume baize_lifecycle_27453_postgres_data  Creating
+ Volume baize_lifecycle_27453_postgres_data  Created
+ Volume baize_lifecycle_27453_redis_data  Creating
+ Volume baize_lifecycle_27453_redis_data  Created
+ Volume baize_lifecycle_27453_app_data  Creating
+ Volume baize_lifecycle_27453_app_data  Created
+ Volume baize_lifecycle_27453_app_keys  Creating
+ Volume baize_lifecycle_27453_app_keys  Created
+ Container baize_lifecycle_27453-postgres-1  Creating
+ Container baize_lifecycle_27453-redis-1  Creating
+ Container baize_lifecycle_27453-redis-1  Created
+ Container baize_lifecycle_27453-postgres-1  Created
+ Container baize_lifecycle_27453-app-1  Creating
+ Container baize_lifecycle_27453-app-1  Created
+ Container baize_lifecycle_27453-redis-1  Starting
+ Container baize_lifecycle_27453-postgres-1  Starting
+ Container baize_lifecycle_27453-postgres-1  Started
+ Container baize_lifecycle_27453-redis-1  Started
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Starting
+ Container baize_lifecycle_27453-app-1  Started
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-app-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-app-1  Healthy
+Real HTTP administrator/site/collector fixture persisted.
+Actual collected event export file produced and downloaded.
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/baize_lifecycle_27453/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/baize_lifecycle_27453/tombstones.watermark.json Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/baize_lifecycle_27453/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/baize_lifecycle_27453/tombstones.jsonl Copied
+{"verified":true,"records":0}
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/baize_lifecycle_27453/app-data Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/baize_lifecycle_27453/app-data Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/baize_lifecycle_27453/keyring Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/baize_lifecycle_27453/keyring Copied
+backups/baize_lifecycle_27453
+Post-backup deletion durably journaled.
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+./keyring/master.v1.key: OK
+./master.key: OK
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.Sq0hmY/tombstones.jsonl Copying
+Error response from daemon: Could not find the file /app/data/tombstones.jsonl in container bc0e0c1a36e85d04479a4f1ce5fdde25cdaa7c344ca1d9bca720988aa20392f7
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+./keyring/master.v1.key: OK
+./master.key: OK
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.RbVyQw/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.RbVyQw/tombstones.jsonl Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.RbVyQw/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.RbVyQw/tombstones.watermark.json Copied
+file:///tmp/baize-full-ci.WPkl6i/scripts/ops-validate-journal.mjs:10
+if(!Number.isSafeInteger(watermark.records)||watermark.records<0||!(/^[a-f0-9]{64}$/).test(watermark.sha256)||watermark.records!==lines.length||watermark.sha256!==createHash('sha256').update(data).digest('hex'))throw Error('Deletion journal does not match independent watermark');
+                                                                                                                                                                                                                         ^
+
+Error: Deletion journal does not match independent watermark
+    at file:///tmp/baize-full-ci.WPkl6i/scripts/ops-validate-journal.mjs:10:218
+
+Node.js v24.19.0
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+./keyring/master.v1.key: OK
+./master.key: OK
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.Nu5MMk/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.Nu5MMk/tombstones.jsonl Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.Nu5MMk/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.Nu5MMk/tombstones.watermark.json Copied
+{"verified":true,"records":1}
+{"restored":true,"deletionRecords":1,"reaggregated":true,"rebuild":{"sites":1,"rounds":1,"verified":true},"fileCleanup":{"completed":1,"pending":0},"schedulesPaused":true}
+Restored baize_restore_23828 with independent target data/key volumes; deletion journal verified and replayed. No production traffic switched.
+Fresh target data volume restored asset fixture and purged revoked export files.
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 202B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/baize-analytics:local
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/baize-analytics:local
+#4 DONE 0.0s
+
+#5 [2/2] RUN printf 'ALTER TABLE goals RENAME TO goals_restore_failure;\n' > /app/db/migrations/9998_ops_restore_failure.sql
+#5 DONE 4.5s
+
+#6 exporting to image
+#6 exporting layers
+#6 exporting layers 0.4s done
+#6 writing image sha256:65e4d9575f5ff8ef5692bca1b67d8dfe833d4cb03d9d6d6e4248653bb4967cdc done
+#6 naming to docker.io/library/baize-analytics:ops-restore-failed-17781 done
+#6 DONE 0.4s
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+./keyring/master.v1.key: OK
+./master.key: OK
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.ONz9SF/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.ONz9SF/tombstones.jsonl Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.ONz9SF/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/restore-check.ONz9SF/tombstones.watermark.json Copied
+{"verified":true,"records":1}
+/app/scripts/restore-rebuild.ts:13
+  if(pending.some(s=>s.dead_letter_at!==null||s.attempts>=3))throw new Error('Restore rebuild dead-letter failure; queries remain closed');
+                                                                   ^
+
+Error: Restore rebuild dead-letter failure; queries remain closed
+    at runRestoreRebuild (/app/scripts/restore-rebuild.ts:13:68)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async <anonymous> (/app/scripts/restore-runtime.ts:31:17)
+
+Node.js v24.21.0
+
+Restore failed; target database baize_restore_worker_failure_23397 and isolated volumes retained for diagnosis. No traffic switched; no success marker written.
+Actual restore worker SQL failure retained target DB without success marker/output or source traffic switch.
+ Container baize_lifecycle_27453-app-1  Stopping
+ Container baize_lifecycle_27453-app-1  Stopped
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081516Z/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081516Z/tombstones.watermark.json Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081516Z/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081516Z/tombstones.jsonl Copied
+{"verified":true,"records":1}
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081516Z/app-data Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081516Z/app-data Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081516Z/keyring Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081516Z/keyring Copied
+
+> baize-analytics@0.1.0 db:migrate
+> tsx scripts/migrate.ts
+
+Database migrations applied
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Starting
+ Container baize_lifecycle_27453-app-1  Started
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-app-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Healthy
+Upgrade passed; recovery point: backups/20261010T081516Z
+ Container baize_lifecycle_27453-app-1  Stopping
+ Container baize_lifecycle_27453-app-1  Stopped
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081530Z/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081530Z/tombstones.watermark.json Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081530Z/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081530Z/tombstones.jsonl Copied
+{"verified":true,"records":1}
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081530Z/app-data Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081530Z/app-data Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081530Z/keyring Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081530Z/keyring Copied
+Error response from daemon: No such image: baize-missing-image:must-not-exist
+Upgrade failed; restoring schema/data and prior application image. Recovery point retained at: backups/20261010T081530Z
+ Container baize_lifecycle_27453-app-1  Stopping
+ Container baize_lifecycle_27453-app-1  Stopped
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.aSRMbf/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.aSRMbf/tombstones.jsonl Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.aSRMbf/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.aSRMbf/tombstones.watermark.json Copied
+{"verified":true,"records":1}
+NOTICE:  drop cascades to 61 other objects
+DETAIL:  drop cascades to table schema_migrations
+drop cascades to table users
+drop cascades to table auth_sessions
+drop cascades to table sites
+drop cascades to table site_members
+drop cascades to table events
+drop cascades to table event_data
+drop cascades to table event_keys
+drop cascades to table identity_map
+drop cascades to table visitor_first_seen
+drop cascades to table tombstones
+drop cascades to table audit_logs
+drop cascades to table aggregation_state
+drop cascades to table outbox
+drop cascades to table bot_counts
+drop cascades to table sessions
+drop cascades to table stats_hourly
+drop cascades to table stats_daily
+drop cascades to table page_vitals
+drop cascades to table goals
+drop cascades to table funnels
+drop cascades to table analytics_definitions
+drop cascades to table api_tokens
+drop cascades to table reports
+drop cascades to table notification_channels
+drop cascades to table report_schedules
+drop cascades to table notification_jobs
+drop cascades to table notification_logs
+drop cascades to table share_links
+drop cascades to table alert_rules
+drop cascades to table site_invites
+drop cascades to table export_jobs
+drop cascades to table replay_chunks
+drop cascades to table heatmap_points
+drop cascades to table experiments
+drop cascades to table experiment_assignments
+drop cascades to table external_connections
+drop cascades to table oauth_states
+drop cascades to table gsc_stats
+drop cascades to table ga_import
+drop cascades to table seo_scans
+drop cascades to table rank_history
+drop cascades to table ai_budget
+drop cascades to table ai_calls
+drop cascades to table ai_suggestions
+drop cascades to function preserve_ai_evidence()
+drop cascades to table instance_keyring
+drop cascades to table sso_config
+drop cascades to table sso_mappings
+drop cascades to table sso_states
+drop cascades to table identity_bindings
+drop cascades to table identity_tombstones
+drop cascades to table external_jobs
+drop cascades to table export_file_cleanup
+drop cascades to table revenue_orders
+drop cascades to table instance_settings
+drop cascades to table experiment_contributions
+drop cascades to table event_store_state
+drop cascades to table event_store_uploads
+drop cascades to table event_store_maintenance
+drop cascades to table event_store_batches
+DROP SCHEMA
+CREATE SCHEMA
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-app-1  Recreate
+ Container baize_lifecycle_27453-app-1  Recreated
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Starting
+ Container baize_lifecycle_27453-app-1  Started
+{"restored":true,"deletionRecords":1,"reaggregated":true,"rebuild":{"sites":1,"rounds":1,"verified":true},"fileCleanup":{"completed":1,"pending":0},"schedulesPaused":true}
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-app-1  Running
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-app-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Healthy
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 345B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/baize-analytics:local
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/baize-analytics:local
+#4 CACHED
+
+#5 [2/2] RUN printf 'ALTER TABLE sites ADD COLUMN ops_upgrade_probe text;\n' > /app/db/migrations/9999_ops_failure_probe.sql
+#5 DONE 2.0s
+
+#6 exporting to image
+#6 exporting layers
+#6 exporting layers 0.8s done
+#6 writing image sha256:3035fee466ee9b990b26d4370c274b2fe35fa751c170048f01016d5aac9dd6bd done
+#6 naming to docker.io/library/baize-analytics:ops-failed-22439 done
+#6 DONE 0.8s
+ Container baize_lifecycle_27453-app-1  Stopping
+ Container baize_lifecycle_27453-app-1  Stopped
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081553Z/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to backups/20261010T081553Z/tombstones.watermark.json Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081553Z/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to backups/20261010T081553Z/tombstones.jsonl Copied
+{"verified":true,"records":1}
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081553Z/app-data Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data to backups/20261010T081553Z/app-data Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081553Z/keyring Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/keys to /tmp/baize-full-ci.WPkl6i/.baize/key-backups/20261010T081553Z/keyring Copied
+
+> baize-analytics@0.1.0 db:migrate
+> tsx scripts/migrate.ts
+
+Database migrations applied
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-app-1  Recreate
+ Container baize_lifecycle_27453-app-1  Recreated
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Starting
+ Container baize_lifecycle_27453-app-1  Started
+ Container baize_lifecycle_27453-app-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+container baize_lifecycle_27453-app-1 is unhealthy
+Upgrade failed; restoring schema/data and prior application image. Recovery point retained at: backups/20261010T081553Z
+ Container baize_lifecycle_27453-app-1  Stopping
+ Container baize_lifecycle_27453-app-1  Stopped
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.wpPFNy/tombstones.jsonl Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.jsonl to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.wpPFNy/tombstones.jsonl Copied
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.wpPFNy/tombstones.watermark.json Copying
+ baize_lifecycle_27453-app-1 copy baize_lifecycle_27453-app-1:/app/data/tombstones.watermark.json to /tmp/baize-full-ci.WPkl6i/.baize/rollback-journal.wpPFNy/tombstones.watermark.json Copied
+{"verified":true,"records":1}
+NOTICE:  drop cascades to 61 other objects
+DETAIL:  drop cascades to function preserve_ai_evidence()
+drop cascades to table aggregation_state
+drop cascades to table ai_budget
+drop cascades to table ai_calls
+drop cascades to table ai_suggestions
+drop cascades to table alert_rules
+drop cascades to table analytics_definitions
+drop cascades to table api_tokens
+drop cascades to table audit_logs
+drop cascades to table auth_sessions
+drop cascades to table bot_counts
+drop cascades to table event_data
+drop cascades to table event_keys
+drop cascades to table event_store_batches
+drop cascades to table event_store_maintenance
+drop cascades to table event_store_state
+drop cascades to table event_store_uploads
+drop cascades to table events
+drop cascades to table experiment_assignments
+drop cascades to table experiment_contributions
+drop cascades to table experiments
+drop cascades to table export_file_cleanup
+drop cascades to table export_jobs
+drop cascades to table external_connections
+drop cascades to table external_jobs
+drop cascades to table funnels
+drop cascades to table ga_import
+drop cascades to table goals
+drop cascades to table gsc_stats
+drop cascades to table heatmap_points
+drop cascades to table identity_bindings
+drop cascades to table identity_map
+drop cascades to table identity_tombstones
+drop cascades to table instance_keyring
+drop cascades to table instance_settings
+drop cascades to table notification_channels
+drop cascades to table notification_jobs
+drop cascades to table notification_logs
+drop cascades to table oauth_states
+drop cascades to table outbox
+drop cascades to table page_vitals
+drop cascades to table rank_history
+drop cascades to table replay_chunks
+drop cascades to table report_schedules
+drop cascades to table reports
+drop cascades to table revenue_orders
+drop cascades to table schema_migrations
+drop cascades to table seo_scans
+drop cascades to table sessions
+drop cascades to table share_links
+drop cascades to table site_invites
+drop cascades to table site_members
+drop cascades to table sites
+drop cascades to table sso_config
+drop cascades to table sso_mappings
+drop cascades to table sso_states
+drop cascades to table stats_daily
+drop cascades to table stats_hourly
+drop cascades to table tombstones
+drop cascades to table users
+drop cascades to table visitor_first_seen
+DROP SCHEMA
+CREATE SCHEMA
+database.dump: OK
+tombstones.jsonl: OK
+tombstones.watermark.json: OK
+master-key.sha256: OK
+app-data.tar.gz: OK
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-app-1  Recreate
+ Container baize_lifecycle_27453-app-1  Recreated
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-app-1  Starting
+ Container baize_lifecycle_27453-app-1  Started
+{"restored":true,"deletionRecords":1,"reaggregated":true,"rebuild":{"sites":1,"rounds":1,"verified":true},"fileCleanup":{"completed":1,"pending":0},"schedulesPaused":true}
+ Container baize_lifecycle_27453-redis-1  Running
+ Container baize_lifecycle_27453-postgres-1  Running
+ Container baize_lifecycle_27453-app-1  Running
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-app-1  Waiting
+ Container baize_lifecycle_27453-postgres-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Waiting
+ Container baize_lifecycle_27453-redis-1  Healthy
+ Container baize_lifecycle_27453-postgres-1  Healthy
+ Container baize_lifecycle_27453-app-1  Healthy
+Committed schema mutation + failed health rolled back database and application.
+ count
+-------
+    28
+(1 row)

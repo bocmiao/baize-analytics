@@ -58,6 +58,8 @@ ClickHouse增量进展（当前工作区，非b56b7e9索引）：实际PG/CH/Red
 
 共享脚本首轮76单元/160集成通过、1旧升级fixture失败：014历史schema故意没有027调度字段，fixture改为真实rebuildSite使用旧lease合约；产品未兼容伪造旧新混合schema。第二轮237应用测试通过，但18E2E有1旧文案selector失败；error-context中真实新事件和在线1已显示，测试保留精确baseline+1、改为新UI句子，fresh完整18通过。两轮原始EXIT1日志保留fourth-shared-ci-first-failed.txt/fourth-shared-ci-e2e-first-failed.txt。组件最终通过，尚未把失败的整脚本说成EXIT0。
 
-新bf77镜像189核心源码manifest与025/026/027已build；完整Docker生命周期仍在运行，将单独记录真实最终EXIT。此源码快照不包含下一批单连接错误路径/邀请原子audit修复与028历史模块；这些工作树专项通过不是本快照237测试证据。
+新bf77镜像 `bf77b54e1ca7db572cccc4e77ec8e937550157d67b2a5bdb5dd2b4afbad93140` 新build与完整Docker生命周期均EXIT0，真实PG28条迁移，189条source/image SHA一致含025/026/027。逐文件对b3eee85核验187条一致，仅两份后续CNB同步脚本不同（不属于本应用核心验收）；应用/package/sdk/全部迁移与该main一致。compiledNode、真实采集导出、新卷恢复、worker故障拒绝假成功和两类完整升级回滚通过，证据docker-fourth-main.json/docker-fourth-build.txt/docker-fourth-matrix.txt及docs/validation/docker-fourth-*。此源码快照不包含下一批单连接错误路径/邀请原子audit修复与028历史模块；这些工作树专项通过不是本快照237测试证据。
 
 CNB配置4386ec2已直接main，GitHub私有main权威，父线程确认私有空仓；真实本地file-only7分支同步测试通过，空仓bootstrap为显式确认空refs后普通push。CNB_TOKEN兼容输入不保证权限，官方schema/密钥引用/调度和远端run未实测。GitHub账号级托管CI阻断继续单列，不改计费、不重跑。完整F/P2仍未完成，不能把可靠镜像称PG-only、将顺序百万称实时或1C2G承诺。
+
+补充 main 040b27e：worker/export失败分支复用已持client，邀请register/accept审计与业务原子同事务。旧真实max1连接池超时与旧register500证据保存；独立索引7文件37相关回归全部通过、lint/typecheck/build通过，fresh编译入口管理员向导→invited viewer专项1/1通过。不能将37与前批237相加为独立总数，也不能称bf77已覆盖这些新源码；下一批新镜像仍需实测。

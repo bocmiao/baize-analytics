@@ -1,0 +1,807 @@
+{
+  "image": "sha256:bf77b54e1ca7db572cccc4e77ec8e937550157d67b2a5bdb5dd2b4afbad93140",
+  "source_commit_reference": "b3eee850b6be049bbc034ddc3e9a4335e0a2eb16",
+  "artifact": "/tmp/baize-full-ci.WPkl6i",
+  "build_exit_code": 0,
+  "matrix_exit_code": 0,
+  "source_image_manifest_entries": 189,
+  "source_image_manifests_equal": true,
+  "commit_hash_matches": 187,
+  "commit_hash_exceptions": [
+    "scripts/ops-sync-test.sh",
+    "scripts/sync-main-cnb.sh"
+  ],
+  "exception_boundary": "Only later CNB synchronization/bootstrap script changes differ; all application/package/sdk/migration source entries match b3eee85. Later worker/governance WIP is outside this image.",
+  "applied_migrations": 28,
+  "migration_coverage": [
+    "025_clickhouse_incremental.sql",
+    "026_governance_read_metadata.sql",
+    "027_worker_fairness.sql"
+  ],
+  "checks_passed": [
+    "compiled Node production startup",
+    "actual HTTP admin/site/collection/export",
+    "strict missing/reset journal rejection before target database",
+    "fresh database and isolated data/key volume restore",
+    "latest tombstone replay: events=0,tombstones=1",
+    "actual revoked export file cleanup and retained ordinary asset",
+    "persisted rebuild verification",
+    "actual worker SQL failure: no success marker/output, unchanged source routing",
+    "same-image upgrade",
+    "missing-image full rollback",
+    "committed schema mutation + HTTP503 full DB/volume/old-app rollback"
+  ],
+  "probe_before_rollback": {
+    "column_count": 1,
+    "health_status": 503
+  },
+  "probe_after_rollback": {
+    "column_count": 0,
+    "health_status": 200
+  },
+  "resources": "Own test stacks/target volumes/fault images cleaned; original CH/devPG/Redis untouched",
+  "log_normalization": "rstrip only; no content/outcome removed; checked against actual test master key/database password",
+  "shared_ci_boundary": "Separate component237 tests and fresh18E2E evidence does not turn earlier full-script failures into exit0",
+  "logs": {
+    "build": "docker-fourth-build.txt",
+    "matrix": "docker-fourth-matrix.txt"
+  },
+  "full_commit_manifest_check": [
+    {
+      "path": "db/migrations/001_core.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/002_analytics.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/003_governance.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/004_external.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/005_sso.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/006_worker.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/007_identity.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/008_external_jobs.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/009_external_job_retries.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/010_file_cleanup.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/010_suggestion_category.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/011_revenue.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/012_analytics_indexes.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/013_identity_backfill.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/014_privacy_cleanup.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/015_analytics_rebuild.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/016_instance_settings.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/017_privacy_page_payload.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/018_suggestion_priority.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/019_experiment_contributions.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/020_privacy_alias_cleanup.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/021_privacy_page_alias.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/022_clickhouse.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/023_clickhouse_cleanup.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/024_privacy_aggregate_alias.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/025_clickhouse_incremental.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/026_governance_read_metadata.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "db/migrations/027_worker_fairness.sql",
+      "matches_commit": true
+    },
+    {
+      "path": "package-lock.json",
+      "matches_commit": true
+    },
+    {
+      "path": "package.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/contracts/index.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/LICENSE",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/NOTICE",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/README.md",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/china.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/provenance.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/anhui.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/aomen.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/beijing.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/chongqing.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/fujian.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/gansu.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/guangdong.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/guangxi.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/guizhou.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/hainan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/hebei.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/heilongjiang.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/henan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/hubei.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/hunan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/jiangsu.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/jiangxi.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/jilin.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/liaoning.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/neimenggu.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/ningxia.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/qinghai.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/shandong.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/shanghai.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/shanxi.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/shanxi1.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/sichuan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/taiwan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/tianjin.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/xianggang.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/xinjiang.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/xizang.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/yunnan.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/geography/province/zhejiang.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/LICENSE",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/README.md",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/package.json",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/player.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/browser.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/consent-banner.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/consent.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/cookie-domain.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/heatmap.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/index.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/mini-program.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/privacy.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/replay-privacy.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/replay.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "packages/tracker/src/vitals.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/backup.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/benchmark-analytics.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/build-tracker.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ci-common.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/continuous-pipeline-benchmark.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/full-pipeline-benchmark.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/migrate.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-artifact-manifest.mjs",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-clickhouse-test.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-journal-test.mjs",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-license-inventory.mjs",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-lifecycle-api.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-lifecycle-test.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-maintenance.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-migrate-journal.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-restore-failure-test.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-restore-volume.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-sdk-test.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-sync-test.sh",
+      "matches_commit": false
+    },
+    {
+      "path": "scripts/ops-upgrade-failure-test.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/ops-validate-journal.mjs",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/partitions.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/restore-rebuild.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/restore-replica.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/restore-runtime.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/restore.sh",
+      "matches_commit": true
+    },
+    {
+      "path": "scripts/sync-main-cnb.sh",
+      "matches_commit": false
+    },
+    {
+      "path": "scripts/wordpress-acceptance.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "sdk/clickhouse.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "sdk/miniprogram.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/analytics.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/app.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/auth.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/bot-filter.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/bot-rules.json",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/clickhouse-cleanup.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/clickhouse-incremental.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/clickhouse-mirror.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/clickhouse-store.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/collect.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/content-analytics.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/context.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/cookie-domain-server.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/db.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/deletion.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/dimensions.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/event-store.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/external-errors.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/external-worker.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/external.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/file-cleanup.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/funnel-analysis.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/geography-analytics.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/geoip-settings.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/geoip.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/governance-worker.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/governance.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/identity.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/keyring.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/main.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/outbound.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/partitions.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/realtime-analysis.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/retention-analysis.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/revenue-identity.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/security.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/site-export.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/site-hosts.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/sites.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/sso.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/worker-main.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/server/worker.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/shared/error-codes.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/AnalysisDetails.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/Charts.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/Connectors.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/DashboardFilters.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/ExperimentResults.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/ExtendedAnalysis.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/FunnelDropoff.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/GeoIpSettings.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/GeographicMap.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/GeographyExplorer.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/GovernanceForms.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/RealtimeSummary.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/ReplayViewer.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/RevenueIdentityViews.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/SeoScans.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/SiteMetadata.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/SourceSettings.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/api.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/assets.d.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/dictionary.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/errorMessages.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/geographyNames.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/i18n-extra.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/i18n.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/main.tsx",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/style.css",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/time.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "src/web/vite-env.d.ts",
+      "matches_commit": true
+    },
+    {
+      "path": "tsconfig.json",
+      "matches_commit": true
+    },
+    {
+      "path": "tsconfig.server.json",
+      "matches_commit": true
+    },
+    {
+      "path": "vite.config.ts",
+      "matches_commit": true
+    }
+  ]
+}

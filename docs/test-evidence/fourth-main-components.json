@@ -38,7 +38,7 @@
     "second shared CI: 237 tests pass, browser17/18; obsolete realtime sentence selector; real event and exact online count in error context; corrected selector, fresh18/18 pass"
   ],
   "runner_status": "shared script attempts EXIT1 preserved; all component commands passed after fixes, complete final script EXIT0 not claimed",
-  "docker": "new bf77 image build passed; full lifecycle still running at this source milestone",
+  "docker": "bf77b54e1ca7db572cccc4e77ec8e937550157d67b2a5bdb5dd2b4afbad93140 build and full lifecycle EXIT0;189 artifact/image hashes equal,187 core files agree b3eee85;2 later CNB scripts differ;28 migrations",
   "remote_ci": {
     "github_actions": "not run; account billing/quota blocks before steps",
     "cnb": "not run; parent authorized private repository and login; provider schema/secrets/runtime pending"
