@@ -8,6 +8,11 @@ export COMPOSE_PROJECT_NAME="baize_lifecycle_${RANDOM}"
 cleanup() { if [ -n "${restore_db:-}" ]; then docker volume rm "${COMPOSE_PROJECT_NAME}_${restore_db}_app_data" "${COMPOSE_PROJECT_NAME}_${restore_db}_app_keys" >/dev/null 2>&1 || true; fi; docker compose logs --no-color > "/tmp/$COMPOSE_PROJECT_NAME-app.log" 2>&1 || true; docker compose down -v --remove-orphans >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 if [ "${BAIZE_OPS_SKIP_BUILD:-0}" = 1 ]; then docker compose up -d --wait --wait-timeout 120; else ./install.sh; fi
+# A cached old image cannot count as acceptance of current application/migrations.
+node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-source.sha256"
+docker compose exec -T app node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-image.sha256"
+diff -u ".baize/$COMPOSE_PROJECT_NAME-source.sha256" ".baize/$COMPOSE_PROJECT_NAME-image.sha256"
+docker compose images -q app > ".baize/$COMPOSE_PROJECT_NAME-image.id"
 node --import tsx scripts/ops-lifecycle-api.ts seed ".baize/$COMPOSE_PROJECT_NAME-state.json"
 node --import tsx scripts/ops-lifecycle-api.ts queue-export ".baize/$COMPOSE_PROJECT_NAME-state.json"
 docker compose exec -T app node --import tsx scripts/ops-maintenance.ts

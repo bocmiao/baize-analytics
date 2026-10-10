@@ -17,6 +17,10 @@ trap restore_exit EXIT
 docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/tombstones.jsonl"
 docker compose cp app:/app/data/tombstones.watermark.json "$restore_dir/tombstones.watermark.json"
 node scripts/ops-validate-journal.mjs "$restore_dir/tombstones.jsonl" "$restore_dir/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
+source_replica="$(docker compose exec -T app printenv CLICKHOUSE_URL)"
+target_replica="${BAIZE_RESTORE_CLICKHOUSE_URL:-}"
+SOURCE_REPLICA="$source_replica" TARGET_REPLICA="$target_replica" node --input-type=module -e '
+if(process.env.TARGET_REPLICA){const t=new URL(process.env.TARGET_REPLICA),s=process.env.SOURCE_REPLICA?new URL(process.env.SOURCE_REPLICA):null;if(s&&t.origin===s.origin&&t.pathname.replace(/\/+$/,"")===s.pathname.replace(/\/+$/,""))throw Error("Restore target cannot share source ClickHouse endpoint");}'
 exists="$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$new_db'")"
 [ "$exists" = 0 ] || { echo 'Target already exists; refusing overwrite.' >&2; exit 1; }
 project="${COMPOSE_PROJECT_NAME:-baize-analytics}"
@@ -52,6 +56,9 @@ docker compose exec -T postgres pg_restore -U baize -d "$new_db" --exit-on-error
 docker compose run --rm --no-deps --entrypoint node \
   --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data --env KEYS_DIR=/restore-keys \
   --env REQUIRE_DELETION_JOURNAL=1 \
+  --env "CLICKHOUSE_URL=$target_replica" --env "CLICKHOUSE_USER=${BAIZE_RESTORE_CLICKHOUSE_USER:-default}" \
+  --env "CLICKHOUSE_PASSWORD=${BAIZE_RESTORE_CLICKHOUSE_PASSWORD:-}" --env RESTORE_CLICKHOUSE_EXPLICIT=1 \
+  --env "RESTORE_SOURCE_CLICKHOUSE_URL=$source_replica" \
   --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/restore-runtime.ts
 mkdir -p .baize/restores
 printf '{"database":"%s","dataVolume":"%s","keysVolume":"%s","trafficSwitched":false}\n' "$new_db" "$volume" "$keys_volume" > ".baize/restores/$new_db.json"

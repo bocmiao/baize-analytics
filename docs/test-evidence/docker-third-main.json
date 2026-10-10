@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "exitCode": 0,
+  "image": "sha256:f8dc7f94dcd5fc86dfedfc841f8af64d528f54de798115e59307b311434f8e90",
+  "sourceEntries": 170,
+  "sourceImageMatch": true,
+  "migrationsApplied": 25,
+  "includesMigration024": true,
+  "entrypoint": "compiled Node, not tsx",
+  "finalLog": "docker-third-final.txt",
+  "priorFailures": [
+    {
+      "exitCode": 1,
+      "image": "sha256:dd0dd61f0515b1894ff371cfeea678fd85775d09398c110d620652acf24e699e",
+      "cause": "missing JSON import attribute in compiled Node",
+      "log": "docker-third-json-import-failed.txt"
+    },
+    {
+      "exitCode": 1,
+      "image": "sha256:12f6064a9be373278cc2eb5706717f8e15b355fcbf1ec10a7bf8cbe0ec69e674",
+      "cause": "public source configuration files unreadable by non-root image manifest verifier",
+      "log": "docker-third-permission-failed.txt"
+    }
+  ],
+  "coverage": [
+    "compiled server health and exact source manifest",
+    "administrator/site/collector/export/backup",
+    "strict missing/reset independent journal rejects before DB creation",
+    "separate database/data/key volumes restore",
+    "asset preserved and revoked export files absent",
+    "injected actual aggregation SQL failure rejects restore success",
+    "same-image upgrade",
+    "missing-image rollback",
+    "committed-schema HTTP503 rollback restores database column and health"
+  ],
+  "browser": "separate fresh-PG source artifact E2E: 15 passed; no additional Docker-browser test"
+}

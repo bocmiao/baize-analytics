@@ -1,7 +1,8 @@
+import {apiErrorMessage} from './errorMessages';
 export async function api<T = Record<string, unknown>>(path:string, body?:unknown, method=body === undefined?'GET':'POST', signal?:AbortSignal):Promise<T> {
  const response=await fetch(path,{method,signal,credentials:'same-origin',headers:body===undefined?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
  const result=await response.json().catch(()=>({error:`HTTP ${response.status}`}));
- if(!response.ok) throw new Error(`HTTP ${response.status}: ${result.message||result.error||'请求失败'}`);
+ if(!response.ok) throw new Error(apiErrorMessage(result,response.status));
  return result as T;
 }
 export type Row = Record<string, unknown>;

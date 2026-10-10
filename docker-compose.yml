@@ -8,6 +8,9 @@ services:
     environment:
       DATABASE_URL: postgres://baize:${POSTGRES_PASSWORD:?Run ./install.sh first}@postgres:5432/baize
       REDIS_URL: redis://redis:6379
+      CLICKHOUSE_URL: ${CLICKHOUSE_URL:-}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
       HOST: 0.0.0.0

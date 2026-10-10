@@ -41,3 +41,5 @@ server {
 旧版本非空删除日志没有水位时，应用会拒绝启动。先停止应用，在可访问原数据库与原数据卷的维护容器显式执行 `node --import tsx scripts/ops-migrate-journal.ts`；该工具逐条检查数据库删除标记已存在于独立日志，才 fsync 写入水位。不能用于初始化丢失日志、不能替代独立日志恢复，禁止在恢复流程自动运行。
 
 升级开始前检查工作区至少2GiB可用空间（`BAIZE_UPGRADE_MIN_FREE_BYTES` 可提高），并预留128MiB紧急回滚空间，回滚开始先释放预留。该检查不能保证其他并发Docker拉取不会耗尽存储；升级期间停止无关构建/拉取并监控Docker数据盘。任何回滚失败都必须保留恢复点，应用停机后由运营者释放空间并手动恢复，不能把旧镜像启动或部分回滚视为成功。
+
+ClickHouse是可选副本，PostgreSQL始终权威。新数据库恢复默认禁用ClickHouse，清除目标数据库复制指针、上传/维护旧任务并将存储模式设回postgres，不读取、删除或清理源副本。需要新目标副本时显式设置 `BAIZE_RESTORE_CLICKHOUSE_URL`、`BAIZE_RESTORE_CLICKHOUSE_USER`、`BAIZE_RESTORE_CLICKHOUSE_PASSWORD`；目标须为不同endpoint（同endpoint仅改query/database不算独立目标）。当前副本表namespace固定，不能让新旧恢复实例共用。新目标恢复完成后由管理员明确启用mirror并重建，不直接信任备份中的snapshot。原库升级回滚仍使用原ClickHouse删除屏障，失败不会宣称恢复成功。

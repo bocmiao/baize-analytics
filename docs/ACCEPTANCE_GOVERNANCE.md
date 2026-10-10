@@ -83,3 +83,5 @@ npm exec eslint src/server/governance.ts src/server/governance-worker.ts src/ser
 中间真实回归发现共享privacy helper漏page_id业务属性，导致daily-salt原值持久化与随后月报用例中断；tracker补统一alias及021forward后修复。另时钟注入暴露PG微秒与JS毫秒边界，测试事件/调度改为明确已发生的过去时间，未放宽生产判定。修复后的最新33/33为上方实际结果。
 
 追加目标告警事件时间回归：会话23:59开始、00:01首次目标完成，归入完成日而非会话开始日。目标/漏斗重建读取完整明细保留期上下文，并使用站点 session_timeout_minutes，避免原固定2/4天片段与默认阈值改变会话。最新同组合 **5文件34/34通过**（06:27:58，4.63秒），全局typecheck与所属lint退出0。告警细分仍受原始明细保留期边界影响；不声称可以从已清除的明细还原无限历史。
+
+实验定义已抽成共享 `experimentDefinitionSchema`：严格字段、name≤128、trim后的2–10唯一分组、各组≤64、goal≤128。真实POST/PG拒重复、trim后重复、单组、65字超长、11组并确认没有写入实验。最新治理相同 **5文件34/34通过**（06:33:59，5秒）及type/lint通过；随后code/test按集成负责人要求冻结，等全仓一致版本验证。新扩展UI已由web完成完整 **13项E2E通过**；此处不把阶段治理计数当全仓最终数。

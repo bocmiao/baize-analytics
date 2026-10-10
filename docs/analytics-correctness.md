@@ -42,3 +42,7 @@ node_modules/.bin/tsx scripts/benchmark-analytics.ts
 - 已过明细保留期的非完整桶及过滤查询无法精确恢复，返回明确不可用范围与 coverage。
 - 旧汇总未保存币种时，收入返回 unsupported_legacy_currency 和单独的 revenueCurrencyCoverage；已知币种金额仅为可确认部分，不代表完整周期。升级触发保留范围重建，保留期外的未知币种不能猜测或补零。
 - 前端上报收入是业务方自述金额，不是已付款或财务对账事实。
+
+## 分位口径补充
+
+查询时间窗口的 `precision: exact` 表示边界未被静默向整小时扩张，并不表示压缩分位精确。vitals 显式返回 `quantileMethod: weighted_centroid_type7` 与 `quantileStatus: approximate_tdigest_centroid_means`。未压缩 singleton centroid 的计算等价于原样本 Type-7 排名插值；重复点按完整权重保持质量阶跃。不等日期/桶的样本数不会先平均各桶分位。压缩后的 centroid 以均值代表其质量，原始桶内分布不可恢复，因此属于近似估计。

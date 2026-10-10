@@ -1,6 +1,6 @@
 import {createHmac,randomUUID} from 'node:crypto';
 import type Redis from 'ioredis';
-import defaults from './bot-rules.json';
+import defaults from './bot-rules.json' with {type:'json'};
 export interface BotRule {id:string;category:'ai'|'bot';tokens:string[]}
 export interface BotRuleLibrary {version:number;rules:BotRule[]}
 export interface BotDecision {isBot:boolean;category:'ai'|'bot'|null;reason:'ua'|'request_burst'|null;ruleId?:string;requests:number}

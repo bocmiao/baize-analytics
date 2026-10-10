@@ -70,3 +70,15 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev \
 官方镜像digest、版本和逐项结果见JSON报告；截图见 `docs/screenshots/wordpress-local-acceptance.png`。同意后实际WordPress网页加载本实例构建的tracker.js并发送真实请求，不模拟钩子、采集接口或数据存储。测试使用独立临时app数据库与localhost 3280/3290；原生3000、开发PG业务数据和其他任务栈未更改。结束后清理自己容器/网络/卷/测试DB/临时凭据，之后仅删除本任务拉取的WordPress/MariaDB镜像释放空间。
 
 早期失败如实说明：第一次并发镜像pull在VFS盘满时失败，并影响同时进行的ops回滚演练；已暂停，ops清理旧缓存并完整重跑EXIT0后，再顺序拉取。初版测试使用Docker internal网络无法发布localhost端口；已改独立bridge+localhost绑定并禁用WordPress外部HTTP。初版对201响应/默认未安装Playwright浏览器的假设已纠正，使用现成Chromium。实际WordPress UI揭示宿主私有0700目录/0600PHP文件不能被www-data读取，故改真实UI ZIP上传安装而未放宽宿主权限。最终当前实现完整通过，早期失败不算通过。
+
+## 外部错误语义增量（当前工作区，2026-10-10 07:01 UTC）
+
+`src/server/external-errors.ts` 定义稳定机器代码与固定中文公开消息，供中英文界面映射。配置无效为400、外连安全目标拒绝403、未启用/尚未配置/聚合待完成409、上下文边界413、预算不足429、提供商失败/响应无效502、超时504。原始网络错误与模型响应不得作为公开错误消息或暴露密钥；连接器模拟测试不算真实外部账号验证。
+
+实际运行所属文件 ESLint、全仓 `npm run typecheck` 均通过；以下显式真实PG与模拟外部传输回归于07:01:56执行，7文件27测试通过、0失败、0跳过（5.33秒），含新增固定错误契约用例。此增量不属于前述 b56b7e9 的148用例索引快照。
+
+```sh
+TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev ./node_modules/.bin/vitest run tests/unit/external.test.ts tests/unit/external-errors.test.ts tests/unit/external-geoip.test.ts tests/integration/external.test.ts tests/integration/external-alert.test.ts tests/integration/external-suggestions.test.ts tests/integration/external-sso-keyring.test.ts
+```
+
+全应用错误处理及英文界面映射由集成负责人/前端负责；此处不将尚未运行的全应用浏览器翻译验收算作通过。

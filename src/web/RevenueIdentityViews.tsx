@@ -1,0 +1,29 @@
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { api, rows, type Row, type Site } from './api';
+import { t } from './i18n';
+const Trend = lazy(() => import('./Charts'));
+export function DataTable({ data, columns }: { data: Row[]; columns: Record<string, string> }) {
+    return data.length ? <div className="table-wrap"><table><thead><tr>{Object.entries(columns).map(([key, label]) => <th key={key}>{t(label)}</th>)}</tr></thead><tbody>{data.map((row, i) => <tr key={i}>{Object.keys(columns).map(key => <td key={key}>{row[key] == null ? '—' : typeof row[key] === 'boolean' ? t(row[key] ? '是' : '否') : typeof row[key] === 'object' ? JSON.stringify(row[key]) : String(row[key])}</td>)}</tr>)}</tbody></table></div> : <p>{t('选定范围尚无实际数据。')}</p>;
+}
+export function RevenueView({ data }: { data: Row }) {
+    const [chosen, setChosen] = useState('');
+    const byCurrency = (data.revenueByCurrency || {}) as Record<string, number>;
+    const currencies = Object.keys(byCurrency).sort();
+    const currency = currencies.includes(chosen) ? chosen : currencies[0] || '';
+    const trend = rows(data.trend).filter(row => row.currency === currency);
+    const attribution = rows(data.attribution).filter(row => row.currency === currency);
+    return <section className="panel"><h2>{t('收入归因与订单趋势')}</h2><p>{t('收入为业务方自述，不代表实际支付对账。不同币种分别展示，不直接相加。')}</p><p>{t('收入归因使用订单发生前最近一次非直接渠道与页面；归因不是因果贡献。')}</p>{data.status === 'unsupported_legacy_currency' && <p className="notice">{t('历史币种不完整，仅展示可核验币种，不推算缺失金额。')}</p>}<DataTable data={currencies.map(value => ({ currency: value, amount: byCurrency[value] }))} columns={{ currency: '币种', amount: '自述收入' }}/><label>{t('选择收入币种')}<select value={currency} onChange={e => setChosen(e.target.value)}>{currencies.map(value => <option key={value}>{value}</option>)}</select></label><h3>{t('收入趋势')}</h3><Suspense fallback={<p>{t('正在加载图表…')}</p>}><Trend data={trend.map(row => ({ time: row.time, pv: row.amount }))} metricLabel="自述收入"/></Suspense><DataTable data={trend} columns={{ time: '时间', currency: '币种', amount: '自述收入', orders: '订单数' }}/><h3>{t('末次非直接点击归因')}</h3><DataTable data={attribution} columns={{ currency: '币种', channel: '渠道', path: '页面', amount: '自述收入', orders: '订单数' }}/></section>;
+}
+export function IdentityView({ site, data, query, registrationEvent, onRegistrationEvent }: { site: Site; data: Row; query: string; registrationEvent:string; onRegistrationEvent:(event:string)=>void }) {
+    const [selected, setSelected] = useState('');
+    const [activity, setActivity] = useState<Row>({}), [error, setError] = useState('');
+    const identities = rows(data.identities);
+    const key = identities.some(row => row.userKey === selected) ? selected : String(identities[0]?.userKey || '');
+    useEffect(() => {
+        const controller = new AbortController(); let active = true;
+        setActivity({}); setError('');
+        if (key && site.privacy_mode !== 'daily_salt') void api<Row>(`/api/v1/sites/${site.id}/identities/${encodeURIComponent(key)}/activity?${query}`, undefined, 'GET', controller.signal).then(result => { if (active) setActivity(result); }).catch(e => { if (active) setError(e.message); });
+        return () => { active = false; controller.abort(); };
+    }, [site.id, site.privacy_mode, key, query]);
+    return <section className="panel"><h2>{t('已识别用户的行为路径')}</h2><p>{t('仅展示业务方主动 identify 的脱敏账号键。账号切换按事件时间绑定，不把另一账号的行为追溯合并；跨设备仅在明确提供相同业务标识时关联。')}</p>{data.status === 'unsupported_identity_filters' && <p className="notice">{t('身份分析不支持入口渠道或 UTM 筛选，请清除站内筛选后查看时间绑定活动。')}</p>}{data.status === 'truncated' && <p className="notice">{t('明细超过查询上限，请缩短时间范围；下列部分记录不代表完整账号活动。')}</p>}{site.privacy_mode === 'daily_salt' || data.status === 'unsupported_in_this_mode' ? <p className="notice">{t('每日盐模式不支持身份缝合，不列出业务账号。')}</p> : <><form onSubmit={e=>{e.preventDefault();onRegistrationEvent(String(new FormData(e.currentTarget).get('registrationEvent')).trim());}}><label>{t('注册事件名称')}<input name="registrationEvent" defaultValue={registrationEvent} required maxLength={128}/></label><button>{t('计算注册到付费')}</button></form><div className="metrics"><article><span>{t('当前窗口注册账号')}</span><strong>{data.signupCount==null?'—':String(data.signupCount)}</strong></article><article><span>{t('注册后付费账号')}</span><strong>{data.paidAfterSignup==null?'—':String(data.paidAfterSignup)}</strong></article><article><span>{t('注册到付费转化率')}</span><strong>{typeof data.conversionRate==='number'?`${(data.conversionRate*100).toFixed(2)}%`:'—'}</strong></article></div><p>{t('仅计算选定保留窗口内、严格晚于注册事件的正收入账号；无窗口内注册的直接付费不算注册转化，也不证明实际支付。')}</p><DataTable data={identities} columns={{ userKey: '脱敏账号键', sessions: '会话', pages: '浏览量', events: '事件次数', revenueByCurrency: '分币种收入', firstSeen: '首次识别', lastSeen: '最后活动', registeredAt:'注册时间', paidAfterSignup:'注册后付费', firstPaidAt:'首次正收入' }}/><label>{t('选择已识别账号')}<select value={key} onChange={e => setSelected(e.target.value)}>{identities.map(row => <option key={String(row.userKey)}>{String(row.userKey)}</option>)}</select></label>{error && <p role="alert" className="error">{error}</p>}<h3>{t('账号时间绑定内的活动')}</h3><p>{t('行为仅来自保留明细，未采集或过期部分不补全。页面实例用于区分多标签页和 SPA。')}</p>{activity.coverage !== undefined && <p>{t('覆盖率')}：{Math.round(Number(activity.coverage) * 100)}%</p>}<DataTable data={rows(activity.events)} columns={{ ts: '时间', sessionId:'会话键', visitorKey: '脱敏访客键', page_id: '页面实例', type: '类型', path: '页面', event_name: '事件', currency: '币种', value: '自述收入' }}/></>}</section>;
+}

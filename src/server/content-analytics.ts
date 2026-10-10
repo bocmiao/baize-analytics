@@ -74,6 +74,7 @@ export function summarizeDefinitionFeatures(sessions: Session[], goals: GoalDefi
  return {goalTrends, dropoffFeatures};
 }
 
+import {readSiteEvents} from './event-store.js';
 import type { FastifyInstance } from 'fastify';
 import type { AppContext } from './context.js';
 import { z } from 'zod';
@@ -90,7 +91,7 @@ export async function queryContentFeatures(ctx: AppContext, siteId: string, from
  const state = (await ctx.pool.query('SELECT generation,processed_generation,watermark FROM aggregation_state WHERE site_id=$1', [siteId])).rows[0];
  // An expired raw interval cannot be reconstructed from legacy marginal aggregates.
  if (+new Date(from) < +cutoff) return {from, to, watermark: state?.watermark ?? null, coverage: 0, sampleRate: 1, status: 'outside_raw_retention', downloads: [], notFound: [], eventTrend: [], goalTrends: dictionary(), dropoffFeatures: dictionary(), limitations: ['该查询需要完整明细，所选区间部分超出明细保留期，未以残缺样本推断结果。']};
- const events = (await ctx.pool.query('SELECT e.* FROM events e WHERE e.site_id=$1 AND e.ts >= $2 AND NOT e.is_bot AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id AND t.started_at<=e.ts AND t.ended_at>e.ts) ORDER BY e.ts,e.event_id', [siteId, cutoff])).rows as AnalyticsEvent[];
+ const {events, ...storage} = await readSiteEvents(ctx.pool, siteId, {from: cutoff});
  const selected = events.filter(event => +new Date(event.ts) >= +new Date(from) && +new Date(event.ts) < +new Date(to) && eventMatchesFilters(event, filters));
  const goals = (await ctx.pool.query('SELECT * FROM goals WHERE site_id=$1', [siteId])).rows as GoalDefinition[];
  const funnels = (await ctx.pool.query('SELECT * FROM funnels WHERE site_id=$1', [siteId])).rows as FunnelDefinition[];
@@ -100,7 +101,7 @@ export async function queryContentFeatures(ctx: AppContext, siteId: string, from
  const sessions = sessionize(events, site.timezone, privacy, sessionTimeoutMs(site.config));
  const cohort = sessions.filter(session => {const landing = session.events.find(event => event.type === 'pageview'); return landing && eventMatchesFilters(landing, filters);});
  const definitions = summarizeDefinitionFeatures(cohort, goals, funnels, from, to);
- return {from, to, filters, filterMethod: 'retained_event_rebuild', watermark: state?.watermark ?? null, coverage: 1, sampleRate: 1, status: 'supported', ...content, ...definitions, ...(privacy && crossDay ? {downloads: content.downloads.map(row => ({...row, uv: null})), dropoffFeatures: dictionary(), funnelStatus: 'unsupported_in_this_mode'} : {funnelStatus: 'supported'}), limitations: ['下载、404和行为特征从保留期内真实非机器人事件计算；漏斗入组按会话首个页面浏览的事件时间，后续步骤读取完整保留会话。', '每名访客重复入组时，流失维度归属首次入组会话的来源和设备；不推断未收到或保留期外事件。']};
+ return {from, to, storage, filters, filterMethod: 'retained_event_rebuild', watermark: state?.watermark ?? null, coverage: 1, sampleRate: 1, status: 'supported', ...content, ...definitions, ...(privacy && crossDay ? {downloads: content.downloads.map(row => ({...row, uv: null})), dropoffFeatures: dictionary(), funnelStatus: 'unsupported_in_this_mode'} : {funnelStatus: 'supported'}), limitations: ['下载、404和行为特征从保留期内真实非机器人事件计算；漏斗入组按会话首个页面浏览的事件时间，后续步骤读取完整保留会话。', '每名访客重复入组时，流失维度归属首次入组会话的来源和设备；不推断未收到或保留期外事件。']};
 }
 export async function registerContentAnalytics(app: FastifyInstance, ctx: AppContext) {
  app.get('/api/v1/sites/:siteId/content', async req => {const {siteId} = req.params as {siteId: string}; await ctx.authorize(req, siteId); const q = contentRange.parse(req.query); return queryContentFeatures(ctx, siteId, q.from, q.to, contentFilterSchema.parse(q));});

@@ -1,13 +1,15 @@
 # 逐项实现与验收清单
 
-此清单记录真实实现与验收证据；规格原文保持不变。状态按条目记录已实现已测（本地） / 部分实现 / 未实现 / 连接器已实现但外部未实测。模拟连接器测试不代表真实外部账号验收。
+此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
+
+已提交精确快照为 main `b56b7e9`：36文件148应用测试通过（59单元、89集成），13项Playwright通过（11浏览器流程、2日期检查）；见 `docs/test-evidence/second-main-tests.json` 和 `second-main-e2e.txt`。当前工作区新增ClickHouse及多语言改动单独记在制，不能由这个快照证明通过。旧Docker镜像6c66的矩阵已PASS，但不含024及后续改动；新镜像最终矩阵待ops执行。WordPress本地实际运行另有独立真实报告。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
 - 状态：已实现已测（本地）
 - 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
 - 验收测试：tests/integration/tracker-collector.test.ts；core-api.test.ts；tracker-browser.test.ts
-- 边界/未实测：真实浏览器→持久采集→worker→看板；SPA/预渲染已测。百万事件/日吞吐未压测。
+- 边界/未实测：真实浏览器→持久采集→worker→看板、SPA/预渲染已测；100k真实HTTP/Redis/PG/outbox/worker/查询对账通过。1M真实完整管线已通过（40站点，PV1M/UV2万/会话2万，outbox全done，dirty/uncovered/attempts均0），见full-pipeline-1000000.json；PG-only、启动cb72a7e+当时在制修改，非精确最新SHA，不证明持续混合写删、大单站分布或1C2G/5分钟延迟保证。
 
 - 做什么：记录每一次页面访问，是全部统计的地基。
 - 采集端：脚本加载后立即发一次 pageview；SPA 监听 history.pushState/replaceState + popstate + hashchange，路由变化去抖 100ms 后再发（防重复）。
@@ -219,7 +221,7 @@
 - 状态：已实现已测（本地）
 - 实现文件：packages/tracker/src/index.ts；src/server/collect.ts；db.ts；worker.ts
 - 验收测试：tracker-browser.test.ts；tracker-collector.test.ts；core-api.test.ts；analytics.test.ts
-- 边界/未实测：固定event_id/原批重试、有界内存、events+outbox事务后202、冲突拒绝、worker租约/死信/重放；beacon排队非持久确认；整机吞吐压测未做。
+- 边界/未实测：固定event_id/原批重试、有界内存、events+outbox事务后202、冲突拒绝、worker租约/死信/重放；beacon排队非持久确认；100k全HTTP→Redis/PG→outbox→worker→查询链路已通过，1M PG-only完整管线实际通过，HTTP687.65秒/worker416.703秒；RSS2.181GB，不能据此宣称1C2G配置、持续生产混合负载或5分钟延迟保证。
 
 - 采集端：事件入内存队列，2s 或满 10 条批量发；每条事件带客户端生成的固定 `event_id`（UUIDv7）；sendBeacon 优先（页面卸载场景），失败回退 fetch keepalive；后端不可达指数退避重试 3 次后丢弃（console.debug，绝不抛错影响宿主站）。
 - 服务端：**持久化接收（默认可靠路径）**——/api/collect 校验后**同事务写 PG outbox 表**再返回 202；以 `event_id` 做幂等去重（重复投递直接返回已接受，去重窗口 ≥ 最大重试窗）；Worker 用短事务 SKIP LOCKED 认领，失败进死信队列，人工可查可重放。确认语义：202 = 已持久化，可恢复；内存只做有界削峰缓冲，不做可靠性承诺。P2 规模化时 outbox 可迁 Redis Stream，语义不变。
@@ -230,7 +232,7 @@
 - 状态：已实现已测（本地）
 - 实现文件：src/server/analytics.ts；src/web/main.tsx；Charts.tsx
 - 验收测试：analytics.test.ts；tests/e2e/workflow.spec.ts；ACCEPTANCE_WEB.md
-- 边界/未实测：真实中文汇总/趋势/等长前期比较/规则洞察；精确访客集合非日UV相加，水位/coverage/保留边界可用性可见；未宣称百万日事件容量。
+- 边界/未实测：真实中文汇总/趋势/等长前期比较/规则洞察；精确访客集合非日UV相加，水位/coverage/保留边界可用性可见；1M PG-only管线对账通过，但持续生产负载与更大单站分布仍需专项验收。
 
 - 指标卡：PV/UV/会话/跳出率/平均停留/转化数（选定周期）；趋势图（ECharts，按小时/天自动粒度）；对比模式（本周 vs 上周，同环比 %）。
 - 查询：全部走 stats_daily/hourly 预聚合；对比 = 两次聚合查询。
@@ -241,7 +243,7 @@
 - 状态：已实现已测（真实HTTP/PG；UI最终回归另记）
 - 实现文件：src/server/analytics.ts；src/web/main.tsx
 - 验收测试：analytics.test.ts（真实SSE/迟到/撤销权限）；tests/e2e/workflow.spec.ts
-- 边界/未实测：真实listener+cookie+viewer测试初始流、迟到事件经outbox序号交付与撤销成员后断流通过；真实浏览器实时视觉最新12/12 E2E通过。
+- 边界/未实测：真实listener+cookie+viewer测试初始流、迟到事件经outbox序号交付与撤销成员后断流通过；真实浏览器实时视觉用例已纳入第二main隔离全套13/13快照（11浏览器流程、2日期检查），不将全套计数当成13项实时专项。
 
 - 当前在线（近 5 分钟有心跳的去重访客）；30 分钟事件流（SSE 推送：时间/页面/来源/地域/设备）；实时 Top 页面/来源。
 - 实现：SSE 端点 /api/realtime/stream；明细查询限定近 30 分钟 + Redis 在线集合。
@@ -493,7 +495,7 @@
 - 状态：部分实现；Google外部未实测
 - 实现文件：src/server/external.ts；external-worker.ts；src/web/Connectors.tsx
 - 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
-- 边界/未实测：OAuth及分页聚合导入/覆盖声明已模拟PG验证；真实GA账号未测，历史PV按站点时区逐日虚线叠加UI已接入，不累加源UV；真实浏览器最新12/12回归通过。
+- 边界/未实测：OAuth及分页聚合导入/覆盖声明已模拟PG验证；真实GA账号未测，历史PV按站点时区逐日虚线叠加UI已接入，不累加源UV；对应UI已纳入第二main13/13快照；Google响应仍为显式注入的模拟数据，不能记真实Google账号导入已验收。
 
 - 用户授权 Google 账号 → GA4 Data API 拉历史**聚合报表**（按日/周的 PV/UV/会话/来源 Top）→ ga_import 表；看板"历史对比"叠加虚线。
 - 边界（诚实说明）：Data API 只能读到聚合报表，**不能还原完整事件流、访客身份与漏斗历史**；因此这是"历史聚合报表导入"，不是"迁移零成本"。导入器必须说明来源、覆盖时间、丢失字段与可用分析范围。
@@ -511,8 +513,8 @@
 ## F-50 Cookie 同意横幅【P2】
 
 - 状态：已实现已测（真实浏览器）
-- 实现文件：packages/tracker/src/consent-banner.ts
-- 验收测试：packages/tracker/README.md；tracker-browser.test.ts
+- 实现文件：packages/tracker/src/consent-banner.ts；consent.ts；scripts/build-tracker.ts
+- 验收测试：tests/integration/tracker-hooks.test.ts；packages/tracker/README.md
 - 边界/未实测：同意组件与grant/revoke集成并以独立tracker-consent.js入口发布；tracker-consent.js正式582byte独立构建和真实点击前无ID/无PG数据、点击后启用专项通过。
 
 - 可选轻量横幅组件（配合 F-18 Consent Mode）；P0 文档先写清楚，P2 再做。
@@ -579,8 +581,8 @@
 ## F-57 智能日报解读【P1】
 
 - 状态：已实现已测（模拟模型）；真实模型未实测
-- 实现文件：src/server/external-worker.ts
-- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 实现文件：src/server/external.ts；src/server/app.ts
+- 验收测试：tests/integration/external.test.ts；ACCEPTANCE_EXTERNAL.md
 - 边界/未实测：站点时区日报、持久任务重试、仅聚合输入，真实timer/模拟返回测试；真实AI输出质量不声称验收。
 
 - 定时任务把聚合指标喂给模型 → 生成中文解读（"UV 环比+23%，增量 8 成来自微信；支付页转化掉 12%，建议优先检查"）；只发聚合数据，不含原始 IP/明细。
@@ -588,7 +590,7 @@
 ## F-58 异常归因【P1】
 
 - 状态：已实现已测（实际告警/模拟模型）；真实模型未测
-- 实现文件：src/server/external-worker.ts
+- 实现文件：src/server/external.ts；governance-worker.ts
 - 验收测试：tests/integration/external-alert.test.ts；docs/ACCEPTANCE_EXTERNAL.md
 - 边界/未实测：实际collect→worker→F38 PV/UV告警→F58 optin绑定，同小时联合渠道/页面/设备变化、原告警快照、通知UUID幂等、并发/失败退避retry已PG测试；无optin零调用。真实模型原因质量未实测，不宣称因果。
 
@@ -635,9 +637,9 @@
 ## F-63 GeoIP 自动下载【P0】
 
 - 状态：连接器已实现；MaxMind外部未实测
-- 实现文件：src/server/geoip.ts；src/server/geoip.ts
-- 验收测试：ACCEPTANCE_EXTERNAL.md；core-api.test.ts
-- 边界/未实测：授权下载+官方SHA验证、无key明确unknown及配置提示；真实授权账号/地理准确率未测。
+- 实现文件：src/server/geoip.ts；geoip-settings.ts；src/web/GeoIpSettings.tsx
+- 验收测试：tests/unit/external-geoip.test.ts；external-sso-keyring.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：管理员cookie-only加密配置/部分更新/指纹状态/reload；授权下载+官方SHA及mmdb验证、无key明确unknown及配置提示；真实授权账号/地理准确率未测。
 
 - 启动任务用 MAXMIND_LICENSE_KEY 下载 GeoLite2-City.mmdb + sha256 校验；失败降级 unknown，看板横幅提示配置方法。
 
@@ -671,21 +673,23 @@
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：部分实现：真实ClickHouse25.8导入/去重/FINAL/查询/删除已测；应用双写/outbox及迁移切换尚未完成。证据 docs/validation-ops.md。
+- P2-01 ClickHouse 明细可选迁移：部分实现（新增应用镜像/选择性读切换本地实际验收）：真实PG/CH/Redis完整脱敏schema可靠镜像，analytics保留边界/过滤、content/geo选择性读取；高水位/epoch/count不符明示PGfallback。删除/恢复屏障与上传删除竞态/日志失败重放/旧快照清理已有专项通过（14集成+3单元，后续views/lease/deadline/cache合测22项），见docs/ACCEPTANCE_CLICKHOUSE.md。当前在制不属于b56b7e9索引。worker/rollups/governance/identity/realtime/事件属性仍PG；PG仅元数据、增量partition、更全面读切换、历史迁移/CH集群备份及大容量仍未完成，不能仅以镜像模块验收代替P2全部目标。
 - P2-02 隐私优先会话回放：部分实现（核心已测）：optin、严格服务端遮罩校验、page实例/序号、真实rrweb播放器；跨页完整播放/真实复杂站点兼容待扩展。证据 governance.test.ts、tracker-browser.test.ts、ACCEPTANCE_WEB.md。
 - P2-03 热力图：部分实现（核心已测）：optin与0.01精度归一化点击、SVG热图真实数据；复杂响应式/滚动坐标浏览器专项验收未完整记录。
 - P2-04 A/B 实验归因：部分实现：确定性visitor分组/目标计数/API与UI集成；固定周期双比例检验/Bonferroni多重修正/Wilson区间/样本不足保护已真实PG与单元测试；实际共享cookie A→B identify/goal、删除A保留B、旧贡献回灌journal重放真实浏览器/PG已通过；贡献event_id+ts幂等，API不信converted缓存，旧无明细历史标partial_unavailable禁显著性。
 - P2-05 微信小程序 SDK：部分实现：wx.request注入SDK、无WebCrypto UUID、同意/幂等重试/每日盐限制已有本地测试；真实微信设备/账号未实测。
-- P2-06 WordPress 插件：部分实现：WordPress插件设置/追踪代码及PHP8.3语法检查；实际WordPress安装启停/兼容性未实测。
+- P2-06 WordPress 插件：已实现，本地实际运行通过：官方 WordPress 6.9.4/PHP 8.3.31/MariaDB，真实 ZIP 上传安装、启用/设置/停用/再启用、Chromium→HTTP202→PG→worker，以及同意/撤回；见 docs/test-evidence/wordpress-actual-runtime.json。更多主题/CMP/插件冲突未实测。
 - P2-07 企业微信扫码 SSO：连接器已实现、真实企业未实测：显式成员映射、一次state/session、禁止自动提权，真实PG模拟OAuth测试通过；不创建企业凭据。
 - P2-08 多语言 UI：部分实现：中文主体及英文核心UI；高级治理表单/回放Play及speed实际英文交互已测；全量后台错误文本/开发审计报告仍非完整多语言。
 - P2-09 Ollama 本地模型：连接器已实现、真实Ollama推理未实测：明确登记窄范围内网例外与真实本地HTTP模拟传输测试；未运行真实模型。
-- P2-10 Cookie 同意横幅：部分实现：轻量consent-banner组件和Consent Mode文档；正式独立构建与真实浏览器点击前无ID无PG数据、点击后采集通过tracker-hooks.test.ts。
+- P2-10 Cookie 同意横幅：已实现且本地真实浏览器验收，与F-50同一功能/同一证据：独立tracker-consent.js构建、真实点击前无ID无PG数据、点击后采集通过tracker-hooks.test.ts。不能在F-50标通过而此处保留“部分实现”。更多真实CMP/主题组合未实测，不是核心横幅尚未实现。
 
 ## 集中剩余清单（不代表全部验收）
 
-- 可自主补齐的功能：尚需扩展全量后台错误英文和高级一致性、跨设备身份专用注册→付费视图、ClickHouse应用双写迁移（进行中尚未验收）。新下载/404/事件/目标/漏斗/地域/规则/UTM接口及UI已实现；新增UI交互13项真实E2E通过。
-- 必须补专项证据：WordPress真实运行；大规模PG/Redis全链路负载；Windows安装入口。实际A→B身份删除/恢复与实验贡献已浏览器验证，匿名历史不自动缝合为隐私选择。
-- 等最终集成结果：最新真实浏览器全套13/13通过；ops增强新卷恢复/已提交schema回滚已EXIT0；本地lint/type/unit/PG/构建最终计数由集成负责人记录，不沿用阶段计数冒充最终。
+- 可自主补齐的功能：尚需完成全量后台错误英文和高级一致性（web/external正在实施及测试）、跨设备身份专用注册→付费视图（专项验收在制）、ClickHouse完整可选迁移（可靠镜像及选择性读取已有新增本地专项通过；PG仅元数据/更多模块读切换/增量与历史迁移/CH备份仍在制，不能使用b56b7e9快照当全部P2通过）。新下载/404/事件/目标/漏斗/地域/规则/UTM接口及UI已实现；新增UI交互13项真实E2E通过。
+- 必须补专项证据：Windows安装入口、持续混合写删及更大单站规模分布。100k和1M PG-only真实 HTTP→outbox→worker→queryStats/SQL 对账均已通过，见docs/validation-scale.md与full-pipeline-1000000.json；1M启动cb72a7e+当时WIP，不冒充精确最新SHA、CH容量或1C2G/5分钟延迟保证。WordPress 本地真实运行已通过，更多主题/CMP冲突未实测。实际A→B身份删除/恢复与实验贡献已浏览器验证，匿名历史不自动缝合为隐私选择。
+- 等最终集成结果：已提交b56b7e9快照的148应用测试/13E2E及lint/type/build通过；现工作区后续改动必须另跑最终集成，不能沿用148证明新增功能。ops旧6c66镜像增强恢复/回滚EXIT0不覆盖024及当前工作区，新镜像全矩阵尚待运行。
 - 真实外部未实测：Google GA4/GSC、MaxMind授权下载、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业SSO、商业AI及真实Ollama模型；安全连接器与模拟集成通过不能替代外部验收。F52官方接口可行性未核验。
 - 规模/实现偏差：exact访客集合代替HLL、持久PG任务代替BullMQ、部分精确范围查询重建保留期明细；这些选择已测试正确性，但内存/吞吐规模和超保留期精度边界必须持续披露。
+
+当前新发现的验收缺陷：真实PG不等样本分位合并（25×100 + 1×10000 的p75错误5430）正在analytics修复与复验；此前测试快照不覆盖该缺陷，不能据其标全部统计正确。

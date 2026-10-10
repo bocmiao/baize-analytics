@@ -1,3 +1,4 @@
+import {readSiteEvents} from './event-store.js';
 import type {FastifyInstance} from 'fastify';
 import {z} from 'zod';
 import type {AppContext} from './context.js';
@@ -35,8 +36,8 @@ export async function registerGeographyAnalytics(app: FastifyInstance, ctx: AppC
   const site = (await ctx.pool.query('SELECT retention_days,privacy_mode,timezone FROM sites WHERE id=$1', [siteId])).rows[0]; if (!site) throw Object.assign(new Error('站点不存在'), {statusCode: 404});
   const cutoff = new Date(Date.now() - Number(site.retention_days) * 86400000);
   if (+new Date(query.from) < +cutoff) return {status: 'outside_raw_retention', coverage: 0, countries: [], regions: [], cities: [], geographyCoverage: 0};
-  const data = (await ctx.pool.query("SELECT e.* FROM events e WHERE e.site_id=$1 AND e.ts>=$2 AND e.ts<$3 AND e.type='pageview' AND NOT e.is_bot AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id AND t.started_at<=e.ts AND t.ended_at>e.ts) ORDER BY e.ts,e.event_id", [siteId, query.from, query.to])).rows as AnalyticsEvent[];
+  const {events: data, ...storage} = await readSiteEvents(ctx.pool, siteId, {from: query.from, to: query.to, type: 'pageview'});
   const uvSupported = site.privacy_mode === 'standard' || dayOf(query.from, site.timezone) === dayOf(new Date(+new Date(query.to) - 1), site.timezone);
-  const filters = contentFilterSchema.parse(query); return {from: query.from, to: query.to, filters, filterMethod: 'retained_event_rebuild', status: 'supported', coverage: 1, ...summarizeGeography(data.filter(event => eventMatchesFilters(event, filters)), query, uvSupported)};
+  const filters = contentFilterSchema.parse(query); return {from: query.from, to: query.to, storage, filters, filterMethod: 'retained_event_rebuild', status: 'supported', coverage: 1, ...summarizeGeography(data.filter(event => eventMatchesFilters(event, filters)), query, uvSupported)};
  });
 }
