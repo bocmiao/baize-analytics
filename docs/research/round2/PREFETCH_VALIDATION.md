@@ -23,3 +23,12 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 ### 同源5000实际失败（EXIT1）
 
 [原JSON](../../test-evidence/main-0c3ca6a-independent-strict-5000.json)、[完整解释](../../test-evidence/main-0c3ca6a-independent-summary.md)：94/100批202，4700接受/6未发送，32延迟，maxbacklog3500/末1950；drain deadline reached，1query超时、final断言尝试失败且executed空，不能称strict验收通过。HTTP facts5014次82.87s/worker facts6714次74.22s，下一需聚焦重复事实来源读取链；不改限额、不称性能改善。实际四项namespace清理/source961blobs unchanged通过，旧1000PASS/ce/b0均保留。
+
+
+## 33e005a 同批 TEMP CTE 校验
+
+不可变提交 `33e005abe4d571f1180d8055d08399bbfcbbbf5a` 的真实 PG/CH 两文件 2 项全部通过，EXIT0、无跳过。专属单元 2 项、相关 lint、全仓类型检查通过。原报告与命令见 [实际 JSON](../../test-evidence/main-33e005a-fact-cte.json)、[执行记录](../../test-evidence/main-33e005a-fact-cte-record.json)、[单元 JSON](../../test-evidence/main-33e005a-fact-cte-unit.json)。
+
+仅将 044 source 每批最多100个已认证 envelope 的 identity 和 target 两次写入合为一个 MATERIALIZED CTE，JSON 只序列化一次。identity 保留 ON CONFLICT 去重；target 直接读取完整 envelope，不依赖去重后的 RETURNING，故同 event 的多条 effect 不丢失。真实205条同 event 不同 key、跨3批身份冲突与旧 PG contribution 精确对账；身份区间过滤、零 kind、缺正文、source/repair fence 和事务清理保持。101行单元拒绝并清理 TEMP。HTTP 正文 EOF、原请求限额、哈希/HMAC 和精确统计均未更改。
+
+本片尚无同口径负载实测，不宣称性能收益或 SLO 达标；0c3ca6a 的5000失败及其他原始结果保持不变。

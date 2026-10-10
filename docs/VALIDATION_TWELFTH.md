@@ -29,3 +29,5 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 ## 0c3ca6a AI窄范围后续（失败保留）
 
 新冻结 `0c3ca6ac06c459c824f0a1a5fc1a13497d4328d4` 的AI语言浏览器专项实际EXIT1：0PASS/1FAIL/0skip，95.975秒，中文“用途”selectOption超时；测试预算90秒内模拟provider已请求10次。web正在诊断，尚无修复通过结果。本次仅定向AI，不改写08eab82完整全轮PASS，也不能称新源浏览器回归通过。原始两日志及summary保存为 `test-evidence/main-0c3ca6a-ai-*-failed.*`；浏览器/本地应用真实，模型运输模拟。
+
+后续c7ccdea AI scope窄修真实复验EXIT0：完整SHA `c7ccdeae1616a9e6d9c9e040c5ce42e7a05fbbd0`，1真实Chromium PASS/0FAIL/0skip，17.786秒。原始reporter及两日志见 `test-evidence/main-c7ccdea-ai-*`。最新AI中文1440/390图位于 `screenshots/c7ccdea-current-ai/`，独立标注源码，不替换08eab82总览/SEO等完整轮截图。0c失败仍保留；该定向PASS不是最新源全浏览器或性能改善证明，模型运输仍模拟。

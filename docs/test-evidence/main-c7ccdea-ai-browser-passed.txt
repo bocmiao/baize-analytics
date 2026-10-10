@@ -1,0 +1,171 @@
+
+Running 1 test using 1 worker
+
+(node:787784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/ai-evidence-language.spec.ts:10:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (11.9s)
+
+  1 passed (17.8s)
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/tmp/baize-ai-scope-fixed-p2f2wg70/node_modules/@playwright/test/cli.js",
+      "test",
+      "tests/e2e/ai-evidence-language.spec.ts",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/baize-ai-scope-fixed-p2f2wg70/playwright.config.ts",
+    "rootDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "/tmp/baize-ai-scope-fixed-p2f2wg70/tests/e2e/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/tests/e2e",
+        "snapshotDir": "/tmp/baize-ai-scope-fixed-p2f2wg70/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "storageState": "/tmp/baize-e2e-owner-fdee254321a5f7bc.json",
+          "baseURL": "http://127.0.0.1:3391",
+          "headless": true,
+          "launchOptions": {
+            "executablePath": "/usr/bin/chromium"
+          },
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "ai-evidence-language.spec.ts",
+      "file": "ai-evidence-language.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11863,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T20:26:32.494Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "ai-zh-1440",
+                      "contentType": "image/png",
+                      "path": "/tmp/baize-ai-scope-fixed-p2f2wg70/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-1440-e8872bdef3335102227999ec3745441c4a7fb5dc.png"
+                    },
+                    {
+                      "name": "ai-zh-390",
+                      "contentType": "image/png",
+                      "path": "/tmp/baize-ai-scope-fixed-p2f2wg70/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-390-8aef21607f3d405719785f1eeb253496f1a7b04c.png"
+                    },
+                    {
+                      "name": "ai-screenshot-metadata",
+                      "contentType": "application/json",
+                      "body": "ewogICJzb3VyY2VTSEEiOiAiYzdjY2RlYWUxNjE2YTllNmQ5YzllMDQwYzVjZTQyZTdhMDVmYmJkMCIsCiAgImxhbmd1YWdlIjogInpoLUNOIiwKICAic2l0ZUlkIjogIjY4Njc3MTU1ZjJlYjRjNTk4NDliZjFlMiIsCiAgInRpbWV6b25lIjogIlVUQyIsCiAgImRhdGUiOiAiMjAyNi0xMC0xMCIsCiAgInZpZXdwb3J0cyI6IFsKICAgIDE0NDAsCiAgICAzOTAKICBdLAogICJkYXRhIjogewogICAgInB2IjogMSwKICAgICJjb252ZXJzaW9uTnVtZXJhdG9yIjogMCwKICAgICJjb252ZXJzaW9uRGVub21pbmF0b3IiOiAxLAogICAgInByaXZhY3lNb2RlIjogImRhaWx5X3NhbHQiCiAgfSwKICAidGVzdE9ubHlDb25maWd1cmF0aW9uIjogewogICAgIm1vbnRobHlUb2tlbkJ1ZGdldCI6IDIwMDAwMCwKICAgICJyZWFzb24iOiAiQWRkaXRpb25hbCBzaW11bGF0ZWQtcHJvdmlkZXIgc2NyZWVuc2hvdCBwaGFzZTsgcHJvZHVjdCBkZWZhdWx0cyBhbmQgcmVzZXJ2YXRpb24gZ3VhcmRzIHVuY2hhbmdlZCIKICB9LAogICJleHRlcm5hbEJvdW5kYXJ5IjogIlByb3ZpZGVyIHRyYW5zcG9ydCBhbmQgbW9kZWwgdGV4dCBhcmUgZXhwbGljaXRseSBzaW11bGF0ZWQ7IGNvbGxlY3Rvciwgd29ya2VyLCBQb3N0Z3JlU1FMIGZhY3RzIGFuZCBhdXRob3JpemVkIHNlbWFudGljIGNoYXJ0cyBhcmUgcmVhbC4iCn0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c517db3d24baea860422-c19e99718329227ffb9f",
+          "file": "ai-evidence-language.spec.ts",
+          "line": 10,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-10T20:26:27.205Z",
+    "duration": 17785.886000000002,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

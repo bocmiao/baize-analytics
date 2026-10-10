@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "c7ccdeae1616a9e6d9c9e040c5ce42e7a05fbbd0",
+  "exit": 0,
+  "scope": "targeted AI language/evidence browser; not full new-source regression",
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "realChromium": 1,
+  "durationMs": 17785.886000000002,
+  "real": "Chromium/local app/PG/CH facts",
+  "simulated": "model provider transport",
+  "prior0cFailurePreserved": true,
+  "screenshots": [
+    {
+      "file": "docs/screenshots/c7ccdea-current-ai/ai-zh-1440.png",
+      "sha256": "afc6c813a3503a07eca6c0e1bc9391ac2a8a42765fd9258907af6be733d8880a"
+    },
+    {
+      "file": "docs/screenshots/c7ccdea-current-ai/ai-zh-390.png",
+      "sha256": "4f4647b4e5b53cd421978c9d0e1a96a6637d86f798a41dd6f35fd4cc944416da"
+    }
+  ]
+}

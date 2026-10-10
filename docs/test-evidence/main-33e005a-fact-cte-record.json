@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "33e005abe4d571f1180d8055d08399bbfcbbbf5a",
+  "immutableArtifact": "/tmp/baize-fact-cte-verified-h6l2p32d",
+  "realCommand": "TEST_DATABASE_URL=<existing isolated dev database> CLICKHOUSE_TEST_URL=<existing local CH> node_modules/.bin/vitest run tests/integration/fact-source-batch-cte.test.ts tests/integration/fact-store-source.test.ts --reporter=json --outputFile=/tmp/baize-33e005a-fact-cte.json",
+  "realResult": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "lightCommands": [
+    "node_modules/.bin/vitest run tests/unit/fact-source-batch-cte.test.ts --reporter=json --outputFile=/tmp/baize-fact-batch-cte-unit.json",
+    "node_modules/.bin/eslint src/server/fact-store-source.ts tests/unit/fact-source-batch-cte.test.ts tests/integration/fact-source-batch-cte.test.ts",
+    "node_modules/.bin/tsc --noEmit"
+  ],
+  "lightResult": {
+    "unitPassed": 2,
+    "unitFailed": 0,
+    "lintExitCode": 0,
+    "typesExitCode": 0
+  },
+  "workspaceFileSha256": {
+    "src/server/fact-store-source.ts": "2bf8c32689cc0a523505b6a92d6aa7facc51de2b3067a017946c2785745aadd3",
+    "tests/unit/fact-source-batch-cte.test.ts": "5a938d7b162179ecad6725edc25033f24838f632846b14ea318e169d031d9407",
+    "tests/integration/fact-source-batch-cte.test.ts": "e5f412f6f4c44075358e771e057c03c4ade804f2595458b9b20ada0332d59b70"
+  },
+  "performance": "Not measured for this slice; no speedup or SLO claim."
+}
