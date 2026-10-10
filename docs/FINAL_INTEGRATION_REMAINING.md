@@ -2,7 +2,7 @@
 
 核对时间：2026-10-10。依据 `PROJECT_SPEC.md` 全部 F01–F66/P2、`IMPLEMENTATION_NOTES.md`、逐项清单和各模块实际验收记录。此文件只整合状态，不修改规格目标，不把专项计数累加为全量，也不替代共享主清单。未运行新的 CI、Docker、负载或外部请求。
 
-根负责人恢复后实际核对 main 为 **f017f8d8983a720dcf0fe45c6fe0f62225dad6ff**（实现里程碑 5b402dd；仅正常 main 提交）：7f02 阶段包含第八基础，f66f5b2 加强 AI 多轮失效检查。第八不可变证据为 **377 应用 =88 单元+289 集成，0失败/0跳过；20 检查 =18 Chromium+2日期**，见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)。这是该冻结源的本地空 Compose 结果；不是当前工作区全集、最新托管或最新 Docker 结果。042 已以独立干净快照进入 main；036/038/039/041/043–048 尚属工作区，不据文件存在推断已合入。
+当前不可变本地已验源为 **3e052d816c48a701fb82ce137436c30a770cf080**。036/038/039/041/043–048严格读写、删除、缓存、签名独立恢复主体已纳主线，核心activation guard已true，逐站证明/水位/删除屏障仍强制。全新测试Compose空卷本地入口与清理EXIT0：**491应用=100单元+391集成，0失败/0跳过；22 E2E=20真实Chromium+2日期函数**，见[不可变证据](test-evidence/main-3e052d8-local-final.json)。新应用镜像和5000严格负载尚待；两条新窄修与收入FK核查不计入已发布491。
 
 ## 已闭合的 main 功能，不重复列为待开发
 
@@ -17,17 +17,17 @@
 
 | 编号 | 原目标与当前状态 | 完成条件 / 具体剩余 |
 |---|---|---|
-| R1 | P2-01 全 canonical 生产迁移；guard 仍 false | 集成 036/038/039/041/043–048 的当前 producer、reader、worker、删除、保留、历史与恢复链；证明 PG 不再保留原事件/EAV、session header、effects/vitals/carry 等应迁出正文，而不是仅 events=0。PG 保留安全元数据/权限/身份/队列/预算。全部 readiness 条件完成后由负责人启用 guard，不能用手工改 authority 代替。 |
-| R2 | 044 事实读来源接线在制 | 该调用已在工作区传 `{pool:ctx.pool}`，真实 044 事实源与问数图专项 2文件6项通过；尚未进入本轮整体验收/提交边界。保持同一已有 client 选择 CH registry/TEMP 来源，不借新连接。所有读取（AI、统计、治理、导出、历史备份）审计 source/epoch/deletion_epoch/coverage 和缺 body 失败关闭；不得把空 PG 表当零或悄悄 fallback。 |
-| R3 | 精确删除 / journal / restore 在新 CH 正文模式的事务恢复在制 | D 早期实际 native restore 在 journal 推进 deletion_epoch 后遇到 `FACT_STORE_SOURCE_FENCE`；C 早期实际 CH ACK→PG rollback 发现 surviving-fact 修复捕获缺口，失败记录保留。根最新确认044 producer native partial+ACK rollback 已通过，不继续写为未修；完整 runtime 因046 allowlist guard 在制尚未完成，不写成最终产品已失败。仍须完成受内部授权、同站 gate 的 repair 全运行时对账，普通只读严格拒绝陈旧源；最终证明删 A 保 B、失败 ACK 不成功、已物理删除后 PG 回滚与重试、最新 journal 恢复不复活、导出/AI/缓存无旧数据。不能把这些归为外部账号阻塞。 |
-| R4 | 036 会话 carry / 041–046 headers 与 facts 生命周期在制 | 生产 worker 默认接线、跨保留期/晚到/乱序精确 owner、GC/保留/精准删除和 backup/restore 的整链对账。已有独立成熟留存/跨 cutoff 率专项通过，不重复列未实现；未知 backing 必须 unsupported，不能伪零。 |
-| R5 | 038 控制列证明 +039 生产操作预激活已专项通过，尚未发布全量 | 可复现 daily native 3/3（旧 producer 夹具实际采集、升级同 wire、真实 shadow/verify/activate/prune、startup 新证明、CH ACK→PG rollback→重启恢复、精确删除、CH 故障503）；主 guard false。将当前 shared policy、旧 wire replacement receipt 链及证明生命周期纳入同一不可变源全集，再验证 main 正式模式。旧 body 不制造证明；完整性清洗只保证已知标识/完整邮箱，不保证任意自由文本匿名。 |
-| 已闭合，不再待做 | F52 安全自定义手动搜索导入042已 main 5b402dd | 独立干净快照4 unit+7真实PG+1真实browser（11+1），build/type/lint PASS；证据 `manual-search-clean-main.json`。不加进第八377。自定义模板/列映射不是官方读取API或百度原生CSV兼容，后两项仍按外部边界保留。 |
-| R7 | 最新完整发布验收尚未覆盖上述 WIP | 对最终不可变源执行 lint/type/单元/真实 PG+CH+Redis/浏览器/构建/空卷 compiled-app CI，并跑该精确镜像 Docker 安装、升级、备份、独立新卷恢复、503/迁移失败回滚。不得用第八377+20或旧 c610 镜像替代新增迁移。记录失败/未运行与 SHA。 |
-| R8 | 单机规模与 bounded planner 当前新路径未完整验收 | 真持续采集并发查询/删写/重建下量化 RSS、lag、失败/重试、集中大站与多站分布；含 CH 正文、facts、carry 及047剩余正文新路径的容量与恢复。旧 1M PG-only 40站完整管线确实通过，非最新源；不能证明 1C2G、持续混合负载或5分钟保证。 |
-| R9 | 最新托管/定时与运行资料尚未闭合 | 本地第八绿不等于最新 CNB 绿；保留 fa3 托管及两轮空 Compose 失败记录。托管由负责人按授权处理，不自行触发；用户现要求所有自主开发收工后才由父手动同步和验证；CNB 自动事件/定时/NPC 已关闭，GitHub Actions 停用且活动 YAML 已移除。历史 cron 注册/授权失败保留，不要求本轮开启或阶段触发。最终用户手册、schema/app兼容矩阵和逐项清单须对应新源/镜像，避免沿用“尚未注册 AI”等历史措辞。 |
+| R1 | canonical主迁移已闭合并启用guard | 原producer/reader/worker/正文迁出/证明与恢复主体已纳3e052d8。本轮窄修：收入alias回执与raw-prune签名proof仍在制，不能说已经验收。 |
+| R2 | 043–048事实/缓存读取主体已闭合 | sameclient认证来源、缺正文失败关闭及current exact导出已验；保持来源/epoch/coverage契约，不重新列为未接线。新增窄修结果须新源验收。 |
+| R3 | 精确删除/journal/独立restore主体已闭合 | 实际删A保B、ACK回滚重试、独立最新journal、cache物理清理/不可恢复legacy负coverage已通过。旧失败保留在历史段。 |
+| R4 | carry/header/fact/cache生命周期主体已闭合 | 当前严格worker、保留/删除/签名恢复已测。真实strict新收入FK缺口由A核查049，仍在制；不据旧测试宣称该窄修完成。 |
+| R5 | daily受控拓扑与操作证明主体已闭合 | 原038/039/041受控证明进入main，guardtrue；未知pre014 daily不制造proof，旧安全report/export仍可用，coverage缺口明确。 |
+| R6 | F52自定义手动搜索导入已闭合 | 042已主线且本地验收；官方公开读取API未证实，原生CSV兼容无样本，不冒充官方连接器。 |
+| R7 | 不可变完整本地应用/浏览器已PASS；新镜像待 | 3e052d8实际491+22，全新Compose清理EXIT0；新应用镜像安装升级备份恢复矩阵待。新增窄修必须固定新源验证，不修改已发布计数。 |
+| R8 | 1000严格CH完整性PASS，性能未达SLO | 查询p95 9.41秒、滞后p95 63.71秒，不宣称SLO通过；5000集中负载/新源性能仍待。旧1M PG-only与77d持续PG证据保留但不替代CH容量或1C2G承诺。 |
+| R9 | 最新托管按用户要求暂停 | 全部自主开发收工后才由父手动同步验收；不阶段触发CNB，自动事件/定时/NPC关闭，GitHub Actions停用。旧托管成功与失败保留，本地通过不代表最新托管通过。 |
 
-此清单没有发现应重开已关闭 AI 审计的新功能任务。R2 是 044 接线的新确定缺口；R3 保留实际失败历史及已通过的修复专项，完整runtime仍待闭合；其他项是原承诺的未闭合生产/发布链，不是新增产品范围。
+当前只收束上述既定集成与窄修，不扩产品范围、不重开已闭合AI功能。真实外部账号与执行器边界另列。
 
 ## 真实外部与执行器边界，独立保留未验收
 
@@ -49,9 +49,13 @@
 
 每日盐跨日 UV/留存/identify 本来不支持；丢失心跳不外推；GSC 关键词不关联访客/订单；不同币种不求和；用户自报收入不是支付对账；精确 GA4 窗口不匹配时 unsupported；当前证据无法算的旧档/cohort 不假造率；每表100k、有界读与备份上限超量明确失败。它们是规格/勘误要求的正确行为，不能靠伪数据“补验收”，也不意味着其对应整个功能未实现。
 
-本文件只在根确认的 main 边界内说“已 main”。专题测试与临时 readiness-true 源变体只说“本地专项”，不合计进377，不声称已部署、已公开、已合并或全计划完成。
+本文件只在根确认的 main 边界内说“已 main”。专题测试与临时 readiness-true 源变体只说“本地专项”，不将专项追加到已发布491，不声称已部署、已公开、已合并或全计划完成。
 
-## 恢复工作区检查点
+## 历史检查点与失败（保留，不代表当前剩余）
+
+根负责人恢复后实际核对 main 为 **f017f8d8983a720dcf0fe45c6fe0f62225dad6ff**（实现里程碑 5b402dd；仅正常 main 提交）：7f02 阶段包含第八基础，f66f5b2 加强 AI 多轮失效检查。第八不可变证据为 **377 应用 =88 单元+289 集成，0失败/0跳过；20 检查 =18 Chromium+2日期**，见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)。这是该冻结源的本地空 Compose 结果；不是当前工作区全集、最新托管或最新 Docker 结果。042 已以独立干净快照进入 main；036/038/039/041/043–048 尚属工作区，不据文件存在推断已合入。
+
+
 
 2026-10-10 本次恢复实际执行 `pwd`、`git status --short --branch`、`git rev-parse HEAD`。原目录与 main SHA 如上，未重建环境、重置或丢弃任何文件。在继续编码前保存 diff/index 与149个未跟踪源码到 `/tmp/baize-resume-preserved-v05w04ks`。本地原生执行恢复，不表示所有代理或全套测试已经完成。六路已恢复既有任务；043–048 完整严格 worker、精确删除、缓存消费、身份与恢复入口仍按 R1–R8 收束。真实 strict 子进程 CLI 专项1/1已见日志，严格身份 HTTP/PG/CH 专项1/1已回交；两项不能累加为最终全集或 Docker 通过。
 
