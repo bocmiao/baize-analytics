@@ -1,0 +1,28 @@
+{
+  "sourceCommit": null,
+  "baseCommit": "2ec2723",
+  "sourceSha256": {
+    "src/server/fact-store.ts": "5d5a18d1ffc919e4ff2587433bb2dc1bd5f024583ba96b447e5548423cdce6d2",
+    "src/server/fact-member-publication.ts": "ccbeea94dc1dbc18848fdaa660eb583844f43032da56d0464fa58437b972d922",
+    "tests/unit/fact-member-publication.test.ts": "584f85f27ddaed9df0cc23c95092b391797441e7a4f20fc5df65a59a03b0330d",
+    "tests/integration/fact-store.test.ts": "f37f47ce3aeec5ff621abd201c6af8acd9f88dd7b93dd190822be5fa738b2da6"
+  },
+  "realCommand": "TEST_DATABASE_URL=<authorized existing dev PG> CLICKHOUSE_TEST_URL=http://127.0.0.1:38123 node_modules/.bin/vitest run tests/integration/fact-store.test.ts tests/integration/fact-store-source.test.ts tests/integration/fact-store-worker.test.ts --reporter=json --outputFile=/tmp/baize-fact-member-bulk-real-first.json",
+  "realResult": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "unitPassed": 3,
+  "unitFailed": 0,
+  "typeExitCode": 0,
+  "lintExitCode": 0,
+  "scope": "044 fresh receipts only. <=100 rows one typed jsonb_to_recordset INSERT, no ON CONFLICT, rowCount must equal fresh.length. Invoked after original CH readback SHA/checksum and fresh fence under original header lock/transaction. Existing PK/FK and all authentication unchanged. manifest_sql measurements use fixed facts adapter, no duplicate row counts. 047 not modified.",
+  "actualProof": "Default producer, pair/original reads, near32KiB Unicode, CH upload rollback/fence/EOF/limit, real PK23505/FK23503 and real BEFORE INSERT RETURN NULL short-insert refusal/savepoint rollback; verified CH120 rows remain exactly identical. Existing source tombstone/repair and production worker tested.",
+  "performance": "No application same-schedule load yet; no latency benefit or SLO claim.",
+  "executionSource": "Pre-commit WIP execution, bound by sourceSha256; not a run of the later committed19d97af immutable artifact.",
+  "laterFreezeCommit": "19d97afcd6ad4c7adf08437bf82c1124d4057f8d",
+  "laterFreezeValidation": "Root running separately; this record does not claim its result."
+}
