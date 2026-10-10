@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "events": 100000,
+  "sites": 40,
+  "rounds": 50,
+  "batchSize": 50,
+  "rate": "at most one batch per site per second",
+  "background": false,
+  "storage": "PostgreSQL; ClickHouse explicitly disabled",
+  "startedAt": "2026-10-10T06:40:59.990Z",
+  "schema": "bench_a5ab826715a92c64",
+  "diskProbe": "PostgreSQL data directory if locally accessible, otherwise workspace filesystem (container backing storage must be separately verified)",
+  "diskAvailableBeforeBytes": 20418064384,
+  "httpAddress": "http://127.0.0.1:38547",
+  "accepted": 100000,
+  "intakeMs": 67393.479971,
+  "httpBatchLatency": {
+    "count": 2000,
+    "p50Ms": 840.2652450000023,
+    "p95Ms": 1379.7107320000068,
+    "p99Ms": 1635.608491,
+    "maxMs": 1846.828265
+  },
+  "outboxBeforeWorker": {
+    "total": 100000,
+    "queued": 100000
+  },
+  "workerMs": 38168.257033,
+  "workerSiteLatency": {
+    "count": 40,
+    "p50Ms": 949.9679619999952,
+    "p95Ms": 1118.2490950000065,
+    "p99Ms": 1160.3384369999985,
+    "maxMs": 1160.3384369999985
+  },
+  "aggregationState": {
+    "sites": 40,
+    "dirty": 0,
+    "uncovered": 0,
+    "attempts": 0
+  },
+  "outboxAfterWorker": {
+    "total": 100000,
+    "queued": 0,
+    "done": 100000
+  },
+  "sql": {
+    "pv": 100000,
+    "uv": 2000,
+    "sessions": 2000
+  },
+  "queryMs": 154.18688100000145,
+  "queryStatsTotals": {
+    "pv": 100000,
+    "uv": 2000,
+    "sessions": 2000
+  },
+  "schemaBytes": 214491136,
+  "peakNodeRssBytes": 1179918336,
+  "finishedAt": "2026-10-10T06:42:46.572Z",
+  "isolatedSchemaRemoved": true,
+  "cliExitCode": 0,
+  "sourceHeadAtStartup": "cb72a7e",
+  "sourceBoundary": "Process loaded the then-current working tree including uncommitted changes; later commits 0590df3/b56b7e9 do not define an exact immutable startup snapshot. PostgreSQL only, clickhouse:null.",
+  "resourceEvidence": {
+    "postgresContainerFreeDisk": "19 GiB (actual docker exec df)",
+    "cgroupMemoryLimitBytes": 34359738368,
+    "cgroupMemoryCurrentBeforeMillionBytes": 11572789248
+  }
+}
