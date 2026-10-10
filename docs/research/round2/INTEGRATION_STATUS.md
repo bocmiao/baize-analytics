@@ -17,3 +17,7 @@ UI 已接入分组真链接、白名单 URL 与历史恢复、移动抽屉、核
 冻结 be95373 新空库整套：163 单元通过；149 集成文件、398 检查中 396 通过、2 失败，EXIT1；浏览器未运行，owned Compose 清理已验证。新增失败为 AI 原 finding 夹具及穷举导出新增表夹具，不覆盖旧 FAIL 记录。AI 原 finding 夹具通过实际扫描/本地证据重建，保留全部清理断言并验证删除回调一次；真实 PG 单文件 8 通过。浏览器两处折叠配置及精确删除范围确认夹具已准备，尚未复验。
 
 两处失败夹具窄修后分别真实 PG 8 项和 4 项通过，均未减产品 guard 或业务断言；穷举导出仍逐允许表要求非空、CSV/JSON 对账与跨站/敏感字段排除。这是受影响复验，不将其叠加到冻结全套计数。
+
+4eead97 全浏览器首轮 29 项中 25 PASS、4 FAIL（23 Chromium +2日期函数通过）；五视口与200%文本新用例通过，代表性 computed contrast 扩展尚未运行。失败含 scoped revoke 期望、刷新导航 helper、GA4超时及辅助分析503隐藏成功定义表（真实UI问题）。已准备严格断言/加载等待与独立 analysisError 产品修复，旧FAIL保留。
+
+4eead97 独立严格1000：20计划/20发送/20 HTTP202、1000接受、0失败/延迟/未发送，最大积压650，最终HTTP PV1000/coverage1、认证canonical1001PV/21UV含bootstrap、9张PG正文表0、1001 outbox done/queued0、水位追平。仅2次入库阶段查询样本，p95 176.987ms 不代表最终或稳态查询延迟；排空后新HTTP完整校验没有单独时长，下一测量补齐。Node app+harness采样内存intake586145792B/drain668774400B，不含存储服务。完整Git913blob前后一致，独立schema/CHnamespace/temp/app cleanup全true。阶段为inclusive/部分接口观察，不相加当CPU或改写旧5000失败。

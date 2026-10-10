@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "4eead97",
+  "exit": 1,
+  "total": 29,
+  "passed": 25,
+  "failed": 4,
+  "skipped": 0,
+  "realChromiumPassed": 23,
+  "dateFunctionPassed": 2,
+  "failures": [
+    "ai-evidence-language: revoke scoped confirmation expectation",
+    "extended-analysis: reload navigation helper race",
+    "ga4-history: timeout; root cause pending",
+    "workflow: secondary analysis HTTP503 hides successfully loaded goal record table"
+  ],
+  "newWorkspaceFiveViewportsAnd200Percent": "passed; representative contrast expansion not yet run",
+  "cleanup": "only original three development containers remain after owned Compose cleanup",
+  "scope": "real local compiled app, PG17/CH25.8/Redis7; explicit model/Google test transports, not external account verification"
+}
