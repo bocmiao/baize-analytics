@@ -1,0 +1,45 @@
+{
+  "exitCode": 1,
+  "rawResult": "/tmp/baize-r8-strict-7fbb561-5000.json",
+  "rawLog": "/tmp/baize-r8-strict-7fbb561-5000.log",
+  "sourceSha": "7fbb5612cee6121df23425ff14274316e43a4bca",
+  "archive": "/tmp/baize-main-7fbb561.ohxsp2eo",
+  "scriptSha256": "5ccd23cbd1cd0b56fa883ae20e52069498e8a98fde3ed3949bf1bd4d27263468",
+  "scriptGitBlob": "854fcda0d5e09a7785d16c3dda8ab25d836ba6c9",
+  "independentCleanup": {
+    "checkedAt": "2026-10-10T18:10:45.060143+00:00",
+    "pgSchema": "continuous_32bd61cad63cec72",
+    "remainingPGSchemaCount": 0,
+    "clickhouseDatabase": "continuous_e171a3a53b2191f9",
+    "remainingCHDatabaseCount": 0,
+    "clickhouseResponseStatus": 200
+  },
+  "lastIndependentStateBeforeCleanup": {
+    "observedAt": "2026-10-10T18:09:42.834Z",
+    "generation": 102,
+    "processedGeneration": 100,
+    "attempts": 0,
+    "lastError": null,
+    "watermark": "2026-10-10T18:01:21.928Z",
+    "outboxDone": 4901,
+    "outboxQueued": 100
+  },
+  "rssBoundary": {
+    "rawJsonMeasuredPeakBytes": 623210496,
+    "procHighWaterDuringCleanupKiB": 711464,
+    "note": "JSON timer stops before app.close; later /proc high-water is a separate cleanup observation"
+  },
+  "unrunFinalAssertions": [
+    "canonical 5001 PV / exact UV",
+    "nine PG body tables zero",
+    "final coverage 1",
+    "outbox all done"
+  ],
+  "limitations": [
+    "shared host; not dedicated 1C2G",
+    "serial batch plus actual stats queries; slow queries throttle intake",
+    "120s drain loop unchanged; awaited queries can overrun wall-clock deadline",
+    "not SLO acceptance"
+  ],
+  "heavyGateReleased": true
+}
