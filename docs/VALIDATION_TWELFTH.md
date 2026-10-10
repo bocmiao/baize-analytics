@@ -31,3 +31,11 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 新冻结 `0c3ca6ac06c459c824f0a1a5fc1a13497d4328d4` 的AI语言浏览器专项实际EXIT1：0PASS/1FAIL/0skip，95.975秒，中文“用途”selectOption超时；测试预算90秒内模拟provider已请求10次。web正在诊断，尚无修复通过结果。本次仅定向AI，不改写08eab82完整全轮PASS，也不能称新源浏览器回归通过。原始两日志及summary保存为 `test-evidence/main-0c3ca6a-ai-*-failed.*`；浏览器/本地应用真实，模型运输模拟。
 
 后续c7ccdea AI scope窄修真实复验EXIT0：完整SHA `c7ccdeae1616a9e6d9c9e040c5ce42e7a05fbbd0`，1真实Chromium PASS/0FAIL/0skip，17.786秒。原始reporter及两日志见 `test-evidence/main-c7ccdea-ai-*`。最新AI中文1440/390图位于 `screenshots/c7ccdea-current-ai/`，独立标注源码，不替换08eab82总览/SEO等完整轮截图。0c失败仍保留；该定向PASS不是最新源全浏览器或性能改善证明，模型运输仍模拟。
+
+## 10eb88a 完整本地全轮
+
+完整冻结 `10eb88a2d16cab2f22d079a9c128cbb37900448a` 实际EXIT0：180单元、402真实PG/CH/Redis集成全部PASS/0FAIL/0skip；30检查=28真实Chromium+2日期函数全PASS/0skip（runner1.7分钟）。lint/types/SDK/build、新隔离数据库卷、compiled应用、真实native PG dump/restore及owned cleanup均通过。原始报告与source摘要 `test-evidence/main-10eb88a-*`。所有旧FAIL保留；不累加其他阶段数量，不把下一b65候选或新镜像提前记通过。
+
+当前短范围中文workspace总览、SEO、AI1440/390实截图在 `screenshots/10eb88a/`；另存响应式overview1440/375，375不改名冒称390。图像hash入summary，旧08/c7图保留。Google/GSC及模型transport仍模拟，本地PGCHRedis/HTTP/Chromium真实。新生产镜像、托管及跨宿主DR仍待。
+
+后续不可变b65aefa959066a45444b668f02614ce1568c5dbe事实pair真实PG/CH专项3文件13检查实际12PASS/1FAIL/0skip、EXIT1。Unicode正文真实往返通过，但新rollback留下2行CH orphan，旧sweep断言expected1实际3；analytics正在按own run物理清理，不降低旧断言。证据 `test-evidence/main-b65aefa-fact-pair-failed*` 保留；不能称全部pair已通过，不改写10eb完整全轮结果。

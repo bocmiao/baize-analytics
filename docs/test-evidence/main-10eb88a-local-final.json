@@ -1,0 +1,80 @@
+{
+  "sourceCommit": "10eb88a2d16cab2f22d079a9c128cbb37900448a",
+  "exit": 0,
+  "command": "bash scripts/validate-local-final.sh",
+  "unit": {
+    "passed": 180,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "passed": 402,
+    "failed": 0,
+    "skipped": 0,
+    "realPGCHRedis": true
+  },
+  "browser": {
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "realChromium": 28,
+    "dateFunctions": 2,
+    "runnerDuration": "1.7m"
+  },
+  "checks": [
+    "lint",
+    "types",
+    "SDK",
+    "build",
+    "new isolated PG/CH/Redis volumes",
+    "compiled app",
+    "native operational PG dump/restore",
+    "owned cleanup"
+  ],
+  "simulated": [
+    "Google/GSC transport",
+    "model provider transport"
+  ],
+  "notRun": [
+    "b65aefa whole-source acceptance",
+    "new production image matrix",
+    "hosted CI/sync",
+    "cross-host DR"
+  ],
+  "screenshots": [
+    {
+      "file": "docs/screenshots/10eb88a/workspace-final-zh-1440.png",
+      "sha256": "b29c63528e42c6cbeea6afcd75733c905b1fdd078d853e1cf08bb9c8c0d577b6"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/workspace-final-zh-390.png",
+      "sha256": "857ff918fba95209ac7e30c7ebe2822f2a95f1588e6836a8c146cd88d57a7d41"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/seo-zh-1440.png",
+      "sha256": "87a4c27a2de5ec5e3e790610fb3e83b82c27651950a0e30f90800b2484184aa2"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/seo-zh-390.png",
+      "sha256": "7e045e25a9f51257725ecea397d934c1a18b5a74433cc36a06d332cc9a2af8c3"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/ai-zh-1440.png",
+      "sha256": "26189399a3c7896e69042bddcc5f0f2dbbdbc34e9af9e76dc4bdb7baa453cf55"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/ai-zh-390.png",
+      "sha256": "c5311228d805a73798607738a935f7a450c9d3deb091f060f0608ef1755f3d23"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/overview-1440.png",
+      "sha256": "188eb394f886501a48c292cf3aceadcdb1eaa8708fcd3b6caf20f3d6df454c9b"
+    },
+    {
+      "file": "docs/screenshots/10eb88a/overview-375.png",
+      "sha256": "3f4d61ea81082bbef2b9eb6e7e9eb4acbe2d581b05b3f7a33f1c66734d05dabe"
+    }
+  ],
+  "screenshotWidths": "workspace/SEO/AI1440+390; separate responsive overview1440+375 (no375-as390 relabel)",
+  "previousEvidencePreserved": true
+}

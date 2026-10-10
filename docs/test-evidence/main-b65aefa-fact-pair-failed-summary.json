@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "b65aefa959066a45444b668f02614ce1568c5dbe",
+  "exit": 1,
+  "files": 3,
+  "passed": 12,
+  "failed": 1,
+  "skipped": 0,
+  "scope": "realPGCH paired fact-store affected tests; not whole regression",
+  "failure": "old orphan sweep expects1 but sees3: new Unicode roundtrip rollback creates2additional physical CH orphans",
+  "unicodeRoundtrip": "passed actual transport",
+  "diagnosis": "analytics preparing own-run physical cleanup preserving old assertion; not yet passed",
+  "prior10ebFullPassPreserved": true
+}

@@ -2,7 +2,7 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-截至 `ef55e12`，严格权威采集、事实、删除、缓存与独立签名恢复主体已实现，核心 guard 已启用；逐站 proof/水位/删除屏障仍强制。08eab82 完整本地全轮实际EXIT0：173单元+401真实集成、30检查（28真实Chromium+2日期）全PASS/0skip；新全部源码镜像及托管仍待。规格正文保持原目标，阶段计数不相加。
+截至 `ef55e12`，严格权威采集、事实、删除、缓存与独立签名恢复主体已实现，核心 guard 已启用；逐站 proof/水位/删除屏障仍强制。10eb88a 完整本地全轮实际EXIT0：180单元+402真实集成、30检查（28真实Chromium+2日期）全PASS/0skip；新全部源码镜像及托管仍待。规格正文保持原目标，阶段计数不相加。
 
 | 不可变阶段 | 实际本地结果与边界 |
 |---|---|
@@ -14,6 +14,7 @@
 | f4生命周期/b7独立恢复 | Docker生命周期和独立native restore实际 PASS；不覆盖050–053新镜像，后者尚未运行 |
 | ef55e12 | 168单元+400真实集成、29检查（27真实Chromium+2日期）全PASS，历史冻结结果保留 |
 | 08eab82 | 173单元+401真实集成、30检查（28真实Chromium+2日期）全PASS/0skip、fresh local EXIT0/cleanup；最新源码生产镜像及托管仍未执行 |
+| 10eb88a | 180单元+402真实PGCHRedis集成、30检查（28真实Chromium+2日期）全PASS/0skip、fresh local EXIT0/cleanup；下一候选及新镜像未预验 |
 
 ce6ebcc 与 b0be327 严格1000完整窗口基准已入仓且完整性 PASS，最终HTTP PV1000/coverage1、认证正文及PG正文清零/outbox/水位对账通过。ce 排空4查询 P95 7726.857ms、最终HTTP8825.490ms；b0最终HTTP7009.640ms，仍慢，不能据此承诺实时SLO/1C2G或5000规模。详见 [完整窗口说明](research/round2/PREFETCH_VALIDATION.md)及 [ce证据](test-evidence/main-ce6ebcc-independent-strict-1000.json)、[b0证据](test-evidence/main-b0be327-independent-strict-1000.json)。原strict5000失败保留。完整七筛选保存/编辑已实现并定向复验，不再列为待实现。
 
