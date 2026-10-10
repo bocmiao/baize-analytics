@@ -1,0 +1,18 @@
+[
+  {
+    "sourceSHA": "1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "language": "en",
+    "siteId": "01e5eaa9c6ada4a457dcbde5",
+    "timezone": "Asia/Shanghai",
+    "date": "2026-10-11",
+    "observedPv": 1,
+    "manualNote": true,
+    "causalEvidence": false,
+    "sentToAi": false,
+    "interaction": "Actual native button Enter and ECharts canvas markLine click both focus/select the equivalent list; real collector and PostgreSQL worker"
+  }
+]

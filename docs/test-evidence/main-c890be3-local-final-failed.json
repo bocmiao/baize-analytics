@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "c890be3c2a458d9a7934cd1d8133fbe3ec2032bd",
+  "exit": 1,
+  "unit": {
+    "files": 55,
+    "passed": 211,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "files": 155,
+    "passed": 421,
+    "failed": 0,
+    "skipped": 0
+  },
+  "backendTotal": 632,
+  "browser": {
+    "total": 30,
+    "passed": 29,
+    "failed": 1,
+    "skipped": 0,
+    "passedRealChromium": 27,
+    "passedDateFunctions": 2,
+    "failedRealChromium": 1,
+    "failure": "operations observation canvas hardcoded x58 click misses actual rendered bin; fixture coordinate diagnosis"
+  },
+  "image": "NOT RUN",
+  "rawLogSha256": "56c3dd8b1b9736d12390ba36085c8288bd29049ca61be2df3fb0b429e031e24c",
+  "trackedSourceBlobs": 1127,
+  "cleanup": "owned Compose completed",
+  "backendSourceFailure": false,
+  "priorFailuresPreserved": true
+}

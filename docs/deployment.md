@@ -44,4 +44,18 @@ server {
 
 以下仅描述PG-authority的可选mirror副本恢复分支，不是当前全局存储契约；严格CH权威及044等正文迁出已交付并有19d同源应用/镜像证据。PG-authority副本分支的新数据库恢复默认禁用ClickHouse，清除目标数据库复制指针、上传/维护旧任务并将存储模式设回postgres，不读取、删除或清理源副本。需要新目标副本时显式设置 `BAIZE_RESTORE_CLICKHOUSE_URL`、`BAIZE_RESTORE_CLICKHOUSE_USER`、`BAIZE_RESTORE_CLICKHOUSE_PASSWORD`；目标须为不同endpoint（同endpoint仅改query/database不算独立目标）。当前副本表namespace固定，不能让新旧恢复实例共用。新目标恢复完成后由管理员明确启用mirror并重建，不直接信任备份中的snapshot。原库升级回滚仍使用原ClickHouse删除屏障，失败不会宣称恢复成功。
 
-已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结仍在运行、尚未验收，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。
+已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结实际EXIT1（632应用通过，浏览器29/30），下一测试夹具复验待，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。
+
+当前c890冻结已结束，完整入口EXIT1、cleanup完成：55文件211单元+155文件421真实集成全部PASS/0skip=632应用通过；30浏览器检查29PASS/1FAIL（27真实Chromium+2日期通过），operations Chromium因固定x58画布点击点未命中失败，UI证明不完整。原FAIL保留，不能称全轮通过。root仅测试夹具1c1cb65按实际趋势/canvas几何窄修，焦点、PV、时区断言未降低；下一步同应用源码定向浏览器复验，不重复已过后端。新1c（含Compose预算配置前向传递）的镜像及性能仍待，不将632加旧源计数，托管不触发。
+
+## 当前同应用分阶段验收入口
+
+| 源/阶段 | 实际结果 | 边界 |
+|---|---|---|
+| c890后端冻结 | 55文件211单元+155文件421真实集成=632 PASS/0skip | 已实际执行；不称1c重跑后端 |
+| c890首轮浏览器 | 30检查29PASS/1FAIL，整轮EXIT1/cleanup | 原画布固定点失败保留 |
+| 1c1cb65浏览器复验 | 30检查=28真实Chromium+2日期全部PASS/0skip，92.6437秒、EXIT0/cleanup | src/db/packages与c890应用源码一致已核；operations单项1PASS10.333秒是子集，不累计 |
+
+有限两项实现缺口已本地闭合：日期标记真实canvas/键盘/时区/权限及PV1断言通过；累计SELECT次数/decoded bytes/deadline预算已由13定向（9PGCH+4服务器/适配器）及同应用632后端证明。限制预算不保证scan/heap或性能SLO。de417中的2FAIL及c890首轮浏览器1FAIL原记录保留，不改写历史EXIT1。
+
+最新1c应用镜像（含cdbenvforward）与独立负载仍待，负责人下一步串行镜像验收；19镜像与ac负载证据不外推此源。托管不触发，真实外部未测边界保持。

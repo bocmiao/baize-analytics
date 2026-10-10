@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340",
+  "trackedBlobs": 1128,
+  "exit": 0,
+  "scope": "operations targeted only; full30 not yet completed",
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "realChromium": true,
+  "durationMs": 10332.502999999999,
+  "assertions": [
+    "actual bin center click",
+    "bidirectional keyboard focus",
+    "PV and timezone",
+    "permissions"
+  ],
+  "cleanup": true,
+  "screenshot": "single-case generated attachment recorded in reporter; subsequent full run reset test-results before copy; final full-run image will be saved separately",
+  "priorFailuresPreserved": true
+}

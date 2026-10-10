@@ -59,3 +59,9 @@ ac86cd322ef3d89d791c62f3c50cfc269cf66755完整浏览器套件实际EXIT0：30检
 ## de7222e 预算联合全轮（失败保留）
 
 完整不可变 `de7222edfd6baa7478a4e32e22f6b5399fc34daf` 本地全轮实际EXIT1，owned Compose cleanup完成。54文件209单元PASS/0FAIL/0skip；154集成文件153PASS/1FAIL，417检查415PASS/2FAIL/0skip，两失败均CH stats source回归。浏览器与新镜像**未运行**，不能记新预算完整回归通过。原始unit/integration JSON、1112tracked blob源码归属、source摘要及原日志hash保存在 `test-evidence/main-de7222e-*`；不复制raw service/密钥内容，旧FAIL均保留。C/A窄修另在新源码验收，不改写本冻结失败。
+
+c890be3c2a458d9a7934cd1d8133fbe3ec2032bd完整本地runner实际EXIT1/cleanup：55文件211单元与155文件421真实集成，共632后端检查全PASS/0skip；浏览器30中29PASS/1FAIL/0skip（27真实Chrome+2日期通过，1真实Chrome失败）。失败是operations canvas固定x58未命中真实渲染bin的夹具坐标，后端source并未失败，但不能称完整全轮PASS。image未运行。原JSON/失败日志hash/1127blob绑定见 `test-evidence/main-c890be3-*`，后续fixture修复的browser独立新源复验不重写本失败。
+
+1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340 operations定向真实Chromium1PASS/0skip、EXIT0、10.333秒。按真实bin中心点击验证日期标记与键盘双向焦点、PV/时区/权限，reporter含生成annotation附件记录；后续全轮重置test-results前未能复制专项原图，最终图待全轮另存，不伪造hash。证据 `test-evidence/main-1c1cb65-operations-browser-*`，1128trackedblob绑定（不是11128）。本定向通过不能称同源全30通过；完整套件尚在root运行，旧c890失败保留。
+
+同源1c1cb6570a3f093ff9b2e46e8e4b501ed8d81340完整浏览器30/30 PASS、0skip、EXIT0、92.644秒，28真实Chromium+2日期，fresh Compose/compiled app/cleanup。最终中文workspace/SEO/AI1440/390、overview1440/375及真实英文annotation键盘交互截图已立即保存 `screenshots/1c1cb65-final/`；实际像素/viewport口径、hash及annotation metadata/source在 `test-evidence/main-1c1cb65-browser-*`。不能把英文annotation标中文，不能把375改称390。632后端检查仅c890实际通过，应用源码相同已blob/diff验证，未在1c重跑。新image尚未执行，旧FAIL保留。
