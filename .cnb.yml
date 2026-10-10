@@ -1,0 +1,21 @@
+# CNB template: YAML syntax checked; provider schema/runtime is not yet verified.
+# GitHub main remains authoritative. Configure PRIVATE CNB and credentials in its console.
+main:
+  push:
+    - docker:
+        image: node:24-bookworm
+        services: [docker]
+      stages:
+        - name: regular-application-validation
+          script: CI_START_SERVICES=1 bash scripts/ci-common.sh regular
+  web_trigger:
+    - docker:
+        image: node:24-bookworm
+        services: [docker]
+      stages:
+        - name: pull-authoritative-private-main-only-when-new
+          script: SYNC_RUN_REGULAR_CI=0 bash scripts/sync-main-cnb.sh
+# Deliberately no invented cron/provider resource keys. A console schedule can
+# invoke web_trigger after official schema/auth/services have been confirmed.
+# Heavy modes: run ci-common.sh heavy-ops or heavy-million manually in an
+# authorized Docker-capable isolated job; they are not default push stages.
