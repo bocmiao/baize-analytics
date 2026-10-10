@@ -1,0 +1,640 @@
+{
+  "sourceCommit": "87e1f64531d0d25b193fc2982726170179aea52f",
+  "runnerExitCode": 1,
+  "exploration": true,
+  "acceptance": false,
+  "schedule": {
+    "batches": 100,
+    "eventsPerBatch": 50,
+    "intervalMs": 5000,
+    "queryIntervalMs": 30000,
+    "maxConcurrent": 2,
+    "maxQueued": 8,
+    "durationLimitMs": 620000,
+    "drainLimitMs": 120000,
+    "budget": "unchanged defaults"
+  },
+  "reports": [
+    {
+      "status": "passed",
+      "exploration": true,
+      "acceptance": false,
+      "sourceSha": "87e1f64531d0d25b193fc2982726170179aea52f",
+      "fullGitBlobFiles": 1300,
+      "sourceUnchanged": true,
+      "actualAcceptedEventsPerIntakeSecond": 10.096485638308497,
+      "acceptedEvents": 5000,
+      "unsent": 0,
+      "delayed": 0,
+      "failed": 0,
+      "queryFailed": 0,
+      "drainReached": true,
+      "drainDeadlineReached": false,
+      "assertionsPassed": true,
+      "assertionsExecuted": [
+        "fresh_http_pv_coverage",
+        "pg_sql_exact_pv_uv_sessions",
+        "outbox_total_done_queued",
+        "processed_attempts_watermark"
+      ],
+      "finalMetadata": {
+        "finalHttpDurationMs": 2324.9003140000277,
+        "http": {
+          "pv": 5000,
+          "coverage": 1,
+          "source": "postgres"
+        },
+        "postgres": {
+          "pv": 5000,
+          "uv": 100,
+          "sessions": 100
+        },
+        "outbox": {
+          "total": 5000,
+          "done": 5000,
+          "queued": 0
+        },
+        "aggregation": {
+          "sites": 1,
+          "allProcessed": true,
+          "attempts": 0,
+          "watermarkCoversLatest": true
+        }
+      },
+      "windows": {
+        "intake": {
+          "fromMs": 0,
+          "toMs": 495221.820653
+        },
+        "drain": {
+          "fromMs": 495221.820653,
+          "toMs": 521520.030629
+        },
+        "final": {
+          "fromMs": 521520.030629,
+          "toMs": 523856.219288
+        }
+      },
+      "nodeRss": {
+        "intakePeakBytes": 535101440,
+        "drainPeakBytes": 535056384,
+        "finalPeakBytes": 533569536,
+        "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+      },
+      "cleanup": {
+        "applicationClosed": true,
+        "chNamespaceRemoved": true,
+        "pgSchemaRemoved": true,
+        "temporaryRemoved": true
+      },
+      "maxBacklog": 350,
+      "lastBacklog": 0,
+      "lastWatermark": "2026-10-10 23:44:54.777+00",
+      "querySampleCounts": {
+        "intake": 17,
+        "drain": 1
+      },
+      "queryP95ByWindow": {
+        "intake": 2716.0814970000065,
+        "drain": 2987.201004999981
+      },
+      "storage": "postgres",
+      "rawReportSha256": "c32a8e12b2b0db15df709ac0ad10ff37a590069bd73aa93dc6451a2f418bb50b",
+      "maxObservedOldestQueuedAgeMs": 40495.558,
+      "lastQuerySample": {
+        "window": "drain",
+        "atMs": 510073.406188,
+        "durationMs": 2987.201004999981,
+        "ok": true,
+        "pv": 4800,
+        "coverage": 0,
+        "source": "postgres"
+      },
+      "httpStages": [
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "aggregate_sql",
+          "calls": 378,
+          "failed": 0,
+          "totalMs": 27587.987320999626,
+          "maxMs": 989.6312009999529,
+          "histogram": [
+            156,
+            135,
+            4,
+            26,
+            11,
+            15,
+            31,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "site_lock",
+          "calls": 100,
+          "failed": 0,
+          "totalMs": 16678.755751999928,
+          "maxMs": 2467.2743599999812,
+          "histogram": [
+            84,
+            3,
+            0,
+            1,
+            0,
+            2,
+            2,
+            8,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "status": "failed",
+      "exploration": true,
+      "acceptance": false,
+      "sourceSha": "87e1f64531d0d25b193fc2982726170179aea52f",
+      "fullGitBlobFiles": 1300,
+      "sourceUnchanged": true,
+      "actualAcceptedEventsPerIntakeSecond": 9.960960670423686,
+      "acceptedEvents": 5000,
+      "unsent": 0,
+      "delayed": 15,
+      "failed": 0,
+      "queryFailed": 0,
+      "drainReached": false,
+      "drainDeadlineReached": true,
+      "assertionsPassed": false,
+      "assertionsExecuted": [],
+      "finalMetadata": {
+        "failure": "final_assertion_or_source_failed"
+      },
+      "windows": {
+        "intake": {
+          "fromMs": 0,
+          "toMs": 501959.616691
+        },
+        "drain": {
+          "fromMs": 501959.616691,
+          "toMs": 626166.3963520001
+        },
+        "final": {
+          "fromMs": 626166.3963520001,
+          "toMs": 654663.9809010001
+        }
+      },
+      "nodeRss": {
+        "intakePeakBytes": 739328000,
+        "drainPeakBytes": 754323456,
+        "finalPeakBytes": 723968000,
+        "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+      },
+      "cleanup": {
+        "applicationClosed": true,
+        "chNamespaceRemoved": true,
+        "pgSchemaRemoved": true,
+        "temporaryRemoved": true
+      },
+      "maxBacklog": 1400,
+      "lastBacklog": 500,
+      "lastWatermark": "2026-10-10 23:52:55.916+00",
+      "querySampleCounts": {
+        "intake": 17,
+        "drain": 4
+      },
+      "queryP95ByWindow": {
+        "intake": 21218.937289000023,
+        "drain": 26150.56844199996
+      },
+      "storage": "strict-clickhouse",
+      "rawReportSha256": "bc8146a42dc9d06692d95bbbd8137b82f6b04340a14dabfce5004f1f0567f90a",
+      "maxObservedOldestQueuedAgeMs": 204241.569,
+      "lastQuerySample": {
+        "window": "drain",
+        "atMs": 600015.7708330001,
+        "durationMs": 26150.56844199996,
+        "ok": true,
+        "pv": 4500,
+        "coverage": 0,
+        "source": "clickhouse"
+      },
+      "httpStages": [
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "site_lock",
+          "calls": 107,
+          "failed": 0,
+          "totalMs": 280011.1348130002,
+          "maxMs": 24000.729166999983,
+          "histogram": [
+            59,
+            4,
+            1,
+            0,
+            0,
+            17,
+            0,
+            4,
+            22
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "ch_transport",
+          "calls": 4881,
+          "failed": 0,
+          "totalMs": 121044.13659500371,
+          "maxMs": 86.5946100000292,
+          "histogram": [
+            0,
+            0,
+            1,
+            4850,
+            30,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": 4881,
+          "bytes": 2412354597,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 4881,
+          "bytesMeasuredCalls": 4881,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "authentication",
+          "calls": 19501,
+          "failed": 0,
+          "totalMs": 73345.3460709957,
+          "maxMs": 41.71623299998464,
+          "histogram": [
+            1,
+            17621,
+            1833,
+            46,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": 1461604,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 14624,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "temp_fill",
+          "calls": 14624,
+          "failed": 0,
+          "totalMs": 56632.65629800825,
+          "maxMs": 56.86776699998882,
+          "histogram": [
+            0,
+            12488,
+            1371,
+            764,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "canonical",
+          "operation": "http_request",
+          "stage": "ch_transport",
+          "calls": 1548,
+          "failed": 0,
+          "totalMs": 15301.973442001283,
+          "maxMs": 86.89841899997555,
+          "histogram": [
+            0,
+            8,
+            941,
+            598,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": 1548,
+          "bytes": 81044281,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 1548,
+          "bytesMeasuredCalls": 1447,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "remaining",
+          "operation": "http_request",
+          "stage": "ch_transport",
+          "calls": 1204,
+          "failed": 0,
+          "totalMs": 14214.596370000778,
+          "maxMs": 42.92513499996858,
+          "histogram": [
+            0,
+            1,
+            377,
+            826,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": 1204,
+          "bytes": 117831989,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 1204,
+          "bytesMeasuredCalls": 1204,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "manifest_sql",
+          "calls": 14624,
+          "failed": 0,
+          "totalMs": 11944.978914999003,
+          "maxMs": 19.587721000018064,
+          "histogram": [
+            12428,
+            2066,
+            109,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "aggregate_sql",
+          "calls": 460,
+          "failed": 0,
+          "totalMs": 8413.201902999803,
+          "maxMs": 284.0749230000656,
+          "histogram": [
+            281,
+            92,
+            11,
+            22,
+            16,
+            38,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "remaining",
+          "operation": "http_request",
+          "stage": "authentication",
+          "calls": 2408,
+          "failed": 0,
+          "totalMs": 6364.811014998065,
+          "maxMs": 13.716418000054546,
+          "histogram": [
+            630,
+            1610,
+            164,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": 233782,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 2408,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "remaining",
+          "operation": "http_request",
+          "stage": "temp_fill",
+          "calls": 1204,
+          "failed": 0,
+          "totalMs": 3715.1975070001654,
+          "maxMs": 19.728058000007877,
+          "histogram": [
+            7,
+            1074,
+            87,
+            36,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": 116891,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 1204,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "PG mode passed; strict mode failed drain deadline and final integrity assertion was not completed. Full accepted5000/HTTP202 is not end-to-end completeness acceptance.",
+    "Strict finalHTTP duration not recorded; final window28497.584549ms includes failed final work and is not a usable finalHTTP metric.",
+    "Observed drain window124206.779661ms includes probe/inflight query completion; configured drain deadline remains120000ms.",
+    "No inference of data loss from incomplete final verification. Original high-rate5000 failure reports remain unchanged.",
+    "Mixed inclusive stages are not additive CPU or per-final-query attribution. This is finite lower-arrival capacity exploration, not production or million-scale SLO proof."
+  ]
+}

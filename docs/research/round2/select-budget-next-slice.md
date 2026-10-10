@@ -14,7 +14,8 @@
 
 1240 source文件前后不变、4项cleanup全true。当前无负载运行；末段可用盘观察1.5GiB→结束2.0GiB，不是minimum也不据此作因果解释。其后仅获批10个旧构建缓存精确ID清理，观测可用空间2485452800→9281884160B；完整清理证据另存，不触及最新镜像、共享依赖或卷。
 
-容量探索87e（应用同d67）：PG/strict各20×50/5秒短时1000均EXIT0、0未发送/延迟/查询失败；仅有限探索，不替代原5000、日均百万或SLO验收，旧FAIL保留，见round2/CAPACITY_EXPLORATION.md。
+
+容量87e：短1000双PASS；长5000overallEXIT1，PG5000PASS（finalHTTP2.324900314秒，0未发送/延迟/查询失败）；strict5000FAIL（全部accepted、0未发送/查询失败、15delayed、120秒排空deadline、executed[]/assertfalse）。strict finalassertwindow28.497584549秒不是实测最终HTTP耗时，不声称最终完整性或数据丢失/SLO。功能645/浏览器30/镜像EXIT0独立；性能仍欠，停止追加heavy追绿、托管不触发。
 
 ## 历史SHA阶段记录与设计原文
 

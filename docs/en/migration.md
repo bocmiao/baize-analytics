@@ -14,7 +14,8 @@ Historical661 ENOSPC and d67 first29/30 full EXIT1 remain below with original so
 
 1240 sourcefiles unchanged;all four cleanup flags true.New heavy work paused,no active load.Disk observations1.5GiB late-run→2.0GiB end are not a minimum or causal diagnosis.
 
-Capacity exploration87e(d67 app):PG/strict1000 at20×50/5s bothEXIT0,zero unsent/delay/query failures;short-term exploratory evidence only,not original5000 acceptance,daily-million/SLO proof;oldFAIL preserved.See CAPACITY_EXPLORATION.md.
+
+Capacity87e:short1000 bothPG/strictPASS;long5000 overallEXIT1—PGPASS(finalHTTP2.324900314s,zero unsent/delay/queryfail),strictFAIL(all5000 accepted,0unsent/queryfail,15delayed,120sdrain deadline,executed[]/assertfalse).Strict finalassertwindow28.497584549s is NOT a measured final HTTP duration.No integrity/loss/SLO inference.Function645/browser30/imageEXIT0 remain separate.Performance gap remains;no more heavy retries or hosted triggers.
 
 ## Historical stage records and design
 
