@@ -76,3 +76,5 @@ CNB配置4386ec2已直接main，GitHub私有main权威，父线程确认私有�
 CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；静态/9本地Git分支通过，实际CNB首轮ECONNREFUSED和cron精确事件鉴权失败保留。本地容器安装DNS EAI_AGAIN后主动停止143，0应用测试；托管适配仍待父执行。父已确认c1fa2e4归档无新增Actionsrun，永不enable/rerun/dispatch。F60工具证据和bounded-session planner仅独立工作区小模块，尚未接生产，不纳本轮272/19或Docker。全计划未完成。
 
 父页面后续确认CNB223e887实际托管CI成功：cnb-bnd-1k4igl82q，regular7分31秒EXIT0、真实集成/compiled入口/18E2E与清理通过。owner-page来源记录cnb-hosted-223e887-owner-confirmed.json；完整下载日志尚未提供，不推算应用总数，也不把该旧源证明当8b61fc0的272/19。cron已注册但授权待用户确认，未验收定时。
+
+第五新production Docker c61030b4已实际build+完整生命周期EXIT0，201source/image SHA严格一致且与main8b61fc0对照0差异，真实PG30迁移含028/029。独立新库新文件卷/最新journal/worker SQL故障拒绝/升级/missing-image与schema+503真回滚通过，owned栈已清理。docker-fifth-main.json及hash/log记录边界；后续030/AI/语言与4ed81compose变更不在该快照，可选CH history模式未另在Docker开启，不能扩大为全部P2验收。

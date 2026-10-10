@@ -1,0 +1,35 @@
+{
+  "artifact": "/tmp/baize-fifth-ci.C9mqQu",
+  "application_source_commit": "8b61fc0",
+  "image": "sha256:c61030b4d8c169580ee1d8aab9206e01e33a791dfb63b801a7131003c0f97d01",
+  "source_hash_entries": 201,
+  "source_image_diff_exit": 0,
+  "matrix_exit": 0,
+  "schema_migrations_rows": 30,
+  "includes_migrations": [
+    "028",
+    "029"
+  ],
+  "checks": [
+    "compiled Node startup",
+    "real ingest/export/delete",
+    "backup keys separated",
+    "missing/reset independent journal rejection before DB creation",
+    "fresh isolated file/key volume restoration",
+    "post-backup deletion replay and revoked export cleanup",
+    "actual worker SQL deadletter fails without success marker or traffic switch",
+    "successful upgrade",
+    "missing-image database/application rollback",
+    "committed schema mutation + HTTP503 database/application rollback"
+  ],
+  "cleanup": "Only baize_lifecycle_32311 owned stack/volumes removed by EXIT trap",
+  "excluded": [
+    "030/F60 WIP",
+    "later auth/other WIP",
+    "4ed81c4 compose healthcheck change"
+  ],
+  "resource_note": "Matrix parent bash briefly SIGSTOP; active restore subprocess completed. Approved exact build caches and old bf77 image/cache removed; prior evidence retained. Upgrade minimum 2GiB unchanged.",
+  "commit_manifest_mismatches": [],
+  "optional_history_clickhouse_docker_runtime": "not separately enabled in Docker matrix; covered by real PG/CH native application integration",
+  "browser": "not repeated inside Docker; fifth fresh compiled application19E2E separately passed"
+}

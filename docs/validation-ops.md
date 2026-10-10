@@ -42,3 +42,7 @@
 第四批冻结artifact `/tmp/baize-full-ci.WPkl6i` 新镜像 **`bf77b54e1ca7db572cccc4e77ec8e937550157d67b2a5bdb5dd2b4afbad93140`** 实际build **EXIT0**（`/tmp/baize-ops-fourth-build.log`），完整运维矩阵 **EXIT0**（`/tmp/baize-ops-fourth-final-matrix.log`）。source/image189条SHA相同，025/026/027全部包含，证据docs/validation/docker-fourth-*；真实PG28条迁移。compiledNode+HTTP采集导出、严格journal新库独立卷恢复、真实worker故障不输出成功、正常升级、缺镜像与已提交schema+503后的完整DB/卷/旧应用回滚全部通过。故障前实际字段count1/HTTP503，恢复后脚本断言count0/health200。
 
 本轮因共享regular重跑启动独立PG/CH/Redis，ops在freshrestore完成后SIGSTOP暂停自己的bash，待CI栈清理后继续，避免磁盘峰值；不触其他服务/cache。最终own栈/目标卷/故障镜像自动清理，原CH/devPG/Redis保持，剩7.7GiB。CNBemptybootstrap后续script/docs及E2E/014测试夹具修正按父授权未加入该app冻结artifact，不冒称镜像包含这些独立后续变化。共享regular首轮fixture失败、第二轮237应用测试PASS但18E2E17PASS/1断言失败分别由root保存；本ops EXIT0不代表共享regular整体EXIT0。全部旧失败log保留。
+
+第五新镜像 **c61030b4d8c169580ee1d8aab9206e01e33a791dfb63b801a7131003c0f97d01** build与完整运维矩阵实际EXIT0：201条source/image SHA相同，逐项与main8b61fc0对照0差异，真实PG30条迁移包含028/029；HTTP真实采集/导出/删除、严格missing/reset独立日志拒绝、独立新文件/密钥卷恢复、最新删除重放、真实worker SQL死信失败不输出成功marker、正常升级、missing-image真回滚、已提交schema+HTTP503真DB/app回滚全部通过。见docker-fifth-main.json、docker-fifth-main-matrix.txt、docs/validation/docker-fifth-*。
+
+资源期间只精确清获批本任务buildcache与已不被本轮回滚依赖的旧bf77，旧失败日志与sha证据保留；SIGSTOP父bash时前台restore子操作仍完成，记录真实而非称整栈停住；2GiB upgradegate未降低。最终owned32311栈清理，原devPG/Redis/CH保持。此镜像不含后续030/F60/auth/语言WIP和4ed81c4 composehealth配置；可选CH history模式未在Docker矩阵另开启，已有真实PG/CH应用集成闭环，不能称全部CH灾备或PG-only完成。Docker不重复Chromium；fresh编译应用19E2E另有证明。

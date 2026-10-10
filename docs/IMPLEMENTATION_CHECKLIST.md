@@ -2,11 +2,11 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-最新已推送 main `9c7f717`。最近完整应用基准已推进第五里程碑：74文件、272测试（80单元、192真实PG/CH/Redis集成）及19项fresh编译应用Chromium检查通过，0失败/0跳过；共享本地应用脚本EXIT0，复用现有依赖/浏览器，安装未重跑。失败/中止记录完整保留；见 [VALIDATION_MAIN.md](VALIDATION_MAIN.md) 与 fifth-main证据。
+最新应用里程碑已推送 main `8b61fc0`，后续 CI 健康检查修复 `4ed81c4`。最近完整应用基准已推进第五里程碑：74文件、272测试（80单元、192真实PG/CH/Redis集成）及19项fresh编译应用Chromium检查通过，0失败/0跳过；共享本地应用脚本EXIT0，复用现有依赖/浏览器，安装未重跑。失败/中止记录完整保留；见 [VALIDATION_MAIN.md](VALIDATION_MAIN.md) 与 fifth-main证据。
 
-后续 `040b27e` 单连接错误路径/邀请原子审计的37项相关回归和1项fresh邀请浏览器通过；`9c7f717` F06外链文字隐私的13项相关回归通过。这些重叠专项不能与237相加。028历史存储应用删除/权限/备份恢复闭环、029 GA4精确窗口现纳入第五完整本地验收；新生产Docker仍在运行。
+后续 `040b27e` 单连接错误路径/邀请原子审计的37项相关回归和1项fresh邀请浏览器通过；`9c7f717` F06外链文字隐私的13项相关回归通过。这些重叠专项不能与237相加。028历史存储应用删除/权限/备份恢复闭环、029 GA4精确窗口现纳入第五完整本地验收；新production Docker c61030b4完整生命周期已EXIT0。
 
-最近生产Docker `bf77b54e1ca7` 完整生命周期 EXIT0，189条 source/image SHA一致、28迁移包含024–027；不覆盖后续040/F06/028/029，下一批须新镜像。GitHub Actions已由父线程网页停用且活动YAML归档；父确认c1fa2e4未新增run。CNB私有镜像bootstrap成功，首轮常规CI迁移因daemon/pipeline loopback不同失败，cron已注册但精确事件密钥授权失败，均未宣称托管CI通过。完整F/P2仍未完成。
+最新production Docker `c61030b4` 完整生命周期 EXIT0，201条source/image SHA与main8b61fc0一致、30迁移包含028/029，已覆盖040/F06/本批应用；后续AI/语言/bounded-worker仍须新完整测试和镜像。GitHub Actions已由父线程网页停用且活动YAML归档；父确认c1fa2e4未新增run。CNB私有镜像bootstrap成功，首轮常规CI迁移因daemon/pipeline loopback不同失败，cron已注册但精确事件密钥授权失败，均未宣称托管CI通过。完整F/P2仍未完成。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
