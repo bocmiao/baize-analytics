@@ -7,7 +7,7 @@
     "cause": "ENOSPC during rollback after concurrent image pulls",
     "log": "/tmp/baize-ops-final-matrix.log"
   },
-  "retryLog": "docker-lifecycle-main.log",
+  "retryLog": "docker-lifecycle-main.txt",
   "hostUpgradeFix": "minimum disk gate and emergency rollback reserve",
   "remoteCI": "not run; account payment/spending limit block"
 }

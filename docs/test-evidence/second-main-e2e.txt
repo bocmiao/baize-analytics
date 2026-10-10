@@ -1,0 +1,22 @@
+
+> baize-analytics@0.1.0 test:e2e
+> playwright test
+
+
+Running 13 tests using 1 worker
+
+  ✓   1 tests/e2e/extended-analysis.spec.ts:3:1 › real retained content, global campaign filter, repair CSV and advanced English controls (4.6s)
+  ✓   2 tests/e2e/time.spec.ts:3:1 › Chinese date picker uses the selected site timezone rather than browser UTC (21ms)
+  ✓   3 tests/e2e/time.spec.ts:4:1 › date range includes the whole civil day across US daylight saving transition (3ms)
+  ✓   4 tests/e2e/workflow.spec.ts:3:1 › product landing is the default, login is an explicit action (693ms)
+  ✓   5 tests/e2e/workflow.spec.ts:4:1 › real administrator → site → durable collection → aggregate → Chinese dashboard (2.7s)
+  ✓   6 tests/e2e/workflow.spec.ts:56:1 › tracker consent does not identify or transmit before grant and stops after revoke (7.4s)
+  ✓   7 tests/e2e/workflow.spec.ts:100:1 › real goal, funnel, saved report, protected share and revocation workflows (3.3s)
+  ✓   8 tests/e2e/workflow.spec.ts:141:1 › core English interface preference and Chinese reset (761ms)
+  ✓   9 tests/e2e/workflow.spec.ts:142:1 › invited viewer registration is scoped and cannot administer other sites (1.6s)
+  ✓  10 tests/e2e/workflow.spec.ts:147:1 › opened realtime view receives a newly persisted event and heartbeat online count without refresh (3.5s)
+  ✓  11 tests/e2e/workflow.spec.ts:149:1 › local immutable evidence → suggestion states → actual recheck → verified without a paid model (2.2s)
+  ✓  12 tests/e2e/workflow.spec.ts:152:1 › Chinese dashboard remains usable at mobile width without page overflow (1.0s)
+  ✓  13 tests/e2e/workflow.spec.ts:154:1 › actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap (4.7s)
+
+  13 passed (36.4s)
