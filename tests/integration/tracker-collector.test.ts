@@ -26,14 +26,14 @@ it('real browser tracker -> Fastify persisted PG -> governance -> session/rollup
   const cookie=setup.headers.get('set-cookie')!.split(';')[0]!;
   const siteResponse=await fetch(apiHost+'/api/v1/sites',{method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({name:'真实浏览器链路',domain:new URL(websiteHost).host,timezone:'Asia/Shanghai',config:{consent_required:true,replay:true,heatmap:true,vitals:true}})});expect(siteResponse.status).toBe(201);siteId=(await siteResponse.json() as {site:{id:string}}).site.id;
   browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium'});
-  const page=await browser.newPage({userAgent:'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'});
-  await page.addInitScript(()=>Object.defineProperty(navigator,'webdriver',{get:()=>false}));
+  const context=await browser.newContext({userAgent:'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'});const page=await context.newPage();
+  await context.addInitScript(()=>Object.defineProperty(navigator,'webdriver',{get:()=>false}));
   const reads:Promise<void>[]=[],readErrors:unknown[]=[];const responses:{accepted:number;duplicates:number;rejected:unknown[]}[]=[];page.on('response',r=>{if(r.url().endsWith('/api/collect'))reads.push((async()=>{expect(r.status()).toBe(202);responses.push(await r.json() as typeof responses[number]);})().catch(error=>{readErrors.push(error);}));});
   await page.goto(websiteHost+'/landing?utm_source=real-browser');
   await page.evaluate(async()=>{await (window as unknown as {baize:{ready:Promise<void>}}).baize.ready;});
-  expect(Number((await pool.query('SELECT count(*) FROM events')).rows[0].count)).toBe(0);expect(await page.context().cookies()).toEqual([]);
+  expect(Number((await pool.query('SELECT count(*) FROM events')).rows[0].count)).toBe(0);expect(await page.context().cookies()).toEqual([]);expect(await page.locator('script[src$="tracker-replay.js"]').count()).toBe(0);
   await page.evaluate(()=>{(window as unknown as {baize:{grantConsent:()=>void}}).baize.grantConsent();});
-  await page.addScriptTag({url:apiHost+'/tracker-replay.js'});await page.addScriptTag({url:apiHost+'/tracker-heatmap.js'});await page.addScriptTag({url:apiHost+'/tracker-vitals.js'});
+  await page.waitForFunction(()=>['replay','heatmap','vitals'].every(name=>(window as unknown as {baize:{hasModule:(name:string)=>boolean}}).baize.hasModule(name)));
   await page.locator('#buy').click();
   await page.evaluate(()=>{const b=(window as unknown as {baize:{identify:(id:string)=>void;track:(name:string,props:Record<string,boolean>)=>void;trackRevenue:(amount:number,options:{currency:string;order_id:string})=>void}}).baize;b.identify('account_1');b.track('boolean_property',{paid:true});b.trackRevenue(25,{currency:'CNY',order_id:'browser-order-1'});history.pushState(null,'','/complete');});
   await page.waitForTimeout(250);await page.evaluate(async()=>{await (window as unknown as {baize:{flush:()=>Promise<void>}}).baize.flush();});
@@ -52,9 +52,12 @@ it('real browser tracker -> Fastify persisted PG -> governance -> session/rollup
   expect(await runWorkerOnce(pool)).toBe(true);
   expect(Number((await pool.query('SELECT sum(pageviews) AS count FROM sessions')).rows[0].count)).toBe(2);
   const rollups=(await pool.query('SELECT data FROM stats_daily')).rows;expect(rollups.length).toBeGreaterThan(0);expect(rollups.reduce((n,r)=>n+Number(r.data.pv),0)).toBe(2);
+  const secondTab=await page.context().newPage();await secondTab.goto(websiteHost+'/another-tab');await secondTab.evaluate(async()=>{const t=(window as unknown as {baize:{ready:Promise<void>;grantConsent:()=>void;flush:()=>Promise<void>}}).baize;await t.ready;t.grantConsent();await t.flush();});const pageInstances=(await pool.query("SELECT visitor_id,page_id FROM events WHERE type='pageview'")).rows;expect(new Set(pageInstances.map(r=>r.visitor_id)).size).toBe(1);expect(new Set(pageInstances.map(r=>r.page_id)).size).toBe(3);expect(await runWorkerOnce(pool)).toBe(true);expect(Number((await pool.query('SELECT sum(pageviews) AS count FROM sessions')).rows[0].count)).toBe(3);await secondTab.evaluate(()=>{(window as unknown as {baize:{destroy:()=>void}}).baize.destroy();});await secondTab.close();
+  await page.evaluate(()=>{const original=Date.now;Date.now=()=>original()+70000;document.dispatchEvent(new Event('visibilitychange'));Date.now=original;});await page.evaluate(async()=>{await (window as unknown as {baize:{flush:()=>Promise<void>}}).baize.flush();});
+  expect(Number((await pool.query("SELECT max((payload->>'visible_ms')::int) AS visible FROM events WHERE type='heartbeat'")).rows[0].visible)).toBeGreaterThan(65000);
   const paths=(await pool.query('SELECT payload FROM events WHERE type=\'heartbeat\'')).rows;expect(paths.every(r=>r.payload.interval_end>=r.payload.interval_start)).toBe(true);
   await page.evaluate(()=>{(window as unknown as {baize:{revokeConsent:()=>void}}).baize.revokeConsent();});
-  await expect.poll(async()=>Number((await pool.query("SELECT count(*) FROM events WHERE type='consent' AND payload->'props'->>'granted'='false'")).rows[0].count)).toBe(1);
+  await expect.poll(async()=>Number((await pool.query("SELECT count(*) FROM events WHERE type='consent' AND path='/complete' AND payload->'props'->>'granted'='false'")).rows[0].count)).toBe(1);
   await Promise.all(reads);page.removeAllListeners('response');expect(readErrors).toEqual([]);expect(await page.context().cookies()).toEqual([]);expect(responses.every(r=>r.rejected.length===0)).toBe(true);
  }finally{await browser?.close();await api?.app.close();await new Promise<void>((resolve,reject)=>website.close(error=>error?reject(error):resolve()));await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();await rm(dataDir,{recursive:true,force:true});}
 },40000);

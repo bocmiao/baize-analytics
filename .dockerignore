@@ -6,3 +6,8 @@ dist
 backups
 playwright-report
 test-results
+data/
+data-keys/
+keys/
+.env.*
+**/master*.key

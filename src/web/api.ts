@@ -5,5 +5,5 @@ export async function api<T = Record<string, unknown>>(path:string, body?:unknow
  return result as T;
 }
 export type Row = Record<string, unknown>;
-export type Site = {id:string;name:string;domain:string;timezone:string;privacy_mode:string;retention_days?:number};
+export type Site = {id:string;name:string;domain:string;timezone:string;privacy_mode:string;retention_days?:number;config?:Row;current_role?:string};
 export function rows(value:unknown):Row[] {if(Array.isArray(value))return value as Row[];if(value&&typeof value==='object'){const v=value as Row;for(const key of ['rows','data','items','sites','results'])if(Array.isArray(v[key]))return v[key] as Row[];}return [];}

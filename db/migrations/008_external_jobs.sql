@@ -1,0 +1,1 @@
+CREATE TABLE external_jobs(site_id text NOT NULL REFERENCES sites(id) ON DELETE CASCADE,kind text NOT NULL,job_key text NOT NULL,day date NOT NULL,status text NOT NULL CHECK(status IN('running','complete','failed')),started_at timestamptz NOT NULL DEFAULT now(),finished_at timestamptz,PRIMARY KEY(site_id,kind,job_key,day));

@@ -3,7 +3,7 @@ import { lookup } from 'node:dns/promises';
 import { request as httpsRequest } from 'node:https';
 import { request as httpRequest } from 'node:http';
 import ipaddr from 'ipaddr.js';
-export interface OutboundOptions { method?: string; headers?: Record<string,string>; body?: string; maxBytes?: number; timeoutMs?: number; exactLocalOrigin?: string; allowedOrigin?: string; publicRedirectWithoutCredentials?: boolean; }
+export interface OutboundOptions { method?: string; headers?: Record<string,string>; body?: string; maxBytes?: number; timeoutMs?: number; exactLocalOrigin?: string; allowedOrigin?: string; publicRedirectWithoutCredentials?: boolean; binary?:boolean; }
 export function publicAddress(address:string): boolean {
   try { const ip=ipaddr.process(address); return ip.range()==='unicast'; } catch { return false; }
 }
@@ -24,11 +24,11 @@ export async function safeFetch(input:string, options:OutboundOptions={}, redire
   const result=await new Promise<{status:number;headers:Record<string,string|string[]|undefined>;text:string;bytes?:Buffer}>((resolve,reject)=>{
     const request=(url.protocol==='https:'?httpsRequest:httpRequest)(url,{method:options.method??'GET',headers:options.headers,lookup:pinnedLookup,agent:false},response=>{
       let size=0; const chunks:Buffer[]=[];
-      response.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>(options.maxBytes??2_000_000))request.destroy(new Error('Response too large'));else chunks.push(chunk);});
-      response.on('end',()=>{clearTimeout(deadline);resolve({status:response.statusCode??0,headers:response.headers,text:Buffer.concat(chunks).toString('utf8'),bytes:Buffer.concat(chunks)});});
+      response.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>(options.maxBytes??2_000_000)){const error=new Error('Response too large');clearTimeout(deadline);reject(error);request.destroy(error);}else chunks.push(chunk);});
+      response.on('end',()=>{clearTimeout(deadline);const bytes=Buffer.concat(chunks);resolve({status:response.statusCode??0,headers:response.headers,text:options.binary?'':bytes.toString('utf8'),bytes});});
       response.on('error',reject);
     });
-    const deadline=setTimeout(()=>request.destroy(new Error('Outbound timeout')),options.timeoutMs??10_000);request.setTimeout(options.timeoutMs??10_000,()=>request.destroy(new Error('Outbound timeout')));request.on('error',error=>{clearTimeout(deadline);reject(error);});request.end(options.body);
+    const timeout=()=>{const error=new Error('Outbound timeout');reject(error);request.destroy(error);};const deadline=setTimeout(timeout,options.timeoutMs??10_000);request.setTimeout(options.timeoutMs??10_000,timeout);request.on('error',error=>{clearTimeout(deadline);reject(error);});request.end(options.body);
   });
   if([301,302,303,307,308].includes(result.status)&&result.headers.location){
     if(redirects>=3)throw new Error('Too many redirects');

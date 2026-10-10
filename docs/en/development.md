@@ -1,0 +1,11 @@
+# Development and verification
+
+Use Node 24 and the checked-in npm lockfile: `npm ci`. Set `DATABASE_URL`, `REDIS_URL`, `DATA_DIR` and `MASTER_KEY_FILE`, then run `npm run db:migrate` and `npm run dev`. `npm run build` generates `dist/web`, `public/tracker*.js` and `dist/server`. Docker binds only to loopback by default.
+
+Run `npm run lint`, `npm run typecheck`, `npm run test:unit`, `npm run build`, then real PostgreSQL integration tests and Playwright tests. Set `TEST_DATABASE_URL` to an isolated test database; tests that skip without it are not evidence of database acceptance. Install Playwright Chromium before browser integration tests. Start the test application and confirm `/healthz` before `npm run test:e2e`. Use isolated database and Redis namespaces; never seed fixtures into business data. `bash scripts/ops-lifecycle-test.sh` validates the actual Docker installation/backup/restore/upgrade loop.
+
+The main application is AGPL-3.0-only; `packages/tracker` is independently MIT licensed. `sdk/miniprogram.ts` re-exports `createMiniProgramTracker` from that package, with an injected request transport. When consent is required it generates no identity or persistent state before consent. Retries preserve event IDs; inject a cryptographically secure ID generator suitable for the platform. The WordPress plugin protects settings by administrative permissions and excludes administrator visits. Actual platform deployment remains a separate integration check.
+
+`sdk/clickhouse.ts` is an explicitly enabled replica adapter. Its `ReplacingMergeTree` deduplicates by site/event, reads use `FINAL` and typed parameters, and deletion waits for the mutation to finish. PostgreSQL remains authoritative. A tested adapter is not a completed reliable dual-write or online migration: application outbox coordination, journal-linked deletion, watermarks and end-to-end failure recovery must be implemented and verified before production enablement. The isolated ClickHouse 25.8 adapter checks covered schema creation, write, duplicate handling, parameterized query and synchronous deletion.
+
+See [API](api.md), [privacy](privacy.md), [compatibility](compatibility.md) and the [dependency inventory](../licenses/README.md). Generated npm SBOM/license metadata does not establish a formal distribution audit.

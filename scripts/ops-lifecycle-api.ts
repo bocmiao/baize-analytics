@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile,writeFile } from 'node:fs/promises';
 const mode=process.argv[2];const statePath=process.argv[3];if(!statePath)throw Error('State file required');
 const base=process.env.PUBLIC_URL;if(!base||!new URL(base).hostname.match(/^(localhost|127\.0\.0\.1)$/))throw Error('Loopback test URL required');
-interface State{cookie:string;siteId:string;visitor:string}
+interface State{cookie:string;siteId:string;visitor:string;exportId?:string}
 async function request(path:string,body:unknown,cookie=''){const response=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(body)});assert.ok(response.ok,`${path}: HTTP${response.status}`);return response;}
 if(mode==='seed') {
  const response=await request('/api/setup',{email:'ops@example.invalid',password:crypto.randomUUID()+'Baize1!',name:'运维真实验收'});
@@ -13,6 +13,13 @@ if(mode==='seed') {
  assert.equal(collected.accepted,1);
  await writeFile(statePath,JSON.stringify({cookie,siteId:created.site.id,visitor}),{mode:0o600});
  console.log('Real HTTP administrator/site/collector fixture persisted.');
+} else if(mode==='queue-export') {
+ const state=JSON.parse(await readFile(statePath,'utf8')) as State;
+ const job=await(await request(`/api/v1/sites/${state.siteId}/exports`,{format:'json',full:true},state.cookie)).json() as {id:string};
+ state.exportId=job.id;await writeFile(statePath,JSON.stringify(state),{mode:0o600});
+} else if(mode==='verify-export') {
+ const state=JSON.parse(await readFile(statePath,'utf8')) as State;
+ const result=await fetch(`${base}/api/v1/sites/${state.siteId}/exports/${state.exportId}`,{headers:{Cookie:state.cookie}});assert.equal(result.status,200);const payload=await result.json() as {events:unknown[]};assert.equal(payload.events.length,1);console.log('Actual collected event export file produced and downloaded.');
 } else if(mode==='delete') {
  const state=JSON.parse(await readFile(statePath,'utf8')) as State;
  const result=await(await request(`/api/v1/sites/${state.siteId}/delete-visitor`,{visitor_id:state.visitor},state.cookie)).json() as {deleted:boolean;journal:string};

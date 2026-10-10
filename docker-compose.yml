@@ -9,13 +9,15 @@ services:
       DATABASE_URL: postgres://baize:${POSTGRES_PASSWORD:?Run ./install.sh first}@postgres:5432/baize
       REDIS_URL: redis://redis:6379
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
       HOST: 0.0.0.0
       PORT: 3000
       DATA_DIR: /app/data
+      KEYS_DIR: /app/keys
       MASTER_KEY_FILE: /run/secrets/master_key
       NPM_CONFIG_CACHE: /app/data/npm-cache
     secrets: [master_key]
-    volumes: [app_data:/app/data]
+    volumes: [app_data:/app/data, app_keys:/app/keys]
     depends_on:
       postgres: {condition: service_healthy}
       redis: {condition: service_healthy}
@@ -46,6 +48,7 @@ secrets:
   master_key:
     file: ./.baize/master.key
 volumes:
+  app_keys:
   app_data:
   postgres_data:
   redis_data:

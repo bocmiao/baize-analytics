@@ -16,6 +16,11 @@ fi
 rollback() {
   echo 'Upgrade failed; restoring schema/data and prior application image.' >&2
   docker compose stop app || true
+  journal_check="$(mktemp -d "$PWD/.baize/rollback-journal.XXXXXX")"
+  docker compose cp app:/app/data/tombstones.jsonl "$journal_check/tombstones.jsonl"
+  docker compose cp app:/app/data/tombstones.watermark.json "$journal_check/tombstones.watermark.json"
+  node scripts/ops-validate-journal.mjs "$journal_check/tombstones.jsonl" "$journal_check/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
+  rm -rf "$journal_check"
   docker compose exec -T postgres psql -U baize -d baize -v ON_ERROR_STOP=1 -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public AUTHORIZATION baize;'
   docker compose exec -T postgres pg_restore -U baize -d baize --exit-on-error --no-owner < "$backup_dir/database.dump"
   scripts/ops-restore-volume.sh "$backup_dir" "$old_image"

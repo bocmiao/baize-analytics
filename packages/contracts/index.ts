@@ -1,4 +1,11 @@
 import { z } from 'zod';
+export const VITAL_KEYS=['lcp','inp','cls','fcp','ttfb'] as const;
+export const vitalKeySchema=z.enum(VITAL_KEYS);
+export const VITAL_THRESHOLDS={lcp:{good:2500,poor:4000},inp:{good:200,poor:500},cls:{good:0.1,poor:0.25},fcp:{good:1800,poor:3000},ttfb:{good:800,poor:1800}} as const;
+export const suggestionStatusSchema=z.enum(['new','accepted','in-progress','pending-recheck','verified','false-positive']);
+export const suggestionTransitions:Record<z.infer<typeof suggestionStatusSchema>,readonly z.infer<typeof suggestionStatusSchema>[]>= {
+  new:['accepted','false-positive'],accepted:['in-progress','false-positive'],'in-progress':['pending-recheck','false-positive'],'pending-recheck':['in-progress','verified','false-positive'],verified:[], 'false-positive':['new']
+};
 export const propertySchema=z.union([z.string().max(2048),z.number().finite(),z.boolean()]);
 export const eventSchema=z.object({
   event_id:z.uuid(),type:z.enum(['pageview','event','heartbeat','vitals','revenue','identify','replay','heatmap','consent']),
@@ -8,8 +15,8 @@ export const eventSchema=z.object({
   utm_source:z.string().max(256).optional(),utm_medium:z.string().max(256).optional(),utm_campaign:z.string().max(256).optional(),utm_term:z.string().max(256).optional(),utm_content:z.string().max(256).optional(),
   event_name:z.string().min(1).max(128).optional(),props:z.record(z.string().max(64),propertySchema).refine(p=>Object.keys(p).length<=20,'Maximum 20 properties').optional(),
   visible_ms:z.number().int().min(0).max(86400000).optional(),interval_start:z.number().int().optional(),interval_end:z.number().int().optional(),replay_seq:z.number().int().nonnegative().optional(),
-  vitals:z.object({lcp:z.number().nonnegative().optional(),inp:z.number().nonnegative().optional(),cls:z.number().nonnegative().optional(),fcp:z.number().nonnegative().optional(),ttfb:z.number().nonnegative().optional()}).optional(),
-  revenue:z.number().finite().nonnegative().max(1e12).optional(),currency:z.string().regex(/^[A-Z]{3}$/).optional(),order_id:z.string().max(128).optional(),user_id:z.string().min(1).max(256).optional(),
+  vitals:z.partialRecord(vitalKeySchema,z.number().nonnegative()).optional(),
+  revenue:z.number().finite().nonnegative().max(1e12).optional(),currency:z.string().regex(/^[A-Z]{3}$/).optional(),order_id:z.string().min(1).max(128).optional(),user_id:z.string().min(1).max(256).optional(),
   screen:z.string().max(64).optional(),language:z.string().max(64).optional(),replay:z.array(z.unknown()).max(500).optional(),heatmap:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),kind:z.enum(['click','scroll']),width:z.number().positive().optional(),height:z.number().positive().optional()}).optional()
 }).superRefine((e,c)=>{
   const require=(key:keyof typeof e)=>{if(e[key]===undefined)c.addIssue({code:'custom',path:[key],message:`${key} required for ${e.type}`});};

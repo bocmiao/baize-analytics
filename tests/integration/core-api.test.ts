@@ -55,7 +55,7 @@ describe.skipIf(!enabled)('real PostgreSQL application API acceptance',()=>{
     expect((await collect([wire()])).json().rejected[0].reason).toBe('deleted_visitor');
     const journal=await readFile(join(dir,'tombstones.jsonl'),'utf8');expect(JSON.parse(journal.trim()).visitor_id).toBe(visitor);expect(await runWorkerOnce(pool)).toBe(true);
     // Simulate an older DB snapshot that predates the tombstone while preserving its independent journal.
-    await pool.query('DELETE FROM tombstones WHERE site_id=$1',[site]);await pool.query("INSERT INTO events VALUES($1,$2,now(),$3,$4,'pageview','/resurrect','{}','{}',false)",[site,randomUUID(),visitor,page]);
+    await pool.query('DELETE FROM tombstones WHERE site_id=$1',[site]);await pool.query("INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions,is_bot) VALUES($1,$2,now(),$3,$4,'pageview','/resurrect','{}','{}',false)",[site,randomUUID(),visitor,page]);
     await replayDeletionJournal(pool,dir);expect((await pool.query('SELECT count(*)::int n FROM events WHERE site_id=$1',[site])).rows[0].n).toBe(0);expect((await pool.query('SELECT count(*)::int n FROM tombstones WHERE site_id=$1',[site])).rows[0].n).toBe(1);
   });
 });

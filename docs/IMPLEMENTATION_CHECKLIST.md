@@ -1,13 +1,13 @@
 # 逐项实现与验收清单
 
-此清单记录真实实现与验收证据；规格原文保持不变。状态：待实现 / 部分实现 / 已实现待验收 / 已验收 / 外部依赖未实测。模拟连接器测试不代表真实外部账号验收。
+此清单记录真实实现与验收证据；规格原文保持不变。状态按条目记录已实现已测（本地） / 部分实现 / 未实现 / 连接器已实现但外部未实测。模拟连接器测试不代表真实外部账号验收。
 
 ## F-01 页面浏览（PV）追踪【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
+- 验收测试：tests/integration/tracker-collector.test.ts；core-api.test.ts；tracker-browser.test.ts
+- 边界/未实测：真实浏览器→持久采集→worker→看板；SPA/预渲染已测。百万事件/日吞吐未压测。
 
 - 做什么：记录每一次页面访问，是全部统计的地基。
 - 采集端：脚本加载后立即发一次 pageview；SPA 监听 history.pushState/replaceState + popstate + hashchange，路由变化去抖 100ms 后再发（防重复）。
@@ -17,10 +17,10 @@
 
 ## F-02 访客标识【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；src/server/security.ts；collect.ts
+- 验收测试：governance-privacy.test.ts；tracker-browser.test.ts；analytics.test.ts
+- 边界/未实测：标准模式Cookie与每日盐口径分开；每日盐identify禁用、跨日UV/留存不支持，真实PG/全站导出隐私回归通过；任意伪装业务字段不能由字段名过滤证明匿名。
 
 - 做什么：跨访问识别同一访客，算 UV 的基础。
 - 采集端：tracker.js 运行在被统计网站的第一方上下文中，由 JS 自己通过 `document.cookie` 读写第一方 Cookie `_baize_uid`（2 年，SameSite=Lax）。**注意**：采集接口在跨域时通过响应 `Set-Cookie` 无法为被统计网站设置第一方 Cookie（只会成为第三方 Cookie，默认被浏览器拦截），因此 uid 必须由采集端 JS 生成与维护，服务端只做校验与兜底。
@@ -32,10 +32,10 @@
 
 ## F-03 会话划分【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（核心已测）
+- 实现文件：src/server/analytics.ts；worker.ts
+- 验收测试：tests/unit/analytics.test.ts；tests/integration/analytics.test.ts
+- 边界/未实测：事件时间、迟到乱序、跨日、多标签、完整受影响桶重算、并发租约/fencing已测；30分钟会话阈值对外配置入口仍需核对sites schema/UI。
 
 - 做什么：把 pageview 串成会话，算会话数/跳出率/平均停留。
 - 实现：Worker 消费队列时按 (site_id, visitor_id) 在 Redis 维护"最后活动时间"；距上次事件 > 30 分钟（可配置）则开新 session（UUIDv7）；sessions 表存 entry_page/exit_page/page_count/duration/bounced（单页且 <10s 记跳出）。
@@ -43,10 +43,10 @@
 
 ## F-04 停留时长【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts
+- 验收测试：tests/unit/analytics.test.ts；core-api.test.ts
+- 边界/未实测：按页面实例保留visible_ms/interval并去重重算；丢失心跳不外推，不声称真实阅读时长。
 
 - 做什么：页面前台可见时长累计（秒）。不称为"真实阅读时长"——我们只能证明页面可见，不能证明人在阅读。
 - 采集端：每 15s 发心跳，**每个心跳只覆盖其前 15s 内页面可见的子区间**（用 visibilitychange 时间戳切片）；页面卸载用 sendBeacon 补发最后一段。
@@ -55,10 +55,10 @@
 
 ## F-05 滚动深度【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（采集/聚合已实现）
+- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts
+- 验收测试：tracker-collector.test.ts；analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：25/50/75/100档、初始文档高度和页面实例完成率已实现；四档真实浏览器专项验收尚未单独记录。
 
 - 做什么：25%/50%/75%/100% 四档，衡量内容消费。
 - 采集端：scroll 监听（节流 200ms），计算 (scrollY+innerHeight)/docHeight，首次达到各档位发一次（props.depth=50）。
@@ -67,10 +67,10 @@
 
 ## F-06 出站链接点击【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（采集已实现）
+- 实现文件：packages/tracker/src/index.ts
+- 验收测试：tracker-collector.test.ts；packages/tracker/README.md
+- 边界/未实测：自动外链与data-baize-ignore；只保留origin/path，保守不采集链接文字；真实外站跳转不阻塞专项验收未记录。
 
 - 做什么：自动记录跳往外部域名的点击。
 - 采集端：click 捕获阶段找最近 <a>；hostname 不同则 sendBeacon 发 click 事件（props 含 url、链接文字前 50 字）；不阻止跳转、不延迟。
@@ -78,10 +78,10 @@
 
 ## F-07 文件下载【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现
+- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts；src/web/main.tsx
+- 验收测试：tracker-collector.test.ts；analytics.test.ts
+- 边界/未实测：扩展名/配置后缀/HTML download采集与事件聚合存在；独立下载Top内容报表及专项浏览器用例待补。
 
 - 做什么：pdf/zip/doc/xlsx/mp4 等后缀点击自动记为下载。
 - 采集端：同 F-06 逻辑，正则匹配后缀（data-download-exts 可自定义）；事件名 'download'。
@@ -89,10 +89,10 @@
 
 ## F-08 404 追踪【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现
+- 实现文件：packages/tracker/src/index.ts；src/web/main.tsx
+- 验收测试：tracker-collector.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：标题/body标识404采集存在；独立404 URL×来源×次数报表与修链清单导出入口未完整实现。
 
 - 做什么：发现死链与错误引流。
 - 采集端：document.title 匹配 /404|not found|页面不存在/i，或 <body data-baize-404> 标记，pageview 带 props.status=404。
@@ -100,10 +100,10 @@
 
 ## F-09 UTM/Referrer/渠道【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（基础渠道已测）
+- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts；analytics.ts
+- 验收测试：tracker-collector.test.ts；analytics.test.ts
+- 边界/未实测：UTM/referrer与渠道×落地页维度存在；可编辑渠道分组规则、多筛选作用于整看板趋势、广告点击标记完整展示待补。
 
 - 采集端：上报 document.referrer + location.search 的 utm_*（campaign/source/medium/term/content）+ gclid/fbclid（标记广告点击）。
 - 服务端：渠道分组规则（可配置，默认）：搜索引擎（google/bing/baidu/so/360/sm 等域名匹配）、社交（微信/微博/知乎/抖音/小红书/twitter/facebook…）、直接（空 referrer）、外链、邮件（utm_medium=email）。
@@ -111,30 +111,30 @@
 
 ## F-10 终端信息采集【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现
+- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
+- 验收测试：core-api.test.ts；analytics.test.ts
+- 边界/未实测：UA/设备/屏幕/语言维度和unknown降级存在；简化UA识别非完整ua-parser覆盖，devicePixelRatio/屏幕综合分类专项验收待补。
 
 - 采集端：navigator.userAgent 发给服务端；另采 screen 宽高、devicePixelRatio、navigator.language。
 - 服务端：ua-parser 解析 browser/os/device；device_type 按 UA+屏幕宽度综合判 mobile/tablet/desktop；解析失败记 unknown 不丢事件。
 
 ## F-11 地理位置【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：连接器已实现；外部数据未实测
+- 实现文件：src/server/geoip.ts；collect.ts
+- 验收测试：core-api.test.ts；docs/deployment.md
+- 边界/未实测：内存mmdb查询后脱敏持久化，未配置库明确unknown；真实MaxMind授权库/地域准确率未实测。
 
 - 实现：服务端收到事件后，**仅在内存中用原始 IP 查离线 mmdb**（MaxMind GeoLite2-City）得国家/城市，随后按策略丢弃或截断 IP 入库；**原始 IP 不进日志、不进错误追踪**。注意：截断后的 IP 不再用于二次定位（截断可能改变定位结果）；查不到记 unknown。
 - 部署：需 MAXMIND_LICENSE_KEY（免费注册），启动时下载 + sha256 校验；无 key 降级 unknown，看板横幅提示配置方法。
 
 ## F-12 Web Vitals【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（关键算法已测）
+- 实现文件：packages/tracker/src/vitals.ts；src/server/analytics.ts；src/web/AnalysisDetails.tsx
+- 验收测试：tracker-collector.test.ts；tests/unit/analytics.test.ts；tests/integration/analytics.test.ts
+- 边界/未实测：官方web-vitals按需模块、PG t-digest与不等样本合并、p75/p90和三色UI存在；采样率设置/所有指标名端到端覆盖最终回归仍需记录。
 
 - 采集端：**优先采用 Google 官方 `web-vitals` 库**（attribution 构建），指标就绪或页面卸载时上报 vitals 事件；不要为凑 tracker 体积手写简化算法。Web Vitals 采集做成**按需加载的独立模块**，默认脚本不包含（保 F-19 体积目标）。
 - 服务端：page_vitals 表按（站点、页面、日）存 **t-digest 分位摘要**（不是只存一个 p75 数字）；看板 p75/p90 从摘要实时计算，按 Google 阈值三色展示（好/需改进/差）。
@@ -142,10 +142,10 @@
 
 ## F-13 自定义事件【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；packages/contracts/index.ts；src/server/collect.ts；analytics.ts
+- 验收测试：core-api.test.ts；analytics.test.ts；tracker-collector.test.ts
+- 边界/未实测：手动/声明式事件、最多20属性、string/number/boolean EAV、事件属性查询90天上限；时间类型并非当前协议支持的属性类型。
 
 - API：`baize.track('signup', { plan:'pro'})`；支持 `data-baize-event="signup"` 声明式点击自动发。
 - 存储：抄 Umami EAV：event_data 表（event_id, data_key, string_value/number_value/date_value, data_type），单事件属性 ≤20 个防爆。
@@ -153,10 +153,10 @@
 
 ## F-14 收入事件【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（归因核心已测）
+- 实现文件：packages/tracker/src/index.ts；src/server/analytics.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts（币种隔离/订单去重/多标签末次点击）
+- 边界/未实测：按币种独立金额、订单幂等、末次非direct渠道/实际页面实例归因已测；完整收入趋势/归因图展示仍须最终UI验收；金额仅业务自述。
 
 - `baize.trackRevenue(99.0, { currency:'CNY', order_id})`；服务端汇总 revenue。
 - 看板：收入趋势、按渠道/页面的末次点击收入归因。
@@ -164,29 +164,29 @@
 
 ## F-15 用户标识 identify【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（身份映射/删除已测）
+- 实现文件：packages/tracker/src/index.ts；src/server/identity.ts；collect.ts；deletion.ts；analytics.ts
+- 验收测试：core-api.test.ts；analytics.test.ts；governance-privacy.test.ts
+- 边界/未实测：标准模式identify、HMAC身份映射、授权路径查询及user删除展开已有；身份前后事件时间后的身份A→B关联/删除/日志恢复实际PG已测；历史匿名会话不自动缝合（隐私选择）；完整注册→付费专属视图仍需核对；每日盐明确禁止。
 
 - `baize.identify('user_123')`（登录后调用）；服务端 identity_map（visitor_id↔user_id），历史会话缝合到 user_id（抄 Umami session_link）。
 - 看板：登录用户行为路径、注册→付费转化。
 
 ## F-16 表单提交【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（采集已实现）
+- 实现文件：packages/tracker/src/index.ts
+- 验收测试：packages/tracker/README.md；tracker-collector.test.ts
+- 边界/未实测：双重opt-in表单，只记id/action不取字段值；真实submit专项隐私用例未单独记录。
 
 - 采集端：form submit 监听（data-baize-form 开启才生效）；只记 form id/action，不记字段值。默认关闭，文档强调隐私。
 
 ## F-17 机器人过滤【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（基础过滤已测）
+- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts
+- 验收测试：core-api.test.ts；tracker-browser.test.ts
+- 边界/未实测：webdriver、UA爬虫、bot独立计数存在；行为型1秒>20请求bot判定与可维护/更新机器人库尚未完整实现。
 
 - 服务端：UA 匹配自维护爬虫库；行为规则（1s 内 >20 请求等）记 bot；bot 流量单独计数、不计入正式指标。
 - 采集端：navigator.webdriver 为 true 直接不上报。
@@ -194,10 +194,10 @@
 
 ## F-18 IP 匿名化 / DNT / Consent【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；src/server/security.ts；collect.ts
+- 验收测试：tracker-browser.test.ts；tracker-collector.test.ts；core-api.test.ts；governance-privacy.test.ts
+- 边界/未实测：DNT逻辑及同意前无ID无请求无缓存、撤销清队列/模块、最小consent事件、原始IP不落库；卸载/撤销日志仅尽力发送，不虚构必达。
 
 - IP：入库前 IPv4 置零末段、IPv6 取 /64，原始 IP 永不落盘。
 - DNT：navigator.doNotTrack==='1' 则整站不上报。
@@ -205,10 +205,10 @@
 
 ## F-19 脚本自托管与体积【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：scripts/build-tracker.ts；packages/tracker/src/browser.ts；README.md
+- 验收测试：.github/workflows/ci.yml；tracker-browser.test.ts
+- 边界/未实测：主/极简IIFE、自托管、data属性及清洗钩子、gzip预算检查；远程CI计费/运行状态独立于本地验收，不宣称hosted CI全部通过。
 
 - 构建：单文件 IIFE 零依赖；多变体（完整版/极简版）；PR 自动检查 gzip 体积（预算 5KB）。
 - 自托管：文档给 nginx 配置片段，站长可放自己域名/CDN 下绕过广告拦截。
@@ -216,10 +216,10 @@
 
 ## F-20 批量上报与可靠性【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：packages/tracker/src/index.ts；src/server/collect.ts；db.ts；worker.ts
+- 验收测试：tracker-browser.test.ts；tracker-collector.test.ts；core-api.test.ts；analytics.test.ts
+- 边界/未实测：固定event_id/原批重试、有界内存、events+outbox事务后202、冲突拒绝、worker租约/死信/重放；beacon排队非持久确认；整机吞吐压测未做。
 
 - 采集端：事件入内存队列，2s 或满 10 条批量发；每条事件带客户端生成的固定 `event_id`（UUIDv7）；sendBeacon 优先（页面卸载场景），失败回退 fetch keepalive；后端不可达指数退避重试 3 次后丢弃（console.debug，绝不抛错影响宿主站）。
 - 服务端：**持久化接收（默认可靠路径）**——/api/collect 校验后**同事务写 PG outbox 表**再返回 202；以 `event_id` 做幂等去重（重复投递直接返回已接受，去重窗口 ≥ 最大重试窗）；Worker 用短事务 SKIP LOCKED 认领，失败进死信队列，人工可查可重放。确认语义：202 = 已持久化，可恢复；内存只做有界削峰缓冲，不做可靠性承诺。P2 规模化时 outbox 可迁 Redis Stream，语义不变。
@@ -227,10 +227,10 @@
 
 ## F-21 总览 Dashboard【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/analytics.ts；src/web/main.tsx；Charts.tsx
+- 验收测试：analytics.test.ts；tests/e2e/workflow.spec.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：真实中文汇总/趋势/等长前期比较/规则洞察；精确访客集合非日UV相加，水位/coverage/保留边界可用性可见；未宣称百万日事件容量。
 
 - 指标卡：PV/UV/会话/跳出率/平均停留/转化数（选定周期）；趋势图（ECharts，按小时/天自动粒度）；对比模式（本周 vs 上周，同环比 %）。
 - 查询：全部走 stats_daily/hourly 预聚合；对比 = 两次聚合查询。
@@ -238,90 +238,90 @@
 
 ## F-22 实时看板【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（真实HTTP/PG；UI最终回归另记）
+- 实现文件：src/server/analytics.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts（真实SSE/迟到/撤销权限）；tests/e2e/workflow.spec.ts
+- 边界/未实测：真实listener+cookie+viewer测试初始流、迟到事件经outbox序号交付与撤销成员后断流通过；真实浏览器实时视觉最新12/12 E2E通过。
 
 - 当前在线（近 5 分钟有心跳的去重访客）；30 分钟事件流（SSE 推送：时间/页面/来源/地域/设备）；实时 Top 页面/来源。
 - 实现：SSE 端点 /api/realtime/stream；明细查询限定近 30 分钟 + Redis 在线集合。
 
 ## F-23 来源分析【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（查询核心已测）
+- 实现文件：src/server/analytics.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：来源及通用组合维度、渠道×落地页、精确访客集合；整个看板联合筛选/UTM效果专属图仍不足，不能将多行UV相加。
 
 - 引荐域名 Top、UTM campaign/source/medium 效果表、渠道分组；支持"渠道 × 落地页"交叉。
 - 实现：预聚合表按 channel/referrer/utm 建维度。
 
 ## F-24 页面分析【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/analytics.ts；src/web/AnalysisDetails.tsx
+- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：页面PV/UV/可见时长/统一跳出/入口出口/读完率；单页面详情真实趋势/来源/设备API及UI，分钟边界准确性已有PG回归。
 
 - Top 页面（PV/UV/平均停留/跳出率）、入口页、出口页；单页面详情（趋势+来源+设备分布）。
 - 入口 = 会话首个 pageview，出口 = 末个（sessions 表直接有）。
 
 ## F-25 路径分析（桑基图）【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/analytics.ts；src/web/Charts.tsx
+- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：真实会话Top20转移/Sankey，采用全量保留期会话非10%抽样；为处理环路分列起点终点，非完整用户全旅程图。
 
 - 用户 A→B 页面流向 Top 20，ECharts sankey。
 - 实现：基于会话 pageview 序列，抽样 10% 会话离线算转移矩阵（定时任务），存 path_stats。
 
 ## F-26 受众分析【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现
+- 实现文件：src/server/collect.ts；analytics.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：设备/浏览器/系统/国家→region通用维度下钻；中国省份地图/china.json资产与地图视图未实现，MaxMind实际数据未实测。
 
 - 设备/浏览器/OS/屏幕/语言分布；地域：中国地图下钻到省（ECharts + 内置 china.json）。
 - 实现：预聚合维度查询。
 
 ## F-27 自定义事件报表【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（EAV核心已测）
+- 实现文件：src/server/analytics.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts；core-api.test.ts
+- 边界/未实测：事件列表与人数/属性Top/boolean/90天限制已实现；事件按时间趋势专属可视化仍需补齐/验收。
 
 - 事件列表（触发次数/人数/趋势）；按属性分组 Top（如 signup 按 plan）。
 - 查询：events 明细按 event_name + 时间过滤，属性走 event_data join；限 90 天。
 
 ## F-28 转化目标【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（目标核心已测）
+- 实现文件：src/server/analytics.ts；worker.ts；src/web/main.tsx
+- 验收测试：analytics.test.ts；tests/e2e/workflow.spec.ts
+- 边界/未实测：事件/页面/时长目标CRUD、一次会话一次转化、范围转换及渠道归因存在；目标专属转化趋势和渠道趋势UI/API未齐全。
 
 - 三种：事件型（event_name=xxx）、页面型（到达 /thank-you）、时长型（会话 > N 分钟）；转化数/转化率趋势；按渠道分组。
 - 实现：goals 表存定义；每小时定时任务算 goal_stats（避免实时扫明细）。
 
 ## F-29 漏斗分析【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（有序漏斗核心已测）
+- 实现文件：src/server/analytics.ts；worker.ts；src/web/main.tsx
+- 验收测试：tests/unit/analytics.test.ts；tests/integration/analytics.test.ts；workflow.spec.ts
+- 边界/未实测：严格/宽松、有序去重人数、范围漏斗/每步流失存在；流失用户来源×设备Top特征尚未实现，不能标全项验收。
 
 - 多步骤（如 首页→商品页→下单→支付），每步转化率/流失数/流失用户特征（Top 来源/设备）。
 - 实现：按会话 pageview/event 序列有序匹配；支持严格/宽松顺序；抽样 + 预计算 funnel_stats 日表。
 
 ## F-30 留存/同期群【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/analytics.ts；src/web/AnalysisDetails.tsx
+- 验收测试：analytics.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：标准模式真实cohort/回访集合与留存热图；每日盐UI和API不支持，不跨日推测身份。
 
 - 按首访日 Cohort 的 N 日回访率热力表。
 - 实现：visitor_first_seen 表 × 回访标记，日任务算 retention 表。
@@ -329,150 +329,150 @@
 
 ## F-31 搜索关键词【P0/P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现；Google外部未实测
+- 实现文件：src/server/collect.ts；external.ts；src/web/Connectors.tsx
+- 验收测试：external.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：搜索引擎维度和GSC查询词/点击/排名/页面连接器已模拟验证；referrer关键词解析尚未实现；真实Google授权未实测。
 
 - P0：referrer 解析到的少量关键词 + 搜索引擎维度。
 - P1：GSC API 接入后升级为"查询词 × 点击 × 排名 × 落地页"报表。
 
 ## F-32 AI 引荐（GEO）渠道【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现
+- 实现文件：src/server/collect.ts；src/web/main.tsx
+- 验收测试：core-api.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：基础AI referrer/UA渠道识别存在；可维护ai_sources规则库及完整国内助手覆盖未齐全；无referrer流量保持direct，识别上限诚实披露。
 
 - 来源分析单列"AI 搜索/助手"：识别 ChatGPT/Claude/豆包/文心等 referrer 与 UA 特征；AI 爬虫单独标记。
 - 实现：ai_sources 规则表（F-17 机器人库子集）；文档诚实说明识别率上限（Fathom 70% 无 referrer 流量只能记 Direct 的教训）。
 
 ## F-33 自定义报表保存【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance.ts；analytics.ts
+- 验收测试：governance.test.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：保存DSL与真实执行统一queryStats；path/channel过滤不累加行UV，保留期外筛选明确partial_unavailable。
 
 - 当前筛选（站点/时间/渠道/页面）存为模板一键重看；reports 表存查询 DSL（JSON）。
 
 ## F-34 定时推送【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现；真实通知账号未实测
+- 实现文件：src/server/governance-worker.ts；governance.ts
+- 验收测试：governance.test.ts（统一月报/每日盐/历史聚合）
+- 边界/未实测：日周月持久PG任务、三次重试、日志和安全出口已实现；HTML目前基础摘要，完整指标卡+Top变化模板不足；SMTP/企业微信/Server酱真实账号未测。
 
 - 日/周/月报 → 邮件（SMTP 自配）/企业微信 webhook/Server酱/Webhook；服务端模板渲染 HTML（指标卡 + Top 变化）。
 - 实现：定时任务（BullMQ/Redis 队列，替代 APScheduler 方案）；失败重试 3 次；notification_logs 存发送记录。
 
 ## F-35 CSV 导出【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance-worker.ts；governance.ts
+- 验收测试：governance.test.ts；governance-privacy.test.ts；governance-file-cleanup.test.ts
+- 边界/未实测：异步明细/汇总CSV、10万行上限、公式注入保护、权限/下载/删除并发和物理文件清理测试通过；导出超量明确受限而非宣称完整。
 
 - 明细与汇总都可导；大导出走后台任务生成文件 + 下载链接（防超时）；单次上限 10 万行。
 
 ## F-36 公开分享链接【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance.ts；src/web/main.tsx
+- 验收测试：governance.test.ts；tests/e2e/workflow.spec.ts
+- 边界/未实测：密码/期限/吊销、只读聚合无配置原始明细；公共分享限流与隐私模式口径受约束。
 
 - 只读看板链接：token（随机 32 位）+ 可选密码 + 有效期；share_links 表；可随时吊销；分享页不暴露站点配置与原始明细。
 
 ## F-37 iframe 嵌入【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance.ts
+- 验收测试：governance.test.ts（真实HTML与CSP）
+- 边界/未实测：真实单图表HTML、nonce脚本及精确origin frame-ancestors；密码分享需独立token-only嵌入，不支持iframe自定义密码请求头。
 
 - 单图表嵌入自家后台：/embed/chart?type=top-pages&token=只读token；嵌入域名白名单用 **CSP `frame-ancestors`** 实现（X-Frame-Options 只有 DENY/SAMEORIGIN，做不了任意域名白名单）。
 
 ## F-38 流量异常告警【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（PV告警核心已测）
+- 实现文件：src/server/governance-worker.ts
+- 验收测试：tests/unit/governance.test.ts；tests/integration/governance.test.ts
+- 边界/未实测：28天同小时含零样本、偏离/zscore、连续两个不同小时和静默已测；UV异常规则、F58告警触发关联尚未完成。
 
 - 规则：当前小时 PV/UV vs 过去 28 天同小时均值，偏离 ±50%（可配）触发；连续 2 小时异常才发（防抖）；通知渠道同 F-34；支持一键静默。
 - 实现：每小时任务算 z-score。
 
 ## F-39 目标达成/漏斗骤降告警【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（规则已实现）
+- 实现文件：src/server/governance-worker.ts
+- 验收测试：governance.test.ts；analytics.test.ts（漏斗核心）
+- 边界/未实测：目标阈值与严格漏斗指定步骤日环比规则已实现；事件目标阈值真实PG通知入队/24小时静默已测；具体goal定义与漏斗投递专项PG仍待补。
 
 - 目标转化数达阈值通知；漏斗某步转化率单日跌超 30% 通知。
 
 ## F-40 脚本掉线检测【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（检测规则已实现）
+- 实现文件：src/server/governance-worker.ts
+- 验收测试：ACCEPTANCE_GOVERNANCE.md
+- 边界/未实测：last_event_at 24小时无事件扫描和通知队列已实现；23小时无告警/25小时触发及24小时静默真实PG已测；真实通知投递未实测。
 
 - 站点 24h 无新事件 → 提醒"检查追踪代码是否被删"；实现：定时扫描 sites.last_event_at。
 
 ## F-41 多站点管理 + 分组【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/sites.ts；src/web/main.tsx
+- 验收测试：core-api.test.ts；tests/e2e/workflow.spec.ts
+- 边界/未实测：站点/分组/时区/隐私/追踪代码、行级权限已测；website_id为随机24hex而非规格UUID，功能偏差明确保留。
 
 - sites 表（name/domain/timezone/privacy_config）；分组 tags；每站点独立 website_id（UUID）与追踪代码片段生成页。
 
 ## F-42 成员与角色【P0/P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）；邮件外部未实测
+- 实现文件：src/server/governance.ts；src/web/main.tsx
+- 验收测试：governance.test.ts；tests/e2e/workflow.spec.ts
+- 边界/未实测：owner/admin/analyst/viewer、邀请已有账户及邀请限定新注册、保留owner、审计已测；真实SMTP发送未测。
 
 - P1：邮箱邀请链接 + 角色（管理员/分析师/只读），site_members 行级权限。
 
 ## F-43 审计日志【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/context.ts；governance.ts；sites.ts
+- 验收测试：core-api.test.ts；governance.test.ts
+- 边界/未实测：导出/删除/配置/成员/令牌等敏感操作审计和180天清理；独立删除日志另行持久保护，不依赖审计表。
 
 - 谁何时导出数据/删站点/改配置：audit_logs 表，保留 180 天。
 
 ## F-44 API【P0/P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/context.ts；governance.ts；external.ts
+- 验收测试：core-api.test.ts；governance.test.ts；external.test.ts
+- 边界/未实测：站点scoped token/hash/到期/吊销、限流、统计管理API及只读语义工具；外部MCP客户端兼容矩阵未实测。
 
 - 统计查询 API（/api/v1/stats/*，Token 鉴权 + 限流）；管理 API（站点/目标 CRUD）；Token 可吊销、设过期。
 - P1 加 MCP 只读 server（给 AI 助手的语义工具，抄 Rybbit/OpenGSC）。
 
 ## F-45 用量统计 + 保留策略【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance.ts；worker.ts
+- 验收测试：governance.test.ts；analytics.test.ts；partitions.test.ts
+- 边界/未实测：按站点保留、分区复合PK、明细清理后存档聚合、用量与存储告警；合成CPU基准不是全栈容量证明。
 
 - 每站点事件数/存储占用看板；明细默认保留 365 天（可配）后自动删、只留聚合；定时清理任务。
 
 ## F-46 一键删除访客数据【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）；增强新卷恢复已测
+- 实现文件：src/server/deletion.ts；file-cleanup.ts；cli.ts
+- 验收测试：core-api.test.ts；governance-file-cleanup.test.ts；docs/validation-ops.md
+- 边界/未实测：入口/worker tombstone、同站锁、fsync独立日志、generation/缓存失效、身份展开删除与JSON/CSV/tmp物理清理已测；新卷恢复已通过删除/中立资产场景，完整增强升级演练EXIT0，日志 /tmp/baize-ops-fresh-restore.log。
 
 - GDPR 被遗忘权：输入 visitor_id/user_id → 删除其 events/sessions 明细，**以及** event_data（其事件的属性）、identity_map（其缝合关系）、visitor_first_seen（其首访记录）；聚合表处理：**UV、漏斗、留存、分位数不能按比例扣减**——可重算的聚合（计数类）触发重算任务，不可精确重算的（如 HLL 基数、t-digest 分位数）在文档中明确标注受影响范围与近似处理方式。
 - **防重建**：删除期间，被删标识进入 tombstone 表；Worker 处理到该标识的新事件/重算任务时直接丢弃，不再写回派生结果。
@@ -481,19 +481,19 @@
 
 ## F-47 排除内部 IP【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/security.ts；collect.ts；sites.ts
+- 验收测试：core-api.test.ts
+- 边界/未实测：IPv4/IPv6 CIDR与入口过滤；同意/排除前不持久化原始IP。
 
 - 站点级 IP 段黑名单（支持 CIDR）；服务端过滤丢弃。
 
 ## F-48 GA4 历史聚合报表导入【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现；Google外部未实测
+- 实现文件：src/server/external.ts；external-worker.ts；src/web/Connectors.tsx
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：OAuth及分页聚合导入/覆盖声明已模拟PG验证；真实GA账号未测，历史PV按站点时区逐日虚线叠加UI已接入，不累加源UV；真实浏览器最新12/12回归通过。
 
 - 用户授权 Google 账号 → GA4 Data API 拉历史**聚合报表**（按日/周的 PV/UV/会话/来源 Top）→ ga_import 表；看板"历史对比"叠加虚线。
 - 边界（诚实说明）：Data API 只能读到聚合报表，**不能还原完整事件流、访客身份与漏斗历史**；因此这是"历史聚合报表导入"，不是"迁移零成本"。导入器必须说明来源、覆盖时间、丢失字段与可用分析范围。
@@ -501,105 +501,105 @@
 
 ## F-49 整站数据导出【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地）
+- 实现文件：src/server/governance-worker.ts；governance.ts
+- 验收测试：governance.test.ts；governance-privacy.test.ts；governance-file-cleanup.test.ts
+- 边界/未实测：JSON/CSV明细+聚合+去密钥配置导出，10万行边界和隐私删除一致；密钥/邀请/API凭据不导出，非生产凭据迁移包。
 
 - JSON/CSV 全量导出（明细+聚合+配置）；防锁定卖点。
 
 ## F-50 Cookie 同意横幅【P2】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（轻量组件已实现）
+- 实现文件：packages/tracker/src/consent-banner.ts
+- 验收测试：packages/tracker/README.md；tracker-browser.test.ts
+- 边界/未实测：同意组件与grant/revoke集成源文件存在，尚未作为全局构建入口自动发布；横幅自身真实浏览器交互专项验收尚未确认，不以SDK consent测试替代。
 
 - 可选轻量横幅组件（配合 F-18 Consent Mode）；P0 文档先写清楚，P2 再做。
 
 ## F-51 GSC 集成【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：连接器已实现；Google外部未实测
+- 实现文件：src/server/external.ts；external-worker.ts；src/web/Connectors.tsx
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：PKCE/单次state/用户session绑定/分页/站点日历自动拉取与2–3天延迟声明；只聚合落地页关联，不伪造访客关键词因果。
 
 - OAuth 接 Google → 拉 Search Analytics（查询词/点击/展示/排名/落地页）→ gsc_stats 日表；看板"搜索"页。
 - 注意：GSC 数据延迟 2–3 天，UI 明确标注；**GSC 查询词是聚合数据，不能关联到具体访客或订单**，与站内转化的打通只做聚合口径（如"某落地页的搜索点击 vs 其转化数"），不伪造因果。
 
 ## F-52 百度搜索资源平台【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：未实现（官方接口未核验）
+- 实现文件：docs/ACCEPTANCE_EXTERNAL.md
+- 验收测试：未运行真实官方接口测试
+- 边界/未实测：无可核验官方流量关键词API文档；明确unsupported，不杜撰端点，不申请账户或购买服务。
 
 - 官方 API（需站点验证）拉流量与关键词数据；国内独一份（13 家海外全无）。
 - 注意：本轮未找到可直接引用的官方 API 接口文档，"流量/关键词 API"的具体端点与配额**待核验**，P1 立项前先做接口可行性验证。
 
 ## F-53 站内 SEO 健康检查【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地安全夹具）；真实网站未实测
+- 实现文件：src/server/external-worker.ts；outbound.ts
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：授权域名、robots规则/通配符、2秒限速、DNS固定/私网重定向拦截、问题优先级和复扫；外部公开网站完整抓取未实测。
 
 - 自研轻量爬虫（定时，尊重 robots.txt）：缺 title/description、重复 title、缺 h1、图片缺 alt、缺 canonical、缺 OG/视口；输出问题清单 + 修复优先级。
 - 实现：独立 worker，undici 抓 HTML + cheerio 解析；大站限速（1 req/2s）防被封；爬虫只抓用户授权的域名，**SSRF 防护**（内网地址、云元数据端点拦截，重定向跟踪限制）。
 
 ## F-54 关键词排名监控【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现；付费SERP外部未实测
+- 实现文件：src/server/external.ts；external-worker.ts
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：可插拔SerpAPI/DataForSEO、每日排名/大变动标记已模拟验证；排名变动持久通知队列/站点时区/排除过期历史/阈值/小时幂等已真实PG测试通过，真实付费API未测。
 
 - 用户自填 SERP API Key（SerpAPI/DataForSEO，抄 SerpBear 的多源抽象层 + 自备代理）；核心词每日查排名 → rank_history；大波动告警。
 - 注意：Google 封爬虫是常态，数据源必须可插拔；费用用户自理，文档写清。
 
 ## F-55 SEO→转化打通【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（聚合口径）
+- 实现文件：src/server/external.ts；analytics.ts
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：自然搜索会话→落地页→目标/币种收入聚合，GSC点击不关联具体订单；真实搜索账户未实测。
 
 - 自然搜索流量 → 落地页 → 目标转化一条链路；报表直接回答"SEO 带来了多少注册/订单"。
 
 ## F-56 BYOK 设置【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（本地安全）；真实模型未实测
+- 实现文件：src/server/keyring.ts；external.ts；outbound.ts
+- 验收测试：external.test.ts；SSO/keyring tests；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：AESGCM版本/0600独立文件轮换、旧版本解密、受限Ollama例外和真实HTTP出口限制；真实商业模型与灾难人工恢复未实测。
 
 - 后台设置页填 OpenAI 兼容 Key（OpenAI/DeepSeek/通义/自建网关）；Key 经 HTTPS 提交后只在服务端用 **AES-256-GCM（node:crypto）** 加密存 DB，随机 nonce + key_version；主密钥由安装器生成、存**独立受限文件**（0600，仅 app 用户可读）。安全隔离要求：主密钥**不写入数据库、不进镜像/日志/错误追踪**、与数据库备份**分开保护**（独立密封备份）；支持轮换（key_version 递增）与灾难恢复（需人工介入解密恢复包）。单机一键部署**不强制物理分盘**，分盘可作加强选项。
 - 安全：自定义模型 URL 只允许管理员配置，请求前做 **SSRF 防护**（默认禁止内网 IP/元数据地址、DNS 重绑定校验、超时与大小限制）。**受控例外**：本地模型（如 Ollama）需管理员在后台**明确登记**目标地址与窄网段例外，该例外仅用于模型调用，不复用于站内爬虫等其他出口。
 
 ## F-57 智能日报解读【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（模拟模型）；真实模型未实测
+- 实现文件：src/server/external-worker.ts
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：站点时区日报、持久任务重试、仅聚合输入，真实timer/模拟返回测试；真实AI输出质量不声称验收。
 
 - 定时任务把聚合指标喂给模型 → 生成中文解读（"UV 环比+23%，增量 8 成来自微信；支付页转化掉 12%，建议优先检查"）；只发聚合数据，不含原始 IP/明细。
 
 ## F-58 异常归因【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：部分实现（独立归因已测）
+- 实现文件：src/server/external-worker.ts
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：渠道/页面/设备前期变化候选与optin异常任务存在；F38告警记录触发绑定尚未完成，原因明确可能而非因果。
 
 - F-38 触发后自动下钻（渠道×页面×设备）找最大变化维度 → AI 生成可能原因说明。
 
 ## F-59 优化建议引擎【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（规则/模拟模型）
+- 实现文件：src/server/external-worker.ts；external.ts；src/web/Connectors.tsx
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：不可变事实/evidence_id/置信度/样本不足、状态机、SEO复扫、前后同口径/干扰因素；真实AI建议有效性未实测，不宣称修复有因果收益。
 
 - 输入：漏斗流失点、慢页面（Web Vitals 差）、高跳出入口页、SEO 问题清单 → 输出可执行整改清单（按预期收益排序）。每条建议带：evidence_id（关联事实快照）、可能原因与**置信度**（证据不足时明确说"证据不足"，不硬给结论）。
 - **建议实施后验证（复检闭环）**：建议状态机 = 新发现 → 已接受 → 处理中 → 已修复待复检 → 已验证 / 误报；记录实施日期；SEO 类建议触发复扫（F-53）；效果对比 = 实施前后同口径指标对照，并**注明干扰因素**（流量波动、季节性、同期其他改动）；不能仅凭前后变化宣布"优化有效"。
@@ -607,77 +607,85 @@
 
 ## F-60 自然语言问数【P1】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（只读工具/模拟模型）
+- 实现文件：src/server/external.ts；src/web/Connectors.tsx
+- 验收测试：external.test.ts；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：只读typed语义工具无任意SQL、权限与daily_salt guard；可返回数据图，真实模型问数质量与第三方MCP客户端未实测。
 
 - "上周微信来的 iOS 用户转化率多少？"→ 走 MCP 只读工具（F-44）→ 模型组装查询 → 返回数字+图表；guardrail：只能查有权限站点、只读聚合。
 
 ## F-61 一键安装【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（真实Docker）
+- 实现文件：install.sh；docker-compose.yml；Dockerfile
+- 验收测试：docs/validation-ops.md；scripts/ops-lifecycle-test.sh
+- 边界/未实测：安装/随机密钥/迁移锁/幂等本地真实容器通过；Windows run.bat在Linux未运行，非外网生产部署。
 
 - install.sh：检查 Docker → 生成随机密钥 → docker compose pull → 初始化 DB（`pnpm db:migrate`，编号 SQL 迁移）→ 打印地址；幂等可重跑。
 
 ## F-62 首次运行向导【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（真实浏览器/PG）
+- 实现文件：src/server/auth.ts；src/web/main.tsx
+- 验收测试：core-api.test.ts；tests/e2e/workflow.spec.ts
+- 边界/未实测：首次管理员→站点→代码、setup锁定及并发边界；未加入演示数据，不以mock看板验收。
 
 - /setup：建管理员 → 加第一个站点 → 复制追踪代码 → 可选一键导入演示数据；完成后锁定 setup（防重复）。
 
 ## F-63 GeoIP 自动下载【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：连接器已实现；MaxMind外部未实测
+- 实现文件：src/server/geoip.ts；src/server/geoip.ts
+- 验收测试：ACCEPTANCE_EXTERNAL.md；core-api.test.ts
+- 边界/未实测：授权下载+官方SHA验证、无key明确unknown及配置提示；真实授权账号/地理准确率未测。
 
 - 启动任务用 MAXMIND_LICENSE_KEY 下载 GeoLite2-City.mmdb + sha256 校验；失败降级 unknown，看板横幅提示配置方法。
 
 ## F-64 产品落地页【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（浏览器）
+- 实现文件：src/web/main.tsx；style.css
+- 验收测试：tests/e2e/workflow.spec.ts；ACCEPTANCE_WEB.md
+- 边界/未实测：默认产品Hero/功能/三步CTA、登录导航，实际页面验收；未外网发布。
 
 - `/` 默认产品落地页（Hero+功能+三步上手+CTA）；登录/注册只做导航入口（既定规则：不许打开就是登录页）。
 
 ## F-65 中英 README/docs【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（主要中英用户文档）
+- 实现文件：README.md；README.en.md；docs/
+- 验收测试：docs/ACCEPTANCE_WEB.md；validation-ops.md；ACCEPTANCE_EXTERNAL.md
+- 边界/未实测：实际PG截图、安装、Mermaid数据流、验收矩阵、API/开发/隐私删除文档已补；docs/en已提供部署/开发/API/迁移/兼容/隐私/验证英文入口；项目规格和开发审计报告仍中文。
 
 - README：截图/GIF 占位、一键安装、5 分钟上手、架构图、功能矩阵；docs/：部署、反代、升级、迁移、API、二次开发。
 
 ## F-66 upgrade.sh【P0】
 
-- 状态：待实现
-- 实现文件：待记录
-- 验收测试：待记录
-- 边界/未实测：待记录
+- 状态：已实现已测（真实Docker）；增强场景EXIT0
+- 实现文件：upgrade.sh；backup.sh；restore.sh
+- 验收测试：docs/validation-ops.md；scripts/ops-lifecycle-test.sh
+- 边界/未实测：恢复点含DB/卷/密钥分离，迁移锁、503/缺镜像/已提交schema回滚旧DB已实际演练；增强独立新卷/严格journal场景通过，完整增强脚本EXIT0，日志 /tmp/baize-ops-fresh-restore.log。
 
 - 流程：升级前自动创建恢复点（DB 快照 + 卷备份）→ 拉新镜像 → 执行编号 SQL 迁移（`pnpm db:migrate`，**迁移锁**防多实例并发）→ 健康检查 → 失败按**恢复步骤**回滚（恢复 DB 快照 + 切回旧镜像）。
 - 注意：数据库结构变化后旧程序可能无法读取新数据，**"换回旧镜像"不等于回滚**；必须有兼容矩阵（哪个 APP 版本兼容哪个 schema 版本）、升级前演练文档。"升级不翻车"是目标不是保证，README 如实写（Umami v3 翻车是反面教材）。
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：待实现；验收证据待记录。
-- P2-02 隐私优先会话回放：待实现；验收证据待记录。
-- P2-03 热力图：待实现；验收证据待记录。
-- P2-04 A/B 实验归因：待实现；验收证据待记录。
-- P2-05 微信小程序 SDK：待实现；验收证据待记录。
-- P2-06 WordPress 插件：待实现；验收证据待记录。
-- P2-07 企业微信扫码 SSO：待实现；验收证据待记录。
-- P2-08 多语言 UI：待实现；验收证据待记录。
-- P2-09 Ollama 本地模型：待实现；验收证据待记录。
-- P2-10 Cookie 同意横幅：待实现；验收证据待记录。
+- P2-01 ClickHouse 明细可选迁移：部分实现：真实ClickHouse25.8导入/去重/FINAL/查询/删除已测；应用双写/outbox及迁移切换尚未完成。证据 docs/validation-ops.md。
+- P2-02 隐私优先会话回放：部分实现（核心已测）：optin、严格服务端遮罩校验、page实例/序号、真实rrweb播放器；跨页完整播放/真实复杂站点兼容待扩展。证据 governance.test.ts、tracker-browser.test.ts、ACCEPTANCE_WEB.md。
+- P2-03 热力图：部分实现（核心已测）：optin与0.01精度归一化点击、SVG热图真实数据；复杂响应式/滚动坐标浏览器专项验收未完整记录。
+- P2-04 A/B 实验归因：部分实现：确定性visitor分组/目标计数/API与UI集成；固定周期双比例检验/Bonferroni多重修正/Wilson区间/样本不足保护已真实PG与单元测试；实验完整浏览器生命周期专项待补。
+- P2-05 微信小程序 SDK：部分实现：wx.request注入SDK、无WebCrypto UUID、同意/幂等重试/每日盐限制已有本地测试；真实微信设备/账号未实测。
+- P2-06 WordPress 插件：部分实现：WordPress插件设置/追踪代码及PHP8.3语法检查；实际WordPress安装启停/兼容性未实测。
+- P2-07 企业微信扫码 SSO：连接器已实现、真实企业未实测：显式成员映射、一次state/session、禁止自动提权，真实PG模拟OAuth测试通过；不创建企业凭据。
+- P2-08 多语言 UI：部分实现：中文主体及英文核心UI；高级设置/后台错误/全部docs完整多语言尚未完成。
+- P2-09 Ollama 本地模型：连接器已实现、真实Ollama推理未实测：明确登记窄范围内网例外与真实本地HTTP模拟传输测试；未运行真实模型。
+- P2-10 Cookie 同意横幅：部分实现：轻量consent-banner组件和Consent Mode文档；横幅本身浏览器点击专项证据未完整记录。
+
+## 集中剩余清单（不代表全部验收）
+
+- 可自主补齐的功能：404独立来源报表/修链导出、下载Top、可编辑渠道/AI来源规则、referrer关键词、机器人行为规则、中国省份地图、事件趋势、目标渠道趋势、漏斗流失来源/设备、完整通知HTML、UV异常告警、F38→F58绑定、ClickHouse应用双写迁移、高级英文UI。
+- 必须补专项证据：滚动四档/表单/外链不阻塞/consent横幅真实浏览器；具体goal定义/funnel告警PG触发及通知失败重试；身份跨设备历史缝合；WordPress真实运行；大规模PG/Redis全链路负载；Windows安装入口。
+- 等最终集成结果：最新真实浏览器全套12/12通过；ops增强新卷恢复/已提交schema回滚已EXIT0；本地lint/type/unit/PG/构建最终计数由集成负责人记录，不沿用阶段计数冒充最终。
+- 真实外部未实测：Google GA4/GSC、MaxMind授权下载、SerpAPI/DataForSEO、SMTP/企业微信/Server酱、企业SSO、商业AI及真实Ollama模型；安全连接器与模拟集成通过不能替代外部验收。F52官方接口可行性未核验。
+- 规模/实现偏差：exact访客集合代替HLL、持久PG任务代替BullMQ、部分精确范围查询重建保留期明细；这些选择已测试正确性，但内存/吞吐规模和超保留期精度边界必须持续披露。

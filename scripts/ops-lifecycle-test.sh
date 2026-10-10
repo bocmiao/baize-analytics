@@ -5,22 +5,40 @@ cd "$(dirname "$0")/.."
 export BAIZE_PORT="${BAIZE_PORT:-3199}"
 export PUBLIC_URL="http://127.0.0.1:$BAIZE_PORT"
 export COMPOSE_PROJECT_NAME="baize_lifecycle_${RANDOM}"
-cleanup() { docker compose logs --no-color app > "/tmp/$COMPOSE_PROJECT_NAME-app.log" 2>&1 || true; docker compose down -v --remove-orphans >/dev/null 2>&1 || true; }
+cleanup() { if [ -n "${restore_db:-}" ]; then docker volume rm "${COMPOSE_PROJECT_NAME}_${restore_db}_app_data" "${COMPOSE_PROJECT_NAME}_${restore_db}_app_keys" >/dev/null 2>&1 || true; fi; docker compose logs --no-color > "/tmp/$COMPOSE_PROJECT_NAME-app.log" 2>&1 || true; docker compose down -v --remove-orphans >/dev/null 2>&1 || true; }
 trap cleanup EXIT
-./install.sh
+if [ "${BAIZE_OPS_SKIP_BUILD:-0}" = 1 ]; then docker compose up -d --wait --wait-timeout 120; else ./install.sh; fi
 node --import tsx scripts/ops-lifecycle-api.ts seed ".baize/$COMPOSE_PROJECT_NAME-state.json"
+node --import tsx scripts/ops-lifecycle-api.ts queue-export ".baize/$COMPOSE_PROJECT_NAME-state.json"
+docker compose exec -T app node --import tsx scripts/ops-maintenance.ts
+node --import tsx scripts/ops-lifecycle-api.ts verify-export ".baize/$COMPOSE_PROJECT_NAME-state.json"
+docker compose exec -T app node -e 'const fs=require("node:fs");fs.mkdirSync("/app/data/geoip",{recursive:true});fs.writeFileSync("/app/data/geoip/restore-fixture.txt","snapshot-file-proof",{mode:0o600});'
 scripts/backup.sh "backups/$COMPOSE_PROJECT_NAME"
+[ ! -e "backups/$COMPOSE_PROJECT_NAME/master.key" ] || { echo "Plaintext key in DB backup!" >&2; exit 1; }
+if tar -tzf "backups/$COMPOSE_PROJECT_NAME/app-data.tar.gz" | rg '(^|/)(master\.key|keyring|keys)(/|$)'; then echo "Keyring in data archive!" >&2; exit 1; fi
 node --import tsx scripts/ops-lifecycle-api.ts delete ".baize/$COMPOSE_PROJECT_NAME-state.json"
+# Missing and reset latest journals must reject BEFORE database creation.
+invalid_db="baize_restore_invalid_${RANDOM}"
+docker compose exec -T app node -e 'require("node:fs").renameSync("/app/data/tombstones.jsonl","/app/data/tombstones.test-hold")'
+if scripts/restore.sh "backups/$COMPOSE_PROJECT_NAME" "$invalid_db"; then echo "Missing journal accepted!" >&2; exit 1; fi
+docker compose exec -T app node -e 'require("node:fs").writeFileSync("/app/data/tombstones.jsonl","")'
+if scripts/restore.sh "backups/$COMPOSE_PROJECT_NAME" "$invalid_db"; then echo "Reset journal accepted!" >&2; exit 1; fi
+invalid_exists="$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$invalid_db'")"
+[ "$invalid_exists" = 0 ] || { echo "Invalid restore created database!" >&2; exit 1; }
+docker compose exec -T app node -e 'const fs=require("node:fs");fs.unlinkSync("/app/data/tombstones.jsonl");fs.renameSync("/app/data/tombstones.test-hold","/app/data/tombstones.jsonl")'
 restore_db="baize_restore_${RANDOM}"
 scripts/restore.sh "backups/$COMPOSE_PROJECT_NAME" "$restore_db"
 restored_events="$(docker compose exec -T postgres psql -U baize -d "$restore_db" -Atc "SELECT count(*) FROM events")"
 [ "$restored_events" = 0 ] || { echo "Deleted visitor resurrected!" >&2; exit 1; }
 restored_tombstones="$(docker compose exec -T postgres psql -U baize -d "$restore_db" -Atc "SELECT count(*) FROM tombstones")"
 [ "$restored_tombstones" = 1 ] || { echo "Deletion replay missing!" >&2; exit 1; }
+docker run --rm --mount "type=volume,src=${COMPOSE_PROJECT_NAME}_${restore_db}_app_data,dst=/target,readonly" --entrypoint node baize-analytics:local -e 'const fs=require("node:fs"),assert=require("node:assert/strict");assert.equal(fs.readFileSync("/target/geoip/restore-fixture.txt","utf8"),"snapshot-file-proof");if(fs.existsSync("/target/exports"))assert.equal(fs.readdirSync("/target/exports").length,0);console.log("Fresh target data volume restored asset fixture and purged revoked export files.")'
+
 ./upgrade.sh baize-analytics:local
 # Health failure exercises full database+image rollback.
 if ./upgrade.sh baize-missing-image:must-not-exist; then
   echo 'Missing-image upgrade unexpectedly succeeded' >&2; exit 1
 fi
+bash scripts/ops-upgrade-failure-test.sh
 docker compose exec -T postgres psql -U baize -d baize -v ON_ERROR_STOP=1 -c 'SELECT count(*) FROM schema_migrations;'
 docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)})"
