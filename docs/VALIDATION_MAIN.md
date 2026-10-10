@@ -74,3 +74,5 @@ CNB配置4386ec2已直接main，GitHub私有main权威，父线程确认私有�
 本地验证最初错误把URL-level search_path加入通用数据库URL，覆盖各fixture的Pool.options，发生12测试失败/2跳过，不能说产品journal缺陷。两轮主动中止EXIT143、第三轮EXIT1原日志保留。修共享脚本仅在集成结束后应用CI_APPLICATION_DATABASE_URL，再迁移/启动fresh app，最终原产品断言完整通过。没有关闭journal安全检查或弱化测试。
 
 CNB main 885e4e8修同daemon网络，223e887提供main-only web_trigger按钮；静态/9本地Git分支通过，实际CNB首轮ECONNREFUSED和cron精确事件鉴权失败保留。本地容器安装DNS EAI_AGAIN后主动停止143，0应用测试；托管适配仍待父执行。父已确认c1fa2e4归档无新增Actionsrun，永不enable/rerun/dispatch。F60工具证据和bounded-session planner仅独立工作区小模块，尚未接生产，不纳本轮272/19或Docker。全计划未完成。
+
+父页面后续确认CNB223e887实际托管CI成功：cnb-bnd-1k4igl82q，regular7分31秒EXIT0、真实集成/compiled入口/18E2E与清理通过。owner-page来源记录cnb-hosted-223e887-owner-confirmed.json；完整下载日志尚未提供，不推算应用总数，也不把该旧源证明当8b61fc0的272/19。cron已注册但授权待用户确认，未验收定时。

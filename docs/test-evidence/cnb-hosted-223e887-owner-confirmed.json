@@ -1,0 +1,19 @@
+{
+  "source": "223e887",
+  "run": "cnb-bnd-1k4igl82q",
+  "url": "https://cnb.cool/bankermiao/baize-analytics/-/build/logs/cnb-bnd-1k4igl82q",
+  "evidenceOrigin": "parent inspected provider page; raw downloadable log not supplied to this workspace",
+  "regularSeconds": 451,
+  "exit": 0,
+  "integrations": "owner-confirmed passed",
+  "compiledEntrypoint": "owner-confirmed passed",
+  "e2e": 18,
+  "applicationTestTotal": null,
+  "beforeEnd": "green",
+  "end": "green",
+  "composeCleanup": "owner-confirmed completed",
+  "healthcheckNoise": "observed, nonfatal; fix saved in4ed81c4",
+  "cron": "registered, exact-event authorization pending; not passed",
+  "laterApplicationSource": "8b61fc0 not covered by this run",
+  "actions": "remain disabled; no enable/rerun/dispatch"
+}
