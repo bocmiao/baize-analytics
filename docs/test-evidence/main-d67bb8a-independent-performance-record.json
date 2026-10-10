@@ -1,0 +1,544 @@
+{
+  "sourceCommit": "d67bb8aeda34652010125e889019392aaa0788f8",
+  "runnerExitCode": 1,
+  "reports": [
+    {
+      "status": "passed",
+      "acceptedEvents": 1000,
+      "unsent": 0,
+      "delayed": 0,
+      "queryFailed": 0,
+      "drainReached": true,
+      "drainDeadlineReached": false,
+      "assertionsPassed": true,
+      "assertionsExecuted": [
+        "fresh_http_pv_coverage",
+        "authenticated_canonical_pv_uv",
+        "nine_pg_bodies_zero",
+        "ch_authority_strict",
+        "outbox_total_done_queued",
+        "processed_attempts_watermark"
+      ],
+      "finalMetadata": {
+        "finalHttpDurationMs": 4537.660079000001,
+        "http": {
+          "pv": 1000,
+          "coverage": 1,
+          "source": "clickhouse"
+        },
+        "canonical": {
+          "pv": 1001,
+          "uv": 21,
+          "bootstrap": 1
+        },
+        "pgBodyCounts": {
+          "events": 0,
+          "analytics_session_event_headers": 0,
+          "analytics_effect_facts": 0,
+          "analytics_vital_samples": 0,
+          "analytics_session_facts": 0,
+          "analytics_numeric_facts": 0,
+          "analytics_member_facts": 0,
+          "analytics_carry_checkpoints": 0,
+          "analytics_carry_keys": 0
+        },
+        "authority": {
+          "n": 1,
+          "strict": 1
+        },
+        "outbox": {
+          "total": 1001,
+          "done": 1001,
+          "queued": 0
+        },
+        "aggregation": {
+          "sites": 1,
+          "allProcessed": true,
+          "attempts": 0,
+          "watermarkCoversLatest": true
+        }
+      },
+      "cleanup": {
+        "applicationClosed": true,
+        "chNamespaceRemoved": true,
+        "pgSchemaRemoved": true,
+        "temporaryRemoved": true
+      },
+      "sourceUnchanged": true,
+      "nodeRss": {
+        "intakePeakBytes": 651911168,
+        "drainPeakBytes": 665198592,
+        "finalPeakBytes": 653115392,
+        "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+      },
+      "querySampleCounts": {
+        "intake": 2,
+        "drain": 2
+      },
+      "queryP95ByWindow": {
+        "intake": 337.9648019999995,
+        "drain": 3497.345674999997
+      },
+      "events": 1000,
+      "httpFactsAndLockStages": [
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "site_lock",
+          "calls": 27,
+          "failed": 0,
+          "totalMs": 1046.376366,
+          "maxMs": 908.972565,
+          "histogram": [
+            24,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "manifest_sql",
+          "calls": 666,
+          "failed": 0,
+          "totalMs": 414.4033229999659,
+          "maxMs": 5.345670999995491,
+          "histogram": [
+            625,
+            40,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "ch_transport",
+          "calls": 224,
+          "failed": 0,
+          "totalMs": 4262.4611199999845,
+          "maxMs": 45.47016500000609,
+          "histogram": [
+            0,
+            0,
+            2,
+            222,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": 224,
+          "bytes": 109333444,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 224,
+          "bytesMeasuredCalls": 224,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "authentication",
+          "calls": 888,
+          "failed": 0,
+          "totalMs": 3175.4945409999546,
+          "maxMs": 9.421140999998897,
+          "histogram": [
+            2,
+            829,
+            57,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": 66257,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 666,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "temp_fill",
+          "calls": 666,
+          "failed": 0,
+          "totalMs": 1955.4859729999762,
+          "maxMs": 10.92859899999894,
+          "histogram": [
+            1,
+            612,
+            51,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        }
+      ],
+      "reportSha256": "ab36de54b79fdf2f2d190aa1f744bc200855177ee6fcf45a8648957077421663",
+      "fullGitBlobFiles": 1240
+    },
+    {
+      "status": "failed",
+      "acceptedEvents": 4700,
+      "unsent": 6,
+      "delayed": 38,
+      "queryFailed": 0,
+      "drainReached": true,
+      "drainDeadlineReached": false,
+      "assertionsPassed": true,
+      "assertionsExecuted": [
+        "fresh_http_pv_coverage",
+        "authenticated_canonical_pv_uv",
+        "nine_pg_bodies_zero",
+        "ch_authority_strict",
+        "outbox_total_done_queued",
+        "processed_attempts_watermark"
+      ],
+      "finalMetadata": {
+        "finalHttpDurationMs": 23714.184647999966,
+        "http": {
+          "pv": 4700,
+          "coverage": 1,
+          "source": "clickhouse"
+        },
+        "canonical": {
+          "pv": 4701,
+          "uv": 95,
+          "bootstrap": 1
+        },
+        "pgBodyCounts": {
+          "events": 0,
+          "analytics_session_event_headers": 0,
+          "analytics_effect_facts": 0,
+          "analytics_vital_samples": 0,
+          "analytics_session_facts": 0,
+          "analytics_numeric_facts": 0,
+          "analytics_member_facts": 0,
+          "analytics_carry_checkpoints": 0,
+          "analytics_carry_keys": 0
+        },
+        "authority": {
+          "n": 1,
+          "strict": 1
+        },
+        "outbox": {
+          "total": 4701,
+          "done": 4701,
+          "queued": 0
+        },
+        "aggregation": {
+          "sites": 1,
+          "allProcessed": true,
+          "attempts": 0,
+          "watermarkCoversLatest": true
+        }
+      },
+      "cleanup": {
+        "applicationClosed": true,
+        "chNamespaceRemoved": true,
+        "pgSchemaRemoved": true,
+        "temporaryRemoved": true
+      },
+      "sourceUnchanged": true,
+      "nodeRss": {
+        "intakePeakBytes": 687345664,
+        "drainPeakBytes": 714698752,
+        "finalPeakBytes": 674074624,
+        "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+      },
+      "querySampleCounts": {
+        "intake": 12,
+        "drain": 6
+      },
+      "queryP95ByWindow": {
+        "intake": 9261.64188000001,
+        "drain": 17181.959703
+      },
+      "events": 5000,
+      "httpFactsAndLockStages": [
+        {
+          "adapter": "other",
+          "operation": "http_request",
+          "stage": "site_lock",
+          "calls": 101,
+          "failed": 0,
+          "totalMs": 129502.93070400001,
+          "maxMs": 9530.872863000011,
+          "histogram": [
+            48,
+            1,
+            0,
+            0,
+            0,
+            31,
+            1,
+            8,
+            12
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "manifest_sql",
+          "calls": 8843,
+          "failed": 0,
+          "totalMs": 6760.151712001406,
+          "maxMs": 13.900903999980073,
+          "histogram": [
+            7654,
+            1110,
+            64,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "ch_transport",
+          "calls": 2952,
+          "failed": 0,
+          "totalMs": 65569.25272600044,
+          "maxMs": 60.0891470000206,
+          "histogram": [
+            0,
+            0,
+            1,
+            2943,
+            8,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": 2952,
+          "bytes": 1458347757,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 2952,
+          "bytesMeasuredCalls": 2952,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "authentication",
+          "calls": 11789,
+          "failed": 0,
+          "totalMs": 42661.594650001425,
+          "maxMs": 11.979679999989457,
+          "histogram": [
+            3,
+            10941,
+            825,
+            20,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": 883633,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 8843,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        },
+        {
+          "adapter": "facts",
+          "operation": "http_request",
+          "stage": "temp_fill",
+          "calls": 8843,
+          "failed": 0,
+          "totalMs": 30390.284309999126,
+          "maxMs": 32.88965899999312,
+          "histogram": [
+            0,
+            7739,
+            843,
+            261,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rows": null,
+          "batches": null,
+          "bytes": null,
+          "rowsMeasuredCalls": 0,
+          "batchesMeasuredCalls": 0,
+          "bytesMeasuredCalls": 0,
+          "upperBoundsMs": [
+            1,
+            5,
+            10,
+            50,
+            100,
+            500,
+            1000,
+            5000,
+            null
+          ]
+        }
+      ],
+      "reportSha256": "7e6ed801dca42567110dadcb7760e3b91bdfab01fe925fe92a5bdd759c8397b2",
+      "fullGitBlobFiles": 1240
+    }
+  ],
+  "interpretation": "1000 passed; planned5000 overall failed despite drain and final six integrity assertions passing for actual4700 accepted. Intake schedule limits remain unchanged. No SLO or causal improvement claim. Mixed inclusive stage observations cannot be summed as CPU or attributed solely to final query.",
+  "diskObservation": "Parent observed df available1.5GiB near end and2.0GiB after completion, not exact minimum; no concurrent heavy/cache cleanup. Resource pressure is context, not causal attribution."
+}

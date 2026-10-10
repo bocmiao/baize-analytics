@@ -7,10 +7,12 @@
 | d67后端 |217单元+428真实集成=645PASS，实际后端执行|
 | ce42c9f浏览器 |30检查（28真实Chromium+2日期）PASS、EXIT0；与d67 src/db/packages/sdk/scripts EMPTYdiff，不称后端重跑|
 | d67镜像 |实际EXIT0：55DDL/391manifest/严格独立恢复；瞬时可用盘低62MiB风险已归档，不隐去|
-| d67固定1000/5000 |root30652运行中、结果待；最后661负载FAIL仍为本地性能欠项|
-| Git/托管 |当前仅localce42，remotee441父已核；实际新负载结束前不称收工、不触发CI|
+| d67固定1000/5000 |实际EXIT1结束：1000PASS4.537660079秒；5000整体FAIL4700accepted/6unsent/38delayed/queryfail0，但draintrue、六final断言PASS，finalHTTP23.714184648秒；Node峰714698752B不含DB。性能仍欠，不称5000/SLO通过|
+| Git/托管 |remotee441已核、push blocked，不再认证尝试；checkpoint manifest /workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json、e441..f91五commit bundleverify0，仅Git对象/已跟踪source不含runtime keys。不称收工，不触发CI|
 
 原661ENOSPC及d67首轮29/30整体EXIT1按原SHA证据保留在历史节。
+
+1240 source文件前后不变、4项cleanup全true。当前无负载运行；末段可用盘观察1.5GiB→结束2.0GiB，不是minimum也不据此作因果解释。其后仅获批10个旧构建缓存精确ID清理，观测可用空间2485452800→9281884160B；完整清理证据另存，不触及最新镜像、共享依赖或卷。
 
 ## 产品与本地使用
 

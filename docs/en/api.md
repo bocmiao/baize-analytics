@@ -7,10 +7,12 @@
 | d67 backend |217 unit+428 real integration=645 PASS;actual backend run|
 | ce42c9f browser |30 checks(28 real Chromium+2 date)PASS,EXIT0;src/db/packages/sdk/scripts unchanged from d67;no claimed backend rerun|
 | d67 image |Actual EXIT0:55DDL/391 manifest/strict independent restore;transient62MiB disk-low risk recorded,not concealed|
-| d67 fixed1000/5000 |Running(root30652),pending;last661 performance FAIL remains an open local performance gap|
-| Git/hosted |Local ce42 only,remote e441 verified;no hosted trigger or completion claim before actual load result|
+| d67 fixed1000/5000 |Actual EXIT1:1000PASS4.537660079s;5000overallFAIL4700accepted/6unsent/38delayed/queryfail0;draintrue/sixfinalassertionsPASS,finalHTTP23.714184648s;Nodepeak714698752B excludesDB.Performance gap remains,not5000/SLO acceptance|
+| Git/hosted |Remotee441 verified,push blocked,no more authentication attempts.Checkpoint manifest /workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json:e441..f91 fivecommits,bundleverify0,Gitobjects/trackedsource only,no runtimekeys.No CI/completion claim|
 
 Historical661 ENOSPC and d67 first29/30 full EXIT1 remain below with original source evidence.
+
+1240 sourcefiles unchanged;all four cleanup flags true.New heavy work paused,no active load.Disk observations1.5GiB late-run→2.0GiB end are not a minimum or causal diagnosis.
 
 ## Historical stage records and design
 
