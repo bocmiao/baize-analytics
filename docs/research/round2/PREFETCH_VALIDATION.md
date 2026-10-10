@@ -13,3 +13,8 @@
 ## 同口径优化后实测
 
 b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git blob前后相同，全部独立资源清理。20批/1000事件零失败，最终六类完整性断言全部通过。采集2查询、排空5查询；排空P95 6437.624ms，最终HTTP7009.640ms，排空48.232秒。共享Node峰664985600字节（不含存储）。相比ce基准7.73秒/8.83秒下降，但仅一次共享宿主试验、样本不同，不能宣称因果收益或SLO达标，查询与聚合仍慢。证据 main-b0be327-independent-strict-1000.json；原基准保留。
+
+
+## 0c3ca6a 固定适配器独立1000（实际）
+
+根代理 immutable runner actual passed；[原JSON](../../test-evidence/main-0c3ca6a-independent-strict-1000.json)、[详细边界](../../test-evidence/main-0c3ca6a-independent-summary.md)。20批全部202/1000接受，严格六项断言与namespace清理、sourceunchanged通过。drain查询4点P95约4.65s/finalHTTP7.63s，maxbacklog750；HTTP facts893次13.80s、worker facts1340次13.39s为目前主要观测成本，非性能改善结论。5000仍待完成，不覆盖ce/b0或旧结果。
