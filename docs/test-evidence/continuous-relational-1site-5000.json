@@ -1,0 +1,1866 @@
+{
+  "status": "passed",
+  "sourceSha": "7f02e23f76c5e4a5620b3f5d264f539e75610937",
+  "appRoot": "/tmp/baize-eighth-stable.ghuvybos",
+  "sourceDigestBefore": "a69ea188fdc4b4aa23f473a9ae8e7602f535f990c8f98c91919b37d9972be7a5",
+  "events": 5000,
+  "sites": 1,
+  "batchSize": 50,
+  "background": true,
+  "manualWorker": false,
+  "storage": "PostgreSQL only; clickhouse:null",
+  "startedAt": "2026-10-10T11:49:40.906Z",
+  "limits": "Production limits unchanged; one batch/site/second",
+  "relationOidNames": [
+    {
+      "oid": "2285422",
+      "relname": "schema_migrations"
+    },
+    {
+      "oid": "2285457",
+      "relname": "users"
+    },
+    {
+      "oid": "2285475",
+      "relname": "auth_sessions"
+    },
+    {
+      "oid": "2285493",
+      "relname": "sites"
+    },
+    {
+      "oid": "2285508",
+      "relname": "site_members"
+    },
+    {
+      "oid": "2285526",
+      "relname": "events"
+    },
+    {
+      "oid": "2285542",
+      "relname": "events_default"
+    },
+    {
+      "oid": "2285562",
+      "relname": "event_data"
+    },
+    {
+      "oid": "2285578",
+      "relname": "event_data_default"
+    },
+    {
+      "oid": "2285595",
+      "relname": "event_keys"
+    },
+    {
+      "oid": "2285609",
+      "relname": "identity_map"
+    },
+    {
+      "oid": "2285627",
+      "relname": "visitor_first_seen"
+    },
+    {
+      "oid": "2285647",
+      "relname": "tombstones"
+    },
+    {
+      "oid": "2285660",
+      "relname": "audit_logs"
+    },
+    {
+      "oid": "2285677",
+      "relname": "aggregation_state"
+    },
+    {
+      "oid": "2285695",
+      "relname": "outbox"
+    },
+    {
+      "oid": "2285711",
+      "relname": "bot_counts"
+    },
+    {
+      "oid": "2285729",
+      "relname": "sessions"
+    },
+    {
+      "oid": "2285748",
+      "relname": "stats_hourly"
+    },
+    {
+      "oid": "2285765",
+      "relname": "stats_daily"
+    },
+    {
+      "oid": "2285780",
+      "relname": "page_vitals"
+    },
+    {
+      "oid": "2285796",
+      "relname": "goals"
+    },
+    {
+      "oid": "2285818",
+      "relname": "funnels"
+    },
+    {
+      "oid": "2285838",
+      "relname": "analytics_definitions"
+    },
+    {
+      "oid": "2285857",
+      "relname": "api_tokens"
+    },
+    {
+      "oid": "2285883",
+      "relname": "reports"
+    },
+    {
+      "oid": "2285900",
+      "relname": "notification_channels"
+    },
+    {
+      "oid": "2285913",
+      "relname": "report_schedules"
+    },
+    {
+      "oid": "2285940",
+      "relname": "notification_jobs"
+    },
+    {
+      "oid": "2285956",
+      "relname": "notification_logs"
+    },
+    {
+      "oid": "2285966",
+      "relname": "share_links"
+    },
+    {
+      "oid": "2285993",
+      "relname": "alert_rules"
+    },
+    {
+      "oid": "2286012",
+      "relname": "site_invites"
+    },
+    {
+      "oid": "2286031",
+      "relname": "export_jobs"
+    },
+    {
+      "oid": "2286048",
+      "relname": "replay_chunks"
+    },
+    {
+      "oid": "2286061",
+      "relname": "heatmap_points"
+    },
+    {
+      "oid": "2286074",
+      "relname": "experiments"
+    },
+    {
+      "oid": "2286087",
+      "relname": "experiment_assignments"
+    },
+    {
+      "oid": "2286100",
+      "relname": "external_connections"
+    },
+    {
+      "oid": "2286114",
+      "relname": "oauth_states"
+    },
+    {
+      "oid": "2286126",
+      "relname": "gsc_stats"
+    },
+    {
+      "oid": "2286138",
+      "relname": "ga_import"
+    },
+    {
+      "oid": "2286151",
+      "relname": "seo_scans"
+    },
+    {
+      "oid": "2286164",
+      "relname": "rank_history"
+    },
+    {
+      "oid": "2286176",
+      "relname": "ai_budget"
+    },
+    {
+      "oid": "2286190",
+      "relname": "ai_calls"
+    },
+    {
+      "oid": "2286204",
+      "relname": "ai_suggestions"
+    },
+    {
+      "oid": "2286224",
+      "relname": "instance_keyring"
+    },
+    {
+      "oid": "2286233",
+      "relname": "sso_config"
+    },
+    {
+      "oid": "2286243",
+      "relname": "sso_mappings"
+    },
+    {
+      "oid": "2286255",
+      "relname": "sso_states"
+    },
+    {
+      "oid": "2286263",
+      "relname": "identity_bindings"
+    },
+    {
+      "oid": "2286278",
+      "relname": "identity_tombstones"
+    },
+    {
+      "oid": "2286290",
+      "relname": "external_jobs"
+    },
+    {
+      "oid": "2286309",
+      "relname": "export_file_cleanup"
+    },
+    {
+      "oid": "2286328",
+      "relname": "revenue_orders"
+    },
+    {
+      "oid": "2286355",
+      "relname": "instance_settings"
+    },
+    {
+      "oid": "2286369",
+      "relname": "experiment_contributions"
+    },
+    {
+      "oid": "2286387",
+      "relname": "event_store_state"
+    },
+    {
+      "oid": "2286406",
+      "relname": "event_store_uploads"
+    },
+    {
+      "oid": "2286424",
+      "relname": "event_store_maintenance"
+    },
+    {
+      "oid": "2286443",
+      "relname": "event_store_batches"
+    },
+    {
+      "oid": "2286462",
+      "relname": "history_manifests"
+    },
+    {
+      "oid": "2286477",
+      "relname": "history_backup_files"
+    },
+    {
+      "oid": "2286493",
+      "relname": "ga_import_windows"
+    },
+    {
+      "oid": "2286508",
+      "relname": "ai_question_evidence"
+    },
+    {
+      "oid": "2286528",
+      "relname": "analytics_fact_runs"
+    },
+    {
+      "oid": "2286547",
+      "relname": "analytics_session_facts"
+    },
+    {
+      "oid": "2286559",
+      "relname": "analytics_numeric_facts"
+    },
+    {
+      "oid": "2286572",
+      "relname": "analytics_member_facts"
+    },
+    {
+      "oid": "2286585",
+      "relname": "analytics_vitals_facts"
+    },
+    {
+      "oid": "2286598",
+      "relname": "canonical_event_authority"
+    },
+    {
+      "oid": "2286614",
+      "relname": "canonical_event_batches"
+    },
+    {
+      "oid": "2286630",
+      "relname": "canonical_event_members"
+    },
+    {
+      "oid": "2286642",
+      "relname": "canonical_migration_progress"
+    },
+    {
+      "oid": "2286658",
+      "relname": "analytics_effect_facts"
+    },
+    {
+      "oid": "2286671",
+      "relname": "analytics_vital_samples"
+    },
+    {
+      "oid": "2286684",
+      "relname": "analytics_relational_buckets"
+    },
+    {
+      "oid": "2286703",
+      "relname": "replay_chunk_keys"
+    },
+    {
+      "oid": "2286719",
+      "relname": "ai_reservations"
+    },
+    {
+      "oid": "2286742",
+      "relname": "analytics_carry_checkpoints"
+    },
+    {
+      "oid": "2286757",
+      "relname": "analytics_carry_keys"
+    },
+    {
+      "oid": "2286772",
+      "relname": "analytics_carry_heads"
+    },
+    {
+      "oid": "2286789",
+      "relname": "analytics_session_contribution_heads"
+    },
+    {
+      "oid": "2286816",
+      "relname": "replay_retention_jobs"
+    },
+    {
+      "oid": "2286875",
+      "relname": "canonical_shadow_provenance"
+    },
+    {
+      "oid": "2286915",
+      "relname": "canonical_carry_provenance"
+    },
+    {
+      "oid": "2286992",
+      "relname": "events_2025_10"
+    },
+    {
+      "oid": "2287027",
+      "relname": "event_data_2025_10"
+    },
+    {
+      "oid": "2287087",
+      "relname": "events_2025_11"
+    },
+    {
+      "oid": "2287123",
+      "relname": "event_data_2025_11"
+    },
+    {
+      "oid": "2287173",
+      "relname": "events_2025_12"
+    },
+    {
+      "oid": "2287198",
+      "relname": "event_data_2025_12"
+    },
+    {
+      "oid": "2287253",
+      "relname": "events_2026_01"
+    },
+    {
+      "oid": "2287288",
+      "relname": "event_data_2026_01"
+    },
+    {
+      "oid": "2287346",
+      "relname": "events_2026_02"
+    },
+    {
+      "oid": "2287366",
+      "relname": "event_data_2026_02"
+    },
+    {
+      "oid": "2287420",
+      "relname": "events_2026_03"
+    },
+    {
+      "oid": "2287456",
+      "relname": "event_data_2026_03"
+    },
+    {
+      "oid": "2287517",
+      "relname": "events_2026_04"
+    },
+    {
+      "oid": "2287559",
+      "relname": "event_data_2026_04"
+    },
+    {
+      "oid": "2287625",
+      "relname": "events_2026_05"
+    },
+    {
+      "oid": "2287658",
+      "relname": "event_data_2026_05"
+    },
+    {
+      "oid": "2287713",
+      "relname": "events_2026_06"
+    },
+    {
+      "oid": "2287733",
+      "relname": "event_data_2026_06"
+    },
+    {
+      "oid": "2287781",
+      "relname": "events_2026_07"
+    },
+    {
+      "oid": "2287817",
+      "relname": "event_data_2026_07"
+    },
+    {
+      "oid": "2287868",
+      "relname": "events_2026_08"
+    },
+    {
+      "oid": "2287905",
+      "relname": "event_data_2026_08"
+    },
+    {
+      "oid": "2287960",
+      "relname": "events_2026_09"
+    },
+    {
+      "oid": "2287984",
+      "relname": "event_data_2026_09"
+    },
+    {
+      "oid": "2288039",
+      "relname": "events_2026_10"
+    },
+    {
+      "oid": "2288059",
+      "relname": "event_data_2026_10"
+    },
+    {
+      "oid": "2288095",
+      "relname": "events_2026_11"
+    },
+    {
+      "oid": "2288128",
+      "relname": "event_data_2026_11"
+    },
+    {
+      "oid": "2288163",
+      "relname": "events_2026_12"
+    },
+    {
+      "oid": "2288187",
+      "relname": "event_data_2026_12"
+    }
+  ],
+  "accepted": 5000,
+  "intakeWithQueriesMs": 107028.85320499999,
+  "drainMs": 38811.42987499999,
+  "sql": {
+    "pv": 5000,
+    "uv": 100,
+    "sessions": 100
+  },
+  "finalAggregationState": [
+    {
+      "site_id": "5488f0275c624d3a5b67f11d",
+      "generation": "100",
+      "processed_generation": "100",
+      "watermark": "2026-10-10T11:51:27.593Z",
+      "attempts": 0
+    }
+  ],
+  "schemaBytes": 671145984,
+  "outbox": {
+    "total": 5000,
+    "queued": 0,
+    "done": 5000
+  },
+  "sourceDigestAfter": "a69ea188fdc4b4aa23f473a9ae8e7602f535f990c8f98c91919b37d9972be7a5",
+  "sourceUnchanged": true,
+  "samples": [
+    {
+      "at": "2026-10-10T11:49:41.783Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "1",
+      "processedGeneration": "0",
+      "lagMs": null,
+      "unpublishedWaitMs": 266,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:43.016Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "2",
+      "processedGeneration": "1",
+      "lagMs": 1003,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:43.942Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 50,
+      "generation": "3",
+      "processedGeneration": "1",
+      "lagMs": 2003,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:44.971Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 100,
+      "generation": "4",
+      "processedGeneration": "2",
+      "lagMs": 2000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:45.967Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 150,
+      "generation": "5",
+      "processedGeneration": "3",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:46.979Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 200,
+      "generation": "6",
+      "processedGeneration": "4",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:47.759Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "7",
+      "processedGeneration": "5",
+      "lagMs": 1999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:48.908Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "8",
+      "processedGeneration": "5",
+      "lagMs": 3000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:50.082Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 250,
+      "generation": "9",
+      "processedGeneration": "5",
+      "lagMs": 3999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:50.894Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "10",
+      "processedGeneration": "7",
+      "lagMs": 3000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:51.928Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 350,
+      "generation": "11",
+      "processedGeneration": "7",
+      "lagMs": 4001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:52.874Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "12",
+      "processedGeneration": "9",
+      "lagMs": 3001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:53.885Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 450,
+      "generation": "13",
+      "processedGeneration": "9",
+      "lagMs": 4000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:54.879Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "14",
+      "processedGeneration": "11",
+      "lagMs": 2998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:55.923Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "15",
+      "processedGeneration": "11",
+      "lagMs": 3997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:56.866Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "16",
+      "processedGeneration": "11",
+      "lagMs": 4997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:57.938Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 550,
+      "generation": "17",
+      "processedGeneration": "11",
+      "lagMs": 5998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:58.994Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "18",
+      "processedGeneration": "14",
+      "lagMs": 3999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:49:59.986Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "19",
+      "processedGeneration": "14",
+      "lagMs": 4999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:00.948Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "20",
+      "processedGeneration": "14",
+      "lagMs": 5999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:02.038Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 700,
+      "generation": "21",
+      "processedGeneration": "14",
+      "lagMs": 7063,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:03.071Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "22",
+      "processedGeneration": "17",
+      "lagMs": 5062,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:04.105Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "23",
+      "processedGeneration": "17",
+      "lagMs": 6063,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:05.115Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "24",
+      "processedGeneration": "17",
+      "lagMs": 7062,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:06.019Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "25",
+      "processedGeneration": "17",
+      "lagMs": 8061,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:07.027Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 850,
+      "generation": "26",
+      "processedGeneration": "17",
+      "lagMs": 9060,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:08.112Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "27",
+      "processedGeneration": "21",
+      "lagMs": 5997,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:09.148Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "28",
+      "processedGeneration": "21",
+      "lagMs": 6996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:10.172Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "29",
+      "processedGeneration": "21",
+      "lagMs": 7996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:11.150Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "30",
+      "processedGeneration": "21",
+      "lagMs": 8995,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:12.155Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "31",
+      "processedGeneration": "21",
+      "lagMs": 9996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:13.145Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1050,
+      "generation": "32",
+      "processedGeneration": "21",
+      "lagMs": 10996,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:14.127Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "33",
+      "processedGeneration": "26",
+      "lagMs": 6999,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:15.089Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "34",
+      "processedGeneration": "26",
+      "lagMs": 8000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:16.161Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "35",
+      "processedGeneration": "26",
+      "lagMs": 9000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:17.152Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "36",
+      "processedGeneration": "26",
+      "lagMs": 10002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:18.178Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "37",
+      "processedGeneration": "26",
+      "lagMs": 11001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:19.181Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "38",
+      "processedGeneration": "26",
+      "lagMs": 12001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:20.167Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1300,
+      "generation": "39",
+      "processedGeneration": "26",
+      "lagMs": 13001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:21.279Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "40",
+      "processedGeneration": "32",
+      "lagMs": 8001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:22.473Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "41",
+      "processedGeneration": "32",
+      "lagMs": 9001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:23.304Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "42",
+      "processedGeneration": "32",
+      "lagMs": 10001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:24.211Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "43",
+      "processedGeneration": "32",
+      "lagMs": 11001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:25.336Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "44",
+      "processedGeneration": "32",
+      "lagMs": 12001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:26.371Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "45",
+      "processedGeneration": "32",
+      "lagMs": 13001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:27.592Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "46",
+      "processedGeneration": "32",
+      "lagMs": 14001,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:28.570Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "47",
+      "processedGeneration": "32",
+      "lagMs": 15000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:29.912Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1600,
+      "generation": "48",
+      "processedGeneration": "32",
+      "lagMs": 16000,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:31.008Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "49",
+      "processedGeneration": "39",
+      "lagMs": 10287,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:31.862Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "50",
+      "processedGeneration": "39",
+      "lagMs": 11381,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:33.018Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "51",
+      "processedGeneration": "39",
+      "lagMs": 12421,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:34.585Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "52",
+      "processedGeneration": "39",
+      "lagMs": 13422,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:35.891Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "53",
+      "processedGeneration": "39",
+      "lagMs": 14958,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:37.183Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "54",
+      "processedGeneration": "39",
+      "lagMs": 16263,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:38.426Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "55",
+      "processedGeneration": "39",
+      "lagMs": 17557,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:39.778Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "56",
+      "processedGeneration": "39",
+      "lagMs": 18799,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:40.922Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "57",
+      "processedGeneration": "39",
+      "lagMs": 20151,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:42.207Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "58",
+      "processedGeneration": "39",
+      "lagMs": 21295,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:43.387Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 1950,
+      "generation": "59",
+      "processedGeneration": "39",
+      "lagMs": 22580,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:44.716Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "60",
+      "processedGeneration": "49",
+      "lagMs": 13473,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:46.118Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "61",
+      "processedGeneration": "49",
+      "lagMs": 14802,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:47.553Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "62",
+      "processedGeneration": "49",
+      "lagMs": 16204,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:49.079Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "63",
+      "processedGeneration": "49",
+      "lagMs": 17639,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:50.571Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "64",
+      "processedGeneration": "49",
+      "lagMs": 19165,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:52.096Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "65",
+      "processedGeneration": "49",
+      "lagMs": 20657,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:53.016Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "66",
+      "processedGeneration": "49",
+      "lagMs": 22182,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:54.000Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "67",
+      "processedGeneration": "49",
+      "lagMs": 23182,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:54.990Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "68",
+      "processedGeneration": "49",
+      "lagMs": 24182,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:56.056Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "69",
+      "processedGeneration": "49",
+      "lagMs": 25181,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:57.097Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "70",
+      "processedGeneration": "49",
+      "lagMs": 26181,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:58.153Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 2450,
+      "generation": "71",
+      "processedGeneration": "49",
+      "lagMs": 27184,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:50:59.385Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "72",
+      "processedGeneration": "60",
+      "lagMs": 14766,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:00.229Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "73",
+      "processedGeneration": "60",
+      "lagMs": 15998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:01.528Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "74",
+      "processedGeneration": "60",
+      "lagMs": 16998,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:02.506Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "75",
+      "processedGeneration": "60",
+      "lagMs": 18141,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:03.513Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "76",
+      "processedGeneration": "60",
+      "lagMs": 19141,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:04.562Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "77",
+      "processedGeneration": "60",
+      "lagMs": 20142,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:05.569Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "78",
+      "processedGeneration": "60",
+      "lagMs": 21175,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:06.760Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "79",
+      "processedGeneration": "60",
+      "lagMs": 22183,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:07.919Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "80",
+      "processedGeneration": "60",
+      "lagMs": 23373,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:08.861Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "81",
+      "processedGeneration": "60",
+      "lagMs": 24533,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:09.835Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "82",
+      "processedGeneration": "60",
+      "lagMs": 25532,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:10.996Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "83",
+      "processedGeneration": "60",
+      "lagMs": 26534,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:12.127Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "84",
+      "processedGeneration": "60",
+      "lagMs": 27609,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:13.506Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "85",
+      "processedGeneration": "60",
+      "lagMs": 28740,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:14.463Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "86",
+      "processedGeneration": "60",
+      "lagMs": 30120,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:15.455Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "87",
+      "processedGeneration": "60",
+      "lagMs": 31120,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:16.450Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "88",
+      "processedGeneration": "60",
+      "lagMs": 32120,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:17.396Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "89",
+      "processedGeneration": "60",
+      "lagMs": 33123,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:18.459Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "90",
+      "processedGeneration": "60",
+      "lagMs": 34123,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:19.304Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3000,
+      "generation": "91",
+      "processedGeneration": "60",
+      "lagMs": 35123,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:20.591Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "92",
+      "processedGeneration": "73",
+      "lagMs": 20125,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:21.342Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "93",
+      "processedGeneration": "73",
+      "lagMs": 21206,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:22.497Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "94",
+      "processedGeneration": "73",
+      "lagMs": 22209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:23.352Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "95",
+      "processedGeneration": "73",
+      "lagMs": 23209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:24.386Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "96",
+      "processedGeneration": "73",
+      "lagMs": 24209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:25.478Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "97",
+      "processedGeneration": "73",
+      "lagMs": 25209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:26.445Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "98",
+      "processedGeneration": "73",
+      "lagMs": 26208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:27.544Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "99",
+      "processedGeneration": "73",
+      "lagMs": 27209,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:28.467Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:29.386Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:31.154Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:32.954Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:34.796Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:36.547Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:38.273Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:40.066Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 3650,
+      "generation": "100",
+      "processedGeneration": "73",
+      "lagMs": 28208,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:42.280Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:44.035Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:45.866Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:47.927Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:49.847Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:51.657Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:53.478Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:55.284Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:57.275Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:51:59.272Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:52:01.258Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:52:03.199Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:52:05.256Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 0,
+      "pv": 4650,
+      "generation": "100",
+      "processedGeneration": "93",
+      "lagMs": 7002,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:52:07.406Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    },
+    {
+      "at": "2026-10-10T11:52:08.207Z",
+      "site": "5488f0275c624d3a5b67f11d",
+      "coverage": 1,
+      "pv": 5000,
+      "generation": "100",
+      "processedGeneration": "100",
+      "lagMs": 0,
+      "unpublishedWaitMs": null,
+      "attempts": 0
+    }
+  ],
+  "lagScope": "lagMs is published watermark lag; never-watermarked samples use separate unpublishedWaitMs",
+  "neverWatermarkedSampleCount": 1,
+  "unpublishedWaitP95Ms": 266,
+  "unpublishedWaitMaxMs": 266,
+  "uncoveredSampleCount": 120,
+  "observedWorkerFailureSampleCount": 0,
+  "lagMaxMs": 35123,
+  "lagP95Ms": 28740,
+  "batchP95Ms": 405.77665099999285,
+  "queryP95Ms": 1147.9089579999854,
+  "peakNodeRssBytes": 684752896,
+  "finishedAt": "2026-10-10T11:52:08.235Z",
+  "isolatedSchemaRemoved": true
+}
