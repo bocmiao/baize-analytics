@@ -1,0 +1,1 @@
+Real HTTP administrator/site/collector fixture persisted.

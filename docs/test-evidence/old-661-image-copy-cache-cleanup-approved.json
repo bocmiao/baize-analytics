@@ -1,0 +1,33 @@
+{
+  "imageRemove": {
+    "id": "sha256:e12d4ada47e43e6ee9c059b940d2d03c13ffa5b316644033a8dfe00fcc999c33",
+    "exit": 0,
+    "stdout": "Untagged: baize-analytics:local\nDeleted: sha256:e12d4ada47e43e6ee9c059b940d2d03c13ffa5b316644033a8dfe00fcc999c33\n",
+    "stderr": ""
+  },
+  "dfBefore": "Filesystem       1B-blocks        Used  Available Use% Mounted on\noverlay        33770192896 26631454720 5403975680  84% /workspace\n",
+  "cacheAfterImage": [
+    {
+      "CreatedAt": "2026-10-10 22:52:51.419870852 +0000 UTC",
+      "Description": "[stage-1 4/4] COPY --from=build /app /app",
+      "ID": "m1toa4qrv9zp8dioyxcl0m3dg",
+      "LastUsedAt": "14 minutes ago",
+      "Mutable": false,
+      "Parents": [
+        "fxuhtgmixe9cxmx735hfwoods"
+      ],
+      "Reclaimable": true,
+      "Shared": false,
+      "Size": "310.8MB",
+      "Type": "regular",
+      "UsageCount": 1
+    }
+  ],
+  "prune": {
+    "id": "m1toa4qrv9zp8dioyxcl0m3dg",
+    "exit": 0,
+    "stdout": "ID:\t\tm1toa4qrv9zp8dioyxcl0m3dg\nParent:\t\tfxuhtgmixe9cxmx735hfwoods\nCreated at:\t2026-10-10 22:52:51.419870852 +0000 UTC\nMutable:\tfalse\nReclaimable:\ttrue\nShared:\t\tfalse\nSize:\t\t310.8MB\nDescription:\t[stage-1 4/4] COPY --from=build /app /app\nUsage count:\t1\nLast used:\t14 minutes ago\n\nTotal:\t310.8MB\n",
+    "stderr": ""
+  },
+  "dfAfter": "Filesystem       1B-blocks        Used  Available Use% Mounted on\noverlay        33770192896 26020569088 6014861312  82% /workspace\n"
+}

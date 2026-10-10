@@ -1,0 +1,2 @@
+{"tracker":"tracker","gzipBytes":5087,"within5KiB":true,"withinDecimal5KB":false}
+{"tracker":"tracker-min","gzipBytes":4506,"within5KiB":true,"withinDecimal5KB":true}

@@ -87,3 +87,13 @@ bd3f51fc1f7dba84a1fdbde75edfcdbecfcf24e8完整本地runner实际EXIT1/cleanup。
 最终中文workspace/SEO/AI1440/390、overview1440/375和annotation实图立即存 `screenshots/66150be/`，实际PNG像素、语言及hash入summary；annotation原case英文1280视口，不标中文390，metadata仅保存实际输出，不伪造附件。Google/模型运输模拟；所有旧FAIL不改写。661新image和当前fixedload完成尚未记录，托管/跨宿主DR未执行，不把完整性通过冒称性能达标。
 
 66150be新镜像首轮实际EXIT1：build/install/compiled健康、source-image一致、55DDL/0542索引/三budget默认/完整notice/真实HTTP已过，但owned目标CH启动退出233，实际filesystem报ENOSPC于preprocessed_configs；native独立签名恢复未运行，不称该新镜像完整运维PASS。cleanup后3.1GiB可用/inodes43%不能证明启动时峰值；没有线程失败证据，不改limit。安全先过阶段文件与目标错误摘录/原日志hash见 `test-evidence/main-66150be-image-first-failed-*`，不复制原services/state/keys；旧FAIL全部保留。
+
+d67bb8aeda34652010125e889019392aaa0788f8正式全轮实际EXIT1/owned cleanup。217单元+428真实集成=645全部PASS/0skip；浏览器29PASS/1FAIL，中文分享readonly提示5秒未找到，仍由D诊断，不能称整轮PASS。新image未运行。实际list日志/后端JSON/source1240blob/hash/全部实际截图保存 `test-evidence/main-d67bb8a-*` 与 `screenshots/d67bb8a-failed-full/`，无JSONreporter则不伪造；旧FAIL保留。
+
+d67bb8a新生产镜像实际session25352 EXIT0。image `sha256:1c0bba1c48802e42cca295e2a2d4a20723760945b03ddbfce7ae347e3d393de7`，391项source/image完全一致，manifest `1dab3fdf1a7d6c93c3061255dd44d9ec1bfed7a0742ec99b0c1f327d331a32b7`。真实compiled安装/HTTP、55DDL/0542索引、budget120000/20000/2147483648与完整notice通过；签名独立CH服务器恢复、最新journal精准A删B留、来源正文/epoch/history不变、worker真实故障拒绝/恢复及全部negative guards通过。目标同物理宿主/nohostports，不是跨机DR，owned cleanup后仅原3服务。安全证据 `test-evidence/main-d67bb8a-image-*`，旧661 ENOSPC FAIL与旧f4故障回滚scope保留。
+
+资源观测必须保留：阶段可用磁盘曾低至62MiB，cleanup后恢复3.7GiB。前置2GiB gate未降低，但只能限制阶段开始，不能保证build/卷/恢复峰值；本次成功不抹去容量风险或证明资源SLO。根尝试终止ownrunner时PID已消失，测试未被中断或重跑。新固定负载和最终browser另行验收，镜像通过不替代二者。
+
+ce42c9f6a43a8110e002c71880112b1aa7fa4261独立完整浏览器实际EXIT0：30PASS/0FAIL/0skip（28真实Chromium+2日期），95.953秒，owned cleanup后仅原3服务。完整list+JSON、source1240blob、真实九图/像素/hash/viewport/annotation附件metadata已保存 `test-evidence/main-ce42c9f-*` 和 `screenshots/ce42c9f/`。中文workspace/SEO/AI1440/390，独立overview1440/375，annotation实际英文1280，未重标或造metadata。
+
+ce42仅测试发布等待修正，src/db/packages/sdk/scripts对d67真实emptydiff；645后端与新镜像EXIT0实际归属d67，不宣称ce42重跑或重建。旧d67分享失败仍保留。模型/Google运输模拟，最新固定负载仍root另行运行，浏览器通过不代替性能达标。

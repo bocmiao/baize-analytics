@@ -1,10 +1,16 @@
 # User API manual
 
-## Current validation entry (66150be)
+## Current validation entry (local ce42c9f / d67 application)
 
-661 formal full:215 unit+426 real integration=641 PASS,30 E2E(28 real Chromium+2 date)PASS,EXIT0/cleanup. Fixed1000 PASS(finalHTTP5.047623651s). Fixed5000 overall FAIL:4350accepted/13unsent/35delayed,drainfalse120s;accepted4350 final PV4350/coverage1/CH and six integrity assertions PASS,21.102973929s.Not5000/SLO acceptance.
+| Source/stage | Actual evidence |
+|---|---|
+| d67 backend |217 unit+428 real integration=645 PASS;actual backend run|
+| ce42c9f browser |30 checks(28 real Chromium+2 date)PASS,EXIT0;src/db/packages/sdk/scripts unchanged from d67;no claimed backend rerun|
+| d67 image |Actual EXIT0:55DDL/391 manifest/strict independent restore;transient62MiB disk-low risk recorded,not concealed|
+| d67 fixed1000/5000 |Running(root30652),pending;last661 performance FAIL remains an open local performance gap|
+| Git/hosted |Local ce42 only,remote e441 verified;no hosted trigger or completion claim before actual load result|
 
-New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/install/manifest/budget/55DDL/licensing/seed passed,native phase not started,targetcleanup complete.F archives evidence;no inferred root cause.Local01e2c5d saved,remote confirmation not claimed.Hosted workflows not triggered.Historical validation sections are marked by SHA; the API and installation operating guide below still describes current contracts.
+Historical661 ENOSPC and d67 first29/30 full EXIT1 remain below with original source evidence.
 
 ## Historical stage records and design
 
@@ -296,3 +302,14 @@ New routes are wired; current evidence is type/lint/unit verification. Actual PG
 Final1c fixed-load result:1000 PASS, final HTTP5120ms. 5000 FAIL:4900 accepted,2 unsent,39 delayed; query failures0; drainReached=false at120s, remaining backlog1350/max3250. Final query25.389s failed, assertionsExecuted=[]; no successful six-assertion integrity claim. Node peak730509312 bytes excludes DB services; source unchanged and all four cleanup flags true. No budget rejection occurred. Passing code/browser/image does not close this local performance gap or prove a speedup/SLO. Evidence: main-1c1cb65-independent-strict-5000.json and its record under docs/test-evidence, archived separately; earlier failures remain.
 
 0a0c171包含三批候选及idlefatal修复。第四轮实际19/19 PASS（11budget+4server+3triple+1strictrestore）、0skip/0uncaught，另10单元/type/lint通过；这是提交前源码摘要绑定定向证明，不是新全局计数。原前三轮FAIL及bd完整EXIT1全部保留。0a新完整空库、镜像和固定负载正在准备，不预写通过；旧c890632、1c30/image、1c1000PASS/5000FAIL各按原源码阶段保留，不外推0a。
+
+## 历史前次状态入口（原记录保留）
+
+## Current validation entry (66150be)
+
+Latest local main d67bb8a is saved, with push authorization unavailable(no token creation). It skips identity TEMP writes only when same-run effects/vitals are both complete CH; mixed sources keep the original path. Type/lint,20 affected real integration tests(2 new+18 existing),and217 units PASS/0skip;20 is a subset,not added to426. Initial217 run had215PASS/2 old-mock failures,retained before shape-only correction. New full/image/load pending;last completed full remains661641+30. Prior image ENOSPC remains FAIL;owned old cache cleanup and target healthy EXIT0 only prove diagnostic recovery,native not run.No speedup inference.
+d67 full actual EXIT1/cleanup:645 backend(217 unit+428 integration)ALL PASS;browser29 PASS/1 FAIL(protected-share read-only text absent;actual503 snapshot changed,retry).D diagnosis pending;not a full pass.New full image/load pending.Remote e441 verified;local e441..d67 bundle/tracked-source checkpoint saved,bundleverify0,no runtime. No new credentials.
+
+661 formal full:215 unit+426 real integration=641 PASS,30 E2E(28 real Chromium+2 date)PASS,EXIT0/cleanup. Fixed1000 PASS(finalHTTP5.047623651s). Fixed5000 overall FAIL:4350accepted/13unsent/35delayed,drainfalse120s;accepted4350 final PV4350/coverage1/CH and six integrity assertions PASS,21.102973929s.Not5000/SLO acceptance.
+
+New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/install/manifest/budget/55DDL/licensing/seed passed,native phase not started,targetcleanup complete.F archives evidence;no inferred root cause.Local01e2c5d saved,remote confirmation not claimed.Hosted workflows not triggered.Historical validation sections are marked by SHA; the API and installation operating guide below still describes current contracts.
