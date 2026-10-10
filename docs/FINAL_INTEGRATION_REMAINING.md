@@ -54,3 +54,13 @@
 ## 恢复工作区检查点
 
 2026-10-10 本次恢复实际执行 `pwd`、`git status --short --branch`、`git rev-parse HEAD`。原目录与 main SHA 如上，未重建环境、重置或丢弃任何文件。在继续编码前保存 diff/index 与149个未跟踪源码到 `/tmp/baize-resume-preserved-v05w04ks`。本地原生执行恢复，不表示所有代理或全套测试已经完成。六路已恢复既有任务；043–048 完整严格 worker、精确删除、缓存消费、身份与恢复入口仍按 R1–R8 收束。真实 strict 子进程 CLI 专项1/1已见日志，严格身份 HTTP/PG/CH 专项1/1已回交；两项不能累加为最终全集或 Docker 通过。
+
+
+恢复后第二检查点 `/tmp/baize-resumed-integration-preserved-m4e7_pnt` 保存161个未跟踪源码和完整tracked/index patch，未重置任何文件。当前工作区本地 build EXIT0、100 unit PASS/0fail/0skip、全仓lint修正后EXIT0；043 producer/readers四文件4PASS。以上是可变工作区专项，不是最终冻结全集。严格CH新增浏览器1/1在唯一readiness开关变体通过（真实公开激活、签名备份、202、CH数值与正文丢失503清旧值），见 `ACCEPTANCE_WEB.md`；不得与第八20检查直接累加。完整恢复仍在修正旧PG/source fence、最新journal partial replacement和selected历史正文导入，原失败日志保留。根未触发任何CNB/GitHub Actions。
+
+
+本次严格缓存删除专项已完成：`/tmp/baize-cache-privacy-closed.json` 真实1 PASS/0 FAIL/0 skip（唯一 readiness 变体，尚未 main）。实际删除 A 后所有 CH 缓存 attempt 与 PG owner/pointer 清零；B worker 与小时/日导出 PV3/UV1，旧热图明确遗漏并标 coverage0，重复独立日志恢复仍正确。四轮前期真实失败保留。新的独立严格身份恢复在实际目标 `migrate-facts` 遇到 `CACHE_BASELINE_UNAVAILABLE`，并发现删除替换 carry run 在下一 worker 前仍有 PG carry 正文；两项均继续修复，不能写为最终严格恢复已通过。根只启动不可变候选源本地集成检查，未触发任何托管流水线。
+
+初始本地候选源全集实际失败记录：142 集成文件，391 项 =367 PASS/23 FAIL/1 未运行，入口退出1（`final-candidate-preflight.json` 及 `final-candidate-preflight-failures.json`）。该预检查遗漏 build 前置，已保留失败；补构建后8个SDK/许可文件11项全部通过。其余具体旧夹具/当前生命周期契约由各路真实修复回归；不能把这些专项加为最终全量绿。完整严格恢复最新已到新备份后 readiness 控制行比较，仍待运维窄修与独立复验。最终仍需同源空库、完整浏览器、新镜像、本地运维及小规模严格CH持续负载；根未运行托管CI。
+
+当前实现里程碑：六路回交后，独立严格恢复最新三文件3 PASS/0 FAIL/0 skip（`/tmp/baize-b-final-readiness.log`）；真实源/独立目标、签名四侧包、最新A删除日志、目标再次strict、B身份/图表/正文空与源不变均通过。严格删除commit/preworker与重复日志preworker的PG carry正文清空已真实1 PASS。root据这些必需链路核验启用生产激活guard；本轮全集、完整浏览器、新镜像与小规模严格持续负载仍待固定提交本地验收，不据专项宣称全项目完成。历史guardfalse状态均属于上述记录时点。

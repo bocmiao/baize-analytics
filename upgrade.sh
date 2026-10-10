@@ -23,6 +23,8 @@ if ! backup_dir="$(scripts/backup.sh)"; then
   exit 1
 fi
 rollback() {
+  trap - ERR
+  umask 077
   rm -f "$reserve"
   echo 'Upgrade failed; restoring schema/data and prior application image. Recovery point retained at:' "$backup_dir" >&2
   docker compose stop app || true
@@ -31,11 +33,22 @@ rollback() {
   docker compose cp app:/app/data/tombstones.watermark.json "$journal_check/tombstones.watermark.json"
   node scripts/ops-validate-journal.mjs "$journal_check/tombstones.jsonl" "$journal_check/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
   rm -rf "$journal_check"
+  rollback_proof=''
+  if [ -f "$backup_dir/canonical/index.json" ]; then
+    rollback_proof="$backup_dir/rollback-retention-proof.json"
+    BAIZE_IMAGE="$old_image" docker compose run --rm --no-deps --entrypoint node app --import tsx scripts/replay-retention-proof-runtime.ts capture > "$rollback_proof"
+    node -e 'const fs=require("node:fs");const fd=fs.openSync(process.argv[1],"r");fs.fsyncSync(fd);fs.closeSync(fd)' "$rollback_proof"
+  fi
   docker compose exec -T postgres psql -U baize -d baize -v ON_ERROR_STOP=1 -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public AUTHORIZATION baize;'
   docker compose exec -T postgres pg_restore -U baize -d baize --exit-on-error --no-owner < "$backup_dir/database.dump"
   scripts/ops-restore-volume.sh "$backup_dir" "$old_image"
-  BAIZE_IMAGE="$old_image" docker compose up -d app
-  docker compose exec -T --env CANONICAL_SAME_DB_ROLLBACK=1 app node --import tsx scripts/restore-runtime.ts
+  if [ -n "$rollback_proof" ]; then
+    docker compose cp "$rollback_proof" app:/app/data/rollback-retention-proof.json
+    BAIZE_IMAGE="$old_image" docker compose run --rm --no-deps --user 0 --entrypoint node app -e 'const fs=require("node:fs"),p="/app/data/rollback-retention-proof.json";fs.chownSync(p,1000,1000);fs.chmodSync(p,0o600);const f=fs.openSync(p,"r");fs.fsyncSync(f);fs.closeSync(f);const d=fs.openSync("/app/data","r");fs.fsyncSync(d);fs.closeSync(d)'
+  fi
+  # Reconcile while the web application remains stopped. Never expose restored
+  # queries before journal, CH physical deletion, privacy and rebuild verification.
+  BAIZE_IMAGE="$old_image" docker compose run --rm --no-deps --env CANONICAL_SAME_DB_ROLLBACK=1 app node --import tsx scripts/restore-runtime.ts
   BAIZE_IMAGE="$old_image" docker compose up -d --wait --wait-timeout 120 app
 }
 trap 'rollback' ERR

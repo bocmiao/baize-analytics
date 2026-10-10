@@ -1,3 +1,4 @@
+import {purgeProvenanceSegments} from './provenance-lifecycle.js';
 import {removeReplayKeySegments} from './replay-key-cleanup.js';
 import type {PoolClient} from 'pg';
 import type {StoredEvent} from './clickhouse-store.js';
@@ -52,6 +53,7 @@ export async function purgeIdentity(client:PoolClient,site:string,records:Identi
   await client.query(`DELETE FROM outbox WHERE ${predicate}`,args.slice(0,4));
   await client.query(`DELETE FROM event_keys WHERE ${predicate}`,args.slice(0,4));
   await client.query(`DELETE FROM events WHERE ${predicate}`,args.slice(0,4));
+  await purgeProvenanceSegments(client,site,[{visitorId:record.visitor_id,from:record.started_at,to:record.ended_at==='infinity'?undefined:record.ended_at??undefined}]);
   await client.query('DELETE FROM identity_bindings WHERE site_id=$1 AND visitor_id=$2 AND user_id=$3 AND started_at=$4',[site,record.visitor_id,record.user_id,record.started_at]);
   const latest=(await client.query('SELECT user_id,started_at FROM identity_bindings WHERE site_id=$1 AND visitor_id=$2 ORDER BY started_at DESC LIMIT 1',[site,record.visitor_id])).rows[0];
   if(latest)await client.query('UPDATE identity_map SET user_id=$3,created_at=$4 WHERE site_id=$1 AND visitor_id=$2',[site,record.visitor_id,latest.user_id,latest.started_at]);else await client.query('DELETE FROM identity_map WHERE site_id=$1 AND visitor_id=$2',[site,record.visitor_id]);

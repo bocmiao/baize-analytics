@@ -1,3 +1,4 @@
+import {pruneExpiredProvenance} from './provenance-lifecycle.js';
 import {dirtySite} from './db.js';
 import {retireCanonicalReplay} from './canonical-replay-retention.js';
 import type {Pool,PoolClient} from 'pg';
@@ -18,6 +19,7 @@ export async function retireCanonicalSiteEvents(client:PoolClient,pool:Pool,site
  await client.query('DELETE FROM revenue_orders WHERE site_id=$1 AND ts<$2',[siteId,cutoff]);
  await client.query('DELETE FROM event_keys WHERE site_id=$1 AND ts<$2',[siteId,cutoff]);
  await client.query("DELETE FROM outbox WHERE site_id=$1 AND status='done' AND ts<$2",[siteId,cutoff]);
+ await pruneExpiredProvenance(client,siteId,cutoff);
  if(removed){await client.query('UPDATE canonical_event_authority SET deletion_epoch=deletion_epoch+1 WHERE site_id=$1',[siteId]);await pruneUnreferencedFactRuns(client,siteId);await dirtySite(client,siteId);}
  // Durable privacy tombstones and identity intervals intentionally survive retention.
  return {authority:'clickhouse' as const,removed,physicalAck:true};

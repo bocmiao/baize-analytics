@@ -1,0 +1,12 @@
+import {it,expect} from 'vitest';
+import {createRemainingFactDeleteFixture} from '../fixtures/remaining-fact-delete.js';
+import {deleteVisitor,readVerifiedDeletionRecords} from '../../src/server/deletion.js';
+import {captureVerifiedDeletionAuthorization,verifyDeletionAuthorization,assertCurrentDeletionAuthorization} from '../../src/server/deletion-authorization.js';
+it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('47 recovery authorization binds real fsynced journal scope and refuses invented records or serialized current tokens',async()=>{
+ const f=await createRemainingFactDeleteFixture();try{
+ await f.armRollback();await expect(deleteVisitor(f.runtime.ctx,f.siteId,{user_id:'deleted-A'},null)).rejects.toThrow('remaining physical ACK PG rollback');await f.clearRollback();
+ const first=(await readVerifiedDeletionRecords(f.dir)).filter(record=>record.source==='identity-segment');expect(first).toHaveLength(1);
+ const c=await f.pool.connect();let scope='';try{await c.query('BEGIN');const auth=await captureVerifiedDeletionAuthorization(c,f.siteId,f.dir,first);scope=auth.scopeHash;assertCurrentDeletionAuthorization(c,f.siteId,auth);await verifyDeletionAuthorization(c,f.siteId,JSON.parse(JSON.stringify(auth)),[{visitorId:f.visitorId,from:first[0]!.started_at,to:first[0]!.ended_at??undefined}]);expect(()=>assertCurrentDeletionAuthorization(c,f.siteId,JSON.parse(JSON.stringify(auth)))).toThrow('DELETION_AUTHORIZATION_CURRENT_JOURNAL_REQUIRED');await expect(verifyDeletionAuthorization(c,f.siteId,{...auth,scopeHash:'0'.repeat(64)})).rejects.toThrow('DELETION_AUTHORIZATION_INVALID');await expect(captureVerifiedDeletionAuthorization(c,f.siteId,f.dir,[{...first[0]!,deleted_at:new Date(Date.parse(first[0]!.deleted_at)+1).toISOString()}])).rejects.toThrow('DELETION_AUTHORIZATION_JOURNAL_REQUIRED');await c.query('COMMIT');}finally{await c.query('ROLLBACK');c.release();}
+ await deleteVisitor(f.runtime.ctx,f.siteId,{user_id:'deleted-A'},null);const latest=(await readVerifiedDeletionRecords(f.dir)).filter(record=>record.source==='identity-segment').slice(-1);expect(latest).toHaveLength(1);const retry=await f.pool.connect();try{await retry.query('BEGIN');expect((await captureVerifiedDeletionAuthorization(retry,f.siteId,f.dir,latest)).scopeHash).toBe(scope);await retry.query('COMMIT');}finally{await retry.query('ROLLBACK');retry.release();}
+ }finally{await f.close();}
+},30000);

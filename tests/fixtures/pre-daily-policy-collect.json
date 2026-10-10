@@ -1,0 +1,7 @@
+{
+  "source": "frozen actual pre-policy collector used by 2026-10-10 12:13:20 native verification",
+  "originalSha256": "caee9aa90b431517e9d8d9950efae8ac0c7cc3099ce7d148df1c56510d0d06ca",
+  "fixtureSha256": "3f2ae689f24793763288e64afc7acadfcb840bb4ce0ad0ac3cdb6c11c0a1472b",
+  "onlyModification": "relative module import paths; algorithms unchanged",
+  "originalBytes": "pre-daily-policy-collect.original.txt"
+}

@@ -1,0 +1,11 @@
+import type {PoolClient} from 'pg';
+export interface FactReadRelations {effectsRelation:string;vitalsRelation:string;sessionsRelation?:string;numericsRelation?:string;membersRelation?:string;carryCheckpointsRelation?:string;carryKeysRelation?:string;hourlyRelation?:string;dailyRelation?:string;pageVitalsRelation?:string;legacyVitalsRelation?:string;heatmapRelation?:string;source?:'postgres'|'clickhouse'|'hybrid'}
+const selected=new WeakMap<PoolClient,FactReadRelations>();
+/** Only internal authenticated TEMP/source adapters may install identifiers. */
+export function bindFactReadRelations(client:PoolClient,relations:FactReadRelations){
+ const previous=selected.get(client);selected.set(client,{...previous,...relations});let restored=false;
+ return ()=>{if(restored)return;restored=true;if(previous)selected.set(client,previous);else selected.delete(client);};
+}
+export function hasFactReadSource(client:PoolClient){return selected.has(client);}
+export function factReadRelations(client:PoolClient):FactReadRelations{return selected.get(client)??{effectsRelation:'analytics_effect_facts',vitalsRelation:'analytics_vital_samples'};}
+export function factReadSql(client:PoolClient,sql:string){const source=factReadRelations(client);return sql.replaceAll('analytics_effect_facts',source.effectsRelation).replaceAll('analytics_vital_samples',source.vitalsRelation).replaceAll('analytics_session_facts',source.sessionsRelation??'analytics_session_facts').replaceAll('analytics_numeric_facts',source.numericsRelation??'analytics_numeric_facts').replaceAll('analytics_member_facts',source.membersRelation??'analytics_member_facts').replaceAll('analytics_carry_checkpoints',source.carryCheckpointsRelation??'analytics_carry_checkpoints').replaceAll('analytics_carry_keys',source.carryKeysRelation??'analytics_carry_keys').replaceAll('stats_hourly',source.hourlyRelation??'stats_hourly').replaceAll('stats_daily',source.dailyRelation??'stats_daily').replaceAll('page_vitals',source.pageVitalsRelation??'page_vitals').replaceAll('analytics_vitals_facts',source.legacyVitalsRelation??'analytics_vitals_facts').replaceAll('heatmap_points',source.heatmapRelation??'heatmap_points');}

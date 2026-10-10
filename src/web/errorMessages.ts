@@ -30,6 +30,7 @@ const englishErrors: Record<string, string> = {
 };
 export function localizedErrorCode(code:unknown,status=500):string {
     const key=typeof code==='string'?code:'';
+    if(key==='replay_sequence_conflict')return language()==='en'?'This replay sequence already contains different masked content. The conflicting event was rejected.':'此回放序号已存在不同的脱敏内容，冲突事件已拒绝。';
     if(Object.hasOwn(API_ERRORS,key)) {const value=API_ERRORS[key as ApiErrorCode];return language()==='en'?value.en:value.zh;}
     if(Object.hasOwn(EXTERNAL_ERRORS,key)) return language()==='en'?ownValue(englishErrors,key)||API_ERRORS.internal_error.en:EXTERNAL_ERRORS[key as ExternalErrorCode].message;
     const fallback=status>=500?API_ERRORS.internal_error:API_ERRORS.client_request_failed;

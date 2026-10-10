@@ -34,13 +34,15 @@ export E2E_BASE_URL="$PUBLIC_URL"
 ci_dir="$(mktemp -d "${TMPDIR:-/tmp}/baize-shared-ci.XXXXXX")"
 export DATA_DIR="$ci_dir/data" KEYS_DIR="$ci_dir/keys" MASTER_KEY_FILE="$ci_dir/master.key"
 mkdir -m 700 "$DATA_DIR" "$KEYS_DIR"
+reports="${CI_TEST_REPORT_DIR:-$ci_dir/reports}"
+mkdir -p "$reports"
 node -e 'require("node:fs").writeFileSync(process.env.MASTER_KEY_FILE,require("node:crypto").randomBytes(32).toString("hex"),{mode:0o600})'
 app_pid=''
 cleanup(){ if [ -n "$app_pid" ]; then kill "$app_pid" 2>/dev/null || true; wait "$app_pid" 2>/dev/null || true; fi; service_cleanup; }
 trap cleanup EXIT
 npm run lint
 npm run typecheck
-npm run test:unit
+npm run test:unit -- --reporter=default --reporter=json --outputFile.json="$reports/unit.json"
 node --import tsx scripts/ops-sdk-test.ts
 node scripts/ops-journal-test.mjs
 npm run build
@@ -64,7 +66,7 @@ if [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] && [ ! -e /usr/bin/chromium ]; then
  bundled_chromium="$(node --input-type=module -e 'import {chromium} from "@playwright/test";import {accessSync,constants} from "node:fs";const path=chromium.executablePath();accessSync(path,constants.X_OK);process.stdout.write(path)')"
  ln -s "$bundled_chromium" /usr/bin/chromium
 fi
-npm run test:integration
+npm run test:integration -- --reporter=default --reporter=json --outputFile.json="$reports/integration.json"
 # Integration fixtures own their schemas; apply the separate application URL only
 # after they finish, so URL search_path cannot override their Pool options.
 export DATABASE_URL="${CI_APPLICATION_DATABASE_URL:-$DATABASE_URL}"

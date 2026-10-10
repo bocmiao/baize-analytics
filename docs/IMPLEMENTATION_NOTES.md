@@ -36,3 +36,5 @@
 全部F01–F66/P2仍按逐项证据判定：canonical activation仍关闭，混合回放记录物理删除/恢复已有C4三项真实PG/CH定向验证，但原生canonical浏览器、完整迁移集成与规模SLO仍有明确剩余；真实Google/企业微信/付费SERP/MaxMind账号、模型质量、Windows/小程序设备等未实测项单列。README/API/中英运行手册已更新，不能把计划、模拟provider或本地环境smoke标成真实外部验收。
 
 第七后续结果：root冻结源分阶段84unit+234integration=318通过，correctenv freshschema20E2E（18browser+2date）通过50.8s，compiled/build/type/lint通过。原路径缺失及未export测试DB失败记录保留，不能写单次sharedregular EXIT0。该阶段含030/031/032与标准MCP，033/034/035及C4/物理回放保留仍属下一批定向工作树，不提前标作当前main全量验收。
+
+第七已保存main里程碑：`fa3e82873d9b9e3cb1b139fbea3db9c742995a48`（root已推送，当前只读git log核验）。对应root上述分阶段318PASS+correctenv20PASS，不表示单次sharedregular EXIT0；037回放保留/proof及033/034/035/036/040等后续工作树切片不提前算入该提交或上述计数。

@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "scope": "native PG/CH module and childCLI evidence; final namespace entry not passed",
+  "sourceCommit": null,
+  "cases": [
+    {
+      "name": "remaining-standard-and-real-strict-cli",
+      "status": "passed",
+      "tests": 1,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/remaining-standard-and-real-strict-cli.log"
+    },
+    {
+      "name": "remaining-daily-authenticated-bounded-lineage",
+      "status": "passed",
+      "tests": 1,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/remaining-daily-authenticated-bounded-lineage.log"
+    },
+    {
+      "name": "cache-covered-uncovered-and-pg-mismatch",
+      "status": "passed",
+      "tests": 1,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/cache-covered-uncovered-and-pg-mismatch.log"
+    },
+    {
+      "name": "canonical-batch-map-and-source-journal",
+      "status": "passed",
+      "tests": 7,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/canonical-batch-map-and-source-journal.log"
+    },
+    {
+      "name": "opaque-proof-pending-journal-rejected",
+      "status": "passed",
+      "tests": 1,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/opaque-proof-pending-journal-rejected.log"
+    },
+    {
+      "name": "headers-explicit-zero-completion",
+      "status": "passed",
+      "tests": 1,
+      "source": "working-source-at-execution; not final release SHA",
+      "log": "docs/test-evidence/headers-explicit-zero-completion.log"
+    }
+  ],
+  "failuresRetained": [
+    "/tmp/baize-047-whole-package-first.log",
+    "/tmp/baize-047-zero-three-actual.log",
+    "/tmp/baize-048-signed-coverage-package-first.log",
+    "/tmp/baize-048-immutable-native-first.log",
+    "/tmp/baize-048-owner-kind-diagnostic.log"
+  ],
+  "immutableWholeEntry": {
+    "status": "failed",
+    "files": 330,
+    "sha256": "0d17679dd0d1ee618df11e6c2a524a834812e39cb05ee33fe203f3c98d49dc79",
+    "stage": "source worker publish remaining numeric placeholder lacks owner",
+    "docker": false
+  },
+  "remaining": [
+    "full immutable namespace47/48 native entry after real producer fix",
+    "final production Docker full lifecycle",
+    "independent target latestjournal cache negative-coverage and survivor rebuild"
+  ]
+}

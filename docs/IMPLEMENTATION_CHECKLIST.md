@@ -2,9 +2,11 @@
 
 此清单逐项保留规格要求与真实验收证据，不把未完成要求改写为更低目标。状态分为：已实现且本地验收 / 在制或部分实现（具体欠项仍须完成） / 未实现 / 连接器本地验收但真实外部未测。
 
-当前已推送 main **`5b402dd`**。042 自定义搜索手动导入以独立干净 main 快照 **4单元+7真实PG+1真实浏览器（11+1）**、build/type/lint PASS 保存，见 [manual-search-clean-main.json](test-evidence/manual-search-clean-main.json)。这些专项不累加为新的整体全量计数。
+本次主线实现提交纳入036/038/039/041/043–048及严格采集、事实、删除、缓存、独立签名恢复闭环；必要真实专项已通过，guard已启用，逐站验证/水位/删除屏障仍强制检查。最终同源空库、完整浏览器、新Docker镜像与严格持续负载尚未完成，不称全计划验收通过。main准确SHA以本次提交记录和最终验收记录为准。
 
-最新第八冻结主线验收 **377应用 =88单元+289真实集成**、0失败/0跳过；另 **20检查 =18真实Chromium+2日期函数**，58.2秒，同一空卷共享Compose全入口实际EXIT0，含compiled production启动、lint/type/build/npm ci。完整范围、374文件SHA及失败历史见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)。本批033/034/035/037/040及AI图表/预算/通知隐私/历史正文精确清洗已进入验收快照；036/038/039/041/043–047与生产canonical完整切换、新非空carry恢复和最终镜像仍在制；042已单独进入main，不能勾全部F/P2完成。
+042此前独立功能里程碑 **`5b402dd`**：自定义搜索手动导入。042 自定义搜索手动导入以独立干净 main 快照 **4单元+7真实PG+1真实浏览器（11+1）**、build/type/lint PASS 保存，见 [manual-search-clean-main.json](test-evidence/manual-search-clean-main.json)。这些专项不累加为新的整体全量计数。
+
+最近已完成的第八冻结主线验收 **377应用 =88单元+289真实集成**、0失败/0跳过；另 **20检查 =18真实Chromium+2日期函数**，58.2秒，同一空卷共享Compose全入口实际EXIT0，含compiled production启动、lint/type/build/npm ci。完整范围、374文件SHA及失败历史见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)。本批033/034/035/037/040及AI图表/预算/通知隐私/历史正文精确清洗已进入验收快照；上述036/038/039/041/043–048现在完成必要本地专项实现并进入本次提交；第八377不覆盖这批最新源码，最终整体验收与新镜像仍待执行；042此前已单独进入main，不能勾全部F/P2验收完成。
 
 第七main `fa3e82873d9b9e3cb1b139fbea3db9c742995a48` 的318（84+234）/20为历史分阶段验收，不是单次shared EXIT0，见 [VALIDATION_SEVENTH.md](VALIDATION_SEVENTH.md)。第五272/19、第六289/20各自阶段不相加；第五production镜像c61030b4不覆盖本批。最新Docker生命周期仍须新的源/镜像校验及真实运行。
 
@@ -695,9 +697,9 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 | 目标 | 当前状态 | 尚需完成/证明 |
 |---|---|---|
 | F60可验证问数trace/chart/历史问题 | 已生产接线，033精确多目标/035持久预算/040失效纳入第八377+20；f66f增强多轮发送前失效检查 | 新044CH事实读取接线及最新镜像尚待当前工作树全量；真实模型质量未测，不重列既有PG问数为骨架 |
-| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 新043–047CH正文删除/restore/latest-journal完整runtime仍在制，需最终源/镜像统一验收；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
+| F46删除AI派生证据与历史答案 | 已纳第八compiled应用377+20；通知旧body清除、预算保留已有实际回归 | 新043–048CH正文删除/restore/latest-journal完整runtime仍在制，需最终源/镜像统一验收；保留旧失败及修复专项，不把第六pre-deletefix计数当新hooks验收 |
 | 规模/bounded-session planner | 在制 | 集中大站/持续采集查询删写、真实RSS/lag/失败；不能用旧1M背景关闭顺序worker当生产SLO |
-| P2-01 CH canonical迁移 | 部分，036/038/039/041/043–047仅WIP，main激活guard仍false | 047剩余正文及session/facts/carry迁出、全面生产读写/精准删除/保留/恢复接线、最终同源全集/镜像、集群灾备和持续容量；readytrue临时变体实际验收不等于main激活，已有incremental/history闭环不重复列未实现 |
+| P2-01 CH canonical迁移 | 部分，036/038/039/041/043–048仅WIP，main激活guard仍false | 047剩余正文及session/facts/carry迁出、全面生产读写/精准删除/保留/恢复接线、最终同源全集/镜像、集群灾备和持续容量；readytrue临时变体实际验收不等于main激活，已有incremental/history闭环不重复列未实现 |
 | F44 P1标准MCP server | 已实现默认注册，官方SDK定向及第七compiled应用验收 | 最新镜像、其他桌面客户端与后两声明协议版未单独测 |
 | F52百度官方接口与手动导入 | 官方普通站长公开读取未证实，官方连接器未实现；042自定义模板/列映射已main5b402dd独立11+1验收 | 官方API/授权/数据字典及当前百度原生CSV样本仍待明确；手动导入不替代官方目标、不称原生兼容，旧CONNECT403记录保留 |
 | F11/F48/F51/F54/F63、通知/企业SSO/商业AI | 安全连接器本地验收，真实外部未测 | Google/MaxMind/SERP/SMTP/企业WeCom/Server酱等实际账号/许可/交付；不购买或创建生产凭据 |
@@ -721,3 +723,17 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 第七分阶段结果更新（root确认，SHA已保存fa3e828）：frozen /tmp/baize-seventh-final.1kMovb 的84unit+234integration=318PASS，compiled入口/build/type/lint通过；复用已通过318后correctenv freshschema20E2E=18浏览器+2date PASS50.8s。sharedregular原命令EXIT1缺浏览器路径，resumed首次18PASS2FAIL因未export TEST_DATABASE_URL，均保留，不描述为单次sharedregularEXIT0。033/034/035及A4/C4是下一批工作树定向切片，不属于该318/20或本次main交付。
 
 第七已保存main里程碑：`fa3e82873d9b9e3cb1b139fbea3db9c742995a48`（root已推送，当前只读git log核验）。对应root上述分阶段318PASS+correctenv20PASS，不表示单次sharedregular EXIT0；037回放保留/proof及033/034/035/036/040等后续工作树切片不提前算入该提交或上述计数。
+
+#### 048缓存隐私与站点导出定向闭环（工作树，等待统一源全量）
+
+| 范围 | 当前实际结果 | 仍不可外推的边界 |
+| --- | --- | --- |
+| 048个人删除及changedfalse journal重放 | C真实strict native 1PASS/0skip；全部CH缓存attempt物理0、PG owner/pointer0，B worker仍PV3/UV1/coverage1 | 新独立目标operator restore与root统一冻结应用/浏览器/镜像另行验收；生产guard未放松 |
+| strict小时/日fullsite facts导出 | 从认证published effects派生hour/站点日历日键，44/47精确投影；C native导出PV3、无A，空PG兼容槽不当零 | 不能相加桶UV；未知legacy范围仍coverage0，单表100k上限不变 |
+| page_vitals导出 | 真实collector21样本→发布→sameclient cursor/TEMP读取，2×100+19×500原加权centroids/sample_count通过 | 此不等样本专项为PG链路；不把它说成C native fixture已含同一组vitals或外部账号验收 |
+| legacy热图隐私负覆盖 | 实际C native保留negative flag；export JSON省略表（没有[]假零），manifest coverage0/reason | 不能借当前V2显示隐藏已删除旧正文；不可恢复旧baseline不宣称完整、无需购买账号但仍有范围限制 |
+| 048 standalone适配 | 原owner/producer seal、zero markers、pointer/coverage/negative metadata；独立PG/CH adapter定向通过 | signed outer包/最新journal完整目标恢复须F/B结果，adapter测试不能替代operator入口 |
+
+源码边界与所有初次失败/修复证据见[ACCEPTANCE_CANONICAL_GOVERNANCE.md](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。本节不增加第八377+20全量计数；/tmp/baize-cache-privacy-closed.json及快照SHA manifest为新定向证据，等待root新同源全套。
+
+本轮最终冻结前补记：pre-014 未受控 daily 明细的未知拓扑不制造038/041证明；旧安全report/export保留及当前native collector正常已有专项，不能概括为所有旧PG停用。043–048最新全树/完整同源总数尚未验收，guard仍false。048已认证V2 hour/day精确重建小专项通过，独立strict restore最后控制行readiness仍复验，未知legacy/非零heatmap负coverage不清除。CNB自动同步、触发、定时均暂停；上述历史托管成功/失败记录保留，未执行本轮新托管，不以暂停状态假称当前通过。

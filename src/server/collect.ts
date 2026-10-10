@@ -1,4 +1,5 @@
-import {ApplicationError} from '../shared/error-codes.js';
+import {replayPayloadHash} from './replay-hash.js';
+import {sanitizeDailyPayload,sanitizeDailyDimensions} from './daily-privacy-policy.js';
 import {siteAllowsOrigin} from './site-hosts.js';
 import type { FastifyInstance } from 'fastify';
 import type { AppContext } from './context.js';
@@ -8,11 +9,13 @@ import { HttpError,anonymizeIP,matchesCIDR,visitorHash,canonical,hashToken,daySc
 import { createHash,createHmac,randomUUID,timingSafeEqual } from 'node:crypto';
 import {sanitizePrivacyProps} from '../../packages/tracker/src/privacy.js';
 import {checkIdentity,registerIdentity} from './identity.js';
-import { ingestGovernance } from './governance.js';
+import { ingestGovernance,replayIsMasked } from './governance.js';
 import {eventDimensions as dimensions} from './dimensions.js';
 import {createBotFilter} from './bot-filter.js';
-import {resolveCanonicalIngest,publishCanonicalIngest} from './canonical-ingest.js';
-import type {CanonicalInput} from './canonical-clickhouse.js';
+import {resolveCanonicalIngest,publishCanonicalIngest,verifyCanonicalRetryReceipt} from './canonical-ingest.js';
+import {recordControlledEventProvenance} from './canonical-shadow-provenance.js';
+import type {StoredEvent} from './clickhouse-store.js';
+import {normalizeCanonicalEvent,type CanonicalInput} from './canonical-clickhouse.js';
 export {dimensions};
 function cleanEvent(event:WireEvent,ip:string,privacy=false){
   const out={...event};const url=new URL(event.url);url.search='';url.hash='';out.url=url.toString();
@@ -52,12 +55,10 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       const canonicalTarget=await resolveCanonicalIngest(ctx.pool,client,site.id);
       const canonicalInput:CanonicalInput[]=[];
       let changed=false;
+      const verifyReceipt=async(eventId:string)=>{if(canonicalTarget&&!canonicalInput.some(input=>input.event.event_id===eventId))await verifyCanonicalRetryReceipt(client,site.id,canonicalTarget,eventId);};
       for(const [index,rawEvent] of envelope.events.entries()){
         const parsed=eventSchema.safeParse(rawEvent);if(!parsed.success){rejected.push({index,event_id:(rawEvent as any)?.event_id,reason:'invalid_event'});continue;}
         const wire=parsed.data;
-        // Replay still depends on PG raw chunk storage; identity uses its metadata
-        // ledger and canonical readers project temporal ownership without body mutation.
-        if(canonicalTarget&&wire.type==='replay')throw new ApplicationError('canonical_unavailable');
         if(site.privacy_mode==='daily_salt'&&wire.type==='identify'){rejected.push({index,event_id:wire.event_id,reason:'identify_unsupported_in_daily_salt'});continue;}
         if(wire.ts>Date.now()+86400000){rejected.push({index,event_id:wire.event_id,reason:'future_event'});continue;}
         if(wire.ts<Date.now()-Number(site.retention_days)*86400000){rejected.push({index,event_id:wire.event_id,reason:'outside_retention'});continue;}
@@ -69,7 +70,13 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         // Hash the unmodified validated wire event, not server-derived dimensions/IP. Retry identity is stable.
         const hash=createHash('sha256').update(canonical(wire)).digest('hex');
         const orderHash=wire.type==='revenue'?visitorHash(site.salt_secret,site.privacy_mode==='daily_salt'?`order:${day}`:'order',wire.order_id!,''):undefined;
-        const existing=await client.query('SELECT hash FROM event_keys WHERE site_id=$1 AND event_id=$2',[site.id,wire.event_id]);if(existing.rowCount){if(existing.rows[0].hash!==hash)rejected.push({index,event_id:wire.event_id,reason:'event_id_conflict'});else{if(canonicalTarget){const receipt=await client.query('SELECT 1 FROM canonical_event_members m JOIN canonical_event_batches b USING(site_id,batch_id) WHERE m.site_id=$1 AND m.event_id=$2 AND b.epoch=$6::uuid UNION ALL SELECT 1 FROM revenue_orders WHERE site_id=$1 AND order_hash=$3 AND currency=$4 AND amount=$5::numeric',[site.id,wire.event_id,orderHash??null,wire.currency??null,wire.revenue??null,canonicalTarget.epoch]);if(!receipt.rowCount)throw new ApplicationError('canonical_unavailable');}duplicates++;accepted++;}continue;}
+        const existing=await client.query('SELECT hash FROM event_keys WHERE site_id=$1 AND event_id=$2',[site.id,wire.event_id]);if(existing.rowCount){if(existing.rows[0].hash!==hash)rejected.push({index,event_id:wire.event_id,reason:'event_id_conflict'});else{if(canonicalTarget){const replayReceipt=wire.type==='replay'?await client.query('SELECT event_id FROM replay_chunk_keys WHERE site_id=$1 AND visitor_id=$2 AND page_id=$3 AND seq=$4',[site.id,visitor,site.privacy_mode==='daily_salt'?dayScopedPageId(site.salt_secret,day,wire.page_id):wire.page_id,wire.replay_seq??0]):null;const orderReceipt=orderHash?await client.query('SELECT event_id FROM revenue_orders WHERE site_id=$1 AND order_hash=$2 AND currency=$3 AND amount=$4::numeric',[site.id,orderHash,wire.currency,wire.revenue]):null;await verifyReceipt(replayReceipt?.rows[0]?.event_id??orderReceipt?.rows[0]?.event_id??wire.event_id);}duplicates++;accepted++;}continue;}
+        if(canonicalTarget&&wire.type==='replay'){
+          if(!replayIsMasked(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'unmasked_replay'});continue;}
+          const replayPage=site.privacy_mode==='daily_salt'?dayScopedPageId(site.salt_secret,day,wire.page_id):wire.page_id;
+          const previous=await client.query('SELECT event_id,payload_hash FROM replay_chunk_keys WHERE site_id=$1 AND visitor_id=$2 AND page_id=$3 AND seq=$4',[site.id,visitor,replayPage,wire.replay_seq??0]);
+          if(previous.rowCount){if(previous.rows[0].payload_hash!==replayPayloadHash(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'replay_sequence_conflict'});continue;}await verifyReceipt(previous.rows[0].event_id);await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);duplicates++;accepted++;continue;}
+        }
         if(orderHash){
           const order=await client.query('SELECT currency,amount=$3::numeric AS same_amount FROM revenue_orders WHERE site_id=$1 AND order_hash=$2',[site.id,orderHash,String(wire.revenue)]);
           if(order.rowCount){
@@ -79,18 +86,19 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
           }
         }
         if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=await checkIdentity(client,site.id,visitor,wire.ts,userId??null);if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
-        const clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
+        let clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
         if(site.privacy_mode==='daily_salt')clean.page_id=dayScopedPageId(site.salt_secret,day,wire.page_id);
-        const metadata={...dimensions(ua,wire,geo,site.config,ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
+        let metadata={...dimensions(ua,wire,geo,site.config,ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
+        if(site.privacy_mode==='daily_salt'){clean=sanitizeDailyPayload(clean,{visitorId:visitor,pageId:clean.page_id});metadata=sanitizeDailyDimensions(metadata);}
         // Replay is revalidated by the governance module before raw JSON can be retained.
         if(wire.type==='replay'){
-          const { replayIsMasked }=await import('./governance.js');if(!replayIsMasked(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'unmasked_replay'});continue;}
+          if(!replayIsMasked(wire.replay)){rejected.push({index,event_id:wire.event_id,reason:'unmasked_replay'});continue;}
         }
         await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);
-        if(canonicalTarget)canonicalInput.push({acceptedHash:hash,event:{site_id:site.id,event_id:wire.event_id,ts:new Date(wire.ts),visitor_id:visitor,page_id:clean.page_id,type:wire.type,path:wire.path,payload:clean,dimensions:Object.fromEntries(Object.entries(metadata).filter((entry):entry is [string,string]=>typeof entry[1]==='string')),is_bot:false}});
-        else await client.query('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[site.id,wire.event_id,new Date(wire.ts),visitor,clean.page_id,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(metadata)]);
+        if(canonicalTarget){const event=normalizeCanonicalEvent({site_id:site.id,event_id:wire.event_id,ts:new Date(wire.ts),visitor_id:visitor,page_id:clean.page_id,type:wire.type,path:wire.path,payload:clean,dimensions:Object.fromEntries(Object.entries(metadata).filter((entry):entry is [string,string]=>typeof entry[1]==='string')),is_bot:false});canonicalInput.push({acceptedHash:hash,event});await recordControlledEventProvenance(client,site,event,{ip,ua,wirePageId:wire.page_id});}
+        else {const inserted=await client.query('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions,is_bot',[site.id,wire.event_id,new Date(wire.ts),visitor,clean.page_id,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(metadata)]);await recordControlledEventProvenance(client,site,inserted.rows[0] as StoredEvent,{ip,ua,wirePageId:wire.page_id});}
         if(orderHash)await client.query('INSERT INTO revenue_orders(site_id,order_hash,visitor_id,event_id,ts,currency,amount,privacy_mode,order_day) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[site.id,orderHash,visitor,wire.event_id,new Date(wire.ts),wire.currency,String(wire.revenue),site.privacy_mode,site.privacy_mode==='daily_salt'?day:null]);
-        await ingestGovernance(client,site,clean as unknown as Record<string,unknown>,visitor);
+        await ingestGovernance(client,site,clean as unknown as Record<string,unknown>,visitor,{canonical:Boolean(canonicalTarget)});
         if(!canonicalTarget)for(const [key,value] of Object.entries(clean.props??{}))await client.query('INSERT INTO event_data(site_id,event_id,ts,data_key,data_type,string_value,number_value,boolean_value) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[site.id,wire.event_id,new Date(wire.ts),key,typeof value==='string'?'s':typeof value==='number'?'n':'b',typeof value==='string'?value:null,typeof value==='number'?value:null,typeof value==='boolean'?value:null]);
         // Identity projection updates happen only on event-time identify transitions.
         await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id) VALUES($1,$2,$3,$4)',[site.id,wire.event_id,new Date(wire.ts),visitor]);changed=true;accepted++;

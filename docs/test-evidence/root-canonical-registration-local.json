@@ -1,0 +1,33 @@
+{
+  "scope": "mutable WIP application registry and existing operations/header orphan regression",
+  "base_main": "f017f8d",
+  "immutable_snapshot": false,
+  "checks": {
+    "types": "EXIT0",
+    "owned_lint": "EXIT0"
+  },
+  "actual_pg_ch": {
+    "files": [
+      "canonical-operations-api.test.ts",
+      "session-header-orphans.test.ts"
+    ],
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "runner_seconds": 2.66
+  },
+  "initial_non_acceptance": "Wrong TEST_CLICKHOUSE_URL variable produced 2 skipped/zero executed; corrected CLICKHOUSE_TEST_URL and reran actual PG/CH",
+  "source_sha256_at_record": {
+    "src/server/app.ts": "2dd5d39ed7d407e24ee86562bda6fc1b81d905d4e536bd269593cbcd8563271e",
+    "src/server/canonical-clickhouse.ts": "c3564bcc6c9d4a9021b6a686ae7f7281f9fb7d1ff78babf52d22f6dc3d9056e6",
+    "src/server/canonical-migration.ts": "43e50e2ef0dc3abe32644a6b645d8ae0e3957f84bb6ccb180abe2e329894ee29",
+    "src/server/session-header-store.ts": "99acdd0b23cabf4f0dcc03c28e1b8d8b1988d700dabb7558752c3ff3f6d0ccd8",
+    "src/server/fact-store-maintenance.ts": "a71b300fadb3a069804304d6a4843bde349771c39815cd0f8f9706f778092643"
+  },
+  "not_run": [
+    "whole current WIP integration",
+    "final Docker",
+    "hosted CI"
+  ],
+  "activation_ready": false
+}

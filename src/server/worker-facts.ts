@@ -1,3 +1,17 @@
+import {getCacheStore} from './cache-store.js';
+import {preserveStrictPublicationStaging} from './strict-fact-staging.js';
+import {prepareRemainingFactReadSource} from './remaining-fact-source.js';
+import {getRemainingFactStore} from './remaining-fact-store.js';
+import {publishRemainingFactBodies} from './remaining-fact-publication.js';
+import {getFactStore} from './fact-store.js';
+import {publishRunFactBodies} from './fact-store-publication.js';
+import {prepareFactReadSource} from './fact-store-source.js';
+import {bindFactReadRelations,factReadRelations} from './fact-read-context.js';
+import {assertRebuildHeaderCoverage,copyRebuiltImmutableEvidence} from './session-event-headers.js';
+import {getSessionHeaderStore} from './session-header-store.js';
+import {publishRunHeaders,copyClickHousePrefixHeaders} from './session-header-publication.js';
+import {streamSelectedHeaders} from './session-header-source.js';
+import {stageRetirementPrefixes} from './session-prefix-retirement.js';
 import {Client,type Pool,type PoolClient} from 'pg';
 import {beginPartitionSnapshot} from './db.js';
 import {sessionTimeoutMs,type GoalDefinition,type FunnelDefinition} from './analytics.js';
@@ -22,7 +36,7 @@ export async function rebuildSiteFacts(pool:Pool,claim:Claim,hooks:WorkerFactHoo
  const renew=()=>renewer.query("UPDATE aggregation_state SET lease_until=clock_timestamp()+($4::int*interval '1 second') WHERE site_id=$1 AND epoch=$2 AND lease_owner=$3 AND lease_until>clock_timestamp()",[claim.site_id,claim.epoch,claim.lease_owner,leaseSeconds]);
  if(!(await renew()).rowCount)return false;
  heartbeat=setInterval(()=>{if(renewal)return;renewal=renew().catch(()=>{}).finally(()=>{renewal=undefined;});},intervalMs);heartbeat.unref();
- const source=await pool.connect();try{
+ const source=await pool.connect();let releaseFactSource:(()=>void)|undefined;let cleanupFactSource:(()=>Promise<void>)|undefined;try{
  await beginPartitionSnapshot(source);
  const state=(await source.query('SELECT generation::text,epoch::text,lease_owner::text FROM aggregation_state WHERE site_id=$1',[claim.site_id])).rows[0];
  if(!state||state.epoch!==claim.epoch||state.lease_owner!==claim.lease_owner){await source.query('ROLLBACK');return false;}
@@ -33,12 +47,40 @@ export async function rebuildSiteFacts(pool:Pool,claim:Claim,hooks:WorkerFactHoo
  const funnels=(await source.query('SELECT * FROM funnels WHERE site_id=$1',[claim.site_id])).rows as (FunnelDefinition&{name:string})[];
  new Intl.DateTimeFormat('en',{timeZone:String(site.timezone)}).format(0);
  const retainedFrom=new Date(Date.now()-Number(site.retention_days)*86400000),timezone=String(site.timezone),privacy=site.privacy_mode!=='standard';
+ const strict=(await source.query("SELECT body_mode='strict' strict FROM canonical_event_authority WHERE site_id=$1",[claim.site_id])).rows[0]?.strict===true;
  const sourceState=await captureEventReadState(pool,claim.site_id,{client:source});
+ const factStore=sourceState.authority==='clickhouse'?getFactStore(pool):undefined;
+ const remainingStore=sourceState.authority==='clickhouse'?getRemainingFactStore(pool):undefined;
+ const cacheStore=sourceState.authority==='clickhouse'?getCacheStore(pool):undefined;
+ const headerStore=sourceState.authority==='clickhouse'?getSessionHeaderStore(pool):undefined;
+ if(strict&&(!factStore||!remainingStore||!headerStore||!cacheStore))throw Error('FACT_STRICT_STORE_REQUIRED');
+ if(sourceState.authority==='clickhouse'&&!headerStore)throw Error('SESSION_HEADER_STORE_REQUIRED');
+ const verifyHeaderFence=async()=>{const live=(await renewer.query('SELECT a.epoch::text,a.lease_owner::text,a.lease_until>clock_timestamp() AS leased,c.authority,c.epoch::text AS canonical_epoch,c.deletion_epoch::text FROM aggregation_state a LEFT JOIN canonical_event_authority c ON c.site_id=a.site_id WHERE a.site_id=$1',[claim.site_id])).rows[0];if(!live||live.epoch!==claim.epoch||live.lease_owner!==claim.lease_owner||!live.leased||live.authority!=='clickhouse'||live.canonical_epoch!==sourceState.canonicalEpoch||live.deletion_epoch!==sourceState.deletionEpoch)throw Error('FACT_PUBLICATION_FENCE');};
+ const hasPublished=Boolean((await source.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND query_version=2 AND status='published' LIMIT 1",[claim.site_id])).rowCount);
+ if(factStore&&hasPublished){const readSource=await prepareFactReadSource(source,pool,claim.site_id,{forRebuild:true,forAuthorityTransition:true});releaseFactSource=bindFactReadRelations(source,readSource);cleanupFactSource=readSource.cleanup;}
+ if(remainingStore&&hasPublished){const remainingSource=await prepareRemainingFactReadSource(source,pool,claim.site_id,{forRebuild:true,forAuthorityTransition:true});const restore=bindFactReadRelations(source,{...remainingSource,effectsRelation:factReadRelations(source).effectsRelation,vitalsRelation:factReadRelations(source).vitalsRelation});const priorRelease=releaseFactSource,priorCleanup=cleanupFactSource;releaseFactSource=()=>{restore();priorRelease?.();};cleanupFactSource=async()=>{await remainingSource.cleanup();await priorCleanup?.();};}
+ // The first 036 build of an existing 033 site must bootstrap from every still
+ // available source row. An older V2 run alone is not evidence of a complete prefix.
+ const hasCarryBaseline=hasPublished&&Boolean((await source.query('SELECT 1 FROM analytics_session_contribution_heads WHERE site_id=$1 LIMIT 1',[claim.site_id])).rowCount);
+ // Newly accepted pre-cutoff events change the prefix itself. A published
+ // prefix cannot supply their immutable contributions: rebuild from bounded
+ // authenticated topology plus actual source rows instead of guessing a window.
+ const latePrefix=hasCarryBaseline&&Boolean((await source.query("SELECT 1 FROM outbox WHERE site_id=$1 AND id<=$2 AND status='queued' AND ts<$3 LIMIT 1",[claim.site_id,high,retainedFrom])).rowCount);
+ const recover=latePrefix||Boolean((await source.query('SELECT 1 FROM analytics_session_rebuild_requests WHERE site_id=$1 LIMIT 1',[claim.site_id])).rowCount);
+ if(recover)await assertRebuildHeaderCoverage(source,claim.site_id,{allSelected:latePrefix});
+ const prefixSource=async function*(){for await(const batch of streamSiteEventBatches(pool,claim.site_id,{client:source,to:retainedFrom}))yield batch.events;for await(const events of streamSelectedHeaders(source,pool,claim.site_id))yield events;};
  await hooks.afterSourceStarted?.(source);
- run=await buildSessionFacts(source,{siteId:claim.site_id,epoch:claim.epoch,generation:claim.generation,outboxHighWatermark:high,sourceAuthority:sourceState.authority??'postgres',canonicalEpoch:sourceState.canonicalEpoch,canonicalDeletionEpoch:sourceState.deletionEpoch},{timezone,privacy,timeoutMs:sessionTimeoutMs(site.config),goals,funnels,effects:createFactEffectSink(source,retainedFrom)},(async function*(){for await(const batch of streamSiteEventBatches(pool,claim.site_id,{client:source,from:retainedFrom}))yield batch.events;})());
+ run=await buildSessionFacts(source,{siteId:claim.site_id,epoch:claim.epoch,generation:claim.generation,outboxHighWatermark:high,sourceAuthority:sourceState.authority??'postgres',canonicalEpoch:sourceState.canonicalEpoch,canonicalDeletionEpoch:sourceState.deletionEpoch},{timezone,privacy,timeoutMs:sessionTimeoutMs(site.config),goals,funnels,sessionPrefixes:hasCarryBaseline&&!recover,afterPrefixCopy:headerStore?(id,session,boundary)=>copyClickHousePrefixHeaders(source,headerStore,claim.site_id,id,session,boundary):undefined,effects:createFactEffectSink(source,retainedFrom),beforeSource:async id=>{await stageRetirementPrefixes(source,pool,claim.site_id,retainedFrom,{runId:id,source:prefixSource(),resetSeeds:recover});}},(async function*(){for await(const batch of streamSiteEventBatches(pool,claim.site_id,{client:source,...(hasCarryBaseline&&!recover?{from:retainedFrom}:{})}))yield batch.events;if(recover)for await(const events of streamSelectedHeaders(source,pool,claim.site_id))yield events;})());
+ if(recover)await copyRebuiltImmutableEvidence(source,claim.site_id,run);
+ if(headerStore)await publishRunHeaders(source,headerStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
+ if(factStore)await publishRunFactBodies(source,factStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
+ if(remainingStore)await publishRemainingFactBodies(source,remainingStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence},headerStore);
+ if(strict&&cacheStore)await cacheStore.completeOwnerKind(source,claim.site_id,run,'legacy_centroid',0,{expectedAggregationEpoch:claim.epoch,expectedGeneration:claim.generation,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
  options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels};
+ const publicationStaging=strict?await preserveStrictPublicationStaging(source,claim.site_id,run):undefined;
  await source.query('COMMIT');
- }catch(error){await source.query('ROLLBACK');throw error;}finally{source.release();}
+ if(publicationStaging){releaseFactSource?.();releaseFactSource=undefined;const restore=bindFactReadRelations(source,publicationStaging.relations);try{await hooks.afterSnapshot?.();await source.query('BEGIN');await publishSessionFacts(source,options);await source.query('COMMIT');return true;}catch(error){await source.query('ROLLBACK');throw error;}finally{restore();await publicationStaging.cleanup();}}
+ }catch(error){await source.query('ROLLBACK');throw error;}finally{releaseFactSource?.();await cleanupFactSource?.().catch(()=>{});source.release();}
  await hooks.afterSnapshot?.();
  const publisher=await pool.connect();try{
  await publisher.query('BEGIN');await publishSessionFacts(publisher,options!);await publisher.query('COMMIT');return true;

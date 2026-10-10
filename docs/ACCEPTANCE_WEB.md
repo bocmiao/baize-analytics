@@ -145,3 +145,19 @@ D 增补复核（独立专项）：所有 main 删除确认入口均使用完整
 实际单独 Chromium + 新 PG schema 验收：同一真实采集会话触发两个真实目标，两个完成仍为 1/1=100.00%（非 200%）；真实模型出站 fixture 只提供工具调用与文字，数值来自真实 worker/typed SQL。每日盐新站点真实采集后，跨日 UV 工具实际返回 unsupported，API 502，UI 无模型回答/证据图；原用户和模型中文不自动翻译。该单项 1/1 通过（测试 6.9 秒，runner 8.9 秒）。首运行因新创建站点测试误期待 200 而收到实际 201 失败（5.0 秒），修正为精确生产 201 契约后重跑通过，不改变统计断言或生产接口。
 
 Vite、类型和所属 lint 通过。未重跑旧全套/未启动 Docker；旧 archive 无群组由后端专项证明，本次未另造真实历史实例升级浏览器验收；模型仅显式本地 transport 模拟，不代表商用账户或真实模型推理验收。
+
+### F52 自定义手动搜索聚合模板（本地切片，不代表百度官方能力）
+
+新增独立自定义CSV入口位于SEO页，具备用户来源说明、真实文件上传、六列精确表头映射、服务器完整校验/20行预览、确认时服务器重新解析、独立批次幂等保存、读取与公式安全CSV下载。字段不写GSC/采集统计、跨批次不自动求和或覆盖日期；页面及文档始终声明非百度原生CSV、非官方读取API、未经provider核验。空白模板及中英操作手册见 MANUAL_SEARCH_IMPORT.md / .en.md。每文件解码5MiB/100k行，JSON另限32MiB，页面URL exacthostname并去查询/片段；类型、日期、数值、引用和CSV转义严格校验。
+
+实际4单元通过（含byte/rowcap与Unicode空白/换行公式防护）；3独立schema真实PG集成通过（原文件reparse/非法输入拒绝/批次幂等/相邻日期追加/审计/站点隔离；真实邀请reader只读200、preview/commit/download403）。单独Chromium新浏览器项1/1通过，2.1秒/runner4.0秒：真实文件上传与中文列映射、预览、导入、详情、实际安全CSV响应、重复提交仅一个批次，GSC/events行数仍0。无UI mock、外部providertransport或SQL预设统计。首轮setup状态误期待201实际200失败0.664秒，精确改为真实200后重跑，通过且未修改生产状态/断言。类型、所属lint、Vite和diffcheck通过；大静态块警告保留。
+
+这是独立本地源码专项，不预写不可变main全量通过。未验证真实百度账号/API或原生导出CSV；未重跑旧浏览器全套/未开Docker、未Git或CNB。手动表已补入整站facts JSON/CSV白名单，真实max1 PG证明两表完整按站点/批次隔离读取；仍明确全PG备份与该导出不同。用户上传词与页面仍可能含敏感内容，去URL查询参数不等于匿名保证。
+
+### 严格正文存储 UI 路径（不可变本地变体专项通过）
+
+仅补现有看板的本次查询来源说明，读取后端明确的 `storage.rollups` / `storage.source`；固定 postgres/clickhouse/hybrid 标签中英本地化，未知值为“—”，不猜测站点所有数据均为 CH。产品说明明确缺权威正文导致请求失败、不能计为零。来源字典原型键与固定错误词典两个单元文件合计 5 项通过；V2 后端现从同 client 已绑定的真实 factReadRelations 返回 postgres/clickhouse/hybrid；旧 analytics PG fallback 不代表严格 V2 路径。实际 Chromium 专项已核验来源为 ClickHouse 与真实 2PV。
+
+`tests/e2e/strict-storage.spec.ts` 为明确 `E2E_STRICT_FACTS=1` 不可变 guard-enabled 变体准备，默认不将该变体计为通过。新独立schema/原生应用/真实 CH，真实 shadow/verify/public activate、043/044/047闭包迁移、048缓存迁移、四类签名备份、私有opaque备份证明核验与严格模式激活，然后继续真实采集/worker；检查 PG 正文零持久化及看板 2PV/1UV/coverage1。之后真实物理移除测试站点已发布权威正文，要求 API 错误且旧指标与来源清空，不能 mock UI 响应或生造 SQL 严格位。此专项实际 1/1 通过，测试 6.3 秒 / runner 10.7 秒；不可变当前 main+WIP 副本 `/tmp/baize-strict-browser-plz_wirm`，源码 SHA256 清单及 sole-readiness-diff 清单保留，结果 `STRICT_BROWSER_RESULT.json`。主源码 readiness=false 不变。这不是已提交 SHA 的全量发行验收，类型/所属 lint 已通过，未增加全套/容器/Git/CNB执行。
+
+首次夹具错误使用本地应用 Origin 采集被真实站点限制 403（1.1 秒），改为实际追踪域名 Origin 后继续；第二次故意丢正文真实接口正确返回 503，而测试错期待 500（11.1 秒），改为精确 503 与固定英文错误契约后通过。两份失败不可变 trace 保留，不改变生产限制或统计断言。错误后旧指标/来源说明为空，无假零显示，中文切换后仍有可访问错误状态。

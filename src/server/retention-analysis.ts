@@ -1,3 +1,6 @@
+import {beginPartitionSnapshot} from './db.js';
+import {withFactReadSource} from './fact-store-source.js';
+import {factReadSql} from './fact-read-context.js';
 import {publishedMemberSource} from './fact-member-query.js';
 import type {PoolClient} from 'pg';
 import type {AppContext} from './context.js';
@@ -7,7 +10,11 @@ export interface RetentionObservation {returned:number|null;rate:number|null;sta
 export interface RetentionCohort {size:number;days:Record<string,number|null>;observations:Record<string,RetentionObservation>}
 /** Exact calendar-day retention. Incomplete observations are unavailable, never zero. */
 export async function queryRetention(ctx:Pick<AppContext,'pool'>,siteId:string,from:string,to:string,filters:Record<string,unknown>={},options:{client?:PoolClient}={}) {
- const db=options.client??ctx.pool;
+ if(options.client)return withFactReadSource(options.client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client:options.client!}));
+ const client=await ctx.pool.connect();try{await beginPartitionSnapshot(client);const result=await withFactReadSource(client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client}));await client.query('COMMIT');return result;}catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+}
+async function queryRetentionRead(ctx:Pick<AppContext,'pool'>,siteId:string,from:string,to:string,filters:Record<string,unknown>,options:{client:PoolClient}) {
+ const db=options.client;
  const requestedFrom=+new Date(from),requestedTo=+new Date(to),now=Date.now();
  if(!Number.isFinite(requestedFrom)||!Number.isFinite(requestedTo)||requestedFrom>=requestedTo)throw Object.assign(new Error('invalid_retention_range'),{statusCode:400});
  const site=(await db.query('SELECT timezone,privacy_mode,retention_days FROM sites WHERE id=$1',[siteId])).rows[0];
@@ -30,7 +37,7 @@ export async function queryRetention(ctx:Pick<AppContext,'pool'>,siteId:string,f
  const relational=((await db.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' AND query_version=2 LIMIT 1",[siteId])).rowCount??0)>0;
  const archiveReturns=new Map<string,number>();
  if(relational){const source=publishedMemberSource(siteId,from,new Date(effectiveTo).toISOString());const first=source.values.length+1,last=first+1,zone=last+1;
-  const counts=(await db.query(`SELECT f.first_date::text AS cohort_day,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)::int AS n,count(DISTINCT e.visitor_id)::int AS returned FROM (${source.sql}) e JOIN visitor_first_seen f ON f.site_id=$1 AND f.visitor_id=e.visitor_id WHERE e.metric='visitors' AND f.first_date BETWEEN $${first}::date AND $${last}::date AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts) GROUP BY f.first_date,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)`,[...source.values,calendar.first_day,calendar.last_day,site.timezone])).rows;
+  const counts=(await db.query(`SELECT f.first_date::text AS cohort_day,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)::int AS n,count(DISTINCT e.visitor_id)::int AS returned FROM (${factReadSql(db,source.sql)}) e JOIN visitor_first_seen f ON f.site_id=$1 AND f.visitor_id=e.visitor_id WHERE e.metric='visitors' AND f.first_date BETWEEN $${first}::date AND $${last}::date AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=f.site_id AND t.visitor_id=f.visitor_id AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts) GROUP BY f.first_date,((e.event_ts AT TIME ZONE $${zone})::date-f.first_date)`,[...source.values,calendar.first_day,calendar.last_day,site.timezone])).rows;
   for(const row of counts)archiveReturns.set(JSON.stringify([row.cohort_day,String(row.n)]),Number(row.returned));
  }
  const deletedSegments=(await db.query('SELECT visitor_id,started_at,ended_at FROM identity_tombstones WHERE site_id=$1 AND started_at<$3 AND ended_at>$2',[siteId,from,new Date(effectiveTo)])).rows;

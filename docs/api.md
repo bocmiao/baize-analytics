@@ -185,7 +185,7 @@ AI配置settings `{endpoint,model,enabled,monthlyTokenBudget,maxTokens?,localOri
 
 POST E/ai `{purpose:"question",question:≤2000字符,start,end}`（最多31个包含端点日历日）返回id/answer/tokens/evidence与questionEvidence。GET E/ai/questions/:callId返回id/status/answer/questionEvidence/tokens/createdAt/evidenceStatus（verified-tool-trace、legacy-unverified、not-completed）；失败/预留任务没有可验证answer/evidence。
 
-questionEvidence保存已授权query_analytics工具trace与确定性charts；query包含metric(pv/uv/sessions/conversions/conversion_rate)、dimension(day/page/source/device)、start/end、limit1–100、strict filters(source/device/os/page)，不接受SQL/其他site。charts含unit(count/ratio)、points(label,value可null，比例可有numerator/denominator)、truncated/totalGroups/timezone/precision。trace含PG-preaggregate、generation/epoch/watermark/coverage与权限检查时间。没有成功授权工具调用502 external_response_invalid；预算429、未optin409、dirty/stale409 aggregation_pending、权限403。最终版本guard和预算/证据同client原子提交，不能把模型自称“已查数据”当真实查询。
+questionEvidence保存已授权query_analytics工具trace与确定性charts；query包含metric(pv/uv/sessions/conversions/conversion_rate)、dimension(day/page/source/device)、start/end、limit1–100、strict filters(source/device/os/page)，不接受SQL/其他site。charts含unit(count/ratio)、points(label,value可null，比例可有numerator/denominator)、truncated/totalGroups/timezone/precision。trace记录真实所选已发布事实来源postgres、clickhouse或hybrid（由实际owner/完成receipt决定，不能从配置推断），以及generation/epoch/watermark/coverage与权限检查时间。没有成功授权工具调用502 external_response_invalid；预算429、未optin409、dirty/stale409 aggregation_pending、权限403。最终版本guard和预算/证据同client原子提交，不能把模型自称“已查数据”当真实查询。
 
 ## Storage、历史、实例设置 / Storage, history, instance administration
 
@@ -219,11 +219,11 @@ English operational rule: inspect both HTTP status and the stable error code; re
 
 2026-10-10，本地独立PG schema/临时Fastify端口实际执行setup→建站→采集PV及boolean事件→生产worker→同一文档curl统计命令→真实SSE首帧：setup200/site201/collect202 accepted2，curl得到PV1/UV1/coverage1，SSE200，EXIT0，schema/临时密钥已清理，无外部调用、无凭据输出。辅助runner首次.ts因/tmp CJS转换在应用启动前失败，改.mts后实际通过；不将首个未运行当成功。该检查只验证所列本地示例，完整接口/外部账号状态以各验收记录及已安装版本为准。
 
-## 删除AI派生信息：下一批在制 / AI derived-data deletion: pending batch
+## 删除AI派生信息与通知保护
 
-当前应用删除和journal重放路径已接 invalidateSiteAi：保守清除整站AI历史答案、最终工具证据和建议，并撤销相关导出；保留月度预算/计量账本防止删除重置费用。独立真实PG已验证失效与预算保留；新不可变完整compiled-app/镜像验收仍待根线程汇总，不据此声称旧镜像已含这些hooks。
+应用删除和journal重放保守清除整站AI历史答案、最终工具证据和建议，并撤销相关导出；保留月度预算/计量账本防止删除重置费用。main fa3e82873d9b9e3cb1b139fbea3db9c742995a48已包含第七分阶段验证的这条路径，旧镜像须按实际版本核验。
 
-The pending031 change invalidates site-derived AI answers/tool evidence/suggestions and associated exports, while retaining monthly budget/accounting to prevent cost-reset abuse. New physical cleanup hooks require the next immutable acceptance batch; older images must not be described as already enforcing this behavior.
+031与AI派生内容物理清理已纳入main fa3e82873d9b9e3cb1b139fbea3db9c742995a48的第七分阶段验收；删除使相关问数答案、工具证据、建议与旧导出失效，保留预算记账避免费用重置。后续040通知快照清理与dispatch epoch门禁仍属新工作树切片，不能扩大旧镜像/旧验收边界。
 
 ## 百度搜索资源公开可行性 / Baidu public feasibility
 
@@ -235,7 +235,7 @@ As of2026-10-10, official search-analysis product documentation describes clicks
 
 POST `/api/sites/:siteId/mcp` 已在默认应用注册。它提供标准 JSON-RPC2 的 initialize、ping、tools/list、tools/call，不是 HTTP typed-query 的改名；无状态 Streamable HTTP、POST JSON 响应，notification成功202，已鉴权 GET/DELETE 为405并返回 Allow: POST。每请求检查该站点 read 权限，工具读取前与返回前再次检查；提供 Origin 时须精确匹配 PUBLIC_URL。
 
-唯一工具 query_analytics 只接受已授权站点的31个包含端点日历日、最多100分组的 typed 只读聚合，不提供 SQL、其他站点选择器、raw 数据或副作用。成功返回 content 与 structuredContent；工具运行/范围失败返回 MCP isError，权限失败为HTTP401/403。JSON-RPC协议错误用 -32700/-32600/-32601/-32602，不能套用所有普通API的错误JSON。官方 SDK1.32.1 真实HTTP/PG客户端已验证协议2025-11-25；服务声明2025-11-25、2025-06-18、2025-03-26，后两版以及其他桌面客户端不算已测。完整连接样例见[中文MCP](mcp.md)/[English MCP](en/mcp.md)。独立4项通过；默认注册已静态确认，第七完整compiled-app验收仍由根线程汇总，不假定旧镜像包含新入口。
+唯一工具 query_analytics 只接受已授权站点的31个包含端点日历日、最多100分组的 typed 只读聚合，不提供 SQL、其他站点选择器、raw 数据或副作用。成功返回 content 与 structuredContent；工具运行/范围失败返回 MCP isError，权限失败为HTTP401/403。JSON-RPC协议错误用 -32700/-32600/-32601/-32602，不能套用所有普通API的错误JSON。官方 SDK1.32.1 真实HTTP/PG客户端已验证协议2025-11-25；服务声明2025-11-25、2025-06-18、2025-03-26，后两版以及其他桌面客户端不算已测。完整连接样例见[中文MCP](mcp.md)/[English MCP](en/mcp.md)。独立4项通过，默认入口已纳入上述fa3第七分阶段compiled-app验收；不假定旧镜像包含新入口。
 
 当前普通安装仍用 PG 权威。032 canonical adapter、033 normalized facts、034 replay metadata索引及治理权威读取为独立开发切片；整个 canonical activation guard 仍关闭。不要修改数据库 authority 字段或删除PG raw 来绕过保护。已选择canonical的隔离测试中，CH故障返回503 canonical_unavailable，不能回退空PG数据；这不改变可选副本模式允许显式PG fallback的既有契约。
 
@@ -244,8 +244,16 @@ POST `/api/sites/:siteId/mcp` 已在默认应用注册。它提供标准 JSON-RP
 
 新增035 durable AI reservation账本仅保存费用保留/结算状态，无模型正文或visitor FK；删除AI派生内容不能删除该账本而重置费用。站点facts导出排除该内部操作状态（ai_reservations，原因quota-ledger-operational-state），不改变已有ai_budget数字事实策略；PG整库backup自然包含账本。该新增切片的定向与下一完整阶段结果单列，不假定旧镜像已有035。
 
-治理运行期回放保留新增定向实现（工作树，非第七main）：canonical-replay-retention按min(站点保留,30天)的rrweb记录时间执行不可变替换与旧body物理ACK，保留新记录；PG chunk metadata在物理ACK及事务提交前保留为可靠重试指针，故障回滚可恢复已核验replacement孤儿。时间策略清理不是个人删除请求，不伪称已fsync个人journal。每站访客上限10k、每visitor chunk上限10k，超预算失败保留指针而不先删索引。minute治理任务已接线，原生canonical guard仍关闭，新全量与安装迁移验收待下一批。
+### 后续工作树：运行期回放保留与恢复证明
 
-037 replay_retention_jobs新增持久单调cutoff：调度在任何partition/site gate前独立提交，以GREATEST保留已授权清理范围，随后P→site→job获取锁、同client物理清理；失败保存固定错误码与指数退避，不存rrweb正文或伪造个人journal。延长站点保留不能撤销已经授权的旧cutoff。当前工作树真实PG/CH5项回放保留加1项genericretention共6PASS（2.28s），含ACK后回滚→7天改90天→可靠重试；lint/type通过。旧备份恢复必须另核验并保留源最新单调cutoff，不能仅用旧PGsnapshot或个人删除journal声称已覆盖此操作账本；该恢复集成尚待下一批，canonical guard仍关闭。
+037授权账本保存单调cutoff、attempts和退避状态；调度在任何partition/site锁前独立提交，以GREATEST保留已经授权的范围，之后按partition→site→job锁序处理。同连接执行记录级物理清理，canonical混合chunk不可变替换并确认旧body物理删除；PG权威的可选历史归档也保留新记录和合法派生桶。截止时间取站点保留与30天中较短者，延长保留不会撤销已有cutoff；失败保留可靠指针和固定错误码。该时间策略不是个人删除请求，不伪称有个人fsync journal。
 
-最新运行期保留证明已补工作树实现：canonical-replay-retention-proof以稳定v1实例key签名sourceScope/签发时间/完整canonical站点cutoff集合，最多5000站点，默认10分钟有效；独立源调度提交后RR捕获，私有文件fsync。恢复先验证缺失、完整性、签名、来源和时效，再同client GREATEST合并；目标正文发布后须在同一未提交事务执行物理过滤，完成后才允许提交/暴露。真实PG/CH两项专项通过（1.61s）：实际canonical备份文件→独立CH目标与旧PG元数据→源7天改90天仍保留最新7天授权→目标旧记录物理消失且源CH不改。CLI/shell与完整Docker生命周期接线由ops继续，此结果不能冒充完整安装恢复验收或新main。
+恢复证明为version2、scope=canonical-and-history-replay；v1直接拒绝。稳定v1实例key签名sourceScope、签发时间与完整cutoff集合，默认10分钟有效、最多5000站点。范围是active CH权威站点∪published历史raw站点∪既有037授权站点；后者保证当前raw清空也不丢旧备份所需的授权。备份index.retentionSites须一致。恢复先校验签名/来源/时效/完整性，再同连接GREATEST合并；在同一未提交事务中恢复并清除过期正文，之后才允许提交。源最新向量或journal变化阻止成功标记；不修改源CH。
+
+canonical每站最多10k访客、每访客最多10k chunks，超预算明确失败而不先删索引。当前定向证据含真实PG/CH v2范围/源历史TTL/恢复与失败重试；native CLI已完成真实dump及独立PG/CH恢复、最新cutoff物理裁剪和源推进拒绝，最新native CLI也已覆盖非空standard036 carry（schema含041，原生fixture的041行为空）、latest journal删除A保留B；daily非空包定向通过，但完整daily activation/restore、严格PG metadata、整镜像和native canonical浏览器仍待对应验收，activation/replay guard保持关闭。见[治理验收](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。
+
+后续通知保护把报表及个人数据派生告警绑定aggregationEpoch；派送在同连接partition/site共享锁下复读running状态、attempts、有效lease和当前epoch，失效则撤销且正文最小化。共享锁跨15秒有界传输直到记录结果，因此删除ACK之后不再从旧claim派送；已发出或在途的外网消息无法召回。真实本地HTTP/PG删除竞态已验收，真实SMTP/企业账号外发未实测。上述后续切片尚未纳入fa3主版本，不能据此称旧镜像已具备新保护。
+
+工作树048 strict导出预览：完整站点facts的stats_hourly/stats_daily若为V2，data中的pv等数值来自当前已认证发布事实，不直接使用旧兼容缓存或控制字段默认值；uv与membership_counts为SQL去重计数，visitor_values_exported=false说明不返回个人成员值。export_manifest.source_vector分别给出published_fact_source、raw authority及canonical/deletion/aggregation epoch、generation/processed_generation/watermark。dirty状态拒绝，不把未重建旧导出当最新。该新投影已有定向测试，真实缓存旧个人正文的物理ACK、strict源/目标完整导出验收仍须联合结果，不能以投影隐藏证明擦除。
+
+048隐私失效后的导出预览：已知V2当前数值只依赖认证44/47事实，不要求已擦除的048兼容缓存再次存在。不可精确重建的legacy表从JSON中省略，并在export_manifest.unsupported_tables与table_read_metadata标coverage=0、reason及已知时间范围；表不存在不表示真实零。部分仍可认证的当前行可保留，manifest明确旧历史范围不可用。真实vitals样本可输出TDigest centroids及原加权sample_count。仅已知隐私基线失效允许此显式部分导出；正文缺失/损坏、HMAC错误或CH网络失败仍失败，不能伪装普通partial。桶UV不可跨日/小时直接相加。

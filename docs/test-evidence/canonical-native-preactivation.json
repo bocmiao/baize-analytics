@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-10",
+  "scope": "isolated source preactivation variant; not main activation or final-plan acceptance",
+  "variantDirectory": "/tmp/baize-canonical-preactivation-6yyorqd2",
+  "variantDifference": "src/server/canonical-migration.ts false -> true",
+  "originalGuardFileSha256": "bc1bc1610c917c9b51d2344c54c9b0b6100dd32e49650c037e228b3535bc1eec",
+  "variantGuardFileSha256": "58378ae7d12ecb1b2e8c9424aedab10c8a0bee32c2318bbca7beff2fe6484768",
+  "repositoryGuard": "false",
+  "baselineFileCount": 408,
+  "baselineManifestSha256": "c86eca5c47f895a962101912a6ea42f9bae9856c0e84eb00fd3cd46aa33c6f15",
+  "verifiedChangedBaselineFiles": [
+    "src/server/canonical-migration.ts"
+  ],
+  "testFileSha256": "1816b8bc77597882b34d65d549cca204cca41a80a4834c7069a090b49e6ce513",
+  "excluded": [
+    ".git",
+    ".env*",
+    "data",
+    "keys",
+    "*.key"
+  ],
+  "runs": [
+    {
+      "timeUTC": "11:36:22",
+      "status": "skipped",
+      "tests": 1,
+      "reason": "repository guard false; preparation only"
+    },
+    {
+      "timeUTC": "11:39:41",
+      "status": "failed",
+      "tests": 1,
+      "reason": "test incorrectly retried anonymous pre-identify event as deleted A; real event-time identity starts at identify, fixed actual A-owned retry and preserved anonymous data",
+      "durationSeconds": 3.28
+    },
+    {
+      "timeUTC": "11:41:07",
+      "status": "passed",
+      "tests": 1,
+      "durationSeconds": 3.68,
+      "limitation": "fault port1 was Fetch bad-port refusal, insufficient for TCP failure claim"
+    },
+    {
+      "timeUTC": "11:41:59",
+      "status": "passed",
+      "tests": 1,
+      "durationSeconds": 3.57,
+      "change": "actual listening ephemeral TCP port closed before isolated adapter request"
+    },
+    {
+      "timeUTC": "11:42:18",
+      "status": "passed",
+      "tests": 1,
+      "skipped": 0,
+      "durationSeconds": 3.75,
+      "cwd": "/tmp/baize-canonical-preactivation-6yyorqd2",
+      "log": "/tmp/baize-canonical-preactivation-final.log"
+    }
+  ],
+  "actualOperations": [
+    "native HTTP setup/site",
+    "PG collection/worker",
+    "administrator shadow loops/verify/activate",
+    "canonical worker/raw prune loops",
+    "canonical collection committed CH body with PG raw absent",
+    "exact retry and event-id conflict",
+    "published statistics/full JSON source metadata",
+    "authorized question tool PG fact chart after CH ingestion",
+    "A identity deletion with B and prior anonymous records preserved",
+    "deleted A retry rejected and B retry accepted",
+    "actual local TCP refusal returns503 with metadata/proof/outbox transaction rollback",
+    "new source-dependent export fails without PG body fallback"
+  ],
+  "simulated": [
+    "BYOK model response transport; actual tool results checked before response"
+  ],
+  "notTested": [
+    "real external model account",
+    "production main activation",
+    "daily-salt/replay/backup lifecycle full native acceptance",
+    "all-plan/full-CI/Docker acceptance"
+  ],
+  "typecheck": "passed",
+  "ownedLint": "passed"
+}

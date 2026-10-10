@@ -1,4 +1,12 @@
+import {installFactStore} from './fact-store.js';
+import {installRemainingFactStore} from './remaining-fact-store.js';
+import {cleanupRemainingFactStoreOrphans} from './remaining-fact-maintenance.js';
+import {installCacheStore} from './cache-store.js';
+import {cleanupCacheStoreOrphans} from './cache-store-maintenance.js';
+import {cleanupFactStoreOrphans} from './fact-store-maintenance.js';
+import {installSessionHeaderStore,cleanupSessionHeaderOrphans} from './session-header-store.js';
 import {registerManualSearchImport} from './manual-search-import.js';
+import {registerCanonicalOperations} from './canonical-routes.js';
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
 import {invalidateSiteFacts} from './session-facts.js';
@@ -56,7 +64,7 @@ export async function createApp(options:AppOptions={}){
   if(clickhouse)ctx.clickhouseMirror=new ClickHouseMirror(pool,clickhouse);
   installEventStore(pool,new EventStore(pool,clickhouse??undefined));
   const canonical=options.canonical!==undefined?options.canonical:options.clickhouse===null?null:process.env.CLICKHOUSE_URL?new CanonicalClickHouse({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
-  if(canonical)await canonical.initialize();
+  if(canonical){await canonical.initialize();const headerStore=await canonical.createSessionHeaderStore();await headerStore.initialize();installSessionHeaderStore(pool,headerStore);const factStore=await canonical.createFactStore();await factStore.initialize();installFactStore(pool,factStore);const remainingStore=await canonical.createRemainingFactStore();await remainingStore.initialize();installRemainingFactStore(pool,remainingStore);const cacheStore=await canonical.createCacheStore();await cacheStore.initialize();installCacheStore(pool,cacheStore);}else{installSessionHeaderStore(pool,null);installFactStore(pool,null);installRemainingFactStore(pool,null);installCacheStore(pool,null);}
   if(canonical!==undefined)installCanonicalStore(pool,canonical);
   const history=options.history!==undefined?options.history:process.env.HISTORY_STORE_ENABLED==='1'&&process.env.CLICKHOUSE_URL?new HistoryStore({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
   if(history)await history.initialize();
@@ -108,14 +116,14 @@ export async function createApp(options:AppOptions={}){
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
-  await registerMcp(app,ctx);await registerManualSearchImport(app,ctx);
+  await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
   if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));}
   app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
   let busy=false;let lastMaintenance=0;let timer:NodeJS.Timeout|undefined;
-  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await runWorkerOnce(pool);await ctx.clickhouseMirror?.runOnce();if(Date.now()-lastMaintenance>60000){await runGovernance(ctx);await enforceRetention(pool);if(history){await expireHistorySnapshots(pool,history);await cleanupHistoryFailures(pool,history);}await cleanupHistoryBackupFiles(pool,dataDir);await dropEmptyHistoricalPartitions(pool);await external.runJobs();lastMaintenance=Date.now();}}catch{/* Durable work remains queued; no raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
+  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await runWorkerOnce(pool);await ctx.clickhouseMirror?.runOnce();if(Date.now()-lastMaintenance>60000){await runGovernance(ctx);await enforceRetention(pool);if(history){await expireHistorySnapshots(pool,history);await cleanupHistoryFailures(pool,history);}await cleanupHistoryBackupFiles(pool,dataDir);await dropEmptyHistoricalPartitions(pool);await external.runJobs();await cleanupSessionHeaderOrphans(pool);await cleanupFactStoreOrphans(pool);await cleanupRemainingFactStoreOrphans(pool);await cleanupCacheStoreOrphans(pool);lastMaintenance=Date.now();}}catch{/* Durable work remains queued; no raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
   app.addHook('onClose',async()=>{if(timer)clearInterval(timer);while(busy)await new Promise(r=>setTimeout(r,20));if(!options.pool)await pool.end();if(options.redis===undefined)await redis?.quit();});
   return {app,ctx};
 }

@@ -20,7 +20,19 @@ history_count=0
 if [ "$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT to_regclass('history_manifests') IS NOT NULL")" = t ]; then
   history_count="$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT count(*) FROM history_manifests WHERE status='published'")"
 fi
-if [ "$canonical_count" != 0 ] || [ "$history_count" != 0 ]; then
+header_count=0
+if [ "$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT to_regclass('analytics_header_runs') IS NOT NULL")" = t ]; then header_count="$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT count(*) FROM analytics_header_runs")"; fi
+fact_count=0
+if [ "$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT to_regclass('analytics_fact_store_runs') IS NOT NULL")" = t ]; then fact_count="$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT count(*) FROM analytics_fact_store_runs")"; fi
+remaining_count=0
+cache_count=0
+for sidecar_table in analytics_remaining_fact_runs analytics_cache_owners analytics_cache_unavailable; do
+  if [ "$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT to_regclass('$sidecar_table') IS NOT NULL")" = t ]; then
+    sidecar_count="$(docker compose exec -T postgres psql -U baize -d baize -Atc "SELECT count(*) FROM $sidecar_table")"
+    if [ "$sidecar_table" = analytics_remaining_fact_runs ]; then remaining_count="$sidecar_count"; elif [ "$sidecar_count" != 0 ]; then cache_count="$sidecar_count"; fi
+  fi
+done
+if [ "$canonical_count" != 0 ] || [ "$history_count" != 0 ] || [ "$header_count" != 0 ] || [ "$fact_count" != 0 ] || [ "$remaining_count" != 0 ] || [ "$cache_count" != 0 ]; then
   canonical_stage="/tmp/baize-canonical-backup-${RANDOM}-${RANDOM}"
   canonical_container="baize_backup_${RANDOM}_${RANDOM}"
   docker compose run --rm --no-deps --name "$canonical_container" --entrypoint node --env CANONICAL_PACKAGE_ACK=1 app --import tsx scripts/canonical-ops-runtime.ts backup "$canonical_stage" > "$backup_dir/canonical-runtime.log" 2>&1 & canonical_pid=$!

@@ -1,0 +1,42 @@
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node --import tsx scripts/canonical-ops-runtime.ts restore /tmp/baize-canonical-entry-nTiBYk/package
+/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-fact-store.ts:88
+ async eraseSegments(client:PoolClient,site:string,segments:HeaderSegment[]){if(segments.some(s=>s.from||s.to))throw Error('REMAINING_FACT_PARTIAL_CARRY_REPLACEMENT_REQUIRED');return this.eraseScope(client,site,segments,['sessions','numerics','members','carry_checkpoints','carry_keys'])}
+                                                                                                                     ^
+
+Error: REMAINING_FACT_PARTIAL_CARRY_REPLACEMENT_REQUIRED
+    at ClickHouseRemainingFactStore.eraseSegments (/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-fact-store.ts:88:118)
+    at restoreRemainingBodies (/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-body-backup.ts:34:3001)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async <anonymous> (/tmp/baize-048-native-rcstamp.483q_lfa/scripts/canonical-ops-runtime.ts:41:1119)
+
+Node.js v24.19.0
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at ChildProcess.exithandler (node:child_process:417:12)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1141:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+  code: 1,
+  killed: false,
+  signal: null,
+  cmd: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node --import tsx scripts/canonical-ops-runtime.ts restore /tmp/baize-canonical-entry-nTiBYk/package',
+  stdout: '',
+  stderr: '/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-fact-store.ts:88\n' +
+    " async eraseSegments(client:PoolClient,site:string,segments:HeaderSegment[]){if(segments.some(s=>s.from||s.to))throw Error('REMAINING_FACT_PARTIAL_CARRY_REPLACEMENT_REQUIRED');return this.eraseScope(client,site,segments,['sessions','numerics','members','carry_checkpoints','carry_keys'])}\n" +
+    '                                                                                                                     ^\n' +
+    '\n' +
+    'Error: REMAINING_FACT_PARTIAL_CARRY_REPLACEMENT_REQUIRED\n' +
+    '    at ClickHouseRemainingFactStore.eraseSegments (/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-fact-store.ts:88:118)\n' +
+    '    at restoreRemainingBodies (/tmp/baize-048-native-rcstamp.483q_lfa/src/server/remaining-body-backup.ts:34:3001)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n' +
+    '    at async <anonymous> (/tmp/baize-048-native-rcstamp.483q_lfa/scripts/canonical-ops-runtime.ts:41:1119)\n' +
+    '\n' +
+    'Node.js v24.19.0\n'
+}
+
+Node.js v24.19.0

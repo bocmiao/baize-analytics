@@ -1,0 +1,53 @@
+import {createHash,createHmac,timingSafeEqual} from 'node:crypto';
+import type {PoolClient} from 'pg';
+import type {CarryCheckpoint} from './session-carry.js';
+import {canonical} from './security.js';
+import {readOriginalColumnMetadata,verifyOriginalColumnMetadata,importOriginalColumnMetadata,type OriginalColumnMetadata} from './canonical-shadow-provenance.js';
+export interface CarryAnchorProof {version:1;siteId:string;anchorEventId:string;anchor:OriginalColumnMetadata;checkpointChecksum:string;lineageSeal:string}
+const digest=(siteId:string,checkpoint:CarryCheckpoint)=>createHash('sha256').update(canonical({siteId,...checkpoint})).digest('hex');
+const lineage=(secret:string,proof:Omit<CarryAnchorProof,'lineageSeal'>)=>createHmac('sha256',secret).update(canonical(['controlled-daily-carry',proof])).digest('hex');
+function checkAnchor(checkpoint:CarryCheckpoint,anchor:OriginalColumnMetadata){const p=anchor.columnProof;if(checkpoint.privacyMode!=='daily_salt'||p.privacyMode!=='daily_salt'||checkpoint.anchorEventId.toLowerCase()!==anchor.eventId.toLowerCase()||checkpoint.visitorId!==p.visitorId||new Date(checkpoint.state.startedAt).toISOString()!==p.ts||checkpoint.localDay!==p.sourceDay||[checkpoint.through,checkpoint.state.lastActive].some(at=>new Intl.DateTimeFormat('en-CA',{timeZone:p.sourceTimezone}).format(new Date(at))!==p.sourceDay)||(checkpoint.state.anchorPageId&&checkpoint.state.anchorPageId.toLowerCase()!==p.pageId.toLowerCase()))throw Error('CARRY_ANCHOR_PROVENANCE_INVALID');}
+/** Trusted reducer-only. A public checkpoint SHA alone cannot mint lineage. */
+export async function recordControlledCarryProvenance(client:PoolClient,siteId:string,runId:string,checkpoint:CarryCheckpoint){
+ if(checkpoint.privacyMode!=='daily_salt')return;
+ const stored=(await client.query('SELECT c.checksum,r.status,r.site_id FROM analytics_carry_checkpoints c JOIN analytics_fact_runs r ON r.id=c.run_id WHERE c.run_id=$1 AND c.visitor_id=$2',[runId,checkpoint.visitorId])).rows[0];if(!stored||stored.site_id!==siteId||!['staging','ready'].includes(stored.status)||stored.checksum!==digest(siteId,checkpoint))throw Error('CARRY_PROVENANCE_PRODUCER_FENCE');
+ const anchor=await readOriginalColumnMetadata(client,siteId,checkpoint.anchorEventId);checkAnchor(checkpoint,anchor);const secret=(await client.query('SELECT salt_secret FROM sites WHERE id=$1',[siteId])).rows[0].salt_secret;const unsigned:Omit<CarryAnchorProof,'lineageSeal'>={version:1,siteId,anchorEventId:checkpoint.anchorEventId,anchor,checkpointChecksum:stored.checksum};
+ await client.query('INSERT INTO canonical_carry_provenance VALUES($1,$2,$3,$4,$5) ON CONFLICT(run_id,visitor_id) DO UPDATE SET anchor_event_id=excluded.anchor_event_id,checkpoint_checksum=excluded.checkpoint_checksum,lineage_seal=excluded.lineage_seal',[runId,checkpoint.visitorId,checkpoint.anchorEventId,stored.checksum,lineage(secret,unsigned)]);
+}
+export async function verifyControlledCarryProof(client:PoolClient,siteId:string,checkpoint:CarryCheckpoint,proof:CarryAnchorProof){
+ if(proof.version!==1||proof.siteId!==siteId||proof.anchorEventId.toLowerCase()!==checkpoint.anchorEventId.toLowerCase()||proof.checkpointChecksum!==digest(siteId,checkpoint))throw Error('CARRY_PROVENANCE_DIGEST_INVALID');await verifyOriginalColumnMetadata(client,siteId,proof.anchor);checkAnchor(checkpoint,proof.anchor);
+ const secret=(await client.query('SELECT salt_secret FROM sites WHERE id=$1',[siteId])).rows[0]?.salt_secret;if(!secret||!/^[0-9a-f]{64}$/.test(proof.lineageSeal))throw Error('CARRY_PROVENANCE_LINEAGE_INVALID');const {lineageSeal,...unsigned}=proof;if(!timingSafeEqual(Buffer.from(lineage(secret,unsigned),'hex'),Buffer.from(lineageSeal,'hex')))throw Error('CARRY_PROVENANCE_LINEAGE_INVALID');return proof;
+}
+export async function exportControlledCarryProofs(client:PoolClient,siteId:string,rows:{runId:string;checkpoint:CarryCheckpoint}[]):Promise<CarryAnchorProof[]>{
+ if(rows.length>1000)throw Error('CARRY_PROVENANCE_READ_LIMIT');const output:CarryAnchorProof[]=[];for(const {runId,checkpoint}of rows){if(checkpoint.privacyMode!=='daily_salt')continue;const r=(await client.query('SELECT * FROM canonical_carry_provenance WHERE run_id=$1 AND visitor_id=$2',[runId,checkpoint.visitorId])).rows[0];if(!r)throw Error('CARRY_PROVENANCE_UNKNOWN_LEGACY_DAILY');const proof:CarryAnchorProof={version:1,siteId,anchorEventId:r.anchor_event_id,anchor:await readOriginalColumnMetadata(client,siteId,r.anchor_event_id),checkpointChecksum:r.checkpoint_checksum,lineageSeal:r.lineage_seal};output.push(await verifyControlledCarryProof(client,siteId,checkpoint,proof));}return output;
+}
+/** Authenticated package caller, after checkpoint insertion in the same TX. */
+export async function importControlledCarryProof(client:PoolClient,siteId:string,runId:string,checkpoint:CarryCheckpoint,proof:CarryAnchorProof){
+ await verifyControlledCarryProof(client,siteId,checkpoint,proof);await importOriginalColumnMetadata(client,siteId,proof.anchor);const row=(await client.query('SELECT checksum FROM analytics_carry_checkpoints WHERE run_id=$1 AND visitor_id=$2',[runId,checkpoint.visitorId])).rows[0];if(row?.checksum!==proof.checkpointChecksum)throw Error('CARRY_PROVENANCE_TARGET_CHECKPOINT_INVALID');await client.query('INSERT INTO canonical_carry_provenance VALUES($1,$2,$3,$4,$5) ON CONFLICT(run_id,visitor_id) DO UPDATE SET anchor_event_id=excluded.anchor_event_id,checkpoint_checksum=excluded.checkpoint_checksum,lineage_seal=excluded.lineage_seal',[runId,checkpoint.visitorId,proof.anchorEventId,proof.checkpointChecksum,proof.lineageSeal]);
+}
+/** Trusted privacy invalidation only. Preserve attested identity/time anchor and
+ * sign the minimal unavailable marker, never an arbitrary replacement state. */
+export async function refreshControlledCarryProvenance(client:PoolClient,siteId:string,runId:string,previous:CarryCheckpoint,next:CarryCheckpoint){
+ if(previous.privacyMode!=='daily_salt')return;
+ if(next.status!=='unavailable'||next.state.entryPath!==''||next.state.exitPath!==''||next.state.pageviews!==0||next.state.visibleMs!==0||Object.keys(next.state.entryDimensions).length||next.state.hasPage!==false||Object.keys(next.state).some(k=>!['startedAt','lastActive','entryPath','exitPath','pageviews','visibleMs','entryDimensions','hasPage'].includes(k)))throw Error('CARRY_PRIVACY_TRANSFORM_INVALID');
+ const {state:oldState,status:_oldStatus,...oldBase}=previous,{state:newState,status:_newStatus,...newBase}=next;if(canonical(oldBase)!==canonical(newBase)||oldState.startedAt!==newState.startedAt||oldState.lastActive!==newState.lastActive)throw Error('CARRY_PRIVACY_TRANSFORM_INVALID');
+ const actual=(await client.query('SELECT checksum FROM analytics_carry_checkpoints WHERE run_id=$1 AND visitor_id=$2',[runId,next.visitorId])).rows[0];if(actual?.checksum!==digest(siteId,next))throw Error('CARRY_PRIVACY_TRANSFORM_TARGET_INVALID');
+ const [oldProof]=await exportControlledCarryProofs(client,siteId,[{runId,checkpoint:previous}]);if(!oldProof)throw Error('CARRY_PROVENANCE_UNKNOWN_LEGACY_DAILY');const secret=(await client.query('SELECT salt_secret FROM sites WHERE id=$1',[siteId])).rows[0].salt_secret;const {lineageSeal:_previousSeal,...unsigned}=oldProof,newUnsigned={...unsigned,checkpointChecksum:digest(siteId,next)};
+ await client.query('UPDATE canonical_carry_provenance SET checkpoint_checksum=$3,lineage_seal=$4 WHERE run_id=$1 AND visitor_id=$2',[runId,next.visitorId,newUnsigned.checkpointChecksum,lineage(secret,newUnsigned)]);
+}
+/** Decode only a previously authenticated 047 checkpoint record. Public SHA
+ * validation remains separate from the controlled daily producer lineage. */
+export function carryCheckpointFromRemainingRow(row:Record<string,unknown>):CarryCheckpoint{
+ if(!['standard','daily_salt'].includes(String(row.privacy_mode))||!['valid','unavailable'].includes(String(row.status)))throw Error('CARRY_REMAINING_CHECKPOINT_INVALID');
+ return {visitorId:String(row.visitor_id),sessionId:String(row.session_id),anchorEventId:String(row.anchor_event_id),through:new Date(row.through_ts as string).toISOString(),lastEventId:String(row.last_event_id),privacyMode:row.privacy_mode as CarryCheckpoint['privacyMode'],localDay:row.local_day instanceof Date?row.local_day.toISOString().slice(0,10):String(row.local_day).slice(0,10),definitionsHash:String(row.definitions_hash),state:row.state as CarryCheckpoint['state'],status:row.status as CarryCheckpoint['status']};
+}
+/** Signed restore caller: authenticate the actual target 047 receipt/body, then
+ * import the original lineage metadata without fabricating a PG checkpoint.
+ * Caller owns the transaction and registry pool is not borrowed. */
+export async function importControlledCarryProofsFromRemaining(client:PoolClient,pool:import('pg').Pool,siteId:string,rows:{runId:string;checkpoint:CarryCheckpoint;proof:CarryAnchorProof}[]){
+ if(rows.length>1000)throw Error('CARRY_PROVENANCE_READ_LIMIT');const {getRemainingFactStore}=await import('./remaining-fact-store.js');const store=getRemainingFactStore(pool);if(!store)throw Error('CARRY_REMAINING_STORE_REQUIRED');
+ const wanted=new Map<string,typeof rows[number]>();for(const item of rows){await verifyControlledCarryProof(client,siteId,item.checkpoint,item.proof);const key=JSON.stringify([item.runId,item.checkpoint.visitorId]);if(wanted.has(key))throw Error('CARRY_REMAINING_CHECKPOINT_DUPLICATE');wanted.set(key,item);}
+ const found=new Set<string>();for(const runId of new Set(rows.map(row=>row.runId)))for await(const batch of store.streamRunRows(client,siteId,runId,'carry_checkpoints'))for(const record of batch){const key=JSON.stringify([runId,record.visitorId]),item=wanted.get(key);if(!item)continue;if(found.has(key))throw Error('CARRY_REMAINING_CHECKPOINT_DUPLICATE');const actual=carryCheckpointFromRemainingRow(record.row as unknown as Record<string,unknown>);if(canonical(actual)!==canonical(item.checkpoint)||String((record.row as unknown as Record<string,unknown>).checksum)!==item.proof.checkpointChecksum)throw Error('CARRY_PROVENANCE_TARGET_CHECKPOINT_INVALID');found.add(key);}
+ if(found.size!==wanted.size)throw Error('CARRY_PROVENANCE_TARGET_CHECKPOINT_INVALID');
+ for(const {runId,checkpoint,proof}of rows){await importOriginalColumnMetadata(client,siteId,proof.anchor);await client.query(`INSERT INTO canonical_carry_provenance VALUES($1,$2,$3,$4,$5) ON CONFLICT(run_id,visitor_id) DO UPDATE SET anchor_event_id=excluded.anchor_event_id,checkpoint_checksum=excluded.checkpoint_checksum,lineage_seal=excluded.lineage_seal`,[runId,checkpoint.visitorId,proof.anchorEventId,proof.checkpointChecksum,proof.lineageSeal]);}
+}

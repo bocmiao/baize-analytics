@@ -1,0 +1,3 @@
+import {expect,it} from 'vitest';
+import {storageSourceLabel} from '../../src/web/StorageEvidence.js';
+it('labels only explicit storage sources without inferring authority or resolving inherited keys',()=>{expect(storageSourceLabel('clickhouse',true)).toBe('ClickHouse');expect(storageSourceLabel('postgres',false)).toBe('PostgreSQL');expect(storageSourceLabel('mixed',true)).toBe('Mixed verified sources');expect(storageSourceLabel('hybrid',false)).toBe('混合已核验来源');expect(storageSourceLabel('unavailable',false)).toBe('不可用');for(const value of ['constructor','__proto__','toString','strict',null,{},undefined])expect(storageSourceLabel(value,true)).toBe('—')});

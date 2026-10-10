@@ -121,9 +121,9 @@ capture返回manifest id，backup返回签名backup id/bytes/integrity，restore
 
 ## 下一批AI删除与百度手动迁移边界 / Pending AI deletion and Baidu import boundary
 
-当前删除与journal重放路径已清除整站AI派生答案/证据/建议并撤销导出，保留预算账本；这些hooks未纳第五272/19和第六pre-deletefix289/20，独立真实PG专项与下一完整compiled-app阶段须分开。恢复重放最新journal后亦失效旧衍生内容，不把旧镜像假称已支持。
+当前删除与journal重放路径已清除整站AI派生答案/证据/建议并撤销导出，保留预算账本；这些hooks未纳第五272/19和第六pre-deletefix289/20，但已纳入fa3第七分阶段compiled-app验收，后续040通知清理仍属新切片。恢复重放最新journal后亦失效旧衍生内容，不把旧镜像假称已支持。
 
-Current deletion/journal replay invalidates site-derived AI answers/evidence/suggestions/exports while retaining accounting. These hooks are not part of fifth272/19 or sixth pre-deletefix289/20; targeted real-PG checks and the next complete compiled-app stage must remain separate. Historical derivatives must also be invalidated after latest-journal replay.
+Current deletion/journal replay invalidates site-derived AI answers/evidence/suggestions/exports while retaining accounting. These hooks are not part of fifth272/19 or sixth pre-deletefix289/20; they are included in fa3 seventh-stage compiled-app acceptance. Subsequent040 notification cleanup remains a separate worktree slice. Historical derivatives must also be invalidated after latest-journal replay.
 
 百度普通站长搜索分析公开读取API截至2026-10-10未证实，官方产品说明可读不等于API可用。2015关键词下载说明没有当前CSV样本；通用自定义模板+列映射不可宣称原生百度兼容。搜索资源URL提交、百度统计PV/UV搜索词和自然搜索展现/排名是不同数据，不能互相冒充。详见[官方搜索分析](https://ziyuan.baidu.com/college/articleinfo?id=3415)、[2015下载说明](https://ziyuan.baidu.com/wiki/571)、[统计搜索词API](https://tongji.baidu.com/api/manual/Chapter1/source_searchword_a.html)。
 
@@ -137,12 +137,34 @@ Baidu public search-analysis read access remains unverified; available product d
 
 混合身份的一批回放必须按rrweb记录时间判定删除，不能只按wire ts删整个chunk；索引重叠清理不等于CH物理擦除。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。若曾在开发版本写入非规范键序hash，只能从已核验权威body重算，不能盲目更新hash忽略完整性失败。30天回放物理保留已有下述工作树定向闭环，不用只清PG索引冒充完成，也不提前声称全量已交付。
 
-治理读取先取得session partition共享与site共享锁，等DDL/删除完成后才固定RR快照，随后转事务锁并释放session锁；持client期间不借同pool。默认应用已注册标准[MCP只读入口](mcp.md)，独立官方SDK4项通过。新AI trace/chart与删除派生hooks已接入当前路径，删除后清整站答案/证据/建议并撤销相关导出，保留预算账本；恢复重放latest journal后亦须失效旧衍生信息。上述定向实现与测试不代表第七不可变compiled-app/镜像全集已验收，具体阶段以主验收记录为准。
+治理读取先取得session partition共享与site共享锁，等DDL/删除完成后才固定RR快照，随后转事务锁并释放session锁；持client期间不借同pool。默认应用已注册标准[MCP只读入口](mcp.md)，独立官方SDK4项通过。新AI trace/chart与删除派生hooks已接入当前路径，删除后清整站答案/证据/建议并撤销相关导出，保留预算账本；恢复重放latest journal后亦须失效旧衍生信息。AI派生hooks与默认MCP入口已纳fa3第七分阶段compiled-app验收；033/034/035/037及新通知保护仍按下一工作树切片判定，镜像边界以主验收记录为准。
 
 新增035 durable AI reservation账本仅保存费用保留/结算状态，无模型正文或visitor FK；删除AI派生内容不能删除该账本而重置费用。站点facts导出排除该内部操作状态（ai_reservations，原因quota-ledger-operational-state），不改变已有ai_budget数字事实策略；PG整库backup自然包含账本。该新增切片的定向与下一完整阶段结果单列，不假定旧镜像已有035。
 
-治理运行期回放保留新增定向实现（工作树，非第七main）：canonical-replay-retention按min(站点保留,30天)的rrweb记录时间执行不可变替换与旧body物理ACK，保留新记录；PG chunk metadata在物理ACK及事务提交前保留为可靠重试指针，故障回滚可恢复已核验replacement孤儿。时间策略清理不是个人删除请求，不伪称已fsync个人journal。每站访客上限10k、每visitor chunk上限10k，超预算失败保留指针而不先删索引。minute治理任务已接线，原生canonical guard仍关闭，新全量与安装迁移验收待下一批。
+## 后续037：最新回放保留授权（工作树预览）
 
-037 replay_retention_jobs新增持久单调cutoff：调度在任何partition/site gate前独立提交，以GREATEST保留已授权清理范围，随后P→site→job获取锁、同client物理清理；失败保存固定错误码与指数退避，不存rrweb正文或伪造个人journal。延长站点保留不能撤销已经授权的旧cutoff。当前工作树真实PG/CH5项回放保留加1项genericretention共6PASS（2.28s），含ACK后回滚→7天改90天→可靠重试；lint/type通过。旧备份恢复必须另核验并保留源最新单调cutoff，不能仅用旧PGsnapshot或个人删除journal声称已覆盖此操作账本；该恢复集成尚待下一批，canonical guard仍关闭。
+回放按rrweb记录时间执行min(站点保留,30天)物理TTL。037任务在partition/site锁前独立持久提交单调cutoff；延长保留不能恢复已授权过期的内容。canonical混合chunk不可变替换并确认旧body删除，可选PG权威历史归档也逐记录保新，不删整namespace唯一新记录；失败可靠重试，不能先清索引。该运行期账本不等于个人删除journal。
 
-最新运行期保留证明已补工作树实现：canonical-replay-retention-proof以稳定v1实例key签名sourceScope/签发时间/完整canonical站点cutoff集合，最多5000站点，默认10分钟有效；独立源调度提交后RR捕获，私有文件fsync。恢复先验证缺失、完整性、签名、来源和时效，再同client GREATEST合并；目标正文发布后须在同一未提交事务执行物理过滤，完成后才允许提交/暴露。真实PG/CH两项专项通过（1.61s）：实际canonical备份文件→独立CH目标与旧PG元数据→源7天改90天仍保留最新7天授权→目标旧记录物理消失且源CH不改。CLI/shell与完整Docker生命周期接线由ops继续，此结果不能冒充完整安装恢复验收或新main。
+证明version2、scope=canonical-and-history-replay，稳定v1实例key签名完整范围/sourceScope/时间，默认有效10分钟；v1、不完整、错误来源、旧证明和签名不匹配均拒绝。范围包含activeCH、published历史raw与已有037授权站点，最多5000；backup index.retentionSites须匹配。源capture先调度提交再RR捕获，私有证明文件fsync。目标在正文发布前同client GREATEST合并；发布后在同一未提交事务清除过期正文与历史rrweb，才可commit。成功标记前源still-current不再调度，只复核最新范围/cutoff与journal，变化就拒绝，不修改源CH。
+
+完整PG备份带账本，但旧dump不能替代独立最新源证明。site-facts导出不重放该操作状态；新任务不放宽旧tombstone或个人删除日志。当前真实PG/CH定向验证已覆盖策略7→90、mixed保新、ACK后回滚重试和旧metadata恢复；native CLI已实际执行dump、独立PG/CH恢复、最新cutoff物理裁剪及源推进拒绝，最新native CLI进一步覆盖非空standard036 carry（schema含041，原生fixture的041行为空）、latest journal删除A保留B。daily非空包有定向通过证据；完整daily activation/restore、严格PG metadata、完整Docker以及canonical激活仍待对应新阶段证据。不要绕过guard或把以上预览当作旧镜像操作承诺。详见[治理验收](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。
+
+### 预览：已发布事实正文迁出与strict门禁
+
+以下是当前工作树CLI的实际参数契约，**尚非已开放生产canonical切换承诺**；主线activation guard仍false。使用前须核对同版本源码与最新联合验收，保持入口关闭、完整PG/application files/keys备份和独立最新删除journal。环境变量已在本地安全配置文件设置；命令不打印或内联数据库口令。
+
+```sh
+npx tsx scripts/canonical-cli.ts status "$BAIZE_SITE_ID"
+npx tsx scripts/canonical-cli.ts migrate-facts "$BAIZE_SITE_ID"
+npx tsx scripts/canonical-cli.ts strict "$BAIZE_SITE_ID" "$BAIZE_FACT_PACKAGE_DIR" "$BAIZE_LATEST_JOURNAL_DIR"
+```
+
+`status`只读；`migrate-facts`写入043 headers、044 effects/vitals、047 session/numeric/member/carry及048有限兼容缓存的原producer-sealed正文与完成receipt，返回pruned=false/strict=false，不自行清除PG正文或激活canonical。两项写操作要求同site干净generation、无存活worker租约；迁出不替换整周期。`strict`额外要求真实签名fact package、当前源scope/元数据闭包、独立最新journal及密钥版本全部通过loadVerifiedFactBackup，再按生产guard允许情况清正文。布尔verified对象、旧包、missing body、未知版本、陈旧epoch或不完整kind/zero marker不能代替证明；guard关闭时不能绕过。
+
+048缓存每bucket body上限8MiB、batch≤100/12MiB，超限失败关闭，不是无限规模导出。standalone history恢复含048时保留原owner UUID/producer seal，目标原run UUID冲突必须拒绝；热图base覆盖按source→target committed batch精确映射，不能清覆盖后双计。全部sidecars恢复后还须在目标入口开放前重放最新journal并真实重建，无法重建的唯一历史明确不可用，不能假零。当前模块/定向原生验收与完整同源CLI/Docker/生产开放分别记录，见[治理验收](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。
+
+### 历史隐私拓扑的迁移边界
+
+pre-014 等旧版本未经受控入口产生的 daily-salt 明细，可能缺少可验证的每日身份拓扑。迁移不能从旧访客字段、页面 ID 或自报时间制造 038 lineage / 041 producer proof；未知拓扑不得进入需要这些证明的 canonical/carry 历史迁移。保留安全的旧报表与导出可继续使用，不代表所有旧 PostgreSQL 站点停用。实际隐私升级专项验证旧安全 report/export 不含身份别名，并验证当前原生 collector 仍可正常采集。
+
+缺少可信来源、留存已到期或历史重建不完整时返回明确不可用或 coverage<1；不把历史零行当真实零流量，也不以新入口正常运行证明旧历史完整。本轮 043–048 完整同源总验收尚未运行，生产激活 guard 仍为 false；定向工作树测试与已交付 main 验收须分开。当前独立严格恢复仍在复验最后的缓存控制行/签名正文 readiness，不提前宣称闭合。

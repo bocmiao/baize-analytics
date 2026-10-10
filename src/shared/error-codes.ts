@@ -1,8 +1,11 @@
 // Fixed public error messages only. Never add provider payloads or dynamic exceptions here.
 export const API_ERRORS = {
+  historical_coverage_unavailable: { statusCode: 409, zh: "历史数据覆盖不足，无法精确重建", en: "Historical coverage is incomplete and cannot be reconstructed exactly." },
   aggregate_members_unavailable: { statusCode: 503, zh: "精确统计成员暂时不可用，请重试", en: "Exact aggregate members are unavailable. Try again later." },
   aggregate_source_changed: { statusCode: 503, zh: "统计快照已改变，请重试", en: "The analytics snapshot changed. Try again later." },
   analytics_query_limit: { statusCode: 413, zh: "统计结果超过安全上限，请缩小范围", en: "The analytics result exceeds the safe limit. Narrow the range." },
+  canonical_integration_not_ready: { statusCode: 409, zh: "权威存储切换尚未完成集成验收", en: "The authoritative-store cutover has not completed integration validation." },
+  canonical_validation_stale: { statusCode: 409, zh: "迁移验证已过期，请重新追增量并验证", en: "Migration validation is stale. Catch up and verify again." },
   canonical_unavailable: { statusCode: 503, zh: "权威事件存储暂时不可用，请重试", en: "The authoritative event store is unavailable. Try again later." },
   canonical_read_limit: { statusCode: 413, zh: "事件结果超过安全读取上限，请缩小范围", en: "The event result exceeds the safe read limit. Narrow the range." },
   internal_error: { statusCode: 500, zh: "内部服务错误，请稍后重试", en: "Internal service error. Try again later." },

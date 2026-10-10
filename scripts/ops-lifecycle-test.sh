@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "${APP_ROOT:-$(dirname "$0")/..}"
+[ -f package-lock.json ] && [ -f docker-compose.yml ] || { echo "APP_ROOT must select the frozen application checkout" >&2; exit 1; }
 # Isolated named stack: never attach to an existing installation.
 export BAIZE_PORT="${BAIZE_PORT:-3199}"
 export PUBLIC_URL="http://127.0.0.1:$BAIZE_PORT"
@@ -13,6 +14,7 @@ node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-source.sh
 docker compose exec -T app node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-image.sha256"
 diff -u ".baize/$COMPOSE_PROJECT_NAME-source.sha256" ".baize/$COMPOSE_PROJECT_NAME-image.sha256"
 docker compose images -q app > ".baize/$COMPOSE_PROJECT_NAME-image.id"
+docker compose exec -T app node --input-type=module -e 'import fs from "node:fs";import assert from "node:assert/strict";import {gunzipSync} from "node:zlib";const license=fs.readFileSync("packages/tracker/LICENSE","utf8").trim();assert.equal(fs.readFileSync("public/tracker.LICENSE.txt","utf8").trim(),license);assert(fs.readFileSync("LICENSE","utf8").includes("GNU AFFERO GENERAL PUBLIC LICENSE"));assert.equal(fs.readFileSync("plugins/wordpress/LICENSE","utf8"),fs.readFileSync("LICENSE","utf8"));for(const name of fs.readdirSync("public").filter(x=>/^tracker.*\.js$/.test(x)))assert(fs.readFileSync("public/"+name,"utf8").includes(license));for(const name of ["tracker","tracker-min"]){const source=fs.readFileSync("public/"+name+".js"),compressed=fs.readFileSync("public/"+name+".js.gz");assert(compressed.length<=5120);assert(gunzipSync(compressed).equals(source));console.log(JSON.stringify({tracker:name,gzipBytes:compressed.length,within5KiB:compressed.length<=5120,withinDecimal5KB:compressed.length<=5000}));}console.log("Actual image AGPL/MIT full notices and 5KiB tracker limits verified; decimal 5KB status reported separately.");'
 node --import tsx scripts/ops-lifecycle-api.ts seed ".baize/$COMPOSE_PROJECT_NAME-state.json"
 node --import tsx scripts/ops-lifecycle-api.ts queue-export ".baize/$COMPOSE_PROJECT_NAME-state.json"
 docker compose exec -T app node --import tsx scripts/ops-maintenance.ts

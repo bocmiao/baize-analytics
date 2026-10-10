@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "${APP_ROOT:-$(dirname "$0")/..}"
+[ -f package-lock.json ] && [ -f docker-compose.yml ] || { echo "APP_ROOT must select the frozen application checkout" >&2; exit 1; }
 export BUILDX_CONFIG="${BUILDX_CONFIG:-$PWD/.baize/buildx}"
 fail_dir="$(mktemp -d "$PWD/.baize/failed-upgrade.XXXXXX")"
 fail_image="baize-analytics:ops-failed-${RANDOM}"
