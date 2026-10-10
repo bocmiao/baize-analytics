@@ -1,0 +1,9 @@
+import {expect,it} from 'vitest';
+import {decodeFactPair} from '../../src/server/fact-pair-response.js';
+const row=(attempt_id='a',row_key='k',body='中文😀')=>({attempt_id,row_key,body_hash:'hash',body_base64:Buffer.from(body).toString('base64')});
+it('groups reverse transport scopes in manifest order and exact row order without changing bytes',()=>{expect(decodeFactPair([row('b'),row('a','z'),row('a','a')],['a','b'])).toEqual([[{row_key:'a',body:'中文😀',body_hash:'hash'},{row_key:'z',body:'中文😀',body_hash:'hash'}],[{row_key:'k',body:'中文😀',body_hash:'hash'}]]);});
+it('rejects invalid/noncanonical base64 and invalid UTF8 rather than replacement decoding',()=>{for(const body_base64 of ['%%%','YQ','YR==','/w=='])expect(()=>decodeFactPair([{...row(),body_base64}],['a','b'])).toThrow('FACT_STORE_BODY_UNAVAILABLE');});
+it('rejects unknown attempts and duplicate keys while keeping empty scope visible for original count verification',()=>{expect(()=>decodeFactPair([row('other')],['a','b'])).toThrow('FACT_STORE_BODY_UNAVAILABLE');expect(()=>decodeFactPair([row(),row()],['a','b'])).toThrow('FACT_STORE_BODY_UNAVAILABLE');expect(decodeFactPair([row()],['a','b'])[1]).toEqual([]);});
+it('preserves each manifest sentinel even if total rows fit the pair budget',()=>{expect(()=>decodeFactPair(Array.from({length:101},(_,i)=>row('a',String(i))),['a','b'])).toThrow('FACT_STORE_READ_LIMIT');});
+
+it('rejects oversized single encoded body before allocating decoded bytes',()=>{expect(()=>decodeFactPair([{...row(),body_base64:'A'.repeat(44040)}],['a','b'])).toThrow('FACT_STORE_BODY_UNAVAILABLE');const body='x'.repeat(33027);expect(decodeFactPair([row('a','k',body)],['a','b'])[0]![0]!.body).toBe(body);});
