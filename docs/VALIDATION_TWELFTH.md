@@ -25,3 +25,7 @@ b6bb4f96a0cd10072b1a39950135b4a7c6efb671 新空Compose/实际compiled UI，30检
 完整冻结 `08eab82853ab1d625c35371085f10f136477b8b5`，实际 `bash scripts/validate-local-final.sh` EXIT0。46文件173单元、151文件401真实集成全部PASS，0失败0跳过；30检查=28真实Chromium+2日期函数全部PASS、0跳过（runner显示1.6分钟）。lint/types/SDK/tracker及应用构建、全新PG/CH/Redis卷、compiled Node、真实native operational恢复与owned cleanup均通过。原始日志/JSON/source摘要见 `test-evidence/main-08eab82-*`，阶段计数不累加，所有先前FAIL保持。
 
 最终中文workspace、SEO、AI各1440/390和总览/回放1440/375实截图位于 `screenshots/08eab82/`，图像SHA记录在最终报告。模型/Google运输明确模拟；本地数据库、HTTP、浏览器和PG dump/restore是真实。截图不证明付费API或真实OAuth账号已测。最新全部源码生产镜像、跨物理宿主灾备及托管CI仍未在本轮执行；不把f4镜像或b7 native通过冒称该新镜像通过。
+
+## 0c3ca6a AI窄范围后续（失败保留）
+
+新冻结 `0c3ca6ac06c459c824f0a1a5fc1a13497d4328d4` 的AI语言浏览器专项实际EXIT1：0PASS/1FAIL/0skip，95.975秒，中文“用途”selectOption超时；测试预算90秒内模拟provider已请求10次。web正在诊断，尚无修复通过结果。本次仅定向AI，不改写08eab82完整全轮PASS，也不能称新源浏览器回归通过。原始两日志及summary保存为 `test-evidence/main-0c3ca6a-ai-*-failed.*`；浏览器/本地应用真实，模型运输模拟。

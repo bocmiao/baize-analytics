@@ -1,0 +1,235 @@
+
+Running 1 test using 1 worker
+
+(node:780198) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/ai-evidence-language.spec.ts:10:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (1.5m)
+
+
+  1) tests/e2e/ai-evidence-language.spec.ts:10:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test ended.
+    Call log:
+      - waiting for getByLabel('用途', { exact: true })
+
+
+      30 |   // Additional screenshot phase runs after all original privacy and provider-call assertions.
+      31 |   const screenshotBudgetGuard=await page.request.post(`${origin}/api/sites/${daily.id}/ai`,{data:{purpose:'question',question:'核对所选当日的实际浏览量与转化分母',start:today,end:today}});expect(screenshotBudgetGuard.status()).toBe(429);expect((await screenshotBudgetGuard.json()).error).toBe('ai_budget_exceeded');expect(modelCalls).toBe(6);expect((await page.request.put(`${origin}/api/sites/${daily.id}/external`,{data:{kind:'ai',settings:{monthlyTokenBudget:200000}}})).status()).toBe(200);
+    > 32 |   screenshotPhase=true;const chinese=await browser.newContext({storageState:await owner.storageState()});try{await chinese.addInitScript(()=>localStorage.setItem('baize_language','zh-CN'));const capture=await chinese.newPage();await capture.goto(page.url());await expect(capture.getByRole('combobox',{name:'选择站点',exact:true})).toHaveValue(daily.id);await capture.getByLabel('开始',{exact:true}).fill(today);await capture.getByLabel('结束',{exact:true}).fill(today);await navigateWorkspace(capture,'AI');await capture.getByLabel('问题',{exact:true}).fill('核对所选当日的实际浏览量与转化分母');await capture.getByRole('button',{name:'查询并解释证据',exact:true}).click();const realEvidence=capture.getByRole('region',{name:'真实语义查询证据'});await expect(realEvidence).toBeVisible();await expect(realEvidence.getByRole('cell',{name:'0.00%',exact:true})).toBeVisible();expect(modelCalls).toBe(8);const usageSummary=capture.locator('summary').filter({hasText:'AI 使用与调用记录'});await expect(usageSummary).toBeVisible();expect(await usageSummary.locator('..').getAttribute('open')).toBeNull();const hierarchy=await capture.locator('main').evaluate(root=>{const question=root.querySelector('textarea[name=question]'),config=root.querySelector('.model-settings-entry'),usage=[...root.querySelectorAll('summary')].find(element=>element.textContent==='AI 使用与调用记录');return{questionBeforeConfig:Boolean(question&&config&&(question.compareDocumentPosition(config)&Node.DOCUMENT_POSITION_FOLLOWING)),configBeforeUsage:Boolean(config&&usage&&(config.compareDocumentPosition(usage)&Node.DOCUMENT_POSITION_FOLLOWING))};});expect(hierarchy).toEqual({questionBeforeConfig:true,configBeforeUsage:true});for(const width of [1440,390]){await capture.setViewportSize({width,height:900});await capture.screenshot({path:testInfo.outputPath(`ai-zh-${width}.png`),fullPage:true});await testInfo.attach(`ai-zh-${width}`,{path:testInfo.outputPath(`ai-zh-${width}.png`),contentType:'image/png'});}await testInfo.attach('ai-screenshot-metadata',{body:JSON.stringify({sourceSHA:process.env.SOURCE_COMMIT||process.env.GITHUB_SHA||null,language:'zh-CN',siteId:daily.id,timezone:'UTC',date:today,viewports:[1440,390],data:{pv:1,conversionNumerator:0,conversionDenominator:1,privacyMode:'daily_salt'},testOnlyConfiguration:{monthlyTokenBudget:200000,reason:'Additional simulated-provider screenshot phase; product defaults and reservation guards unchanged'},externalBoundary:'Provider transport and model text are explicitly simulated; collector, worker, PostgreSQL facts and authorized semantic charts are real.'},null,2),contentType:'application/json'});lateFinalGate=new Promise<void>(resolve=>{releaseLateFinal=resolve;});await capture.getByLabel('问题',{exact:true}).fill('Delayed question with actual authorized aggregates');await capture.getByRole('button',{name:'查询并解释证据',exact:true}).click();await expect.poll(()=>modelCalls).toBe(10);const lateCall=(await pool.query("SELECT id,purpose,status FROM ai_calls WHERE site_id=$1 ORDER BY created_at DESC,id DESC LIMIT 1",[daily.id])).rows[0];expect(lateCall).toMatchObject({purpose:'question',status:'reserved'});await capture.getByLabel('用途',{exact:true}).selectOption('daily');await expect(capture.getByRole('button',{name:'查询并解释证据',exact:true})).toBeEnabled();releaseLateFinal();await expect.poll(async()=> (await pool.query('SELECT status FROM ai_calls WHERE id=$1',[lateCall.id])).rows[0].status).toBe('complete');const lateSaved=await capture.request.get(`${origin}/api/sites/${daily.id}/ai/questions/${lateCall.id}`);expect(lateSaved.status()).toBe(200);const lateRecord=await lateSaved.json();expect(lateRecord.answer).toBe('LATE_QUESTION_RESPONSE_MUST_NOT_RENDER');expect(lateRecord.questionEvidence.charts.find((chart:{metric:string})=>chart.metric==='pv').points[0].value).toBe(1);await expect(capture.getByLabel('用途',{exact:true})).toHaveValue('daily');await expect(capture.locator('.ai-answer')).toHaveCount(0);await expect(capture.getByRole('region',{name:'真实语义查询证据'})).toHaveCount(0);await expect(capture.getByText('LATE_QUESTION_RESPONSE_MUST_NOT_RENDER',{exact:true})).toHaveCount(0);expect(modelCalls).toBe(10);}finally{releaseLateFinal();await chinese.close();}
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+      33 |  }finally{await Promise.allSettled([owner.close(),memberContext.close()]);try{await instance?.app.close();}finally{await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}}
+      34 | });
+      35 |
+        at /tmp/baize-ai-scope-final-89hzdris/tests/e2e/ai-evidence-language.spec.ts:32:3136
+
+    attachment #1: ai-zh-1440 (image/png) ──────────────────────────────────────────────────────────
+    test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-1440-48df31247bcbf3a54f28a420f9f672769449311f.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: ai-zh-390 (image/png) ───────────────────────────────────────────────────────────
+    test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-390-8fa8887b3dc1bbb5df284503f88db766083a9aa9.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/ai-evidence-language.spec.ts:10:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/tmp/baize-ai-scope-final-89hzdris/node_modules/@playwright/test/cli.js",
+      "test",
+      "tests/e2e/ai-evidence-language.spec.ts",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/baize-ai-scope-final-89hzdris/playwright.config.ts",
+    "rootDir": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/baize-ai-scope-final-89hzdris/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/tmp/baize-ai-scope-final-89hzdris/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e",
+        "snapshotDir": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "storageState": "/tmp/baize-e2e-owner-c4b9972480ced94a.json",
+          "baseURL": "http://127.0.0.1:3391",
+          "headless": true,
+          "launchOptions": {
+            "executablePath": "/usr/bin/chromium"
+          },
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "ai-evidence-language.spec.ts",
+      "file": "ai-evidence-language.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 90002,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/tmp/baize-ai-scope-final-89hzdris/tests/e2e/ai-evidence-language.spec.ts",
+                        "column": 3136,
+                        "line": 32
+                      },
+                      "message": "Error: locator.selectOption: Test ended.\nCall log:\n\u001b[2m  - waiting for getByLabel('用途', { exact: true })\u001b[22m\n\n\n  30 |   // Additional screenshot phase runs after all original privacy and provider-call assertions.\n  31 |   const screenshotBudgetGuard=await page.request.post(`${origin}/api/sites/${daily.id}/ai`,{data:{purpose:'question',question:'核对所选当日的实际浏览量与转化分母',start:today,end:today}});expect(screenshotBudgetGuard.status()).toBe(429);expect((await screenshotBudgetGuard.json()).error).toBe('ai_budget_exceeded');expect(modelCalls).toBe(6);expect((await page.request.put(`${origin}/api/sites/${daily.id}/external`,{data:{kind:'ai',settings:{monthlyTokenBudget:200000}}})).status()).toBe(200);\n> 32 |   screenshotPhase=true;const chinese=await browser.newContext({storageState:await owner.storageState()});try{await chinese.addInitScript(()=>localStorage.setItem('baize_language','zh-CN'));const capture=await chinese.newPage();await capture.goto(page.url());await expect(capture.getByRole('combobox',{name:'选择站点',exact:true})).toHaveValue(daily.id);await capture.getByLabel('开始',{exact:true}).fill(today);await capture.getByLabel('结束',{exact:true}).fill(today);await navigateWorkspace(capture,'AI');await capture.getByLabel('问题',{exact:true}).fill('核对所选当日的实际浏览量与转化分母');await capture.getByRole('button',{name:'查询并解释证据',exact:true}).click();const realEvidence=capture.getByRole('region',{name:'真实语义查询证据'});await expect(realEvidence).toBeVisible();await expect(realEvidence.getByRole('cell',{name:'0.00%',exact:true})).toBeVisible();expect(modelCalls).toBe(8);const usageSummary=capture.locator('summary').filter({hasText:'AI 使用与调用记录'});await expect(usageSummary).toBeVisible();expect(await usageSummary.locator('..').getAttribute('open')).toBeNull();const hierarchy=await capture.locator('main').evaluate(root=>{const question=root.querySelector('textarea[name=question]'),config=root.querySelector('.model-settings-entry'),usage=[...root.querySelectorAll('summary')].find(element=>element.textContent==='AI 使用与调用记录');return{questionBeforeConfig:Boolean(question&&config&&(question.compareDocumentPosition(config)&Node.DOCUMENT_POSITION_FOLLOWING)),configBeforeUsage:Boolean(config&&usage&&(config.compareDocumentPosition(usage)&Node.DOCUMENT_POSITION_FOLLOWING))};});expect(hierarchy).toEqual({questionBeforeConfig:true,configBeforeUsage:true});for(const width of [1440,390]){await capture.setViewportSize({width,height:900});await capture.screenshot({path:testInfo.outputPath(`ai-zh-${width}.png`),fullPage:true});await testInfo.attach(`ai-zh-${width}`,{path:testInfo.outputPath(`ai-zh-${width}.png`),contentType:'image/png'});}await testInfo.attach('ai-screenshot-metadata',{body:JSON.stringify({sourceSHA:process.env.SOURCE_COMMIT||process.env.GITHUB_SHA||null,language:'zh-CN',siteId:daily.id,timezone:'UTC',date:today,viewports:[1440,390],data:{pv:1,conversionNumerator:0,conversionDenominator:1,privacyMode:'daily_salt'},testOnlyConfiguration:{monthlyTokenBudget:200000,reason:'Additional simulated-provider screenshot phase; product defaults and reservation guards unchanged'},externalBoundary:'Provider transport and model text are explicitly simulated; collector, worker, PostgreSQL facts and authorized semantic charts are real.'},null,2),contentType:'application/json'});lateFinalGate=new Promise<void>(resolve=>{releaseLateFinal=resolve;});await capture.getByLabel('问题',{exact:true}).fill('Delayed question with actual authorized aggregates');await capture.getByRole('button',{name:'查询并解释证据',exact:true}).click();await expect.poll(()=>modelCalls).toBe(10);const lateCall=(await pool.query(\"SELECT id,purpose,status FROM ai_calls WHERE site_id=$1 ORDER BY created_at DESC,id DESC LIMIT 1\",[daily.id])).rows[0];expect(lateCall).toMatchObject({purpose:'question',status:'reserved'});await capture.getByLabel('用途',{exact:true}).selectOption('daily');await expect(capture.getByRole('button',{name:'查询并解释证据',exact:true})).toBeEnabled();releaseLateFinal();await expect.poll(async()=> (await pool.query('SELECT status FROM ai_calls WHERE id=$1',[lateCall.id])).rows[0].status).toBe('complete');const lateSaved=await capture.request.get(`${origin}/api/sites/${daily.id}/ai/questions/${lateCall.id}`);expect(lateSaved.status()).toBe(200);const lateRecord=await lateSaved.json();expect(lateRecord.answer).toBe('LATE_QUESTION_RESPONSE_MUST_NOT_RENDER');expect(lateRecord.questionEvidence.charts.find((chart:{metric:string})=>chart.metric==='pv').points[0].value).toBe(1);await expect(capture.getByLabel('用途',{exact:true})).toHaveValue('daily');await expect(capture.locator('.ai-answer')).toHaveCount(0);await expect(capture.getByRole('region',{name:'真实语义查询证据'})).toHaveCount(0);await expect(capture.getByText('LATE_QUESTION_RESPONSE_MUST_NOT_RENDER',{exact:true})).toHaveCount(0);expect(modelCalls).toBe(10);}finally{releaseLateFinal();await chinese.close();}\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n  33 |  }finally{await Promise.allSettled([owner.close(),memberContext.close()]);try{await instance?.app.close();}finally{await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}}\n  34 | });\n  35 |\n    at /tmp/baize-ai-scope-final-89hzdris/tests/e2e/ai-evidence-language.spec.ts:32:3136"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T20:17:50.144Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "ai-zh-1440",
+                      "contentType": "image/png",
+                      "path": "/tmp/baize-ai-scope-final-89hzdris/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-1440-48df31247bcbf3a54f28a420f9f672769449311f.png"
+                    },
+                    {
+                      "name": "ai-zh-390",
+                      "contentType": "image/png",
+                      "path": "/tmp/baize-ai-scope-final-89hzdris/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/attachments/ai-zh-390-8fa8887b3dc1bbb5df284503f88db766083a9aa9.png"
+                    },
+                    {
+                      "name": "ai-screenshot-metadata",
+                      "contentType": "application/json",
+                      "body": "ewogICJzb3VyY2VTSEEiOiAiMGMzY2E2YWMwNmM0NTljODI0ZjBhMWE1ZmMxYTEzNDk3ZDQzMjhkNCIsCiAgImxhbmd1YWdlIjogInpoLUNOIiwKICAic2l0ZUlkIjogIjhjNDkzMzE3ZDMyODBjZDcyOWJhMWExNyIsCiAgInRpbWV6b25lIjogIlVUQyIsCiAgImRhdGUiOiAiMjAyNi0xMC0xMCIsCiAgInZpZXdwb3J0cyI6IFsKICAgIDE0NDAsCiAgICAzOTAKICBdLAogICJkYXRhIjogewogICAgInB2IjogMSwKICAgICJjb252ZXJzaW9uTnVtZXJhdG9yIjogMCwKICAgICJjb252ZXJzaW9uRGVub21pbmF0b3IiOiAxLAogICAgInByaXZhY3lNb2RlIjogImRhaWx5X3NhbHQiCiAgfSwKICAidGVzdE9ubHlDb25maWd1cmF0aW9uIjogewogICAgIm1vbnRobHlUb2tlbkJ1ZGdldCI6IDIwMDAwMCwKICAgICJyZWFzb24iOiAiQWRkaXRpb25hbCBzaW11bGF0ZWQtcHJvdmlkZXIgc2NyZWVuc2hvdCBwaGFzZTsgcHJvZHVjdCBkZWZhdWx0cyBhbmQgcmVzZXJ2YXRpb24gZ3VhcmRzIHVuY2hhbmdlZCIKICB9LAogICJleHRlcm5hbEJvdW5kYXJ5IjogIlByb3ZpZGVyIHRyYW5zcG9ydCBhbmQgbW9kZWwgdGV4dCBhcmUgZXhwbGljaXRseSBzaW11bGF0ZWQ7IGNvbGxlY3Rvciwgd29ya2VyLCBQb3N0Z3JlU1FMIGZhY3RzIGFuZCBhdXRob3JpemVkIHNlbWFudGljIGNoYXJ0cyBhcmUgcmVhbC4iCn0="
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/baize-ai-scope-final-89hzdris/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/baize-ai-scope-final-89hzdris/test-results/ai-evidence-language-actua-d92f9-t-simulated-model-transport/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c517db3d24baea860422-c19e99718329227ffb9f",
+          "file": "ai-evidence-language.spec.ts",
+          "line": 10,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-10T20:17:45.500Z",
+    "duration": 95975.45300000001,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "0c3ca6ac06c459c824f0a1a5fc1a13497d4328d4",
+  "exit": 1,
+  "scope": "targeted ai-evidence-language.spec.ts; not full browser regression",
+  "passed": 0,
+  "failed": 1,
+  "skipped": 0,
+  "durationMs": 95975.453,
+  "failure": "Chinese purpose selectOption timeout after simulated provider requests reached 10 within 90-second test budget",
+  "real": "Chromium/local application/database",
+  "simulated": "model provider transport",
+  "diagnosis": "in progress; no regression pass claimed",
+  "previous08eab82FullPassRetained": true
+}
