@@ -1,0 +1,59 @@
+{
+  "scope": "Mutable WIP targeted checks; not final full-plan, immutable snapshot, browser or Docker acceptance",
+  "recordedAt": "2026-10-10T13:38:51.802689+00:00",
+  "mainBase": "f017f8d",
+  "checks": [
+    {
+      "report": "/tmp/baize-root-048-registration.json",
+      "files": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "report": "/tmp/baize-043-completion-read-source-fixed.json",
+      "files": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "overlap": "session-header-orphans.test.ts is in both runs; do not add counts to a full-suite total",
+  "priorFailures": [
+    {
+      "report": "/tmp/baize-048-heatmap-first.json",
+      "reason": "Fixture omitted required accepted event_keys before CH publication; fixed fixture preserves product key verification"
+    },
+    {
+      "report": "/tmp/baize-043-completion-read-source.json",
+      "passed": 2,
+      "failed": 1,
+      "reason": "Old fixture staged 205 headers without an explicit producer completion marker; fixed by calling completeRun for the real cursor count"
+    }
+  ],
+  "assertions": [
+    "Published cache base preserves 18 expired legacy contributions and 1 covered live event; late same-coordinate delta plus new coordinate gives 20+1, without counting real rolled-back CH upload",
+    "Per-point immutable owner/batch coverage, never event-time cutoff or site-wide coverage union",
+    "Same held max1 PG connection; no permanent heatmap_points body",
+    "Physical missing/invalidation fails closed; no PostgreSQL fallback to false zero",
+    "Original legacy published header body checked before in-place migration, invented body rejected, actual completed CH owner and legacy owner readable after PG header-body removal",
+    "All adapter registration/maintenance remains under false public activation guard"
+  ],
+  "hashesAtRecordTime": {
+    "src/server/canonical-heatmap.ts": "816b3fa29b8c83a837217c9787a836011b29a0a7a18d3dd6d2ae06a6c9958ea9",
+    "src/server/session-header-publication.ts": "fcda53fe5002acbb5465dd40c64480e3b3fb158bab53ee46281cdfbcfc18dbd1",
+    "src/server/session-header-store.ts": "4d832aad774d1a88f7a4d13456df2868c0e79649c55e6a1ff70438b44a85d6c1",
+    "src/server/session-header-source.ts": "c133fbd03ce1ce6845c789c3184a12f9e76a2ac6ffd06087c6d1795767e7d3c0",
+    "src/server/app.ts": "63eb6e3a1b73d18927282da2f60eefb69fd39ff9f9cda58c1fbf42ef427a9132",
+    "tests/integration/canonical-heatmap.test.ts": "40e422a8d073cf0ba2749dc6e23e66ee3667267f30f626b5bc455907bb02ba74",
+    "tests/integration/session-header-source.test.ts": "6e70f2aaaffd9e584215d52c574984fe3dc95c4187a714cdaafcefa4605af905"
+  },
+  "hashBoundary": "Agents continue WIP; hashes at record time do not claim all dependencies equal the executed snapshot",
+  "notRun": [
+    "Strict CLI complete path",
+    "Full current integrated suite",
+    "Current browser suite",
+    "Final Docker image and operational suite",
+    "Any hosted CI"
+  ]
+}
