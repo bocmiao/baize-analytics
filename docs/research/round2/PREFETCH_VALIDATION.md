@@ -42,3 +42,14 @@ b0be327d233f17163d01a2841669cdac033f95fa 不可变归档实测EXIT0，完整Git 
 ### 33e005a 5000 actual EXIT1
 
 [原JSON](../../test-evidence/main-33e005a-independent-strict-5000.json)、[表格与边界](../../test-evidence/main-33e005a-independent-summary.md)。97批/4850接受、3未发送、38延迟；queryFailed2，drain deadline/末backlog1450，final断言executed空。HTTP facts5468CH/auth/TEMP，87.93/34.11/28.27s，site lock93.49s；worker facts7481CH/1581auth/TEMP。cleanup四true/source981blobs不变，仍负载失败，不声称SLO或因果改进。
+
+
+## 5ee7afe 同类型两批单请求真实验收
+
+不可变提交 `5ee7afea783918c242321a50e1aaf1dfb7c41f1f` 实际13项 PG/CH 全部通过，EXIT0、无跳过；5项单元、相关lint与类型检查通过。[原报告](../../test-evidence/main-5ee7afe-fact-pair.json)、[执行及摘要记录](../../test-evidence/main-5ee7afe-fact-pair-record.json)、[单元报告](../../test-evidence/main-5ee7afe-fact-pair-unit.json)已保存。
+
+仅同 site/run/kind 的最多两个已提交 manifest 使用单请求，显式 attempt_id 分组与 `LIMIT 101 BY attempt_id` 保留每原批超限哨兵。真实120条两manifest验证只有1次HTTP，原排序/正文完全一致；默认writer生成接近32KiB的Unicode记录通过新reader认证。正文使用无损base64运输，解码前44036字符界限、规范base64重编码、fatal UTF8均验证；完整EOF、16MiB+1拒绝及cancel、原SHA/HMAC/形状/大小/主键/source/epoch/逐组数量与最多100行输出全部保持。singleton和mixed-kind仍走原运输。
+
+有效producer及严格restore固定3字段source，normalized正文最多32768 UTF8 bytes，sealed增量最多259 bytes；202哨兵行base64正文最多8,895,272 bytes加固定小元数据，低于未提高的16MiB总限额。新增decoder计入authentication但不重复计rows；该阶段观察次数不等于HMAC调用次数。
+
+首轮b65aefa为12通过1失败：新Unicode回滚留下本测试2个CH孤儿，导致旧exact1断言看到3。仅对新测试site+target run作物理DELETE、完整EOF及count ACK0清理后，旧孤儿exact1断言原样通过；首轮失败记录不覆盖。尚未做本片同口径负载，不能宣称延迟收益或性能达标。

@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "5ee7afea783918c242321a50e1aaf1dfb7c41f1f",
+  "realResult": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "realFiles": [
+    "/tmp/baize-release-bounded-1x0fsnyt/tests/integration/fact-source-batch-cte.test.ts",
+    "/tmp/baize-release-bounded-1x0fsnyt/tests/integration/fact-store-source.test.ts",
+    "/tmp/baize-release-bounded-1x0fsnyt/tests/integration/fact-store.test.ts"
+  ],
+  "lightCommands": [
+    "node_modules/.bin/vitest run tests/unit/fact-pair-response.test.ts --reporter=json --outputFile=/tmp/baize-fact-pair-unit.json",
+    "node_modules/.bin/eslint src/server/fact-store.ts src/server/fact-pair-response.ts tests/unit/fact-pair-response.test.ts tests/integration/fact-store.test.ts",
+    "node_modules/.bin/tsc --noEmit"
+  ],
+  "unitPassed": 5,
+  "unitFailed": 0,
+  "lintExitCode": 0,
+  "typeExitCode": 0,
+  "workspaceFileSha256": {
+    "src/server/fact-store.ts": "f48488b720d66e9747c3038d35e2b3057850bc1ab84a0604b49677148baf5ade",
+    "src/server/fact-pair-response.ts": "9f55add65a9c9fd3045f6d8e7170cf587b20ecb245ef3d1968cba05a3f06ca78",
+    "tests/unit/fact-pair-response.test.ts": "2f3e19de3410908d576408d65761554bc2b674bbf008c7183273f909806e8b2f",
+    "tests/integration/fact-store.test.ts": "8a4c2832b0f589e72a02b1c45f7b36012d23f267577e084b63e90d354c8dd29d"
+  },
+  "originalFailurePreserved": "b65aefa real 13 cases: 12 PASS / 1 FAIL, new Unicode fixture rollback left two own CH orphan bodies. Fixed own site+target run physical DELETE+EOF+count ACK cleanup; original shared orphan exact-one assertion unchanged.",
+  "scope": "Same site/run/kind two manifests only, one request with LIMIT 101 BY attempt_id and unchanged 16MiB total EOF cap. Singletons/mixed kinds retain original request. Canonical base64/fatal UTF8, per-attempt counts/order, original schema/SHA/HMAC/key/source/epoch checks retained. Predecode maximum 44036 chars. Decoder authentication observation has no row counter to avoid double-counting HMAC rows.",
+  "performance": "Not yet measured; no latency benefit or SLO claim."
+}
