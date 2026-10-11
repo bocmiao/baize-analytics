@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "7ed61601ef81216d54414112a79a30945d5fb906",
+  "exit": 1,
+  "unitPassed": 229,
+  "integrationPassed": 439,
+  "failedAssertions": 0,
+  "skipped": 0,
+  "unhandled": 1,
+  "error": "25P04 transaction timeout",
+  "origin": "tests/integration/stats-read-budget.test.ts",
+  "browser": "not-run",
+  "newImage": "not-run",
+  "candidateLoad": "not-run",
+  "previous57P01": "not observed this full run; prior failure preserved"
+}
