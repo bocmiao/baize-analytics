@@ -1,0 +1,10 @@
+{
+  "present": true,
+  "runHash": "edbfba992d23fe3c3c49808a52c506a9938ca7eb3d9046fc409a517b2447547d",
+  "sourceAuthority": "clickhouse",
+  "authority": "clickhouse",
+  "epochMatches": true,
+  "authorityMatches": false,
+  "dirty": true,
+  "deletionAdvanced": true
+}

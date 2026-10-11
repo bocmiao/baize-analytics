@@ -75,3 +75,9 @@ v13 全链仍 EXIT1：源/目标及 runtime 均保持原 365 天范围，旧缓�
 
 
 v15 独立签名恢复实际 1 FAIL / 0 SKIP，约 29.96 秒，已绑定 6434ed6 的相关生产与夹具 blob。已越过 centroid 故障，缓存迁移、strict 切换、B 身份页面/会话、A 删除与收入回执通过；首次失败位于最终历史查询的 captured/live 来源向量复核，抛 aggregate_source_changed。尚未执行最终数值差分及源不变断言，因此整链仍未通过。具体变化字段暂无证据，先增加只在夹具的安全阶段诊断，不改生产拒绝 guard，不以重试掩盖。
+
+
+v16 新增精确状态读取诊断后仍实际 1 FAIL / 0 SKIP，约 30.24 秒。仅首次 stateSql 被执行，尚未到 COMMIT 后 live 查询；因此纠正 v15 初步归因，未证实 captured/live 向量发生变化。实际异常来源为 FACT_STORE_SOURCE_FENCE 的公开错误映射。当前 authority 为 clickhouse，mirror 字段均 null；未改生产 fence，正在用精确 producer/head 与旧 run 状态定位首次不匹配。v15 的失败本身保持，原始阶段证据不改写。
+
+
+v17 精确 head 诊断仍实际 1 FAIL / 0 SKIP，但定位到首次不一致：选中最新 generation12（等于 processed12），并非错选旧高代 run；epoch_matches=true、authority_matches=false、dirty=true、deletion_advanced=true。恢复后的 createApp 即使 background:false 仍正常重放删除 journal，推进删除 epoch，夹具随后未运行 worker 就查询旧聚合。生产 guard 正确拒绝。下一修订按真实启动契约等待真实 worker 发布，并显式检查 dirty/错误/队列清净，不改 selector、不放宽删除或签名检查。
