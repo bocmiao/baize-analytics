@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "f8c9c12a54c843f55e1351882a8ff27735b45816",
+  "exit": 0,
+  "scope": "fresh local Compose, PostgreSQL/ClickHouse/Redis, regular harness; no hosted CI",
+  "unit": {
+    "files": 61,
+    "passed": 247,
+    "failed": 0,
+    "skipped": 0,
+    "unhandled": 0
+  },
+  "integration": {
+    "files": 161,
+    "passed": 443,
+    "failed": 0,
+    "skipped": 0,
+    "unhandled": 0
+  },
+  "browserDirectory": {
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "chromium": 28,
+    "dateChecks": 2
+  },
+  "applicationManifestFiles": 395,
+  "applicationSourceUnchanged": true,
+  "cleanup": "own fresh Compose services and volumes removed; original three services preserved",
+  "artifactsSha256": {
+    "main-f8c9c12-full-unit.json": "dad64b0b1eb3141e144b6d3daefc9029ba411c9d2e6f04cb99653345a2f91931",
+    "main-f8c9c12-full-integration.json": "4a9af40a5b9cb17059b309d6f6703186eb40285d571f58dbe1686fdb76caa074",
+    "main-f8c9c12-full-safe.txt": "1422152f4d7983c68c2375be02dc11dea963a0e0af49e7a4273b863e2ac1fef5",
+    "main-f8c9c12-full-source.sha256": "e299977340ea7b7d223df62fc29aed550921c9116d43dfc90a4a6d6e5db11aab"
+  },
+  "boundaries": [
+    "Provider transports remain explicitly simulated where noted by tests",
+    "Functional browser pass is not visual approval",
+    "No new load run; historical strict5000 FAIL retained"
+  ]
+}
