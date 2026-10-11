@@ -1,0 +1,54 @@
+{
+  "scope": "development guidance only; no skill text or licenses redistributed in prototype ZIP or product",
+  "installer": "user-provided official helper unchanged; fixed-ref --method git --dest /workspace/baize-ui-skills-installed, both EXIT0",
+  "installedRoot": "/workspace/baize-ui-skills-installed",
+  "localDiscoveryLinks": ".agents/skills (local Git exclude; not committed)",
+  "automaticDiscovery": "not claimed; files explicitly read and applied this turn",
+  "skills": [
+    {
+      "url": "https://raw.githubusercontent.com/anthropics/skills/41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f/skills/frontend-design/SKILL.md",
+      "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3",
+      "bytes": 9390
+    },
+    {
+      "url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md",
+      "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "bytes": 1231
+    }
+  ],
+  "rulesSnapshot": {
+    "url": "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md",
+    "sha256": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234",
+    "etag": "\"c19d5d8dc01da8dae74d5a313333d62678b489dcb6c6add4e4f055fdad7f35b5\""
+  },
+  "capturedAt": "2026-10-11T01:16:56.918981+00:00",
+  "usedFor": "A overview/drill-down and B analytical workbench layout; keyboard, contrast, forms, touch, state and responsive review",
+  "libraryTools": "No Library skill/tool exposed in current catalog; no library_file_ids claimed",
+  "helperInstallation": "both installed to project-specific external directory and explicitly loaded; automatic discovery not claimed",
+  "application": "skills explicitly read and applied; local .agents links excluded from Git",
+  "CODEXHomeSkills": "outside current writable roots; no escalation attempted",
+  "helperSha256": {
+    "install-skill-from-github.py": "38f311b75664bb063808f982c600271ebc4b560830f491705190f88a94e3e781",
+    "github_utils.py": "61c1bbe2ae217433b4b6f9f09f21aca4df52c12598068343ade719f706e4859b"
+  },
+  "installedFiles": [
+    {
+      "skill": "frontend-design",
+      "path": "/workspace/baize-ui-skills-installed/frontend-design/SKILL.md",
+      "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "skill": "web-design-guidelines",
+      "path": "/workspace/baize-ui-skills-installed/web-design-guidelines/SKILL.md",
+      "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "files": [
+        "SKILL.md"
+      ]
+    }
+  ],
+  "downloadFailure": "preceding fixed-ref --method download HTTP404 for both preserved; authorized git fallback succeeds"
+}
