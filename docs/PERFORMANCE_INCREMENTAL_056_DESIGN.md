@@ -1,5 +1,8 @@
 # 056 增量会话归约设计与独立planner（生产闭环待验证）
 
+> 状态入口（2026-10-11，本轮 057 在制）：056 为显式 opt-in，默认仍 full；已修复 archived dirty owner 的保守回退及正向访客元数据删除。下方早期「当前验收」是 a49 候选阶段记录，实际后续证据见 [PERFORMANCE_INCREMENTAL_056_VALIDATION.md](PERFORMANCE_INCREMENTAL_056_VALIDATION.md)。057 正在完成受签名约束的历史覆盖、收入与恢复 reset 连续性；新 5000 尚未执行，旧失败保留。
+
+
 ## 决策与最小边界
 
 首片只支持**可信events-only变更下，dirty visitor完整闭包归约与其他visitor原贡献复用**。不先实现单session窗口剪枝。每个dirty visitor读取全部retained raw及有效旧sealed headers、expired prefix/carry，按原事件时间与event ID排序，使用原归约算法重算完整会话闭包。因此迟到事件连接两个会话时不遗漏邻会话；超长visitor仍走SQL TEMP/cursor，不建立全visitor JS数组。
@@ -50,3 +53,15 @@ root不可变基线300诊断实际EXIT0、300完整接收并排空；增量候�
 - source body missing/hash/HMAC坏即拒；CH成功PG失败delta orphan不可见；capture后intake及non-event revision变化；原max1/lease/锁与cleanup。
 - partial A身份区间删除B保留、changed=false replay、配置/定义变化full fallback、独立签名restore与owner闭包完整性。不同run共享hour不能误删或双计。
 - 正确性通过后才由root串行一次同原参数固定负载，保留FAIL并报告派生输出量、worker/drain及查询；不改120秒/预算/认证/限额，不承诺收益。
+
+
+## 057 历史覆盖与受控转换（在制）
+
+`analytics_fact_coverage_witnesses` 不从最早 run 或 `retained_from` 猜历史完整性。只有实际完整认证的 FULL producer 可以首次建立证明，记录 coverage/from、已接受快照水位、观察时间、配置指纹、当前选定 owner/空 owner/receipt 闭包摘要及 HMAC。后续有效证明与同连接令牌控制转换，未知 generation、配置或 namespace 改变仍失效；legacy 已过期明细不能事后获得证明。
+
+- TTL、精确删除与最新 journal 重放：证明先认证，原物理 ACK 顺序保持，在当前同 site 事务内更新幸存闭包和 live fence；旧原始 sealed body/attempt 不改。
+- 可信收入采集：仅当前保留窗口内、无 identify/replay/heatmap 的受限 fresh 输入，真实 CH 发布完成后可续接一次精确 non-event generation。未聚合期间不推进原 accepted HWM 或观察时间，普通读取因 dirty 状态拒绝；下一真实 FULL 发布才推进快照。普通事件批次不增加闭包扫描。
+- 独立签名恢复：原 witness/state/闭包先验证，全部独立目标 sidecar ACK 后在同连接转换 live 元数据，再应用最新独立删除日志；不能用空目标或旧快照代替授权。
+- restore-runtime 的受控重建 reset：专用不可伪造令牌要求实际已验证的签包/目标/日志前提，并限制为一次 epoch 变化、generation+1、processed=0；同 canonical/delete/config 边界不变。全部生产 rebase 完成后保存原范围/HWM，普通 dirty 查询仍拒绝，后续真实 FULL 完成后才 clean。
+
+覆盖证明只补充原缓存签名的接受快照范围。普通原始明细保留期守卫不放宽；缓存读取仍认证整个 selected source body 闭包，缺 CH 正文、坏 HMAC 或未知范围明确拒绝。新增 `coverage_witness_wall` 为累计内部阶段，包含在 worker wall 内，不能二者相加制造时间收益。最终独立恢复和固定负载以验证文档实际结果为准。

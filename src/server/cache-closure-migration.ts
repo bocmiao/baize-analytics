@@ -5,7 +5,7 @@ import {selectedFactRunPredicate,assertFactRunClosure} from './fact-run-closure.
 import {cacheRowKey,normalizeCacheRow,type ClickHouseCacheStore,type CacheFence,type CacheKind} from './cache-store.js';
 import {canonical} from './security.js';
 import {factAuthorityMatches} from './fact-authority.js';
-import {assertCurrentFactRangeBacking} from './fact-range-backing.js';
+import {assertCacheSnapshotRangeBacking} from './cache-range-backing.js';
 import {withRemainingFactReadSource} from './remaining-fact-source.js';
 import {exportedPublishedRollups} from './published-export-projections.js';
 import type {Pool} from 'pg';
@@ -22,7 +22,7 @@ export async function migratePublishedCacheClosure(c:PoolClient,store:ClickHouse
   if(!options.pool||!flag.rebuildable_v2||!['hourly_rollup','daily_rollup'].includes(flag.kind)||!flag.from_ts||!flag.to_ts||!Array.isArray(flag.rebuild_proof)||flag.rebuild_proof.length!==1)throw Error('CACHE_BASELINE_UNAVAILABLE');
   const proof=flag.rebuild_proof[0];if(!proof||!proof.body||typeof proof.body!=='object')throw Error('CACHE_REBUILD_PROOF_INVALID');const body=proof.body,secret=(await c.query('SELECT salt_secret FROM sites WHERE id=$1',[site])).rows[0].salt_secret,expected=createHmac('sha256',secret).update(canonical(['cache-rebuild-v1',site,body])).digest('hex');
   if(!body||body.version!==1||body.method!=='authenticated_v2_cache_body'||body.kind!==flag.kind||body.from!==new Date(flag.from_ts).toISOString()||body.to!==new Date(flag.to_ts).toISOString()||!Number.isSafeInteger(body.bucketCount)||body.bucketCount<=0||typeof proof.seal!=='string'||proof.seal.length!==expected.length||!timingSafeEqual(Buffer.from(proof.seal),Buffer.from(expected)))throw Error('CACHE_REBUILD_PROOF_INVALID');
-  await assertCurrentFactRangeBacking(c,options.pool,site,body.from,body.to);
+  await assertCacheSnapshotRangeBacking(c,options.pool,site,body.from,body.to);
   const kind=flag.kind as 'hourly_rollup'|'daily_rollup',daily=kind==='daily_rollup',table=daily?'stats_daily':'stats_hourly';
   const seed=(await c.query(daily?"SELECT $1::text site_id,to_char(g,'YYYY-MM-DD') AS \"day\",'{\"relationalVersion\":2}'::jsonb data,$4::bigint generation FROM sites s CROSS JOIN LATERAL generate_series(($2::timestamptz AT TIME ZONE s.timezone)::date,(($3::timestamptz-interval '1 microsecond') AT TIME ZONE s.timezone)::date,interval '1 day') g WHERE s.id=$1 LIMIT 10001":"SELECT $1::text site_id,g AS \"hour\",'{\"relationalVersion\":2}'::jsonb data,$4::bigint generation FROM generate_series($2::timestamptz,$3::timestamptz-interval '1 hour',interval '1 hour') g LIMIT 10001",[site,body.from,body.to,state.generation])).rows;
   if(seed.length>10000)throw Error('CACHE_REBUILD_RANGE_LIMIT');

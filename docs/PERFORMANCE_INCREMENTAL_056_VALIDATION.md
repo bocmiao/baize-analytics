@@ -35,3 +35,20 @@ raw 保留物理 ACK 后，仅给同 epoch 的 complete cache owner 推进 live 
 独立恢复继续发现真实混合闭包缺陷：旧 run PG 正文已裁剪为 0 行但有 130 条 CH receipts，旧迁移按 PG 0 行重新完成校验而拒绝。修复仅对 complete 且 PG kind 为 0 的旧正文完整认证读取 sealed CH，保留 receipt、attempt 和 source epoch；非空 PG 仍走原精确迁移与七 kind 对账。真实 PG/CH 专项 3 PASS / 0 SKIP（首轮一条错误码预期失败保留），包括混合旧130行与新PG run、非空PG篡改拒绝、缺失旧CH正文拒绝。恢复 v9 已越过事实闭包，但缓存范围 backing 仍失败，正在诊断；未完成独立恢复。
 
 当前完整单元目录 294 PASS / 0 FAIL / 0 SKIP，完整 lint、构建通过，记录绑定测试时源码哈希；发生在上述混合事实闭包修复之前，不作为新修复全轮绿灯。新修复的定向类型和 lint 通过，整轮应用/浏览器/镜像仍未执行。
+
+恢复 v10 安全计数诊断确认：缓存签名窗口从前日 00:00 / 09:00 开始，当前 full snapshot 的 `retained_from` 为前日约 10:02，clean head/authority 匹配且无 pending rebuild。旧完整 run 和 receipts 存在，仍不足以证明整个历史窗口与空桶完整。没有删除 unavailable 标记或放宽普通保留边界。057 历史覆盖 witness 正在实现，将由真实 full producer 在原范围仍可认证时捕获，明确绑定 accepted HWM、selected owner 闭包和授权删除/恢复转换；未知历史不能事后猜成完整。当前独立恢复和最终性能仍未闭环。
+
+
+## 057 阶段化定位（在制，不是最终整轮）
+
+独立恢复 v11/v12 均真实 EXIT1，历史失败未删除。v12 的安全阶段记录证明：初始 FULL、raw prune、strict activation、retention PATCH、physical TTL 与 TTL worker 保持原 365 天 coverage；收入 FULL 首次缩到 1 天。签名导出/目标导入/latest journal 保持这个已缩范围，restore-runtime 的第二次 epoch reset 又缩短约 8 秒。不是签名 guard 假失败，也未放宽范围 guard。
+
+收入转换已独立最小复现：首次 1 FAIL；窄修后的专项 1 PASS，另 1 项因 `-t` 过滤未运行。只允许当前保留期内、durable CH 发布完成的可信收入批次精确推进一代，保持旧覆盖范围/accepted HWM/观察时间且闭包不变；未聚合状态仍不能作为 clean 查询。旧历史 PV/session/vitals 与 owner 哈希断言保留。普通批次无新增闭包扫描，identify/未知代际变化不会取得续接许可。恢复 reset 的专用同连接转换正在独立测试，未重跑整条恢复追绿。
+
+阶段计时 runtime Set 漏项已由 1 FAIL 实际复现并修复，定向 metrics 11 PASS；新增 stage 后有限槽位为 7 adapter × 4 operation × 17 stage = 476，保留真实收集、脱敏和非重复计时语义断言。此前全单元目录 308 PASS / 3 FAIL / 0 SKIP，三项为旧槽位断言；该失败报告保留，尚不称最终全目录已通过。当前类型检查、lint 通过。
+
+
+恢复 reset 最小真实 PG/CH 回归第二轮 1 PASS、另 2 项由 `-t` 过滤未运行。首轮失败是测试错误要求 live head generation 不变，而授权 restore 的既有 `LEAST(head.generation, processed_generation)` 将其重绑定为 0；修订后精确断言 0，并保留 session/run、原 receipt/attempt/source epoch/checksum/body hash、历史 PV/session/vitals 与 dirty 查询拒绝断言。此专项只验证同目标受控 reset，不冒称独立签名目标恢复。完整单元目录复验为 313 PASS / 0 FAIL / 0 SKIP，绑定测试时源码哈希；类型和 lint EXIT0。独立全链 v13 正在串行复验，当前不能称其通过。
+
+
+v13 全链仍 EXIT1：源/目标及 runtime 均保持原 365 天范围，旧缓存范围拒绝已消失；签名 sidecar 恢复、缓存迁移、strict CLI、B 身份查询通过。失败是夹具要求恢复 FULL 后仍至少两个 owner run；当前允许 FULL 合法合并，但修订必须在源备份及目标重建前断言多 run 导入完整，并以源删 A 后保存的真实 totals/pages/vitals/funnels 与目标差分及 archive/carry/head/receipt/hash 断言验收。v14 尚未运行。057 构建 EXIT0（现有 chunk 体积提示保留），本次保存是功能在制检查点，不是完整应用/负载验收。

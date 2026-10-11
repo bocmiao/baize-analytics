@@ -1,4 +1,6 @@
 import {readIncrementalSessionPublication} from './incremental-session-publication.js';
+import {captureFactCoverageWitness,captureFullFactCoverageSource,advanceFactCoverageWitness} from './fact-coverage-witness.js';
+import {measurePerformanceStage} from './performance-observation.js';
 import {factReadSql} from './fact-read-context.js';
 import {discardStrictRunStaging} from './strict-fact-storage.js';
 import {publishSessionCarry} from './session-carry.js';
@@ -12,6 +14,8 @@ export interface FactPublicationOptions {
  run:string;leaseOwner:string;retainedFrom:Date;timezone:string;privacy:boolean;
  goals:(GoalDefinition&{name?:string})[];funnels:(FunnelDefinition&{name?:string})[];
  maxBucketBytes?:number;
+ /** Only the worker sets these after authenticating all source and producer bodies. */
+ coverageTracking?:boolean;authenticatedFullProducer?:boolean;coverageSnapshotAt?:Date;
 }
 /** Caller owns fresh BEGIN/COMMIT/ROLLBACK. All reads and writes reuse its single connection. */
 export async function publishSessionFacts(client:PoolClient,options:FactPublicationOptions):Promise<void>{
@@ -19,6 +23,8 @@ export async function publishSessionFacts(client:PoolClient,options:FactPublicat
  const strict=(await client.query("SELECT body_mode='strict' strict FROM canonical_event_authority WHERE site_id=$1",[siteId])).rows[0]?.strict===true;
  const relational=(await client.query('SELECT query_version FROM analytics_fact_runs WHERE id=$1',[options.run])).rows[0].query_version===2;
  const plan=await readIncrementalSessionPublication(client,siteId,options.run);const delta=plan.mode==='visitor_delta';if(delta&&(!strict||!relational))throw Error('INCREMENTAL_PUBLICATION_FENCE');
+ const trackCoverage=options.coverageTracking===true&&!!(await client.query("SELECT to_regclass('analytics_fact_coverage_witnesses') present")).rows[0]?.present;
+ const priorCoverage=trackCoverage?await measurePerformanceStage('coverage_witness_wall',()=>captureFactCoverageWitness(client,siteId),{adapter:'facts'}):null;
  const floor=new Date(Math.floor(+options.retainedFrom/3600000)*3600000);
  const replaceHour=new Date(+floor+(+floor<+options.retainedFrom?3600000:0));
  const replaceDay=dayOf(new Date(+options.retainedFrom+86400000),options.timezone);
@@ -43,6 +49,8 @@ export async function publishSessionFacts(client:PoolClient,options:FactPublicat
  await client.query("UPDATE outbox SET status='done' WHERE site_id=$1 AND id<=$2",[siteId,outboxHighWatermark]);
  await client.query("UPDATE analytics_fact_runs SET status='published' WHERE id=$1",[options.run]);
  if(relational){await publishSessionCarry(client,siteId,options.run,options.retainedFrom,plan);await client.query(`UPDATE stats_hourly SET data=data-'relationalUnavailable' WHERE site_id=$1 AND data->>'relationalUnavailable'='identity_interval_requires_raw_session_rebuild' AND EXISTS(SELECT 1 FROM analytics_session_rebuild_requests WHERE site_id=$1)`,[siteId]);await client.query('DELETE FROM analytics_session_rebuild_requests WHERE site_id=$1',[siteId]);await pruneUnreferencedFactRuns(client,siteId);}
+ const fullCoverageSource=trackCoverage&&options.authenticatedFullProducer===true&&!delta?await measurePerformanceStage('coverage_witness_wall',()=>captureFullFactCoverageSource(client,siteId,options.run),{adapter:'facts'}):undefined;
  if(strict)await discardStrictRunStaging(client,siteId,options.run);
  await client.query(`DELETE FROM analytics_fact_runs r WHERE site_id=$1 AND id<>$2 AND generation<=$3 AND status<>'staging' AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.run_id=r.id) AND NOT ${carryRunReferenced}`,[siteId,options.run,generation]);
+ if(trackCoverage)await measurePerformanceStage('coverage_witness_wall',()=>advanceFactCoverageWitness(client,siteId,priorCoverage,{operation:'publication',fullSource:fullCoverageSource,observedAt:options.coverageSnapshotAt?.toISOString()}),{adapter:'facts'});
 }

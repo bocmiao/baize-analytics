@@ -1,5 +1,5 @@
 import type {PerformanceSink,PerformanceStage,PerformanceOperation,PerformanceAdapter,PerformanceChPhase,PerformanceObservation} from '../../src/server/performance-observation.js';
-export const serverStages=['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall','incremental_session_reuse'] as const;
+export const serverStages=['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall','incremental_session_reuse','coverage_witness_wall'] as const;
 export function discoverLiteralPerformanceStages(source:string){return serverStages.filter(stage=>new RegExp(`measurePerformanceStage\\(\\s*['"]${stage}['"]`).test(source));}
 const adapters=['canonical','facts','session_headers','remaining','cache','mirror','other'] as const;
 const operations=['http_request','background_worker','database_migration','operator'] as const;

@@ -46,6 +46,7 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  const state=(await source.query('SELECT generation::text,epoch::text,lease_owner::text FROM aggregation_state WHERE site_id=$1',[claim.site_id])).rows[0];
  if(!state||state.epoch!==claim.epoch||state.lease_owner!==claim.lease_owner){await source.query('ROLLBACK');return false;}
  claim.generation=state.generation;
+ const coverageSnapshotAt=(await source.query('SELECT transaction_timestamp() captured_at')).rows[0].captured_at as Date;
  const site=(await source.query('SELECT * FROM sites WHERE id=$1',[claim.site_id])).rows[0];if(!site){await source.query('ROLLBACK');return false;}
  const high=(await source.query('SELECT COALESCE(max(id),0)::text AS id FROM outbox WHERE site_id=$1',[claim.site_id])).rows[0].id;
  const goals=(await source.query('SELECT * FROM goals WHERE site_id=$1',[claim.site_id])).rows as (GoalDefinition&{name:string})[];
@@ -100,7 +101,8 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  if(factStore)await publishRunFactBodies(source,factStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
  if(remainingStore)await publishRemainingFactBodies(source,remainingStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence},headerStore);
  if(strict&&cacheStore)await cacheStore.completeOwnerKind(source,claim.site_id,run,'legacy_centroid',0,{expectedAggregationEpoch:claim.epoch,expectedGeneration:claim.generation,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
- options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels};
+ const coverageTracking=sourceState.authority==='clickhouse'&&!!headerStore&&!!factStore&&!!remainingStore;
+ options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels,coverageTracking,coverageSnapshotAt,authenticatedFullProducer:coverageTracking&&plan.mode==='full'};
  const publicationStaging=strict?await preserveStrictPublicationStaging(source,claim.site_id,run):undefined;
  await source.query('COMMIT');
  if(publicationStaging){releaseFactSource?.();releaseFactSource=undefined;const restore=bindFactReadRelations(source,publicationStaging.relations);try{await hooks.afterSnapshot?.();await source.query('BEGIN');await plan.assertPublicationFence(source);await publishSessionFacts(source,options);await source.query('COMMIT');return true;}catch(error){await source.query('ROLLBACK');throw error;}finally{restore();await publicationStaging.cleanup();}}

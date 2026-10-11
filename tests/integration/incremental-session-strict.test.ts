@@ -71,7 +71,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CAN
    delete process.env.BAIZE_INCREMENTAL_SESSIONS;
    await pool.query('UPDATE aggregation_state SET generation=generation+1 WHERE site_id=$1',[site]);await run();
    const full=await stats();for(const key of ['totals','pages','sources','goals','funnels','revenueByCurrency','trend'])expect(incremental[key],key).toEqual(full[key]);
-   
+
    process.env.BAIZE_INCREMENTAL_SESSIONS='1';
    const beforeFallback=(await pool.query('SELECT run_id::text FROM analytics_session_contribution_heads WHERE site_id=$1 AND visitor_id=$2',[site,untouched])).rows.map(r=>r.run_id);
    await batch([{visitor_id:visitor,ts:start+2000000,type:'identify',path:'/late-bridge',user_id:'incremental-identified-account'},{visitor_id:visitor,ts:start+2001000,type:'revenue',path:'/late-bridge',revenue:12,currency:'CNY',order_id:'cross-visitor-order'},{visitor_id:untouched,ts:start+2002000,type:'revenue',path:'/untouched',revenue:12,currency:'CNY',order_id:'cross-visitor-order'},{visitor_id:untouched,ts:start+2003000,type:'revenue',path:'/untouched',revenue:7,currency:'USD',order_id:'usd-order'}]);await run();

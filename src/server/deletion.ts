@@ -1,3 +1,4 @@
+import {captureFactCoverageWitness,advanceFactCoverageWitness} from './fact-coverage-witness.js';
 import {discardStrictPublishedCarryStaging} from './strict-carry-staging.js';
 import {getCacheStore} from './cache-store.js';
 import {captureCanonicalCutoverPrivacyRepair,finalizeCanonicalCutoverPrivacyRepair} from './cutover-receipt.js';
@@ -127,6 +128,7 @@ export async function deleteVisitor(ctx:AppContext,siteId:string,input:{visitor_
     const identityRecords=userId?await userDeletionRecords(client,siteId,userId):[];
     if(userId)records.push(...identityRecords,{site_id:siteId,visitor_id:`user:${userId}`,user_id:userId,deleted_at:new Date().toISOString(),source:'user'});
     await appendJournal(ctx.config.dataDir,records,client);
+    const coverageWitness=await captureFactCoverageWitness(client,siteId);
     const cutoverRepair=await captureCanonicalCutoverPrivacyRepair(client,siteId,ctx.config.dataDir,records);
     const capturedFacts=await captureFactDeletionMetadata(client,siteId,records.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at})));
     const handledCarry=await eraseRemainingPhysical(client,ctx.pool,siteId,records,ctx.config.dataDir);
@@ -145,6 +147,7 @@ export async function deleteVisitor(ctx:AppContext,siteId:string,input:{visitor_
     await rebaseRemainingPhysical(client,ctx.pool,siteId);
     await discardStrictPublishedCarryStaging(client,ctx.pool,siteId);
     await rebaseDeletedHistory(client,ctx.pool,siteId);
+    await advanceFactCoverageWitness(client,siteId,coverageWitness,{operation:'privacy_delete'});
     await finalizeCanonicalCutoverPrivacyRepair(client,cutoverRepair);
     return records.length;
   });const historyBackups=await cleanupHistoryBackupFiles(ctx.pool,ctx.config.dataDir,{siteId});const cleanup=await runFileCleanup(ctx,siteId);await invalidateSiteCache(ctx,siteId);await ctx.audit(actorId,siteId,'visitor.delete',{identifiers:deleted,journal:'fsync-complete'});return {deleted:true,historyBackups,identifiers:deleted,journal:'durable',fileCleanup:cleanup,aggregation:'pending-rebuild',historicalBoundary:'保留期外已无法重建，相关历史聚合标为不可用'};
@@ -158,6 +161,7 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
   const bySite=new Map<string,DeletionRecord[]>();for(const r of records.values()){const list=bySite.get(r.site_id)??[];list.push(r);bySite.set(r.site_id,list);}
   for(const [siteId,list] of bySite){const replaySite=async(client:PoolClient)=>{
     await lockSite(client,siteId);if(!(await client.query('SELECT 1 FROM sites WHERE id=$1',[siteId])).rowCount)return;
+    const coverageWitness=await captureFactCoverageWitness(client,siteId);
     const cutoverRepair=await captureCanonicalCutoverPrivacyRepair(client,siteId,dataDir,list);
     await deleteHistorySegments(client,pool,siteId,list.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
     const capturedFacts=await captureFactDeletionMetadata(client,siteId,list.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at})));
@@ -187,6 +191,7 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
     await rebaseRemainingPhysical(client,pool,siteId);
     await discardStrictPublishedCarryStaging(client,pool,siteId);
     await rebaseDeletedHistory(client,pool,siteId);
+    await advanceFactCoverageWitness(client,siteId,coverageWitness,{operation:'privacy_delete'});
     await finalizeCanonicalCutoverPrivacyRepair(client,cutoverRepair);
   };if(options.client)await replaySite(options.client);else await transaction(pool,replaySite);}
   if(!options.deferFileCleanup){const historyCleanup=await cleanupHistoryBackupFiles(pool,dataDir);if(historyCleanup.pending)throw Error('History backup cleanup pending; queries remain closed');}return {records:records.size,sites:[...bySite.keys()]};

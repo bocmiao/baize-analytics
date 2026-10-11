@@ -1,3 +1,4 @@
+import {captureRevenueIntakeCoverage,advanceRevenueIntakeCoverage} from './fact-coverage-witness.js';
 import {recordBotObservation} from './bot-observations.js';
 import {recordIntakeObservation} from './intake-status.js';
 import {replayPayloadHash} from './replay-hash.js';
@@ -55,6 +56,13 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
       const canonicalTarget=await resolveCanonicalIngest(ctx.pool,client,site.id);
+      // Only this controlled revenue-containing intake may carry historical
+      // coverage across the non-event generation fence. Unknown/identify/replay
+      // mutations cannot acquire this token; ordinary batches do not scan owners.
+      const coverageTypes=new Set(['pageview','event','vitals','heartbeat','revenue']);
+      const coverageType=(event:unknown)=>typeof event==='object'&&event!==null?(event as {type?:unknown}).type:undefined;
+      const coverageCutoff=Date.now()-Number(site.retention_days)*86400000;
+      const revenueCoverage=canonicalTarget&&envelope.events.some(event=>coverageType(event)==='revenue')&&envelope.events.every(event=>coverageTypes.has(String(coverageType(event))))?await captureRevenueIntakeCoverage(client,site.id):null;
       const canonicalInput:CanonicalInput[]=[];
       let changed=false,eventsOnly=true;
       const verifyReceipt=async(eventId:string)=>{if(canonicalTarget&&!canonicalInput.some(input=>input.event.event_id===eventId))await verifyCanonicalRetryReceipt(client,site.id,canonicalTarget,eventId);};
@@ -114,6 +122,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         // Identity and globally ordered revenue invalidate the incremental baseline.
         if(eventsOnly)await client.query("SELECT set_config('baize.aggregation_ingest_site',$1,true)",[site.id]);
         try{await dirtySite(client,site.id);}finally{if(eventsOnly)await client.query("SELECT set_config('baize.aggregation_ingest_site','',true)");}
+        if(revenueCoverage&&canonicalInput.some(input=>input.event.type==='revenue')&&canonicalInput.every(input=>coverageTypes.has(input.event.type)&&+new Date(input.event.ts)>=coverageCutoff))await advanceRevenueIntakeCoverage(client,site.id,revenueCoverage);
         await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);await recordIntakeObservation(client,site.id,accepted,lastAcceptedEventTime);
       }
     });
