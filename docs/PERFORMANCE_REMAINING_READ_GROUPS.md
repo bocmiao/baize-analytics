@@ -33,3 +33,11 @@ TEST_DATABASE_URL、CLICKHOUSE_TEST_URL及本地fixture账号从既有环境传�
 旧2d镜像归档I/O在strict准备阶段完成（文件mtime14:39:47.573UTC，14:39:48观察仍strict_backup_activation，HTTP测量随后发生），查询期没有再启动bulk；这些观察不证明硬件完全静默或生产SLO。所有旧FAIL保留。[原始A/B JSON](performance/producer-canonical/remaining-2660cff-pass/http100-ab.json)、[phase log](performance/producer-canonical/remaining-2660cff-pass/http100-ab.txt)、[真实集成](performance/producer-canonical/remaining-2660cff-pass/integration.json)。
 
 维护决策：保留一个≤3receipt base64分组decoder及显式width1 oracle，换取这轮有实际HTTP净收益的固定往返减少；不解锁、不增加cache/migration/concurrency，不继续追加无依据微优化。下一受控5000沿239完全相同参数，全部旧失败及未发送原样保留；B前置持久收件箱仅隔离原型，见 [ADR060](ADR_060_INGEST_RECEIPTS.md)。
+
+## 原参数72ea929唯一5000复验：仍FAIL，转B隔离实验
+
+相同50/1s/10s/queue8/concurrency2/drain120及239开关（incremental1/coverageReuse1/pagePathBatch1/publicationConcurrency2），不可变72ea929，整体EXIT1/200.493s，子进程峰710716KiB不含数据库。100次计划全部scheduled，94发送/HTTP202、4700accepted、0rejected/请求失败、6queue_full_unsent（68、79–83）；不是deadline提前结束，不补发。12次看板查询失败0，77探针失败0；所有已接收排空与最终断言均通过，cleanup/sourceUnchanged=true。
+
+intake103.217s、drain66.166s≤原120秒、final19.488s；最终实际HTTP18.187s/PV4700/coverage1/CH，canonical4701/PV含bootstrap1、UV95，九类PG正文0，outbox4701全done/queued0、processed/水位完整。旧2394900/2相比此次4700/6的工作集/选集不同，不将overall/query缩短宣称因果或达标。原reported batchP95约8494.662ms、queryP95约16170.623ms，event-loop intake平均6.763/max127.768ms；P95与nearest-rank另表不混写。共享site gateHTTP等待累计114.915s/max12.603s，认证42.503s、TEMP26.605s、最终SQL3.847s为inclusive累计，不相加当wall。查询全部认证和TEMP仍持门，不能unlock+epoch复查。
+
+[原始JSON](performance/producer-canonical/strict5000-72ea929-failure/result.json)、[计划](performance/producer-canonical/strict5000-72ea929-failure/plan.json)、[调度摘要](performance/producer-canonical/strict5000-72ea929-failure/scheduler-summary.json)保留。A的局部净收益有真实同数据依据，但不足以完成此固定容量目标；不追加新微调或无变化重跑5000，按用户批准转向B隔离收件箱原型及故障验证。完整72应用/浏览器入口正在自然运行，尚未预写通过；原型不接正式collect。
