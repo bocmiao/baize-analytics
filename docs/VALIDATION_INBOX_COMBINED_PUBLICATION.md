@@ -23,3 +23,17 @@ validate/claim/publish同client、同次P/site→761持锁，50行上限及逐�
 两组独立入队均EXIT0：300received/validated/published、0失败/未发、7finalchecks PASS，源树不变、cleanup全true。separate operator周期64次/门134次、累计wall6724.915ms；combined86次/门86次、累计wall5245.516ms。周期含空轮询，不能把门次数减少当完全等工作量比例；低样本仅支持目标方向，不推出SLO。真实CH均12 timed transports，对应6批完整写读。
 
 [原始对照](performance/producer-canonical/inbox-9689ae0-300-cycle-ab-pass/)。随后同冻结源码原100批50事件/1秒调度/10秒查询/queue8/con2/drain120秒运行一次combined5000；未改默认入口或验收阈值，尚待结果。
+
+## 限定只读复审边界
+
+已检查单client和保存点顺序，无确定新缺陷（只读不是新测试）。保存点/ROLLBACK TO/RELEASE/COMMIT本身失败会整体回滚，该次attempt不保证持久，但不返回成功。忽略abort且永久不settle的publisher会一直持隐私门；leaseMs不是全操作墙钟保证。真实CH适配使用既有有界HTTP/EOF校验，不以释放门掩盖未结束外发。独立fsync日志与恢复仍明确未接。
+
+## 原参数5000 combined实际FAIL
+
+源码仍9689ae0，EXIT1；100批全部发送，87研究202，4350received=validated=published，13批/650条HTTP429，全部pending_backpressure，0未发送。query/probe/publisher failures均0。7 finalchecks全PASS：HTTP4350/coverage1/CH，canonical4351/UV88含bootstrap1，9正式PG正文表0，outbox4351done/generation与水位完整。排空119.741秒在原120秒内；容量FAIL不因排空通过而改写。
+
+最终HTTP23406.224ms；final整个断言阶段24563.044ms，二者不能混称请求时长。intake99.103秒、drain119.741秒、final24.563秒，三个窗口总体243.407秒，未测独立进程wall。Node app+harness峰637919232字节，不含PG/CH/Redis。源树前后相同，ownedcleanup全true。
+
+operator227周期/227站点门累计228.773秒，站点门等待184.100秒，CH174timed调用1.728秒。相比先前482次门/183.968秒，门次数减半但总等待几乎不变；收到事件集合也不同，不能报容量已改善。HTTP认证56.665秒/CH45.793秒/TEMP33.335秒；worker facts wall186.118秒、CH61.410秒，都是累计嵌套时间，不相加当wall。
+
+[完整原始失败与阶段摘要](performance/producer-canonical/inbox-9689ae0-5000-combined-failure/)。本轮不再增加队列、改drain或无修改重复5000。下一条若继续必须解决严格全认证/TEMP与归约长期占门的实际成本，并保持已提交白名单、删除门和缺正文失败关闭；单纯门合并已不足。

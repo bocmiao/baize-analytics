@@ -4,7 +4,7 @@
 
 ## 源码与同步
 
-- 本页整理前本地 HEAD：`1a4e731ba78795bb104ac1b8eb4368eb9a402af1`；本次文档及原型提交以 `git log -1 --format=%H -- docs/STATUS.md` 精确定位，避免自引用提交哈希。
+- 实时本地HEAD以 `git rev-parse HEAD` 定位；本页记录的最新隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
 - 最后由父与本地引用确认的远端 main：`ee996754595d25f13aadac507dc4a2a6dc6b06b0`。这是已确认基线，不声称刚完成网络检查。后续本地提交**未确认同步**。
 - 最新完整正式应用验收绑定不可变源码：`72ea9291b69c30cba5369a63f44c0b2842bcbcd3`。后续隔离原型不属于该全量结果。
 - Git 当前失败为 `could not read Username`，无 HTTP 状态；未找到可靠原预配代理 URL 或自动刷新步骤。当前 origin 是 HTTPS/github.com/bocmiao/baize-analytics.git，无 helper/rewrite；父协调同环境正常授权路线，不新增凭据、不借 CNB 绕过。原 bundle 保留，损坏编码段废弃。
@@ -45,12 +45,18 @@
 
 ## 当前候选与下一闸
 
-B为**隔离PG durable inbox原型**，区分received/validated/published，未替换正式collect或202语义。已有持久幂等、摘要冲突、租约/来源代际、模拟ACK后PG回滚、删除区间重放、每站pending条数/字节上限与超限整批回滚测试。字节预算使用有界metadata SUM（不是O(1)账本），不涵盖published/failed历史总存储。
+B为**隔离PG durable inbox研究原型**，区分received/validated/published，未替换正式collect或202语义。最新9689ae0已48专项PASS/0skip（14原PG+8 admission+8 combined PG+18真实CH），同SHA300 separate/combined两组完整性PASS；不是新整产品全轮。
 
-已完成首轮同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证：21专项PASS（14PG+7PG/CH），详见 [真实CH第一轮](VALIDATION_DURABLE_INBOX_REAL_CH.md)。这是独立standard prepared研究接口，不是正式wire来源证明。已补已发布物理删除和缺正文重试拒绝；B7研究原参数5000已FAIL：4850received/published、1HTTP429、2未发送，已接收排空和7finalchecks通过，finalHTTP25.49秒；见 [研究负载](VALIDATION_DURABLE_INBOX_LOAD.md)。下一步有证据的独立admission锁候选在制，生产独立fsync日志仍未接入；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
+本轮三次不同候选原参数5000均FAIL，证据完整保留：
 
-逐项F01–F66/P2来源见 [实现清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md) 与各证据目录保留历史，不作为另一个当前入口。
+| 源码/候选 | 实际收到并发布 | 拒绝/未发 | 最终HTTP | 状态 |
+|---|---:|---|---:|---|
+| b7f0362 共用站点入队门 | 4850 | 1×429（未记具体码）/2未发 | 25.486秒 | 历史FAIL |
+| 4d1affa 独立短入队门 | 4100 | 18×pending_backpressure/0未发 | 15.601秒 | 历史FAIL |
+| 9689ae0 独立入队+合并消费 | 4350 | 13×pending_backpressure/0未发 | 23.406秒 | 当前FAIL |
 
-## 隔离B最新候选证据（非正式入口）
+三轮已收到部分排空/完整性通过，不代表5000容量通过，更不能称原正式accepted通过。最新合并门穿越482→227但累计等待仍约184秒，不能继续凭缩短事务次数、加队列或改drain追绿。详见[独立门验收](VALIDATION_INBOX_INDEPENDENT_ADMISSION.md)、[最新合并候选](VALIDATION_INBOX_COMBINED_PUBLICATION.md)。下一路径须有可证明的新读取/认证协议，当前只有限评估，不默改生产。
 
-4d1affa：36专项PASS/0skip，两种模式300完整性PASS。原参数5000独立入队FAIL：100全发送、4100耐久收到并发布、18条数背压429、0未发；排空/收到部分完整性PASS。publisher站点门183.968秒/482次、CH1.485秒，下一候选是同事务合并消费门穿越，不放宽参数。当前仍非生产ACK，独立fsync/pending恢复未接。详见[新候选验收](VALIDATION_INBOX_INDEPENDENT_ADMISSION.md)。正式全量仍绑定72ea929，没有将专项数冒充新全轮。
+既有标准prepared真实CH写/读回/白名单、孤儿不可见、精准物理删A保B、缺正文重试拒绝已有验证。生产独立fsync日志未接762与prototype清理；原wire/HMAC身份来源、真实identify/revenue副作用、签名pending备份/恢复、全局公平/队列年龄仍未交付。PG prototype journal不是独立文件日志，不称正式集成。
+
+逐项F01–F66/P2见[清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md)与各证据目录保留历史。当前同步仍阻塞；原bundle及单文件ZIP保留，两次任务文件查看器下载均实际失败，不再猜接口或手工编码，不称上传/推送成功。
