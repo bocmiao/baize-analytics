@@ -50,3 +50,7 @@ B为**隔离PG durable inbox原型**，区分received/validated/published，未�
 已完成首轮同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证：21专项PASS（14PG+7PG/CH），详见 [真实CH第一轮](VALIDATION_DURABLE_INBOX_REAL_CH.md)。这是独立standard prepared研究接口，不是正式wire来源证明。已补已发布物理删除和缺正文重试拒绝；B7研究原参数5000已FAIL：4850received/published、1HTTP429、2未发送，已接收排空和7finalchecks通过，finalHTTP25.49秒；见 [研究负载](VALIDATION_DURABLE_INBOX_LOAD.md)。下一步有证据的独立admission锁候选在制，生产独立fsync日志仍未接入；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
 
 逐项F01–F66/P2来源见 [实现清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md) 与各证据目录保留历史，不作为另一个当前入口。
+
+## 隔离B最新候选证据（非正式入口）
+
+4d1affa：36专项PASS/0skip，两种模式300完整性PASS。原参数5000独立入队FAIL：100全发送、4100耐久收到并发布、18条数背压429、0未发；排空/收到部分完整性PASS。publisher站点门183.968秒/482次、CH1.485秒，下一候选是同事务合并消费门穿越，不放宽参数。当前仍非生产ACK，独立fsync/pending恢复未接。详见[新候选验收](VALIDATION_INBOX_INDEPENDENT_ADMISSION.md)。正式全量仍绑定72ea929，没有将专项数冒充新全轮。
