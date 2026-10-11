@@ -1,7 +1,7 @@
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {randomUUID} from 'node:crypto';
 export type PerformanceOperation='http_request'|'background_worker'|'database_migration'|'operator';
-export type PerformanceStage='pool_acquire'|'partition_lock'|'site_lock'|'ch_transport'|'authentication'|'temp_fill'|'aggregate_sql'|'json_serialize'|'manifest_sql'|'worker_facts_wall'|'publication_readback_wall';
+export type PerformanceStage='pool_acquire'|'partition_lock'|'site_lock'|'ch_transport'|'authentication'|'temp_fill'|'aggregate_sql'|'json_serialize'|'manifest_sql'|'worker_facts_wall'|'publication_readback_wall'|'session_build_wall'|'remaining_ownership_wall'|'remaining_members_wall'|'remaining_complete_wall';
 export type PerformanceChPhase='input_read'|'publication_insert'|'publication_readback'|'other';
 export type PerformanceAdapter='canonical'|'facts'|'session_headers'|'remaining'|'cache'|'mirror'|'other';
 const adapters=new Set(['canonical','facts','session_headers','remaining','cache','mirror','other']);
@@ -10,7 +10,7 @@ export interface PerformanceObservation extends PerformanceCounts {operation:Per
 export type PerformanceSink=(observation:Readonly<PerformanceObservation>)=>void|Promise<void>;
 const context=new AsyncLocalStorage<{operation:PerformanceOperation;sink:PerformanceSink;correlationId:string;chPhase?:PerformanceChPhase}>();
 const operations=new Set(['http_request','background_worker','database_migration','operator']);
-const stages=new Set(['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall']);
+const stages=new Set(['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall']);
 const chPhases=new Set(['input_read','publication_insert','publication_readback','other']);
 /** No identifier from the request or database is accepted as correlation metadata. */
 export function withPerformanceObservation<T>(operation:PerformanceOperation,sink:PerformanceSink|undefined,fn:()=>T):T {
