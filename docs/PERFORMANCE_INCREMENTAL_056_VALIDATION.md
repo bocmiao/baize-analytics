@@ -102,3 +102,6 @@ ACK 后 PG rollback 真实 reader 专项 2 PASS / 0 SKIP：原故障注入成功
 
 
 固定 `a90d4f352d62a18450aa861f1f19b1c6c9b16f19` 300 事件入口首次 EXIT1：bootstrapFailed=true，尚未进入正式发送调度；真实 cleanup 四项全部完成、sourceUnchanged=true，整个 Node wall5.835823031秒、largest child peak320948KiB。不是 300 intake 成败/性能改善结果，不能填 accepted=0 当负载指标。既有 harness 隐去 bootstrap 原因，正在补固定阶段/安全错误码观测；没有启动新5000，也未改原50/1s/10s/8/2/120参数。
+
+
+`bd70906` 新安全观测的 bootstrap-only 单次仍 EXIT1，固定 stage=cache_migration、errorCode=BOOTSTRAP_UNKNOWN_FAILURE，cleanup 全完成；未发送正式负载。源码定位到自建 cache adapter 没有注册 pool 推断的调用契约：新认证迁移要求显式 options.pool，benchmark custom adapter 调用缺此参数。将修调用方传同一 pool，保留 held client 与认证，不让 helper 在缺来源时回退零样本。此时只是明确候选定位，修后 bootstrap 执行尚待。

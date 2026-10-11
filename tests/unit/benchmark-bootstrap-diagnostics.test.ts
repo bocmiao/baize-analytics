@@ -11,3 +11,9 @@ it('keeps each critical bootstrap step in a finite allowlist and preserves asser
   expect(bootstrapStages).toContain(stage);expect(safeBootstrapDiagnostic(stage,{code:'BOOTSTRAP_ASSERTION_FAILED'})).toEqual({bootstrapStage:stage,bootstrapErrorCode:'BOOTSTRAP_ASSERTION_FAILED'});
  }
 });
+
+it('recognizes only the exact authenticated cache-source failure, without copying nearby message text',()=>{
+ expect(safeBootstrapDiagnostic('cache_migration',Error('CACHE_CENTROID_AUTHENTICATED_SOURCE_REQUIRED'))).toEqual({bootstrapStage:'cache_migration',bootstrapErrorCode:'CACHE_CENTROID_AUTHENTICATED_SOURCE_REQUIRED'});
+ expect(safeBootstrapDiagnostic('cache_migration',Error('CACHE_CENTROID_AUTHENTICATED_SOURCE_REQUIRED secret=private-token'))).toEqual({bootstrapStage:'cache_migration',bootstrapErrorCode:'BOOTSTRAP_UNKNOWN_FAILURE'});
+ expect(safeBootstrapDiagnostic('cache_migration',Object.create(null,{message:{get(){throw Error('private-token');}}}))).toEqual({bootstrapStage:'cache_migration',bootstrapErrorCode:'BOOTSTRAP_UNKNOWN_FAILURE'});
+});
