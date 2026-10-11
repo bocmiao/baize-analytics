@@ -1,0 +1,19 @@
+{
+  "sourceSha": "b7f0362ac9b817b15692b601959969f3bdce677f",
+  "exitCode": 0,
+  "purpose": "new runner bootstrap/exact stats sanity gate, not capacity evidence",
+  "counts": {
+    "received": 300,
+    "validated": 300,
+    "published": 300
+  },
+  "flags": {
+    "BAIZE_INCREMENTAL_SESSIONS": 1,
+    "BAIZE_COVERAGE_SELECTED_RUNS": 1,
+    "BAIZE_SESSION_PAGE_PATH_BATCH": 1,
+    "BAIZE_FACT_PUBLICATION_CONCURRENCY": 2
+  },
+  "finalChecksPassed": 7,
+  "production202Equivalent": false,
+  "note": "finalMetadata.inbox.readiness is pre-final-check capture; phaseMetrics.research.readiness=true is after all final checks"
+}
