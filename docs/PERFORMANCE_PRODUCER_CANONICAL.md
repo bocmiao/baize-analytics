@@ -41,3 +41,11 @@ root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据�
 | selected TEMP 查询投影 | 已撤出 | 无净收益；实验归档保留，产品不维护该分支。 |
 
 这些保留项均有具体局部证据，仍不等同于默认启用或容量承诺；全轮检查验证维护分支的正确性，不证明高负载性能闭合。后续维护若不再有局部收益，应正常撤出代码并保留失败与实验档案。
+
+## 不可变21a完整本地联合验收：首次FAIL保留
+
+2026-10-11以 Git blob 校验的 `21a3c202118e38b16a68733419ad8f885bfeed72` archive 运行 `scripts/validate-local-final.sh`，使用新建独立 PostgreSQL/ClickHouse/Redis 服务，最终 **EXIT1**。lint、类型、独立 SDK、journal、构建及359单元通过；完整集成183文件中182通过、1失败，490断言中489通过、1失败、0跳过，581.44秒。浏览器未运行，镜像/恢复未启动，不能称全轮通过。
+
+唯一失败 `canonical-daily-backup.test.ts` 为 `HISTORY_NAMESPACE_FACT_BACKING_MISMATCH`，堆栈位于历史 namespace 恢复对账。初步查证该夹具未复制059 origin及完整aggregation元数据，尚待窄修专项确认；产品签名与checksum guard不修改。原始 [集成JSON](performance/producer-canonical/full-21a3c20-failure/integration.json)、[完整入口log](performance/producer-canonical/full-21a3c20-failure/regular.txt)、[源码绑定](performance/producer-canonical/full-21a3c20-failure/source-binding.json) 均保留。入口自然结束并清理本轮所属服务/卷后，workspace空余恢复约5.4GiB；未清理其他项目数据。
+
+窄修确认：夹具复制源完整 `aggregation_state` 和 `analytics_raw_retirement_origins`，在同站锁事务下对两表全行精确对账，替代触发代际变更的 epoch-only UPDATE。真实PG/CH单文件专项1断言通过，1393ms，类型及scoped lint通过。产品代码、签名、guard不变。证据 [JSON](performance/producer-canonical/daily-backup-fixture-fix.json) / [log](performance/producer-canonical/daily-backup-fixture-fix.txt)。修后完整入口尚待新不可变提交运行。
