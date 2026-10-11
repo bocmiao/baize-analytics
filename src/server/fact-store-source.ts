@@ -1,4 +1,3 @@
-import {requestedFactHydration,assertFactHydrationReuse,selectedFactHydrationPredicate,type FactHydration} from './selected-fact-hydration.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
@@ -9,8 +8,8 @@ import {assertSessionContributionOwners} from './session-contribution-overlay.js
 import {getFactStore} from './fact-store.js';
 import {bindFactReadRelations,hasFactReadSource,factReadRelations} from './fact-read-context.js';
 
-export interface FactReadSource {hydration?:FactHydration;source:'postgres'|'clickhouse'|'hybrid';effectsRelation:string;vitalsRelation:string;cleanup:()=>Promise<void>}
-export interface FactSourceOptions {hydration?:FactHydration;forRebuild?:boolean;forAuthorityTransition?:boolean;cutoverRepair?:CutoverPrivacyRepairToken}
+export interface FactReadSource {source:'postgres'|'clickhouse'|'hybrid';effectsRelation:string;vitalsRelation:string;cleanup:()=>Promise<void>}
+export interface FactSourceOptions {forRebuild?:boolean;forAuthorityTransition?:boolean;cutoverRepair?:CutoverPrivacyRepairToken}
 /** Same-run metadata only: a legacy PG vital still needs unfiltered authenticated identity provenance. */
 export function needsFactIdentityWrite(markers:readonly {kind:string;state:string}[]){return !(['effects','vitals'] as const).every(kind=>markers.some(marker=>marker.kind===kind&&marker.state==='complete'));}
 export async function assertFactReadSourceFence(client:PoolClient,siteId:string,options:FactSourceOptions={}){
@@ -26,14 +25,13 @@ export async function assertFactReadSourceFence(client:PoolClient,siteId:string,
  * fence; the pool only identifies the adapter registry, never a second loan.
  * Returned relation names are generated/quoted here, never user input. */
 export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:string,options:FactSourceOptions={}):Promise<FactReadSource>{
- const hydration=requestedFactHydration(options);
  const schema=(await client.query('SELECT quote_ident(current_schema()) AS name')).rows[0].name as string;
  const effectsBase=`${schema}.analytics_effect_facts`,vitalsBase=`${schema}.analytics_vital_samples`;
  const authenticatedRebuild=await assertFactReadSourceFence(client,siteId,options);
  const strict=(await client.query("SELECT COALESCE(to_jsonb(c)->>'body_mode','transition')='strict' AS strict FROM canonical_event_authority c WHERE site_id=$1",[siteId])).rows[0]?.strict===true;
  const anyReceipt=(await client.query(`SELECT EXISTS(SELECT 1 FROM analytics_fact_store_runs m JOIN analytics_fact_runs r ON r.id=m.run_id JOIN aggregation_state a ON a.site_id=r.site_id WHERE m.site_id=$1 AND r.status='published' AND r.epoch=a.epoch) AS present`,[siteId])).rows[0].present;
  if(!anyReceipt&&strict&&(await client.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' LIMIT 1",[siteId])).rowCount)throw Error('FACT_STORE_SOURCE_NOT_MIGRATED');
- if(!anyReceipt)return {hydration:'complete',source:'postgres',effectsRelation:effectsBase,vitalsRelation:vitalsBase,cleanup:async()=>{}};
+ if(!anyReceipt)return {source:'postgres',effectsRelation:effectsBase,vitalsRelation:vitalsBase,cleanup:async()=>{}};
  const store=getFactStore(pool);if(!store)throw Error('FACT_STORE_REQUIRED');
  if(!authenticatedRebuild)await assertSessionContributionOwners(client,siteId);
  await assertFactRunClosure(client,siteId,{forRebuild:Boolean(authenticatedRebuild)});
@@ -74,21 +72,19 @@ export async function prepareFactReadSource(client:PoolClient,pool:Pool,siteId:s
      // Both writes consume the same authenticated <=100-row batch. The target
      // uses envelope identity, not newly inserted rows, so conflict dedupe cannot
      // drop multiple effects/vitals belonging to one event. Full authentication
-     // above retains the original envelope; SQL uses its authenticated sessionId
-      // for optional current-owner projection, including page-less vitals.
-     const counts:{adapter:'facts';authenticatedRows?:number;selectedHydratedRows?:number}={adapter:'facts',...(hydration==='selected'?{authenticatedRows:records.length}:{})};
-     await measurePerformanceStage('temp_fill',async()=>{const inserted=await client.query(`WITH envelopes AS MATERIALIZED (SELECT * FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text,"sessionId" text))${writeIdentity?`, identity_write AS (INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM envelopes envelope ON CONFLICT DO NOTHING RETURNING run_id)`:''} INSERT INTO ${target} SELECT r.* FROM envelopes envelope CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts) ${hydration==='selected'?`AND ${selectedFactHydrationPredicate}`:''}`, [siteId,JSON.stringify(records.map(({row,visitorId,sessionId})=>({row,visitorId,sessionId})))]);if(hydration==='selected')counts.selectedHydratedRows=inserted.rowCount??0;return inserted;},counts);
+     // above retains the original envelope; SQL consumes only row and visitorId.
+     await measurePerformanceStage('temp_fill',()=>client.query(`WITH envelopes AS MATERIALIZED (SELECT * FROM jsonb_to_recordset($2) envelope(row jsonb,"visitorId" text))${writeIdentity?`, identity_write AS (INSERT INTO ${identities} SELECT (envelope.row->>'run_id')::uuid,(envelope.row->>'event_id')::uuid,envelope."visitorId" FROM envelopes envelope ON CONFLICT DO NOTHING RETURNING run_id)`:''} INSERT INTO ${target} SELECT r.* FROM envelopes envelope CROSS JOIN LATERAL jsonb_to_record(envelope.row) r(${columns}) WHERE NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId") AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=envelope."visitorId" AND t.started_at<=r.event_ts AND t.ended_at>r.event_ts)`,[siteId,JSON.stringify(records.map(({row,visitorId})=>({row,visitorId})))]),{adapter:'facts'});
 
     }
    }}
   }
   await client.query(`CLOSE ${cursor}`);opened=false;
-  return {hydration:hasCH?hydration:'complete',source:hasCH?(hasPG?'hybrid':'clickhouse'):'postgres',effectsRelation:`pg_temp.${effects}`,vitalsRelation:`pg_temp.${vitals}`,cleanup};
+  return {source:hasCH?(hasPG?'hybrid':'clickhouse'):'postgres',effectsRelation:`pg_temp.${effects}`,vitalsRelation:`pg_temp.${vitals}`,cleanup};
  }catch(error){if(opened)await client.query(`CLOSE ${cursor}`).catch(()=>undefined);await cleanup().catch(()=>undefined);throw error;}
 }
 
 export async function withFactReadSource<T>(client:PoolClient,pool:Pool,siteId:string,read:(source:FactReadSource)=>Promise<T>,options:FactSourceOptions={}):Promise<T>{
- if(hasFactReadSource(client)){assertFactHydrationReuse(factReadRelations(client).hydration,options);return read({...factReadRelations(client),source:factReadRelations(client).source??'postgres',cleanup:async()=>{}});}
+ if(hasFactReadSource(client))return read({...factReadRelations(client),source:factReadRelations(client).source??'postgres',cleanup:async()=>{}});
  const source=await prepareFactReadSource(client,pool,siteId,options),restore=bindFactReadRelations(client,source);
  try{return await read(source);}finally{restore();await source.cleanup();}
 }

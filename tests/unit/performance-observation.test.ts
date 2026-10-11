@@ -13,15 +13,3 @@ it('classifies each transport once and restores concurrent/nested phase scopes',
  expect(observations).toHaveLength(5);expect(observations.map(row=>row.chPhase)).toEqual(['publication_insert','publication_readback','publication_insert','input_read','other']);expect(new Set(observations.map(row=>row.correlationId)).size).toBe(1);
  expect(observations.find(row=>row.chPhase==='input_read')).toMatchObject({requests:1,requestBodyBytes:0,responseBodyBytes:9});
 });
-
-it('selected hydration captures finite post-callback counts without leaking supplied scopes',async()=>{
- const rows:PerformanceObservation[]=[];const counts={adapter:'facts' as const,authenticatedRows:100,selectedHydratedRows:0,siteId:'private-site',visitorId:'private-visitor'};
- await withPerformanceObservation('http_request',row=>{rows.push(row);},()=>measurePerformanceStage('temp_fill',()=>{counts.selectedHydratedRows=7;return true;},counts));
- expect(rows[0]).toMatchObject({stage:'temp_fill',authenticatedRows:100,selectedHydratedRows:7});expect(JSON.stringify(rows)).not.toContain('private');
- await withPerformanceObservation('http_request',row=>{rows.push(row);},()=>measurePerformanceStage('temp_fill',()=>true,{authenticatedRows:-1,selectedHydratedRows:Infinity}));
- expect(rows[1]).not.toHaveProperty('authenticatedRows');expect(rows[1]).not.toHaveProperty('selectedHydratedRows');
-});
-
-it('does not add selected hydration counters to authentication or unrelated adapters',async()=>{
- const rows:PerformanceObservation[]=[];for(const [stage,adapter]of [['authentication','facts'],['temp_fill','remaining']] as const)await withPerformanceObservation('operator',row=>{rows.push(row);},()=>measurePerformanceStage(stage,()=>true,{adapter,authenticatedRows:100,selectedHydratedRows:5}));for(const row of rows){expect(row).not.toHaveProperty('authenticatedRows');expect(row).not.toHaveProperty('selectedHydratedRows');}
-});

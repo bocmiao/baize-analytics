@@ -1,4 +1,3 @@
-import {factReadRelations} from './fact-read-context.js';
 import type {Pool,PoolClient} from 'pg';
 import {factAuthorityMatches} from './fact-authority.js';
 import {assertFactRunClosure} from './fact-run-closure.js';
@@ -15,7 +14,5 @@ export async function assertCurrentFactRangeBacking(c:PoolClient,pool:Pool,site:
  await assertFactRunClosure(c,site);
  // Hydration verifies every selected committed body, producer seal and live
  // source fence. The same client is reused, even with a pool capacity of one.
- // This proof callback consumes no TEMP rows. Inherit only an authenticated
- // bound projection; unbound calls still authenticate the complete source.
- return withRemainingFactReadSource(c,pool,site,async()=>({covered:true as const,method:'complete_retained_accepted_snapshot' as const,runId:String(head.id),generation:String(head.generation),from:start.toISOString(),to:end.toISOString(),retainedFrom:new Date(head.retained_from).toISOString(),watermark:head.watermark??null}),{hydration:factReadRelations(c).hydration??'complete'});
+ return withRemainingFactReadSource(c,pool,site,async()=>({covered:true as const,method:'complete_retained_accepted_snapshot' as const,runId:String(head.id),generation:String(head.generation),from:start.toISOString(),to:end.toISOString(),retainedFrom:new Date(head.retained_from).toISOString(),watermark:head.watermark??null}));
 }

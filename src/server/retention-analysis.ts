@@ -1,5 +1,3 @@
-import {statsFactHydration} from './stats-read-hydration.js';
-import {factReadRelations} from './fact-read-context.js';
 import {beginPartitionSnapshot} from './db.js';
 import {withFactReadSource} from './fact-store-source.js';
 import {factReadSql} from './fact-read-context.js';
@@ -10,12 +8,10 @@ import {readSiteEvents} from './event-store.js';
 
 export interface RetentionObservation {returned:number|null;rate:number|null;status:string;coverage:number;from:string;to:string}
 export interface RetentionCohort {size:number;days:Record<string,number|null>;observations:Record<string,RetentionObservation>}
-/** Exact calendar-day retention. Incomplete observations are unavailable, never zero.
- * Read-only membership uses current selected owners; complete parent sources are
- * valid supersets. This never requests a complete upgrade of a selected source. */
+/** Exact calendar-day retention. Incomplete observations are unavailable, never zero. */
 export async function queryRetention(ctx:Pick<AppContext,'pool'>,siteId:string,from:string,to:string,filters:Record<string,unknown>={},options:{client?:PoolClient}={}) {
- if(options.client)return withFactReadSource(options.client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client:options.client!}),{hydration:factReadRelations(options.client).hydration??statsFactHydration()});
- const client=await ctx.pool.connect();try{await beginPartitionSnapshot(client);const result=await withFactReadSource(client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client}),{hydration:factReadRelations(client).hydration??statsFactHydration()});await client.query('COMMIT');return result;}catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+ if(options.client)return withFactReadSource(options.client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client:options.client!}));
+ const client=await ctx.pool.connect();try{await beginPartitionSnapshot(client);const result=await withFactReadSource(client,ctx.pool,siteId,()=>queryRetentionRead(ctx,siteId,from,to,filters,{client}));await client.query('COMMIT');return result;}catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
 }
 async function queryRetentionRead(ctx:Pick<AppContext,'pool'>,siteId:string,from:string,to:string,filters:Record<string,unknown>,options:{client:PoolClient}) {
  const db=options.client;

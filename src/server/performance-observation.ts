@@ -5,7 +5,7 @@ export type PerformanceStage='pool_acquire'|'partition_lock'|'site_lock'|'ch_tra
 export type PerformanceChPhase='input_read'|'publication_insert'|'publication_readback'|'other';
 export type PerformanceAdapter='canonical'|'facts'|'session_headers'|'remaining'|'cache'|'mirror'|'other';
 const adapters=new Set(['canonical','facts','session_headers','remaining','cache','mirror','other']);
-export interface PerformanceCounts {authenticatedRows?:number;selectedHydratedRows?:number;dirtyVisitors?:number;reusedSessions?:number;reusedOwnerHeads?:number;rebuiltSessions?:number;producedEffectRows?:number;hydratedEffectRows?:number;inputEvents?:number;fullPlans?:number;deltaPlans?:number;fallbackPlans?:number;incrementalFallback?:string;adapter?:PerformanceAdapter;chPhase?:PerformanceChPhase;rows?:number;batches?:number;bytes?:number;requests?:number;requestBodyBytes?:number;responseBodyBytes?:number;queryTextBytes?:number}
+export interface PerformanceCounts {dirtyVisitors?:number;reusedSessions?:number;reusedOwnerHeads?:number;rebuiltSessions?:number;producedEffectRows?:number;hydratedEffectRows?:number;inputEvents?:number;fullPlans?:number;deltaPlans?:number;fallbackPlans?:number;incrementalFallback?:string;adapter?:PerformanceAdapter;chPhase?:PerformanceChPhase;rows?:number;batches?:number;bytes?:number;requests?:number;requestBodyBytes?:number;responseBodyBytes?:number;queryTextBytes?:number}
 export interface PerformanceObservation extends PerformanceCounts {operation:PerformanceOperation;stage:PerformanceStage;correlationId:string;durationMs:number;result:'success'|'failure'}
 export type PerformanceSink=(observation:Readonly<PerformanceObservation>)=>void|Promise<void>;
 const context=new AsyncLocalStorage<{operation:PerformanceOperation;sink:PerformanceSink;correlationId:string;chPhase?:PerformanceChPhase}>();
@@ -30,7 +30,7 @@ export async function measurePerformanceStage<T>(stage:PerformanceStage,fn:()=>T
   const started=performance.now();let result:'success'|'failure'='failure';
   try{const value=await fn();result='success';return value;}
   finally{
-    const safe:PerformanceCounts={};for(const key of ['rows','batches','bytes','requests','requestBodyBytes','responseBodyBytes','queryTextBytes','dirtyVisitors','reusedSessions','reusedOwnerHeads','rebuiltSessions','producedEffectRows','hydratedEffectRows','authenticatedRows','selectedHydratedRows','inputEvents','fullPlans','deltaPlans','fallbackPlans'] as const){if((key==='authenticatedRows'||key==='selectedHydratedRows')&&(stage!=='temp_fill'||counts?.adapter!=='facts'))continue;const value=counts?.[key];if(Number.isSafeInteger(value)&&value!>=0)safe[key]=value;}
+    const safe:PerformanceCounts={};for(const key of ['rows','batches','bytes','requests','requestBodyBytes','responseBodyBytes','queryTextBytes','dirtyVisitors','reusedSessions','reusedOwnerHeads','rebuiltSessions','producedEffectRows','hydratedEffectRows','inputEvents','fullPlans','deltaPlans','fallbackPlans'] as const){const value=counts?.[key];if(Number.isSafeInteger(value)&&value!>=0)safe[key]=value;}
     if(counts?.adapter&&adapters.has(counts.adapter))safe.adapter=counts.adapter;
     if(stage==='incremental_session_reuse'&&counts?.incrementalFallback&&incrementalFallbacks.has(counts.incrementalFallback))safe.incrementalFallback=counts.incrementalFallback;
     if(stage==='ch_transport')safe.chPhase=counts?.chPhase&&chPhases.has(counts.chPhase)?counts.chPhase:active.chPhase??'other';
