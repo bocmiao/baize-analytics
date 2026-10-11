@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "e991f4c3aad96398a34d080a8bb6ecbf6d1de1a1",
+  "command": "node --test scripts/ops-restore-volume-test.mjs",
+  "exit": 0,
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "cases": [
+    "missing journal rejects before target removal",
+    "restored private modes and independent current journal inode preserved",
+    "symlink copied without modifying outside file"
+  ],
+  "productionAppFullCountsNotAdded": true
+}

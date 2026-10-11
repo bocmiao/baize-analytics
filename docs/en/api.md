@@ -319,12 +319,10 @@ d67 full actual EXIT1/cleanup:645 backend(217 unit+428 integration)ALL PASS;brow
 
 New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/install/manifest/budget/55DDL/licensing/seed passed,native phase not started,targetcleanup complete.F archives evidence;no inferred root cause.Local01e2c5d saved,remote confirmation not claimed.Hosted workflows not triggered.Historical validation sections are marked by SHA; the API and installation operating guide below still describes current contracts.
 
-## 本批安全契约 / Security contracts
+## Current security contracts
 
-实例 `/api/admin/*` 仅接受真实管理员 Cookie 会话；站点 API Token（包括管理员签发或 admin scope）以及 Cookie + Authorization 混用均拒绝。站点创建、配置和写入密钥轮换与审计同事务提交，审计失败回滚业务变更，不使旧密钥失效。
+Instance administration requires an administrator browser Cookie session. Site API tokens, including administrator-issued tokens or admin scopes, and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation and preserves the previous key.
 
-Instance administration requires an administrator browser Cookie session. Site API tokens and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation.
+Account passwords use one rule for setup, login and invitation registration: 12–1024 characters, at most4096 UTF-8 bytes. Existing long invitation passwords remain usable. New share passwords require8–1024 characters and at most4096 bytes. Asynchronous scrypt preserves the legacy32-byte salt/hash format. Legacy verification accepts up to1MiB UTF-8 bytes and remains subject to the original1MiB limit for the entire HTTP body; it never truncates input or raises the body limit. At most four share-password derivations run concurrently, without a waiting queue; overload returns503 `share_password_busy` and `Retry-After:1`.
 
-账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，旧格式密码验证允许至1MiB UTF-8字节，仍受原HTTP整份正文1MiB上限；不截断、不扩大请求上限。全进程最多4个分享密码派生任务，无等待队列，满额503/share_password_busy并Retry-After:1。
-
-Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](../API_RATE_LIMIT_CURRENT.md).
+Authenticated statistics/site-management/admin requests share a600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](../API_RATE_LIMIT_CURRENT.md).

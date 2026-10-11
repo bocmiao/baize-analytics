@@ -49,3 +49,9 @@ strict5000仍FAIL；本批无已证实下一窄性能优化，不降低旧044认
 非1000UID试验初次在容器启动前失败：宿主UID1000的chown至2000返回EINVAL。仅测试runner改用自有Docker命名卷传入同一合成测试key，0600及UID/GID2000不变，不放宽生产权限、不改安装器；其最终结果另列。所有测试卷仅清理本批自有项目，原三个dev服务保留。旧失败完整保留；没有新5000负载、没有任何托管CI或真实外部账号操作。
 
 非默认UID2000实际故障回滚EXIT1：数据库已恢复，但文件helper在读取宿主解包bind目录`/restore-data`时EACCES，应用未恢复；已清理自有栈，失败记录`security-batch-05360be-custom-user-fail.json`保留。053的默认UID镜像/独立恢复EXIT0不能冒称此场景已通过；需要窄修后新源码重验。
+
+## 文件恢复窄修e991f4c
+
+实际非默认UID失败后仅改`ops-restore-volume`脚本及新增独立helper/3项Node回归，src/db/packages与05360be逐字节一致。新源码`e991f4c3aad96398a34d080a8bb6ecbf6d1de1a1`新镜像安装及独立签名恢复EXIT0，manifest`416b68607411cfb0f8a246a06c52102e14967dd60ba31ea087ce2b37ea3c88d4`/403文件/56迁移，镜像`5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57`。完整265/454/31仍引用05360be同应用树，不称新SHA重跑；新增文件回归3项不累计成268单元。源码/新镜像/独立恢复证据见`security-batch-e991f4c-*`。
+
+最终非默认UID运行：固定e991f4c、同源镜像sha256:5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57，隔离PG/Redis/CH和合成key，实际app2000:2000。仓库 `scripts/ops-upgrade-custom-user-test.sh` 注入9999已提交schema变更+HTTP503，真实数据库/文件/应用回滚EXIT0；恢复重算verified、schema探针消失、health200、proof UID/GID2000/mode0600/可读。source-image和source-after diff均空。证据`test-evidence/security-batch-e991f4c-custom-user-result.json`。自有卷/容器清理，原dev服务保留，剩余约6.9GiB。此为同物理机本地验收，Windows原生与跨物理机未测不变。

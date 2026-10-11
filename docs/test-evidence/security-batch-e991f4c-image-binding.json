@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "e991f4c3aad96398a34d080a8bb6ecbf6d1de1a1",
+  "imageId": "sha256:5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57",
+  "manifest": "416b68607411cfb0f8a246a06c52102e14967dd60ba31ea087ce2b37ea3c88d4",
+  "files": 403,
+  "migrationFiles": 56,
+  "sourceImageDiffEmpty": true,
+  "applicationTreeUnchangedFrom": "05360be137a66e3863605393602b87db3f6782be",
+  "applicationFullRerun": false,
+  "scope": "ops-only patch; full app265/454/31 evidence remains bound to05360be"
+}

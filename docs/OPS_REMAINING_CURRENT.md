@@ -50,7 +50,7 @@ APP_ROOT="$BAIZE_ISOLATED_CHECKOUT" BAIZE_OPS_ISOLATED_STACK=1 \
 
 数据库包与独立密钥包、长期最新删除日志需分别保存在受保护持久存储并按既有恢复流程对账；本例没有实现异地复制，不能据它称跨宿主灾备完成。
 
-## 非1000隔离栈最小启动方案（只读准备，尚未执行）
+## 非1000隔离栈启动方案与2026-10-11实际运行
 
 root冻结本批新源码并构建对应镜像后，在单独artifact checkout执行。Compose project必须新建 `baize_lifecycle_...`，端口选未占用loopback；PG/Redis/CH各自新卷，不连接原devPG/Redis/CH。配置 `BAIZE_UID` 与 `BAIZE_GID` 为明确的非1000数字身份，例如12345:12345；master key保持0600并属于该身份，checkout与公开应用文件可读。复用宿主安装用户0600密钥而只改容器UID会使secret不可读，不能误判为本次回滚问题。
 
@@ -59,3 +59,10 @@ root冻结本批新源码并构建对应镜像后，在单独artifact checkout�
 顺序：静态config → 新卷安装健康 → `OPS_ISOLATED_STACK=1` 的已有 `ops-canonical-stack.ts seed` 创建fixture → 上述custom-user失败升级脚本 → 核实际schema回滚、health200、proof实际owner/0600/可读 → 只清理此project。seed明确是隔离运维fixture直接authority，不把它当公共activation产品验收。
 
 不能用 `baize-analytics:ops-fallback-c610` 作为本批被测应用：其源码/迁移只有早期30条，缺最新canonical/retention/facts协议与此修复；只能保留作历史fallback证据。当前既有 `ops-upgrade-failure-test.sh` 派生故障镜像基底固定 `baize-analytics:local`，运行前root须确保该local标签对应同一新冻结镜像，否则会混用源码。若root需要避免覆盖标签，须先把该fixture基底改为显式被测镜像，而不是用c610替代。
+
+
+本批已在05360be镜像实际启动独立UID/GID2000隔离栈，故障升级导致schema提交后HTTP503；真实回滚数据库成功，但原文件helper因宿主解包目录owner1000/受限权限而EACCES，最终EXIT1，不能称customUID通过。更早宿主chown2000的EINVAL亦保留。仅测试runner改用自有命名卷准备合成master key，0600不变，不放宽生产权限。
+
+窄修e991f4c：读取已安装app的严格numeric UID:GID；备份校验后只读挂载源与当前可信helper，复原one-off为容器root，源/journal预检在目标清理之前，仅新复原文件递归lchown给实际app身份且不跟symlink，当前独立journal及watermark不替换；新backupjournal0600。当前helper只读bind而非从priorimage源码导入，兼容既有旧镜像。应用runtime仍非root，host备份权限不放宽。3项Node文件回归PASS0skip，真实新镜像/custom2000复验结果待下段。
+
+最终非默认UID运行：固定e991f4c、同源镜像sha256:5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57，隔离PG/Redis/CH和合成key，实际app2000:2000。仓库 `scripts/ops-upgrade-custom-user-test.sh` 注入9999已提交schema变更+HTTP503，真实数据库/文件/应用回滚EXIT0；恢复重算verified、schema探针消失、health200、proof UID/GID2000/mode0600/可读。source-image和source-after diff均空。证据`test-evidence/security-batch-e991f4c-custom-user-result.json`。自有卷/容器清理，原dev服务保留，剩余约6.9GiB。此为同物理机本地验收，Windows原生与跨物理机未测不变。

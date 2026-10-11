@@ -1,0 +1,11 @@
+# 安全/外部/运维批次交接（2026-10-11 UTC）
+
+应用固定05360be137a66e3863605393602b87db3f6782be：空库正式全轮EXIT0，265单元/454真实PG17+CH25.8+Redis7集成/31浏览器目录（29Chromium+2日期函数），0fail/0skip。Cookie-only管理员、统一账户密码、限流/异步分享密码、站点审计原子性以及旧1025/8192分享密码兼容已真实回归。外部模拟异常测试通过，不代表真实账号。
+
+后续运维固定e991f4c3aad96398a34d080a8bb6ecbf6d1de1a1：仅scripts文件恢复窄修，src/db/packages无diff。403manifest文件/56迁移；新镜像sha256:5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57，manifest416b68607411cfb0f8a246a06c52102e14967dd60ba31ea087ce2b37ea3c88d4，安装/独立签名目标CH恢复EXIT0，UID/GID2000故障升级schema+文件+应用实际回滚EXIT0，proof0600可读；3项Node文件回归通过。所有旧FAIL保留，见VALIDATION_SECURITY_BATCH及test-evidence/security-batch-*。
+
+严格5000性能仍未闭，不称全项目或日均百万SLO完成。本批没有新benchmark或性能参数改变；证据不足以支持下一窄优化，贡献复用/会话闭包需要跨发布、删除、备份契约改变，未实施，属内部技术欠项而非外部账户阻塞。见PERFORMANCE_CURRENT_BATCH_REVIEW。
+
+真实外部账号/付费API、小程序真机、读屏、跨物理机灾备未测；Windows为执行器错误，Ollama为下载网络拒绝，不归因缺账号。正式UI未扩大修改。所有源码直接private main，正常push，无PR/force/部署；本任务未触发CNB同步/流水线或GitHub Actions，父统一决定托管验收。
+
+可恢复bundle及tracked源码归档在/workspace/baize-checkpoints，最终文档提交后刷新CHECKPOINT_MANIFEST.json/verify。只含Git对象与tracked文件，不含runtime环境、keys、数据库、Git配置。原本三个dev测试服务保留；本批所有隔离栈已清理，最后剩余约6.9GiB。精确最终文档HEAD见Git及checkpoint manifest。
