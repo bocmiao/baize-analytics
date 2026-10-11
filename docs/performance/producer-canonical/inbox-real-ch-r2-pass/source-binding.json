@@ -1,0 +1,15 @@
+{
+  "baseHead": "f75f089",
+  "files": {
+    "scripts/prototypes/durable-inbox.ts": "7556ec3bc2a0c1077dba876b3cce5fcc59121ab54e89f52e3f5eef663febd7bf",
+    "scripts/prototypes/durable-inbox-canonical-publisher.ts": "32efe7f5984fa56103ac71d566b8904cad3da4332310a1245f08cb78cbdf8938",
+    "tests/integration/durable-inbox-canonical-publisher.test.ts": "807046d7a1817bdab1c642771c2d341d64aeb63126249e572304907fd12219bb",
+    "tests/integration/durable-inbox-prototype.test.ts": "5680fabcbdb75fca766b0b7e7981e63dfb7c0a1c469753e3cb4c32a4c043a38f"
+  },
+  "passed": 21,
+  "failed": 0,
+  "skipped": 0,
+  "exitCode": 0,
+  "scope": "14 isolated PG + 7 actual PG/CH; standard prepared digest research profile; productionIntegrated=false",
+  "command": "TEST_DATABASE_URL=<isolated fixture> CLICKHOUSE_TEST_URL=<existing local CH> node_modules/.bin/vitest run tests/integration/durable-inbox-prototype.test.ts tests/integration/durable-inbox-canonical-publisher.test.ts --reporter=json --outputFile=<report>"
+}

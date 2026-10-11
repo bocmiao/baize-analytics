@@ -1,5 +1,15 @@
 # 隔离 inbox 真实 CH 第一轮
 
+## 第二轮（当前隔离专项）
+
+真实PG/CH联合21PASS（14原型PG+7真实PG/CH），0fail/skip、EXIT0。新增4项：已发布A物理删除与B保留/新pendingB可发布；CH物理ACK后PG删除回滚不返回成功、缺A正文拒读，受控删除重试完成；同client重复event key认证原正文后不多写；正文物理丢失的重试拒绝并回滚PG。
+
+module在staged PG journal后调用同client eraser，强制physicalAck=true，再回查本事务确切journal IDs、推进负向代际并提交。**此PG journal可回滚，不是独立fsync journal**。CH已删PG回滚会短暂不一致，当前只证明fail-closed和受控重试，不证明生产跨库原子性/恢复防复活。正式接入仍须独立最新journal证明；原型不默认启用。
+
+[第二轮原始JSON/日志/源码摘要](performance/producer-canonical/inbox-real-ch-r2-pass/)。无5000结果，不把received等价于原accepted；没有重跑正式应用/镜像。
+
+## 第一轮历史结果（f75f089）
+
 本轮采用真实PG17/CH25.8，随机schema/独立站点，pool max1；不接正式collect、不改变202或发布。类型检查与scoped lint EXIT0。两文件专项17PASS、0fail/skip，实际EXIT0：14既有PG原型 + 3新PG/CH测试。不是正式应用全轮重跑。
 
 原型所有事务先沿现有 P→site gate，再取原型锁，publish callback复用持锁client和fresh claim闭包。真实publisher调用现有publishCanonicalIngest/CanonicalClickHouse完整读回与PG白名单，不另造可见性协议。
