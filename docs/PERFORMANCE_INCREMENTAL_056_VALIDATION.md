@@ -113,3 +113,26 @@ ACK 后 PG rollback 真实 reader 专项 2 PASS / 0 SKIP：原故障注入成功
 固定 `27057e438949639ba16856a79dba71bd84242100` 新 300 事件正式运行 EXIT0：6 批全部202、accepted300、unsent0、queryFailed0，排空/HTTP PV300 coverage1/CH 原始 PV301（bootstrap1）与九类 PG 正文零、outbox301done、水位及源码不变断言通过。整个命令 wall16.486926614秒、largest child peak517392KiB；baseline a869 同参数旧观测 wall21.164910343秒/peak624092KiB。worker5 calls累计7053.67ms（旧11277.83）、session_build1652.63ms（旧3000.13），coverage_witness累计700.94ms是新增范围认证成本，不能与嵌套时间相加。3 delta/2 full bootstrap plans，累计dirtyVisitors7/reusedSessions7/reusedOwnerHeads7/rebuiltSessions8/produced8506/hydrated5764/input302；含重复代际工作，不当唯一事件数。
 
 新 batchP95 286.02ms 对旧400.32；queryP95 386.29ms 对旧371.11、最终对账1475.51ms 对旧1363.34，查询略慢，不能概括全面提速。旧/新均单次观测，不外推真实规模SLO。保持50事件/1秒、独立10秒查询、queue8/concurrency2/drain120秒。按授权仅一次原5000候选运行已启动，尚未宣称结果；原5000 FAIL及容量探索仍保留。
+
+
+固定 `27057e4` 原参数 5000 仅一次受控复验真实 EXIT1 / FAIL：100计划、87sent/202、4350accepted、13unsent、44delayed，peakqueue8/concurrency2，maxbacklog2350，最后排空0。采集失败/拒绝、queryFailed/probeFailed皆0，drainReached=true且未超drain原限；仅已接收4350的最终HTTP PV4350 coverage1、CH原始/九类PG正文/签名/水位对账通过，不能称5000完整通过。全部自有资源cleanup/source unchanged通过。整个命令wall235.858419931秒、largest child peak699872KiB。batchP957632.74ms、queryP9523319.33ms。
+
+worker11次累计171816.50ms，session_build31638.17ms、CHtransport3983calls/50343.52ms、manifest4955calls/7177.70ms、authentication3425calls/15293.94ms、TEMP2788calls/11888.30ms、readback1345calls/17047.14ms、coverage_witness21calls/21638.03ms、site_lock30033.76ms；计时包含嵌套及累积，不能相加当墙钟归因。小300局部收益没有解决高到达率包络；新4350/13未发比此前4700/6未发更差，不能隐藏。此阶段源码不包含后续059升级分类修复，不作为最终源码负载证据。保持原阈值，后续先闭正确性，再基于新剖析修实因，不无变更重跑。
+
+
+真正 pre058 升级时序再次实际复现：固定 27057e4 生产源码、新夹具用固定 b78d7cb 历史 TTL 原实现（仅相对 import 重定位），schema≤057 上实际物理退役并提交、未运行缩窗 worker，再真实升级到发布058、扩大365。专项 0 PASS / 1 FAIL，7 项由 -t 过滤；危险 FULL 返回成功而非拒绝。基线只移除不存在059分类表的诊断前提，保留原拒绝/旧owner对账断言及明确 hash，并未删除058新row来伪造历史。059 原点分类修复正在隔离完整8例验证。
+
+
+059 原点分类修复的隔离完整 coverage-witness 目录 8 PASS / 0 SKIP，EXIT0：真实≤057 schema/旧版本 TTL/升级058+059，legacy_unknown 拒绝并保留操作前 owner/ref/receipt/hash/正文；新站点经059 INSERT trigger pending +真实首次FULL publication 签 authenticated_new_site，正常PG初始化与CH切换保持可用。迁移已有站点缺frontier不会因FULL或空表变成新站点，legacy_unknown不自动升级。源27057e4+059 guard/firstpublisher/真实历史夹具精确patch绑定，未包含并行 selected hydration/metrics 在制修改。16 unit/types/lint轻验证通过；签名namespace恢复接线与最终全轮尚待。
+
+### 27057e4 original 5000: exact unsent classification
+
+All 100 planned batch samples are present. Of these, 87 received HTTP 202 and 13 have `queue_full_unsent`; none have `duration_limit_unsent`. The omitted batch indices are 56, 57, 75–78 and 87–93. They were not retried or backfilled. Intake ended at 99.323 seconds, before the unchanged 220-second intake duration limit. The direct cause was the bounded queue reaching eight entries while both permitted request slots were occupied, rather than expiration of the overall deadline.
+
+Actual send delay relative to the fixed one-second targets: median 313.18 ms, P95 11,152.06 ms (the existing floor percentile convention), maximum 14,268.81 ms. Thirty-nine sent batches were at least one second late. The separate `delayedBatches=44` admission metric also counts busy concurrency slots and is not the same measurement. Request duration median was 509.31 ms, P95 7,632.74 ms and maximum 13,323 ms. These observations establish request/queue backpressure; the old run did not instrument event-loop delay, so it cannot distinguish server/lock latency from a worker and sender competing in the same process. CPU competition is a hypothesis, not a reproduced root cause.
+
+Future candidate runs record bounded target/actual scheduling samples and per-stage timer callback lateness, using the existing sampling timer. Timer lateness is an observation of delayed execution, not CPU attribution. Cumulative lateness is not added to wall-clock duration. No original rate, concurrency, queue, deadline or drain threshold was changed. The 4350/5000 FAIL and all older FAILs remain authoritative for their source snapshots.
+
+### 059 signed independent restore (isolated patch binding)
+
+Base 8e832c4 with ten explicitly hashed 059 patches: `incremental-session-restore.test.ts` completed EXIT 0, 1 PASS, 0 FAIL, 0 SKIP. This validates the signed origin scope and independent target restoration without changing source ClickHouse data. It is not whole-directory acceptance or a new performance result. Source/patch binding and JSON are archived beside the earlier isolated upgrade evidence.
