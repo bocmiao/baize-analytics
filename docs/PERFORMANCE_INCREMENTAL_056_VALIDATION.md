@@ -105,3 +105,11 @@ ACK 后 PG rollback 真实 reader 专项 2 PASS / 0 SKIP：原故障注入成功
 
 
 `bd70906` 新安全观测的 bootstrap-only 单次仍 EXIT1，固定 stage=cache_migration、errorCode=BOOTSTRAP_UNKNOWN_FAILURE，cleanup 全完成；未发送正式负载。源码定位到自建 cache adapter 没有注册 pool 推断的调用契约：新认证迁移要求显式 options.pool，benchmark custom adapter 调用缺此参数。将修调用方传同一 pool，保留 held client 与认证，不让 helper 在缺来源时回退零样本。此时只是明确候选定位，修后 bootstrap 执行尚待。
+
+
+`27057e4` 修调用方显式同 pool 后，bootstrap-only 实际 EXIT0，初始化 5.4006791 秒、四项自有资源 cleanup 全 true。未发送正式负载，不作为性能通过；只证明此前 cache adapter 注册契约阻断已解除。原迁移 guard、签名与 source authentication 未改。轻量相关 9 单元/type/lint 通过。该提交固定 300 正式调度正在执行，保留前两条 bootstrap FAIL。
+
+
+固定 `27057e438949639ba16856a79dba71bd84242100` 新 300 事件正式运行 EXIT0：6 批全部202、accepted300、unsent0、queryFailed0，排空/HTTP PV300 coverage1/CH 原始 PV301（bootstrap1）与九类 PG 正文零、outbox301done、水位及源码不变断言通过。整个命令 wall16.486926614秒、largest child peak517392KiB；baseline a869 同参数旧观测 wall21.164910343秒/peak624092KiB。worker5 calls累计7053.67ms（旧11277.83）、session_build1652.63ms（旧3000.13），coverage_witness累计700.94ms是新增范围认证成本，不能与嵌套时间相加。3 delta/2 full bootstrap plans，累计dirtyVisitors7/reusedSessions7/reusedOwnerHeads7/rebuiltSessions8/produced8506/hydrated5764/input302；含重复代际工作，不当唯一事件数。
+
+新 batchP95 286.02ms 对旧400.32；queryP95 386.29ms 对旧371.11、最终对账1475.51ms 对旧1363.34，查询略慢，不能概括全面提速。旧/新均单次观测，不外推真实规模SLO。保持50事件/1秒、独立10秒查询、queue8/concurrency2/drain120秒。按授权仅一次原5000候选运行已启动，尚未宣称结果；原5000 FAIL及容量探索仍保留。

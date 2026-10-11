@@ -1,0 +1,11 @@
+{
+  "mode": "bootstrap-only-no-load",
+  "passed": true,
+  "cleanup": {
+    "applicationClosed": true,
+    "chNamespaceRemoved": true,
+    "pgSchemaRemoved": true,
+    "temporaryRemoved": true
+  },
+  "wallMs": 5400.679099999999
+}
