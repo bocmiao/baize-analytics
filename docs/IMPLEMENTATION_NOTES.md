@@ -1,6 +1,14 @@
 # 白泽首轮实现修正
 
-## 当前验收入口（f8c9c12）
+## 当前验收入口（81415f4）
+
+已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。
+
+同源新镜像与独立签名恢复实际EXIT0：397文件源码与镜像一致、56迁移，独立目标CH恢复源不变、最新日志删A保B，缺sidecar/篡改/worker故障拒绝。镜像 `sha256:1ce85f36babc8552498eb7ee05fc34fc8601a7c51e145f1346311a77ab59100a`；manifest `8ad788a120a7e03dc5e7821f787318c217797e7b16f99fca8e165c76e4680dba`。完整tracker gzip5087字节满足5KiB，未满足5000字节；min为4506字节。
+
+原strict5000FAIL及全部旧失败保留；本轮未追加5000、未重做无变化旧故障矩阵，不宣称性能/SLO或全项目完成。真实外部账号、原生设备与跨宿主灾备未测边界不变；没有触发托管CI或外网部署。
+
+## 历史f8c9c12验收入口（原记录保留）
 
 [本阶段固定源码收尾](VALIDATION_F8C9C12_CLOSING.md)：空库正式入口EXIT0，247单元+443真实集成=690后端PASS、0fail/0skip/0unhandled；30目录检查（28Chromium+2日期）PASS。新镜像/独立签名恢复EXIT0，56迁移/395文件源码与镜像一致。原strict5000FAIL不变，本轮未追加5000、不宣称整体提速或SLO。
 
