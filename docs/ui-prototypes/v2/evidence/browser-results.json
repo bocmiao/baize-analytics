@@ -7,6 +7,18 @@
       "status": "passed"
     },
     {
+      "name": "a default 30-day chart with collapsed daily detail and no permanent tooltip",
+      "status": "passed"
+    },
+    {
+      "name": "a chart-level direction keys reveal daily evidence",
+      "status": "passed"
+    },
+    {
+      "name": "a two derived changes perform real drill-down",
+      "status": "passed"
+    },
+    {
       "name": "a 7d pv real controls and daily evidence",
       "status": "passed"
     },
@@ -99,6 +111,14 @@
       "status": "passed"
     },
     {
+      "name": "b default 30-day chart with collapsed daily detail and no permanent tooltip",
+      "status": "passed"
+    },
+    {
+      "name": "b chart-level direction keys reveal daily evidence",
+      "status": "passed"
+    },
+    {
       "name": "b 7d pv real controls and daily evidence",
       "status": "passed"
     },
@@ -187,6 +207,10 @@
       "status": "passed"
     },
     {
+      "name": "b representative mobile typography at least 14px",
+      "status": "passed"
+    },
+    {
       "name": "b mobile heatmap scroll and fixed weekday",
       "status": "passed"
     },
@@ -198,42 +222,45 @@
   "variants": {
     "a": {
       "desktopChart": {
-        "x": 92,
-        "y": 552.515625,
-        "width": 1256,
+        "x": 388,
+        "y": 389.65625,
+        "width": 960,
         "height": 370
       },
+      "analysisDetailScroll": 800,
       "mobileChart": {
         "x": 24,
-        "y": 598.625,
+        "y": 387.046875,
         "width": 342,
         "height": 290
       },
-      "requests": 28
+      "requests": 60
     },
     "b": {
       "desktopChart": {
         "x": 249,
-        "y": 320.78125,
+        "y": 340.28125,
         "width": 1134,
         "height": 360
       },
+      "analysisDetailScroll": 781,
       "mobileChart": {
-        "x": 37,
-        "y": 505.9375,
-        "width": 316,
+        "x": 29,
+        "y": 348.5625,
+        "width": 332,
         "height": 280
       },
-      "requests": 32
+      "requests": 40
     }
   },
-  "passed": 48,
+  "passed": 54,
   "failed": 0,
   "skipped": 0,
-  "codeCommit": "dd81256",
+  "codeCommit": "675643d",
   "viewports": {
     "desktop": "1440x1000",
     "mobile": "390x844"
   },
-  "capture": "full-page; deterministic synthetic data; real Chromium"
+  "capture": "viewport PNGs, not scaled full-page; overview/mobile at scroll zero; analysis at documented detail scroll; additional analysis-top PNGs retained",
+  "dataset": "deterministic-v2-2026-10-10"
 }
