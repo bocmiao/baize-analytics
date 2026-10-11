@@ -1,13 +1,14 @@
 import type {MouseEvent} from 'react';
 import {language} from './i18n';
 import {rows,type Row} from './api';
+export function overviewChannelLabel(value:string){if(language()==='en')return value;const labels:Record<string,string>={direct:'直接访问',email:'邮件',unknown:'未知来源',search:'自然搜索',organic:'自然搜索',organic_search:'自然搜索',referral:'外部网站',social:'社交媒体',paid:'付费广告',paid_search:'付费搜索'};return Object.hasOwn(labels,value)?labels[value]!:value;}
 export interface OverviewInsight {title:string;detail:string;report:string}
 const number=(value:unknown):value is number=>typeof value==='number'&&Number.isFinite(value);
 /** Descriptive facts from the returned scope only; no causal claims or model calls. */
 export function overviewInsights(data:Row):OverviewInsight[]{
  const en=language()==='en',totals=(data.totals||{}) as Row,items:OverviewInsight[]=[];
  const source=rows(data.sources).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
- if(source&&number(totals.pv)&&totals.pv>0)items.push({title:en?'Leading traffic source':'主要流量来源',detail:en?`${String(source.channel)} contributed ${source.pv} pageviews (${((source.pv as number)/totals.pv*100).toFixed(1)}% of this scope).`:`${String(source.channel)}贡献 ${source.pv} 次浏览，占当前范围的 ${((source.pv as number)/totals.pv*100).toFixed(1)}%。`,report:'sources'});
+ if(source&&number(totals.pv)&&totals.pv>0)items.push({title:en?'Leading traffic source':'主要流量来源',detail:en?`${String(source.channel)} contributed ${source.pv} pageviews (${((source.pv as number)/totals.pv*100).toFixed(1)}% of this scope).`:`${overviewChannelLabel(String(source.channel))}贡献 ${source.pv} 次浏览，占当前范围的 ${((source.pv as number)/totals.pv*100).toFixed(1)}%。`,report:'sources'});
  const page=rows(data.pages).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
  if(page)items.push({title:en?'Most viewed content':'访问最多的内容',detail:en?`${String(page.path)} received ${page.pv} pageviews in this scope.`:`${String(page.path)}在当前范围收到 ${page.pv} 次浏览。`,report:'pages'});
  if(number(totals.conversions)&&!(data.coverage!==1&&totals.conversions===0))items.push({title:en?'Observed goal completions':'已观测目标完成',detail:en?`${totals.conversions} goal completions were returned. Review definitions and attribution before interpreting them as business outcomes.`:`返回 ${totals.conversions} 次目标完成。请结合目标定义与归因复核业务含义。`,report:'goals'});

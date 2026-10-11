@@ -49,7 +49,7 @@ test('real administrator → site → durable collection → aggregate → Chine
     await page.screenshot({ path: 'docs/screenshots/dashboard-acceptance.png', fullPage: true });
     await navigateWorkspace(page, "页面");
     await expect(page.getByRole('cell', { name: '/acceptance', exact: true })).toBeVisible();
-    await page.getByRole('button', { name: '退出登录', exact: true }).click();
+    await openWorkspaceAccount(page);await page.getByRole('button', { name: '退出登录', exact: true }).click();
     await expect(page.getByRole('heading', { name: /看懂每一次访问，.*找到下一步增长/ })).toBeVisible();
     const unauthenticated = await page.request.get(`/api/v1/sites/${site.id}/stats`);
     expect(unauthenticated.status()).toBe(401);
