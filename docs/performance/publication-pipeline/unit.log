@@ -1,0 +1,18 @@
+
+> baize-analytics@0.1.0 test:unit
+> vitest run tests/unit
+
+
+ RUN  v4.1.11 /workspace/baize-analytics
+
+
+ Test Files  84 passed (84)
+      Tests  356 passed (356)
+   Start at  13:00:11
+   Duration  20.69s (transform 1.71s, setup 0ms, import 7.52s, tests 2.94s, environment 8ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
