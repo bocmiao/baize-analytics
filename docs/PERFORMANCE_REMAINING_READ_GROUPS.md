@@ -1,6 +1,6 @@
 # 047真实看板读取：有界receipt合批候选
 
-状态：2026-10-11，候选在制，默认仍单receipt；不声称净收益、5000通过或新全轮通过。最近完整功能入口为2d2dda2（359单元/490集成/31浏览器，全0skip）；d90e09a相同应用树的新镜像安装与独立签名恢复已有分开的真实证据。详见 [producer与恢复记录](PERFORMANCE_PRODUCER_CANONICAL.md)。
+状态：2026-10-11，候选已基于小样本净收益改默认三receipt，新完整验收待执行；不声称净收益、5000通过或新全轮通过。最近完整功能入口为2d2dda2（359单元/490集成/31浏览器，全0skip）；d90e09a相同应用树的新镜像安装与独立签名恢复已有分开的真实证据。详见 [producer与恢复记录](PERFORMANCE_PRODUCER_CANONICAL.md)。
 
 ## 依据与明确边界
 
@@ -8,7 +8,7 @@
 
 候选只合并最多三个同kind receipt的CH读取。每receipt仍最多100行；每个PG成员count/checksum、完整正文SHA/canonical/HMAC/key、归属/来源及carry anchor/orphan均认证。整组三个receipt全部认证后才yield原每批≤100行给TEMP。不并发、不unlock共享站点门、不缓存正文/认证证明、不用epoch复查替代门。044既有读取组不变；canonical ACK后PGrollback可不改变epoch，仍必须保留原门和可见性协议。
 
-三receipt query仅限列举已提交attempt，使用每attempt101行sentinel，未知/重复/超限/缺正文全拒绝。group body以base64避免JSON斜线膨胀，UTF8 fatal解析、规范base64及总16MiB EOF预算保留。单receipt100正文及normalized32KiB约束仍原样。生产默认1，构造参数3仅隔离A/B候选；有净收益和所有适用正确性通过后才决定推广，不默认为生产已验。
+三receipt query仅限列举已提交attempt，使用每attempt101行sentinel，未知/重复/超限/缺正文全拒绝。group body以base64避免JSON斜线膨胀，UTF8 fatal解析、规范base64及总16MiB EOF预算保留。单receipt100正文及normalized32KiB约束仍原样。三receipt在候选源码成为默认；显式构造参数1保留同算法单批oracle。已过专项和实际A/B，不默认为当前新源码全轮已验。
 
 ## 比较方法
 
@@ -22,4 +22,14 @@ BAIZE_SERIAL_RESOURCE_GATE=1 FROZEN_SOURCE_SHA="$frozen_sha" \
   node --import tsx scripts/benchmark/remaining-http-read.ts
 ```
 
-TEST_DATABASE_URL、CLICKHOUSE_TEST_URL及本地fixture账号从既有环境传入，不打印secret。100/1000都是小样本方向/对照，不代替原50events/s、100次50事件、query10s、queue8、并发2、drain120s的5000验收。只有候选具有净收益才追加一次受控原参数负载；全部旧FAIL与未发送批次保留，不补发、不延drain。当前未记录任何候选实际A/B成功。
+TEST_DATABASE_URL、CLICKHOUSE_TEST_URL及本地fixture账号从既有环境传入，不打印secret。100/1000都是小样本方向/对照，不代替原50events/s、100次50事件、query10s、queue8、并发2、drain120s的5000验收。只有候选具有净收益才追加一次受控原参数负载；全部旧FAIL与未发送批次保留，不补发、不延drain。候选100事件实际A/B成功见下；不等于5000或完整应用通过。
+
+## 不可变2660cff：真实HTTP同源A/B EXIT0
+
+源码逐blob绑定1968文件；100条真实collect，strict真实CH正文/签名proof及五类PG正文裁剪完成。同站点交替1/3共六HTTP读，完整统计摘要相同、PV/UV100、coverage1；7100正向成员、71receipts摘要前后未变，cleanup全部true/sourceUnchanged=true。三个wall配对：1779.37→1431.97、1657.57→1340.36、1735.49→1372.50ms，约19.5%/19.1%/20.9%下降。047请求每读71→25，transport636.13→321.88、589.03→311.71、617.99→303.30ms。response约6.71→8.13MB，增加约21%，是base64合批的明确成本；HMAC/正文/成员未减少，inclusive认证有store/bridge嵌套，不能相加作wall或把14200计数当14200不同HMAC。TEMP仍100行batch，未同时做另项SQL优化。
+
+10新增unit通过；不可变2660真实PG/CH三文件8通过0skip（含五kind/非空carry/大Unicode/混合tail/第三attempt实际正文删除第一next即拒/receipts不变）。将默认改3后四相关unit43/43、类型/scoped lint通过，但完整空库/浏览器/新镜像及原参数5000仍待新不可变源码验证。
+
+旧2d镜像归档I/O在strict准备阶段完成（文件mtime14:39:47.573UTC，14:39:48观察仍strict_backup_activation，HTTP测量随后发生），查询期没有再启动bulk；这些观察不证明硬件完全静默或生产SLO。所有旧FAIL保留。[原始A/B JSON](performance/producer-canonical/remaining-2660cff-pass/http100-ab.json)、[phase log](performance/producer-canonical/remaining-2660cff-pass/http100-ab.txt)、[真实集成](performance/producer-canonical/remaining-2660cff-pass/integration.json)。
+
+维护决策：保留一个≤3receipt base64分组decoder及显式width1 oracle，换取这轮有实际HTTP净收益的固定往返减少；不解锁、不增加cache/migration/concurrency，不继续追加无依据微优化。下一受控5000沿239完全相同参数，全部旧失败及未发送原样保留；B前置持久收件箱仅隔离原型，见 [ADR060](ADR_060_INGEST_RECEIPTS.md)。

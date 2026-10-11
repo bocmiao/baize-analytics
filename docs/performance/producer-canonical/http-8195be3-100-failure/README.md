@@ -2,4 +2,4 @@
 
 运行代码为不可变8195be3774fcef046c412dc94eb782cb23e23402 archive；root误从仓库cwd调用archive脚本，其sourceDigest相对cwd读取，期间仅helper新增阶段日志导致source_check拒绝。整体EXIT1，不能称完整通过；将下轮cwd固定到已绑定archive，不能删除末尾检查。
 
-实际三次HTTP200，PV/UV100、coverage1、结果digest等价及cleanup全true；047五类PG正文为0。每次71 CH请求、约6.71MB，累计transport612.468/605.651/731.107ms；查询wall1752.845/1736.764/1989.8ms（精确值以JSON为准）。authentication/TEMP等inclusive测量不可相加当wall占比。此小样本仅用于候选方向，不覆盖5000容量FAIL、不把producer微基准替代HTTP。
+实际三次HTTP200，PV/UV100、coverage1、结果digest等价及cleanup全true；047五类PG正文为0。每次71 CH请求、约6.71MB，累计transport612.468/605.651/731.107ms；查询wall1752.845/1736.8/1989.8ms（精确值以JSON为准）。authentication/TEMP等inclusive测量不可相加当wall占比。此小样本仅用于候选方向，不覆盖5000容量FAIL、不把producer微基准替代HTTP。
