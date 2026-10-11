@@ -58,3 +58,15 @@
 |4|2|205.888|71.019|290.689|10 + 10|
 
 发布局部两对约减少 34.9%/33.2%，未减少请求或认证；这只证明微基准局部收益，不推翻上述背景采集无净收益，也不能外推生产 SLO。根据该证据，随后只运行一次同 `239bb53` 的原 5000 schedule 候选：增量=1、coverageReuse=1、pagePathBatch=1、publicationConcurrency=2；仍每秒 50、100 次调度、查询 10s、queue8、入口并发2、drain120s。运行中，结果未预写通过。旧失败完整保留。默认仍为单批，是否保留候选需等全链路结果与维护成本判断。
+
+## 原 5000 候选最终 FAIL：239bb53
+
+实际 EXIT1，整体 224.249576s，子进程峰值 723596 KiB（不含 PG/CH/Redis）；不是 1C2G 或百万事件证据。100 次调度全执行、98 次发送/HTTP202、4900 accepted、2 unsent，零请求失败/拒绝、零查询/探针失败。已接收数据排空，最终 API PV4900/coverage1/CH，canonical PV4901/UV99（含一条 bootstrap）、九类 PG 正文为0、outbox4901全部done、processed/watermark完整、所有独立资源清理、源码前后不变均通过。**因2批未发送，整体仍 FAIL；不补发、不延长 drain 或放宽判据。**
+
+未发送为 index81/82，原目标81/82秒时 queue8、active2，`queue_full_unsent`；不是 deadline 退出。100次 due-loop lateness中位7.450ms/P95 nearest-rank52.863ms/max67.413ms。98已发的 enqueue-to-send delay中位27.870ms、nearest-rank P957779.696ms/max9100.768ms；两未发字段null不混入分位。HTTP批次摘要原reported P956490.155ms，另98样本nearest-rank P957313.534ms（不同分位定义，不能混写）；最大11074.817ms。25ms event-loop探针 intake平均6.480/max100.571ms，drain9.533/max93.326ms，final7.931/max80.394ms。这些不是CPU根因证明；直接可观察瓶颈是长查询持站点门和入口背压，而非秒级due-loop延迟。
+
+真实阶段：intake103.075s，drain87.467s（原120s以内），最后断言27.093s，其中最终HTTP25.918s。13次真实看板查询（9intake+4drain）总体reported P9519.363s。HTTP site-lock等待累计104.572s/max10.690s；worker site-lock等待33.980s/max19.518s。11次worker累计156.256s/max63.967s，session-build33.575s、coverage21次14.251s、认证14.186s、TEMP10.125s、manifest8.690s；这些层级嵌套/并行，禁止相加当墙钟。
+
+事实CH worker输入226请求/377182800响应字节/8.094s；INSERT1384请求17.793s，完整readback1384请求19.752s/192302201响应字节。双批的累计并行请求时间不能解释为发布墙钟或直接与单批历史作因果。更主要的HTTP读取认证累计49.828s、TEMP27.807s、CH45.156s、最终SQL4.380s，仍罩在站点共享门内。4900/2相对旧4550/9只是实际观测差异，两提交/捕获集合/派生量不同，不能据此宣称一项优化解决了负载。
+
+维护结论：流水线有等工作量局部收益，背景300无净收益，5000仍FAIL，默认继续1；当前保留候选仅供这轮未结束的性能工程，最终交付需明确默认/实验维护选择。没有重复同参数5000。随后一次受控CPU profile（仅1000 effects四trial，不是看板profile）在source239证明producer prepare里的canonical self为113107us/该scope215966us；全进程含idle/import不能当查询比例。按此只实施每条最终规范化记录的精确序列化复用，不降低JSON/Zod/SHA/HMAC/32KiB/receipt/fence；restore/legacy算法不变，收益尚待验证。原 profile与分层摘要归档，不改旧FAIL。

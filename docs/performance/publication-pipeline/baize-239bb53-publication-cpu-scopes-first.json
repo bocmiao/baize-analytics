@@ -1,0 +1,425 @@
+{
+  "scopeMeaning": "Mutually exclusive sample ancestry classification; async continuations may lack originating scope. Whole process includes setup and all four trials. These intervals are sampling estimates, not stage wall time or query CPU fractions. GC cannot be assigned to authentication from this profile.",
+  "scopes": {
+    "other_or_async_unattributed": {
+      "samples": 342,
+      "sampledUs": 385252,
+      "topSelfFrames": [
+        {
+          "frame": "(program)@",
+          "sampledUs": 30445
+        },
+        {
+          "frame": "compileSourceTextModule@utils",
+          "sampledUs": 26896
+        },
+        {
+          "frame": "canonical@security.ts",
+          "sampledUs": 15634
+        },
+        {
+          "frame": "runMicrotasks@",
+          "sampledUs": 11670
+        },
+        {
+          "frame": "@fact-publication-ab.ts",
+          "sampledUs": 11630
+        },
+        {
+          "frame": "@security.ts",
+          "sampledUs": 11380
+        },
+        {
+          "frame": "compileForInternalLoader@realm",
+          "sampledUs": 11229
+        },
+        {
+          "frame": "parseClickHouseSelectJson@clickhouse-select-budget.ts",
+          "sampledUs": 7843
+        },
+        {
+          "frame": "__require@undici",
+          "sampledUs": 6505
+        },
+        {
+          "frame": "lineLengths@source_map_cache",
+          "sampledUs": 6148
+        },
+        {
+          "frame": "onStreamRead@stream_base_commons",
+          "sampledUs": 5386
+        },
+        {
+          "frame": "processTicksAndRejections@task_queues",
+          "sampledUs": 5073
+        }
+      ]
+    },
+    "gc_unattributed_to_stage": {
+      "samples": 54,
+      "sampledUs": 71457,
+      "topSelfFrames": [
+        {
+          "frame": "(garbage collector)@",
+          "sampledUs": 71457
+        }
+      ]
+    },
+    "imports_transpile_setup": {
+      "samples": 116,
+      "sampledUs": 121826,
+      "topSelfFrames": [
+        {
+          "frame": "I@index-DE3OBZuV.mjs",
+          "sampledUs": 18687
+        },
+        {
+          "frame": "@register-nyXW-TH3.mjs",
+          "sampledUs": 14843
+        },
+        {
+          "frame": "@register-B1c7OH6V.cjs",
+          "sampledUs": 7831
+        },
+        {
+          "frame": "wrapSafe@loader",
+          "sampledUs": 5783
+        },
+        {
+          "frame": "internalModuleStat@",
+          "sampledUs": 4039
+        },
+        {
+          "frame": "compileForInternalLoader@realm",
+          "sampledUs": 3893
+        },
+        {
+          "frame": "read@",
+          "sampledUs": 3349
+        },
+        {
+          "frame": "deserializePackageJSON@package_json_reader",
+          "sampledUs": 3336
+        },
+        {
+          "frame": "get@package_json_reader",
+          "sampledUs": 3326
+        },
+        {
+          "frame": "zs@register-B1c7OH6V.cjs",
+          "sampledUs": 2253
+        },
+        {
+          "frame": "open@",
+          "sampledUs": 2240
+        },
+        {
+          "frame": "parse@",
+          "sampledUs": 2233
+        }
+      ]
+    },
+    "async_idle": {
+      "samples": 976,
+      "sampledUs": 1117314,
+      "topSelfFrames": [
+        {
+          "frame": "(idle)@",
+          "sampledUs": 1117314
+        }
+      ]
+    },
+    "migration": {
+      "samples": 7,
+      "sampledUs": 7423,
+      "topSelfFrames": [
+        {
+          "frame": "readdir@",
+          "sampledUs": 1194
+        },
+        {
+          "frame": "@",
+          "sampledUs": 1100
+        },
+        {
+          "frame": "flush@buffer-writer.js",
+          "sampledUs": 1095
+        },
+        {
+          "frame": "migrate@db.ts",
+          "sampledUs": 1093
+        },
+        {
+          "frame": "query@client.js",
+          "sampledUs": 1082
+        },
+        {
+          "frame": "resetBuffer@writable",
+          "sampledUs": 1063
+        },
+        {
+          "frame": "resolve@node:path",
+          "sampledUs": 796
+        }
+      ]
+    },
+    "publication_prepare": {
+      "samples": 194,
+      "sampledUs": 215966,
+      "topSelfFrames": [
+        {
+          "frame": "canonical@security.ts",
+          "sampledUs": 69800
+        },
+        {
+          "frame": "@security.ts",
+          "sampledUs": 43307
+        },
+        {
+          "frame": "record@fact-store.ts",
+          "sampledUs": 13028
+        },
+        {
+          "frame": "@fact-store.ts",
+          "sampledUs": 12373
+        },
+        {
+          "frame": "inst._zod.parse@schemas.js",
+          "sampledUs": 11119
+        },
+        {
+          "frame": "Hmac@hash",
+          "sampledUs": 11041
+        },
+        {
+          "frame": "init@core.js",
+          "sampledUs": 8653
+        },
+        {
+          "frame": "writev@",
+          "sampledUs": 7674
+        },
+        {
+          "frame": "Hash@hash",
+          "sampledUs": 7002
+        },
+        {
+          "frame": "update@hash",
+          "sampledUs": 6450
+        },
+        {
+          "frame": "runChecks@schemas.js",
+          "sampledUs": 4044
+        },
+        {
+          "frame": "@",
+          "sampledUs": 3144
+        }
+      ]
+    },
+    "publication_upload_readback": {
+      "samples": 44,
+      "sampledUs": 52461,
+      "topSelfFrames": [
+        {
+          "frame": "@fact-store.ts",
+          "sampledUs": 23072
+        },
+        {
+          "frame": "_Request@undici",
+          "sampledUs": 3355
+        },
+        {
+          "frame": "@undici",
+          "sampledUs": 3326
+        },
+        {
+          "frame": "selectRequest@fact-store.ts",
+          "sampledUs": 3106
+        },
+        {
+          "frame": "@",
+          "sampledUs": 2175
+        },
+        {
+          "frame": "encodeUtf8String@",
+          "sampledUs": 2160
+        },
+        {
+          "frame": "#updateContext@url",
+          "sampledUs": 1717
+        },
+        {
+          "frame": "forwardReaderError@readablestream",
+          "sampledUs": 1307
+        },
+        {
+          "frame": "extractBody@undici",
+          "sampledUs": 1099
+        },
+        {
+          "frame": "Timeout@timers",
+          "sampledUs": 1088
+        },
+        {
+          "frame": "insert@timers",
+          "sampledUs": 1088
+        },
+        {
+          "frame": "Client@undici",
+          "sampledUs": 1086
+        }
+      ]
+    },
+    "publication_pg_receipts": {
+      "samples": 27,
+      "sampledUs": 32317,
+      "topSelfFrames": [
+        {
+          "frame": "writev@",
+          "sampledUs": 13437
+        },
+        {
+          "frame": "measurePerformanceStage.adapter@fact-member-publication.ts",
+          "sampledUs": 5234
+        },
+        {
+          "frame": "@fact-store.ts",
+          "sampledUs": 3348
+        },
+        {
+          "frame": "_pulseQueryQueue@client.js",
+          "sampledUs": 2492
+        },
+        {
+          "frame": "commitPreparedRecords@fact-store.ts",
+          "sampledUs": 2204
+        },
+        {
+          "frame": "Hmac@hash",
+          "sampledUs": 2140
+        },
+        {
+          "frame": "@",
+          "sampledUs": 1079
+        },
+        {
+          "frame": "factResponseBound@fact-response-budget.ts",
+          "sampledUs": 1064
+        },
+        {
+          "frame": "addInt32PrefixedString@buffer-writer.js",
+          "sampledUs": 1057
+        },
+        {
+          "frame": "canonical@security.ts",
+          "sampledUs": 262
+        }
+      ]
+    },
+    "wire_decoder": {
+      "samples": 39,
+      "sampledUs": 45804,
+      "topSelfFrames": [
+        {
+          "frame": "decodeFactJsonEachRow@fact-json-each-row.ts",
+          "sampledUs": 19531
+        },
+        {
+          "frame": "RegExp: ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$@",
+          "sampledUs": 13304
+        },
+        {
+          "frame": "RegExp: ^[a-f0-9]{64}$@",
+          "sampledUs": 2329
+        },
+        {
+          "frame": "toString@node:buffer",
+          "sampledUs": 2191
+        },
+        {
+          "frame": "@",
+          "sampledUs": 2115
+        },
+        {
+          "frame": "createUnsafeBuffer@buffer",
+          "sampledUs": 1102
+        },
+        {
+          "frame": "@fact-json-each-row.ts",
+          "sampledUs": 1084
+        },
+        {
+          "frame": "base64Slice@",
+          "sampledUs": 1079
+        },
+        {
+          "frame": "decode@encoding",
+          "sampledUs": 1079
+        },
+        {
+          "frame": "FastBuffer@buffer",
+          "sampledUs": 1072
+        },
+        {
+          "frame": "base64Write@",
+          "sampledUs": 918
+        }
+      ]
+    },
+    "stream_record_authentication_callback": {
+      "samples": 153,
+      "sampledUs": 158865,
+      "topSelfFrames": [
+        {
+          "frame": "@canonical-validation.ts",
+          "sampledUs": 68350
+        },
+        {
+          "frame": "update@hash",
+          "sampledUs": 13423
+        },
+        {
+          "frame": "measurePerformanceStage.rows@fact-store.ts",
+          "sampledUs": 11978
+        },
+        {
+          "frame": "Hmac@hash",
+          "sampledUs": 11924
+        },
+        {
+          "frame": "record@fact-store.ts",
+          "sampledUs": 8693
+        },
+        {
+          "frame": "@fact-store.ts",
+          "sampledUs": 8334
+        },
+        {
+          "frame": "init@core.js",
+          "sampledUs": 7563
+        },
+        {
+          "frame": "Hash@hash",
+          "sampledUs": 6447
+        },
+        {
+          "frame": "inst._zod.parse@schemas.js",
+          "sampledUs": 6210
+        },
+        {
+          "frame": "@schemas.js",
+          "sampledUs": 3167
+        },
+        {
+          "frame": "@",
+          "sampledUs": 3057
+        },
+        {
+          "frame": "Internals@core.js",
+          "sampledUs": 2169
+        }
+      ]
+    }
+  }
+}
