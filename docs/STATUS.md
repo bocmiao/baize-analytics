@@ -39,7 +39,7 @@
 | 正式应用72ea929空库全轮 | EXIT0；369单元、491真实PG17/CH25.8/Redis集成；31目录检查=29真实Chromium+2日期函数，0失败/跳过 | lint/type/SDK/build/migrate/compiled entry同入口通过；[完整原始结果](performance/producer-canonical/full-72ea929-pass/) |
 | 同源新镜像与独立恢复 | 新镜像安装Healthy；后续独立目标签名恢复EXIT0，源不变、最新日志删A保B、失败拒绝及修复后重建 | 初次安装后磁盘门槛EXIT1、一次缺串行闸拒绝保留；不是整条helper或新升级矩阵全PASS。[收尾](VALIDATION_72EA929_CLOSING.md)、[原始镜像证据](performance/producer-canonical/image-72ea929-independent-pass/) |
 | 原参数strict5000/72ea929 | **FAIL**；4700接收、6批未发送，已接收排空/完整性通过；最终HTTP18.187秒 | 不改deadline/drain，不外推日均百万、1C2G或生产SLO。[原始失败](performance/producer-canonical/strict5000-72ea929-failure/) |
-| B隔离inbox字节预算专项 | 14真实PG PASS、0fail/skip，EXIT0；新增6项与旧8项同次执行 | publisher仍模拟，无正式采集接入、真实CH发布或容量结论。[摘要绑定及原始JSON](performance/producer-canonical/inbox-byte-cap-pg-pass/) |
+| B隔离inbox字节预算专项 | 14真实PG PASS、0fail/skip，EXIT0；新增6项与旧8项同次执行 | 该轮publisher仍模拟；随后3项真实CH专项见下方，不外推正式接入或容量。[摘要绑定及原始JSON](performance/producer-canonical/inbox-byte-cap-pg-pass/) |
 
 新镜像：`sha256:daafc23c1fc444c1bd176207b26917c32b141f14753a5eafa2a2d92e0602b660`；426文件manifest与72冻结源码一致。恢复在同宿主独立目标CH实例验证，不冒称跨机器灾备。
 
@@ -47,6 +47,6 @@
 
 B为**隔离PG durable inbox原型**，区分received/validated/published，未替换正式collect或202语义。已有持久幂等、摘要冲突、租约/来源代际、模拟ACK后PG回滚、删除区间重放、每站pending条数/字节上限与超限整批回滚测试。字节预算使用有界metadata SUM（不是O(1)账本），不涵盖published/failed历史总存储。
 
-下一步同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
+已完成首轮同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证：17专项PASS（14PG+3PG/CH），详见 [真实CH第一轮](VALIDATION_DURABLE_INBOX_REAL_CH.md)。这是独立standard prepared研究接口，不是正式wire来源证明。下一步补已发布物理删除和缺正文重试拒绝，再准备同参数负载；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
 
 逐项F01–F66/P2来源见 [实现清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md) 与各证据目录保留历史，不作为另一个当前入口。
