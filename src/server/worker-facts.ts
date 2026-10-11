@@ -1,4 +1,4 @@
-import {assertStrictRetainedWindowContinuity} from './fact-coverage-witness.js';
+import {assertStrictRetainedWindowContinuity,assertRawRetirementWindowContinuity} from './fact-coverage-witness.js';
 import {captureIncrementalSessionPlan} from './incremental-session-plan.js';
 import {measurePerformanceStage,hasPerformanceObservation} from './performance-observation.js';
 import {getCacheStore} from './cache-store.js';
@@ -71,6 +71,7 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  // sessions from only the final carry checkpoint; reject before any build or
  // publication mutation. The boundary also protects legacy sites without 057.
  if(strict&&sourceState.authority==='clickhouse'){
+  await assertRawRetirementWindowContinuity(source,claim.site_id,retainedFrom);
   const baseline=(await source.query(`SELECT EXISTS(SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published') has_history,(SELECT retained_from FROM analytics_fact_runs WHERE site_id=$1 AND epoch=$2 AND query_version=2 AND status='published' ORDER BY generation DESC,created_at DESC,id DESC LIMIT 1) retained_from`,[claim.site_id,claim.epoch])).rows[0];
   assertStrictRetainedWindowContinuity({strict,authority:sourceState.authority,retainedFrom,hasPublishedBaseline:baseline.has_history,previousRetainedFrom:baseline.retained_from?new Date(baseline.retained_from):null});
  }

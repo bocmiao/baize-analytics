@@ -1,4 +1,4 @@
-import {captureFactCoverageWitness,advanceFactCoverageWitness} from './fact-coverage-witness.js';
+import {captureFactCoverageWitness,advanceFactCoverageWitness,recordRawRetirementAfterAck} from './fact-coverage-witness.js';
 import {rebaseCacheAfterRawRetention} from './cache-retention-rebase.js';
 import {pruneExpiredProvenance} from './provenance-lifecycle.js';
 import {dirtySite} from './db.js';
@@ -19,6 +19,7 @@ export async function retireCanonicalSiteEvents(client:PoolClient,pool:Pool,site
  // the raw-TTL baseline afterwards; never bless owners stale from that phase.
  const rawFence=(await client.query('SELECT c.epoch,c.deletion_epoch::text,a.epoch aggregation_epoch FROM canonical_event_authority c JOIN aggregation_state a ON a.site_id=c.site_id WHERE c.site_id=$1',[siteId])).rows[0];
  await store.expireBefore(siteId,cutoff);
+ await recordRawRetirementAfterAck(client,siteId,cutoff);
  const removed=(await client.query('DELETE FROM canonical_event_members WHERE site_id=$1 AND ts<$2',[siteId,cutoff])).rowCount??0;
  await client.query('DELETE FROM canonical_event_batches b WHERE site_id=$1 AND NOT EXISTS(SELECT 1 FROM canonical_event_members m WHERE m.site_id=b.site_id AND m.batch_id=b.batch_id)',[siteId]);
  await client.query('DELETE FROM events WHERE site_id=$1 AND ts<$2',[siteId,cutoff]);

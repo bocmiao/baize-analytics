@@ -84,3 +84,12 @@ v17 精确 head 诊断仍实际 1 FAIL / 0 SKIP，但定位到首次不一致：
 
 
 v18 独立恢复修订真实 1 PASS / 0 FAIL / 0 SKIP，EXIT0，总 runner 31.66 秒（测试约 30 秒，夹具既有显式 180 秒上限）。生产源码与 6434ed6 一致，夹具增加真实启动 journal 后有界 worker 发布检查。最新 journal 再删 A 后 generation12→13，原 365 天 witness 保持；同区间源/目标 totals、pages、LCP900 sampleCount1、funnels[1,1] 精确差分通过。多 run 导入、carry、旧 receipt/hash 认证、A 无贡献、B 身份、收入别名及源原始签名/正文不变全部通过。Centroid 可重建 privacy 标记可能仍存在，reader 用真实已认证 V2 样本；不宣称所有标记清空。仅测试自身资源已清理，旧 FAIL 全保留。此为独立恢复全链专项，不是最新源码完整应用/浏览器/镜像或 5000 性能验收。
+
+
+不可变 `b78d7cba08587ff1c494fc9ffc39ff98c11a729f` 完整单元目录 321 PASS / 0 FAIL / 0 SKIP，tracked blob 验证通过。此提交已含保留期扩大 guard、认证 centroid 重建与启动 journal 后发布夹具修订。10 文件真实 PG/CH 相关目录正在串行执行，尚未宣布结果；最终全目录/浏览器/镜像与原 5000 性能仍待执行。
+
+
+父补充时序实际复现：隔离 b78d7cb 生产源码、仅替换新增夹具，TTL 已提交但缩窗 worker 未跑时立即扩大，两例（有 witness / legacy 无 witness）均 0 PASS / 2 FAIL，另 5 项由 -t 过滤。原 guard 允许 FULL 返回而非拒绝，说明 producer.retained_from 并不代表已物理执行的退役范围。058 正在独立记录真实 physical ACK 后的单调 retirement frontier，并在发布前检查；此处尚未称其修复已通过，ACK 后 PG rollback 的跨库恢复边界也不冒称原子。
+
+
+058 修复后隔离专项 2 PASS / 0 FAIL，另 5 项由 -t 过滤：physical TTL 已提交、缩窗 worker 未执行就扩大，有/无 witness 均拒绝，旧 owner/ref/run/receipt/hash/已认证正文不变。生产基线 b78d7cb 加 058 guard/TTL/DDL 精确补丁 hash 保存，其他 backup/restore 在制文件不纳本次通过范围。13 单元与类型/lint 通过。058 仅记真实成功 ACK 后同事务的单调 frontier；不拿 FULL.from 伪称物理退役，不猜 pre058 旧历史。跨库 ACK 后 PG rollback 的缺记录恢复边界尚未覆盖，另见 RAW_RETIREMENT_058_BOUNDARY。签名备份/独立恢复与完整新源码验收待收齐。

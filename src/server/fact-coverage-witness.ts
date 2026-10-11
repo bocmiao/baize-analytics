@@ -167,3 +167,42 @@ export function assertStrictRetainedWindowContinuity(input:{strict:boolean;autho
  if(!Number.isFinite(+input.retainedFrom)||!Number.isFinite(+input.previousRetainedFrom))throw Error('FACT_RETAINED_WINDOW_BOUNDARY_INVALID');
  if(+input.retainedFrom<+input.previousRetainedFrom)throw Error('FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN');
 }
+
+interface RawRetirementFrontier {site_id:string;canonical_epoch:string;retired_before:string;seal:string}
+function frontierSeal(secret:string,body:Omit<RawRetirementFrontier,'seal'>){return createHmac('sha256',secret).update(canonical(['fact-raw-retirement-frontier-v1',body])).digest('hex');}
+function assertFrontierSeal(secret:string,record:RawRetirementFrontier){const {seal,...body}=record;const actual=Buffer.from(seal),expected=Buffer.from(frontierSeal(secret,body));if(actual.length!==expected.length||!timingSafeEqual(actual,expected))throw Error('FACT_RAW_RETIREMENT_SEAL_INVALID');}
+async function rawFrontier(c:PoolClient,site:string){if(!(await c.query("SELECT to_regclass('analytics_raw_retirement_frontiers') present")).rows[0]?.present)return null;const row=(await c.query('SELECT * FROM analytics_raw_retirement_frontiers WHERE site_id=$1',[site])).rows[0];return row?{...row,retired_before:iso(row.retired_before)} as RawRetirementFrontier:null;}
+/** Only the physical expireBefore ACK holder may call this within its same
+ * P/site-gated PG transaction. Even an empty physical range advances the bound. */
+export async function recordRawRetirementAfterAck(c:PoolClient,site:string,cutoff:Date){
+ if(!Number.isFinite(+cutoff))throw Error('FACT_RAW_RETIREMENT_BOUNDARY_INVALID');
+ const state=await current(c,site),old=await rawFrontier(c,site);
+ if(old){assertFrontierSeal(state.secret,old);if(old.canonical_epoch!==state.canonical_epoch)throw Error('FACT_RAW_RETIREMENT_NAMESPACE');}
+ const body={site_id:site,canonical_epoch:state.canonical_epoch,retired_before:old&&old.retired_before>cutoff.toISOString()?old.retired_before:cutoff.toISOString()};
+ await c.query('INSERT INTO analytics_raw_retirement_frontiers(site_id,canonical_epoch,retired_before,seal) VALUES($1,$2,$3,$4) ON CONFLICT(site_id) DO UPDATE SET canonical_epoch=excluded.canonical_epoch,retired_before=excluded.retired_before,seal=excluded.seal',[site,body.canonical_epoch,body.retired_before,frontierSeal(state.secret,body)]);
+}
+/** A raw-retirement ACK is independent of whether a shrink-window producer ran. */
+export async function assertRawRetirementWindowContinuity(c:PoolClient,site:string,retainedFrom:Date){
+ const old=await rawFrontier(c,site);if(!old)return;
+ const state=await current(c,site);assertFrontierSeal(state.secret,old);if(old.canonical_epoch!==state.canonical_epoch)throw Error('FACT_RAW_RETIREMENT_NAMESPACE');
+ assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom,previousRetainedFrom:new Date(old.retired_before)});
+}
+
+export interface StoredRawRetirementFrontier {readonly kind:'stored_raw_retirement_frontier'}
+const storedFrontiers=new WeakMap<StoredRawRetirementFrontier,{client:PoolClient;site:string;record:RawRetirementFrontier}>();
+/** Source side of signed isolated restore, before canonical namespace remap. */
+export async function verifyStoredRawRetirementFrontier(c:PoolClient,site:string):Promise<StoredRawRetirementFrontier|null>{
+ const record=await rawFrontier(c,site);if(!record)return null;
+ const state=await current(c,site);assertFrontierSeal(state.secret,record);if(record.canonical_epoch!==state.canonical_epoch)throw Error('FACT_RAW_RETIREMENT_NAMESPACE');
+ const token=Object.freeze({kind:'stored_raw_retirement_frontier' as const});storedFrontiers.set(token,{client:c,site,record});return token;
+}
+/** Target remap requires actual original signed metadata, isolated target and
+ * canonical body ACK validation; it preserves the original physical cutoff. */
+export async function restoreRawRetirementFrontier(c:PoolClient,site:string,token:StoredRawRetirementFrontier,assertSignedIsolatedTarget:()=>Promise<void>){
+ const source=storedFrontiers.get(token);if(!source||source.client!==c||source.site!==site)throw Error('FACT_RAW_RETIREMENT_RESTORE_SCOPE');
+ await assertSignedIsolatedTarget();const state=await current(c,site),existing=await rawFrontier(c,site);
+ if(!existing||existing.seal!==source.record.seal)throw Error('FACT_RAW_RETIREMENT_RESTORE_CHANGED');
+ const body={site_id:site,canonical_epoch:state.canonical_epoch,retired_before:source.record.retired_before};
+ await c.query('UPDATE analytics_raw_retirement_frontiers SET canonical_epoch=$2,seal=$3 WHERE site_id=$1',[site,body.canonical_epoch,frontierSeal(state.secret,body)]);
+ storedFrontiers.delete(token);
+}

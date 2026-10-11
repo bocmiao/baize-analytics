@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage,assertStrictRetainedWindowContinuity} from '../../src/server/fact-coverage-witness.js';
+import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage,assertStrictRetainedWindowContinuity,recordRawRetirementAfterAck,assertRawRetirementWindowContinuity} from '../../src/server/fact-coverage-witness.js';
 
 describe('coverage witness capability and legacy boundaries',()=>{
  it('legacy absent table captures null and advances without accessing canonical authority',async()=>{
@@ -78,5 +78,30 @@ describe('coverage witness capability and legacy boundaries',()=>{
  for(const retainedFrom of [previous,new Date('2026-10-10T12:00:01Z')])expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom,previousRetainedFrom:previous})).not.toThrow();
  expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom:previous,previousRetainedFrom:null})).not.toThrow();
  expect(()=>assertStrictRetainedWindowContinuity({strict:false,authority:'postgres',retainedFrom:new Date('2025-01-01'),previousRetainedFrom:previous})).not.toThrow();
+ });
+ });
+
+ describe('physical raw retirement frontier',()=>{
+ function connection(){
+ let row:Record<string,unknown>|null=null;
+ const query=vi.fn(async(sql:string,args?:unknown[])=>{
+ if(sql.includes("to_regclass"))return {rows:[{present:'analytics_raw_retirement_frontiers'}],rowCount:1};
+ if(sql.startsWith('SELECT * FROM analytics_raw_retirement_frontiers'))return {rows:row?[row]:[],rowCount:row?1:0};
+ if(sql.includes('s.salt_secret secret'))return {rows:[{epoch:'agg',generation:'2',processed_generation:'1',non_event_generation:'2',authority:'clickhouse',canonical_epoch:'canon',deletion_epoch:'0',secret:'unit-secret',timezone:'UTC',privacy_mode:'standard',config:{}}],rowCount:1};
+ if(sql.startsWith('INSERT INTO analytics_raw_retirement_frontiers')){row={site_id:args![0],canonical_epoch:args![1],retired_before:args![2],seal:args![3]};return {rows:[],rowCount:1};}
+ return {rows:[],rowCount:0};
+ });return {client:{query} as unknown as PoolClient,query,row:()=>row,replace:(next:Record<string,unknown>)=>{row=next;}};
+ }
+ it('uses actual recorded cutoff without waiting for a shrink producer and never decreases it',async()=>{
+ const c=connection();await recordRawRetirementAfterAck(c.client,'site',new Date('2026-10-10T12:00:00Z'));
+ await recordRawRetirementAfterAck(c.client,'site',new Date('2026-10-09T12:00:00Z'));
+ expect(c.row()?.retired_before).toBe('2026-10-10T12:00:00.000Z');
+ await expect(assertRawRetirementWindowContinuity(c.client,'site',new Date('2025-10-11T12:00:00Z'))).rejects.toThrow('FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN');
+ await assertRawRetirementWindowContinuity(c.client,'site',new Date('2026-10-10T12:00:01Z'));
+ });
+ it('rejects frontier tampering rather than accepting a forged earlier retirement boundary',async()=>{
+ const c=connection();await recordRawRetirementAfterAck(c.client,'site',new Date('2026-10-10T12:00:00Z'));
+ c.replace({...c.row()!,retired_before:'2025-01-01T00:00:00.000Z'});
+ await expect(assertRawRetirementWindowContinuity(c.client,'site',new Date('2026-10-11T00:00:00Z'))).rejects.toThrow('FACT_RAW_RETIREMENT_SEAL_INVALID');
  });
  });

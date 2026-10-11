@@ -1,0 +1,6 @@
+{
+  "productionCommit": "b78d7cba08587ff1c494fc9ffc39ff98c11a729f",
+  "deviation": "tests/integration/incremental-session-coverage-witness.test.ts",
+  "testSha256": "fa18c5011f241eeb2d4bf7ff7feeae12e38659af50f8f574c7031d772d01e586",
+  "purpose": "new deferred TTL/worker regression; not pristine whole tree"
+}
