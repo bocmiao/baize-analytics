@@ -67,3 +67,8 @@ v13 全链仍 EXIT1：源/目标及 runtime 均保持原 365 天范围，旧缓�
 修复仅在 strict CH 原完整正文认证之后、任何 prefix/build/publication 之前限制窗口向过去移动。有已发布历史但无可认证边界也明确拒绝，不依赖 057 witness 是否存在；完全无历史才可首次 bootstrap。拒绝 `FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN` 时旧 owner/ref/run/receipt/body hash 不修改，新事件仍 queued，dirty 状态不能假完整查询。保守拒绝不等于证明原始正文永久无法恢复；需真正认证的历史正文/backfill 才能支持扩大，不能仅改变保留天数。
 
 隔离仅该 guard 的真实 PG/CH 专项 2 PASS，另 3 项由 `-t` 过滤；含正常 witness 与 legacy 无 witness，再次 FULL 都不能抹历史或创建假证明。数据证据与源文件补丁 hash 一同保存；并行 centroid 在制变更不计入这两项通过范围。guard 定向 11 单元、类型和 lint EXIT0，最终完整目录仍待冻结后执行。
+
+
+## Centroid 删除后重建专项（整链仍待验）
+
+真实 PG/CH 定向测试第三次 1 PASS / 0 SKIP，测试约 4.616 秒：A900 删除后，认证幸存 B100 样本，裁剪 PG sample/digest 后重建 sampleCount=1、p75/p90=100。缺 witness、跨站、篡改正文与缺失 B 正文均拒绝，max1 连接池路径保持。前两次 FAIL（清理掩盖原 SQL 错误、day 别名语法错误）原始记录保留；定点修复使用明确引用别名及局部 savepoint 保留首个错误，不放宽完整性检查。5 项单元通过，类型与定向 lint EXIT0。全部删除的零幸存样本仅单元覆盖；旧 V1 无可认证样本的迁移未专项，不能凭失效空缓存补造证明。独立恢复 v15 将绑定当前源码重验，不把该单项当整链通过。

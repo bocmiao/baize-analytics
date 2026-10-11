@@ -1,8 +1,9 @@
+import {rebuildInvalidatedCentroids,collectSelectedCentroidRows} from './cache-centroid-rebuild.js';
 import {randomUUID,createHmac,timingSafeEqual} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {lockSite} from './db.js';
 import {selectedFactRunPredicate,assertFactRunClosure} from './fact-run-closure.js';
-import {cacheRowKey,normalizeCacheRow,type ClickHouseCacheStore,type CacheFence,type CacheKind} from './cache-store.js';
+import {getInstalledCachePool,cacheRowKey,normalizeCacheRow,type ClickHouseCacheStore,type CacheFence,type CacheKind} from './cache-store.js';
 import {canonical} from './security.js';
 import {factAuthorityMatches} from './fact-authority.js';
 import {assertCacheSnapshotRangeBacking} from './cache-range-backing.js';
@@ -15,18 +16,20 @@ import {sanitizeDailyCacheBucket} from './daily-cache-privacy.js';
  * Each body has its original currency and weighted centroid representation.
  * This is a migration, never a batch replacing the whole historical period. */
 export async function migratePublishedCacheClosure(c:PoolClient,store:ClickHouseCacheStore,site:string,fence:CacheFence,options:{pool?:Pool}={}){
+ const sourcePool=options.pool??getInstalledCachePool(store);
  await lockSite(c,site);const state=(await c.query('SELECT a.epoch,a.generation::text,a.processed_generation::text,a.lease_until>clock_timestamp() leased,s.privacy_mode FROM aggregation_state a JOIN sites s ON s.id=a.site_id WHERE a.site_id=$1 FOR UPDATE OF a',[site])).rows[0];
  if(!state||state.epoch!==fence.expectedAggregationEpoch||state.generation!==fence.expectedGeneration||state.generation!==state.processed_generation||state.leased)throw Error('CACHE_CLOSURE_MIGRATION_FENCE');await assertFactRunClosure(c,site);await fence.verifyLiveFence();
  const unavailable=(await c.query('SELECT * FROM analytics_cache_unavailable WHERE site_id=$1 ORDER BY kind',[site])).rows;
  for(const flag of unavailable){
-  if(!options.pool||!flag.rebuildable_v2||!['hourly_rollup','daily_rollup'].includes(flag.kind)||!flag.from_ts||!flag.to_ts||!Array.isArray(flag.rebuild_proof)||flag.rebuild_proof.length!==1)throw Error('CACHE_BASELINE_UNAVAILABLE');
+  if(!sourcePool||!flag.rebuildable_v2||!['hourly_rollup','daily_rollup','page_centroid','legacy_centroid'].includes(flag.kind)||!flag.from_ts||!flag.to_ts||!Array.isArray(flag.rebuild_proof)||flag.rebuild_proof.length!==1)throw Error('CACHE_BASELINE_UNAVAILABLE');
   const proof=flag.rebuild_proof[0];if(!proof||!proof.body||typeof proof.body!=='object')throw Error('CACHE_REBUILD_PROOF_INVALID');const body=proof.body,secret=(await c.query('SELECT salt_secret FROM sites WHERE id=$1',[site])).rows[0].salt_secret,expected=createHmac('sha256',secret).update(canonical(['cache-rebuild-v1',site,body])).digest('hex');
-  if(!body||body.version!==1||body.method!=='authenticated_v2_cache_body'||body.kind!==flag.kind||body.from!==new Date(flag.from_ts).toISOString()||body.to!==new Date(flag.to_ts).toISOString()||!Number.isSafeInteger(body.bucketCount)||body.bucketCount<=0||typeof proof.seal!=='string'||proof.seal.length!==expected.length||!timingSafeEqual(Buffer.from(proof.seal),Buffer.from(expected)))throw Error('CACHE_REBUILD_PROOF_INVALID');
-  await assertCacheSnapshotRangeBacking(c,options.pool,site,body.from,body.to);
+  if(!body||body.version!==1||body.method!==(flag.kind==='page_centroid'||flag.kind==='legacy_centroid'?'authenticated_centroid_cache_scope':'authenticated_v2_cache_body')||body.kind!==flag.kind||body.from!==new Date(flag.from_ts).toISOString()||body.to!==new Date(flag.to_ts).toISOString()||!Number.isSafeInteger(body.bucketCount)||body.bucketCount<=0||typeof proof.seal!=='string'||proof.seal.length!==expected.length||!timingSafeEqual(Buffer.from(proof.seal),Buffer.from(expected)))throw Error('CACHE_REBUILD_PROOF_INVALID');
+  if(flag.kind==='page_centroid'||flag.kind==='legacy_centroid'){await rebuildInvalidatedCentroids(c,sourcePool,store,site,flag.kind,body.from,body.to,fence);continue;}
+  await assertCacheSnapshotRangeBacking(c,sourcePool,site,body.from,body.to);
   const kind=flag.kind as 'hourly_rollup'|'daily_rollup',daily=kind==='daily_rollup',table=daily?'stats_daily':'stats_hourly';
   const seed=(await c.query(daily?"SELECT $1::text site_id,to_char(g,'YYYY-MM-DD') AS \"day\",'{\"relationalVersion\":2}'::jsonb data,$4::bigint generation FROM sites s CROSS JOIN LATERAL generate_series(($2::timestamptz AT TIME ZONE s.timezone)::date,(($3::timestamptz-interval '1 microsecond') AT TIME ZONE s.timezone)::date,interval '1 day') g WHERE s.id=$1 LIMIT 10001":"SELECT $1::text site_id,g AS \"hour\",'{\"relationalVersion\":2}'::jsonb data,$4::bigint generation FROM generate_series($2::timestamptz,$3::timestamptz-interval '1 hour',interval '1 hour') g LIMIT 10001",[site,body.from,body.to,state.generation])).rows;
   if(seed.length>10000)throw Error('CACHE_REBUILD_RANGE_LIMIT');
-  const rebuilt=await withRemainingFactReadSource(c,options.pool,site,()=>exportedPublishedRollups(c,site,daily?'daily':'hourly',seed));
+  const rebuilt=await withRemainingFactReadSource(c,sourcePool,site,()=>exportedPublishedRollups(c,site,daily?'daily':'hourly',seed));
   for(const row of rebuilt){const at=daily?new Date(String(row.day)+'T00:00:00Z'):new Date(row.hour as string|Date);if(!daily&&(+at<+new Date(body.from)||+at>=+new Date(body.to)))continue;if(daily&&!seed.some(x=>String(x.day)===String(row.day)))continue;
    const owner=randomUUID(),key=cacheRowKey(kind,normalizeCacheRow(site,owner,kind,row));await store.stageRows(c,site,owner,kind,[row],fence);await store.completeOwnerKind(c,site,owner,kind,1,fence);await store.publishBucket(c,site,owner,kind,key,fence);
    await c.query(`INSERT INTO ${table}(site_id,${daily?'day':'hour'},data,generation)VALUES($1,$2,'{"relationalVersion":2}'::jsonb,$3)ON CONFLICT(site_id,${daily?'day':'hour'})DO UPDATE SET data=excluded.data,generation=excluded.generation`,[site,daily?row.day:row.hour,state.generation]);
@@ -70,9 +73,11 @@ export async function migratePublishedCacheClosure(c:PoolClient,store:ClickHouse
   if(!count){const existing='cache_existing_'+randomUUID().replaceAll('-','');await c.query(`DECLARE ${existing} NO SCROLL CURSOR FOR SELECT DISTINCT o.owner_id FROM analytics_cache_owners o WHERE o.site_id=$1 AND o.kind=$2 AND o.state='complete' AND o.aggregation_epoch=$3 AND o.generation<=$4 AND (o.row_count=0 OR EXISTS(SELECT 1 FROM analytics_cache_pointers p WHERE p.site_id=o.site_id AND p.owner_id=o.owner_id AND p.kind=o.kind)) ORDER BY o.owner_id`,[site,kind,state.epoch,state.generation]);try{for(;;){const batch=(await c.query(`FETCH 100 FROM ${existing}`)).rows;if(!batch.length)break;for(const owner of batch){for await(const authenticated of store.streamRows(c,site,owner.owner_id,kind))rows+=authenticated.length;sealedBaseline=true;}}}finally{await c.query(`CLOSE ${existing}`)}}
   if(!count&&!sealedBaseline){await store.completeOwnerKind(c,site,randomUUID(),kind,0,fence);owners++;}
  }
+ if(!sourcePool)throw Error('CACHE_CENTROID_AUTHENTICATED_SOURCE_REQUIRED');
+ const legacyRows=await withRemainingFactReadSource(c,sourcePool,site,()=>collectSelectedCentroidRows(c,site,'legacy_centroid'));
  const cursor='cache_legacy_'+randomUUID().replaceAll('-','');await c.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT r.id FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selectedFactRunPredicate} ORDER BY r.id`,[site]);
  try{for(;;){const runs=(await c.query(`FETCH 100 FROM ${cursor}`)).rows;if(!runs.length)break;for(const run of runs){const complete=(await c.query("SELECT 1 FROM analytics_cache_owners WHERE site_id=$1 AND owner_id=$2 AND kind='legacy_centroid' AND state='complete'",[site,run.id])).rowCount;if(complete){for await(const verified of store.streamRows(c,site,run.id,'legacy_centroid'))rows+=verified.length;continue;}
-  const values='cache_centroids_'+randomUUID().replaceAll('-','');let count=0;await c.query(`DECLARE ${values} NO SCROLL CURSOR FOR SELECT to_jsonb(t) body FROM analytics_vitals_facts t WHERE run_id=$1 ORDER BY bucket_kind,bucket,path,metric`,[run.id]);try{for(;;){const batch=(await c.query(`FETCH 100 FROM ${values}`)).rows;if(!batch.length)break;await store.stageRows(c,site,run.id,'legacy_centroid',batch.map(row=>row.body),fence);count+=batch.length;}}finally{await c.query(`CLOSE ${values}`);}await store.completeOwnerKind(c,site,run.id,'legacy_centroid',count,fence);rows+=count;owners++;
+  const owned=legacyRows.filter(row=>row.run_id===run.id);for(let offset=0;offset<owned.length;offset+=100)await store.stageRows(c,site,run.id,'legacy_centroid',owned.slice(offset,offset+100),fence);await store.completeOwnerKind(c,site,run.id,'legacy_centroid',owned.length,fence);rows+=owned.length;owners++;
  }}}finally{await c.query(`CLOSE ${cursor}`);}
  return {rows,owners,pruned:false};
 }
