@@ -22,3 +22,5 @@ bash scripts/benchmark/run-strict-incremental.sh
 输出包括原应用 JSON、`.log`、`.exit`、`.plan.json`、`.source-binding.txt`、`.wall.txt` 与 `.disk-after.txt`。Python `time.monotonic()` 测量整个 Node 子进程 wall；Linux `resource.getrusage(RUSAGE_CHILDREN).ru_maxrss` 记录已回收子进程的最大单进程峰值 KiB；该值不代表并发子进程 RSS 的同时总和，也不包含独立 PG/CH 服务内存。退出码原样保留，信号退出映射为 `128+signal`。阶段指标是已仪表化的子集，累积计划计数包含重复工作；`hydratedEffectRows` 不是所有 HMAC 校验行数，`reusedOwnerHeads` 不是会话数，`reusedSessions` 独立记录真实已认证会话。
 
 本次只通过 Bash/Python 静态语法检查，尚未用这个仓库内新入口执行负载。原 `/usr/bin/time` 缺失导致的 EXIT127 及后续失败证据均保留。
+
+057 closure selected-run A/B uses `BAIZE_PERF_COVERAGE_REUSE=0|1` (default `0`) to explicitly set the server's `BAIZE_COVERAGE_SELECTED_RUNS`. The resolved numeric value is archived as `coverageReuse` in the plan. It changes only transaction-local run-ID materialization, not body authentication, schedule, queue, concurrency or drain. Invalid values fail before bootstrap or evidence reservation. The retired `BAIZE_PERF_SELECTED` hydration projection experiment is no longer supported.
