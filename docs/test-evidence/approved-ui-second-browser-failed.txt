@@ -1,0 +1,171 @@
+
+Running 1 test using 1 worker
+
+(node:1206638) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/approved-ui.spec.ts:14:1 › approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries (4.0m)
+
+
+  1) tests/e2e/approved-ui.spec.ts:14:1 › approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries 
+
+    Test timeout of 240000ms exceeded.
+
+    Error: locator.click: Test ended.
+    Browser logs:
+
+    <launching> /usr/bin/chromium --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-k4SJip --remote-debugging-pipe --no-startup-window
+    <launched> pid=1206651
+    [pid=1206651][err] [1206651:1206651:1011/023822.505789:ERROR:third_party/crashpad/crashpad/util/file/filesystem_posix.cc:63] mkdir : No such file or directory (2)
+    [pid=1206651][err] chrome_crashpad_handler: --database is required
+    [pid=1206651][err] Try 'chrome_crashpad_handler --help' for more information.
+    [pid=1206651][err] [1206651:1206675:1011/023822.549969:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=1206651][err] [1206651:1206675:1011/023822.553228:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206675:1011/023822.553521:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=1206651][err] [1206651:1206675:1011/023822.553859:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=1206651][err] [1206651:1206675:1011/023822.553875:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] [1206651:1206687:1011/023822.562086:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 1206690: Read-only file system (30)
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] Fontconfig error: No writable cache directories
+    [pid=1206651][err] [1206651:1206675:1011/023822.900469:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206687:1011/023822.916033:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 1206707: Read-only file system (30)
+    [pid=1206651][err] [1206651:1206651:1011/023822.929198:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206651:1011/023822.929264:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206675:1011/023822.929295:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206675:1011/023822.929326:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206651:1011/023822.938646:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206651:1011/023822.943124:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206675:1011/023822.943137:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=1206651][err] [1206651:1206651:1011/023822.943148:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206675:1011/023822.943157:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=1206651][err] [1206651:1206675:1011/023822.943166:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206651:1011/023822.946425:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type: 
+    [pid=1206651][err] [1206651:1206651:1011/023822.946447:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206675:1011/023822.946570:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206651:1011/023822.951667:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] [1206651:1206675:1011/023822.951752:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=1206651][err] [1206651:1206651:1011/023822.952564:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+    [pid=1206651][err] 
+    [pid=1206651][err] (process:1206651): dconf-CRITICAL **: 02:38:23.503: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+    [pid=1206651][err] 
+    [pid=1206651][err] (process:1206651): dconf-CRITICAL **: 02:38:23.504: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+    [pid=1206651][err] 
+    [pid=1206651][err] (process:1206651): dconf-CRITICAL **: 02:38:23.504: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+    [pid=1206651][err] [1206651:1206687:1011/023823.523396:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 1206742: Read-only file system (30)
+    [pid=1206651][err] [1206651:1206687:1011/023823.545605:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 1206751: Read-only file system (30)
+    [pid=1206651][err] [1206651:1206687:1011/023823.547044:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 1206752: Read-only file system (30)
+    [pid=1206651] <gracefully close start>
+    Call log:
+      - waiting for getByRole('button', { name: /^(洞察与分析|Insights and analysis)/ })
+        - locator resolved to <button type="button" aria-expanded="false" class="overview-insight-toggle" aria-controls="overview-insight-dialog">…</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <button type="button" aria-expanded="false" aria-controls="navigation-search">…</button> from <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> subtree intercepts pointer events
+      - retrying click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> intercepts pointer events
+      - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <button type="button" aria-expanded="false" aria-controls="navigation-search">…</button> from <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> subtree intercepts pointer events
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> intercepts pointer events
+      109 × retrying click action
+            - waiting 500ms
+            - waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+            - waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <button type="button" aria-expanded="false" aria-controls="navigation-search">…</button> from <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> subtree intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+            - waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+            - waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <aside aria-label="工作空间导航" id="workspace-navigation" class="workspace-navigation">…</aside> intercepts pointer events
+      - retrying click action
+        - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      25 |  const toggle=page.getByRole('button',{name:/^(洞察与分析|收起洞察|Insights and analysis|Hide insights)/});await expect(toggle).toBeVisible();if(await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();const panel=page.locator('#overview-insights');await expect(panel).toBeVisible();const expandedWidth=(await page.locator('.approved-overview-primary').boundingBox())!.width;await capture(page,'desktop-1440-expanded',metadata);await toggle.click();await expect(toggle).toHaveAttribute('aria-expanded','false');await expect(panel).toBeHidden();expect((await page.locator('.approved-overview-primary').boundingBox())!.width).toBeGreaterThan(expandedWidth);await capture(page,'desktop-1440-collapsed',metadata);await page.reload();await expect(toggle).toHaveAttribute('aria-expanded','false');await expect(page.locator('.overview-metrics strong').first()).toHaveText(String(pv));
+      26 |  const nav=await openWorkspaceNavigation(page);for(const report of reports)expect(await nav.locator(`a[href*="report=${report}"]`).count(),report).toBeGreaterThan(0);expect(reports).toHaveLength(38);for(const report of reports){await page.goto(`${origin}/app?site=${site.id}&report=${report}&from=${from}&to=${to}`);await expect(page.locator('h1')).not.toBeEmpty();expect(new URL(page.url()).searchParams.get('report')).toBe(report);}
+    > 27 |  await page.goto(`${origin}/app?site=${site.id}&report=overview&from=${from}&to=${to}`);await page.setViewportSize({width:390,height:844});await expect(page.locator('.overview-metrics strong').first()).toHaveText(String(pv));expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);const menu=page.getByRole('button',{name:/^(Menu|菜单)$/});await menu.click();const drawer=page.getByRole('dialog',{name:/^(Workspace navigation|工作空间导航)$/});await expect(drawer).toBeVisible();expect(await page.locator('#workspace-main').evaluate(e=>(e as HTMLElement).inert)).toBe(true);await expect(drawer.getByRole('button',{name:/^(Close navigation|关闭导航)$/})).toBeFocused();await page.keyboard.press('Escape');await expect(drawer).toHaveCount(0);await expect(menu).toBeFocused();expect(await page.locator('#workspace-main').evaluate(e=>(e as HTMLElement).inert)).toBe(false);await page.locator('#workspace-main').focus();await capture(page,'mobile-390',metadata);const mobileInsights=page.getByRole('button',{name:/^(洞察与分析|Insights and analysis)/});await mobileInsights.click();const insightDialog=page.getByRole('dialog',{name:/^(洞察与分析|Insights and analysis)$/});await expect(insightDialog).toBeVisible();expect(await insightDialog.evaluate(e=>e.matches(':modal'))).toBe(true);await expect(insightDialog.getByRole('button',{name:/^(关闭洞察|Close insights)/})).toBeFocused();await expect(menu.click({trial:true,timeout:500})).rejects.toThrow();await page.keyboard.press('Escape');await expect(insightDialog).not.toBeVisible();await expect(mobileInsights).toBeFocused();await navigateWorkspace(page,'页面');await expect(page.locator('h1')).toHaveText('页面');await page.setViewportSize({width:1440,height:1000});for(const report of ['seo','ai']){await page.goto(`${origin}/app?site=${site.id}&report=${report}&from=${from}&to=${to}`);await expect(page.locator('h1')).not.toHaveText('');await capture(page,'desktop-'+report+'-unconfigured',{...metadata,providerConfigured:false});}await testInfo.attach('approved-ui-real-fixture',{body:JSON.stringify({...metadata,guidelinesSha,entries:reports}),contentType:'application/json'});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+      28 |  }finally{await context?.close();await runtime?.app.close();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}
+      29 | });
+      30 |
+        at /workspace/baize-analytics/tests/e2e/approved-ui.spec.ts:27:1090
+
+    Error Context: test-results/approved-ui-approved-dashb-0dd75-gation-preserve-all-entries/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/approved-ui-approved-dashb-0dd75-gation-preserve-all-entries/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/approved-ui-approved-dashb-0dd75-gation-preserve-all-entries/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/approved-ui.spec.ts:14:1 › approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries 
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
