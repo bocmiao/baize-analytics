@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
+case "${BAIZE_PERF_COVERAGE_REUSE:-0}" in
+  0|1) export BAIZE_COVERAGE_SELECTED_RUNS="${BAIZE_PERF_COVERAGE_REUSE:-0}" ;;
+  *) echo 'BAIZE_PERF_COVERAGE_REUSE must be 0 or 1.' >&2; exit 1 ;;
+esac
 runner_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 export SOURCE_REPOSITORY="${SOURCE_REPOSITORY:-$(cd "$runner_dir/../.." && pwd)}"
 : "${APP_ROOT:?Pristine immutable performance snapshot required}"
@@ -29,7 +33,7 @@ free="$(df -Pk "$APP_ROOT" | awk 'NR==2{printf "%.0f",$4*1024}')"
 # PGschema/CHdatabase and owns their verified cleanup; no containers are created.
 export FROZEN_SOURCE_SHA="$SOURCE_SHA"
 python3 "$runner_dir/verify-archive-binding.py" > "$BENCHMARK_OUTPUT.source-binding.txt"
-printf '{"sourceSha":"%s","events":%s,"batchEvents":50,"intervalMs":1000,"queryIntervalMs":10000,"maxQueued":8,"maxConcurrent":2,"drainLimitMs":120000,"freeBytesBefore":%s}\n' "$SOURCE_SHA" "${BAIZE_PERF_EVENTS:-300}" "$free" > "$BENCHMARK_OUTPUT.plan.json"
+printf '{"sourceSha":"%s","events":%s,"batchEvents":50,"intervalMs":1000,"queryIntervalMs":10000,"maxQueued":8,"maxConcurrent":2,"drainLimitMs":120000,"freeBytesBefore":%s,"coverageReuse":%s}\n' "$SOURCE_SHA" "${BAIZE_PERF_EVENTS:-300}" "$free" "$BAIZE_COVERAGE_SELECTED_RUNS" > "$BENCHMARK_OUTPUT.plan.json"
 status=0
 python3 - "$BENCHMARK_OUTPUT" <<'PYWALL' || status=$?
 import resource,subprocess,sys,time

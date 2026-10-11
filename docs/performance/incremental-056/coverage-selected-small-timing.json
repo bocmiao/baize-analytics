@@ -1,0 +1,22 @@
+{
+  "baseline": {
+    "digest": {
+      "digest": "c2b920efc9679b9cafd7c1d5f61eea48921d643fcb8ff6776c3f5556b5e883eb",
+      "rows": "143"
+    },
+    "wallMs": 17.70770299999981,
+    "calls": 52,
+    "sqlMs": 16.10361299999977,
+    "selectedPopulationCalls": 0
+  },
+  "candidate": {
+    "digest": {
+      "digest": "c2b920efc9679b9cafd7c1d5f61eea48921d643fcb8ff6776c3f5556b5e883eb",
+      "rows": "143"
+    },
+    "wallMs": 18.75813500000004,
+    "calls": 55,
+    "sqlMs": 16.47883200000024,
+    "selectedPopulationCalls": 1
+  }
+}

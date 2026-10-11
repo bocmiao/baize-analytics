@@ -1,0 +1,11 @@
+{
+  "base": "9a51e83a4850a15892ddc60093dcdcd1109ccd93",
+  "snapshot": "/tmp/baize-closure-integration-qiw9ravb",
+  "patches": {
+    "src/server/fact-coverage-witness.ts": "26e1062b4b831db9ed5577e5c73ed2379f4901b96021aa524b29556fed1a8ecc",
+    "src/server/fact-coverage-selected-runs.ts": "3787d6dc8fa9e0d1dd63612efabac29af5d68b8e733e0b82d2cafc656ea1a3c0",
+    "tests/unit/fact-coverage-selected-runs.test.ts": "78dd8ac45889b12171107ac6fd92d087584a1cc38195b11982abfa1871b5cb76",
+    "tests/integration/fact-coverage-selected-runs.test.ts": "6f49c2ff8f05aabbeb5d1eb651507827d7ad8454bd5625ee620ae1c6ec39286a",
+    "scripts/benchmark/run-strict-incremental.sh": "41a81a36445be9fbcc4f3143a1d8643066098d1e05c5c68775f0a65dcf0a1428"
+  }
+}

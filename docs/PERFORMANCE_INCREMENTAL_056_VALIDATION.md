@@ -170,8 +170,38 @@ Same immutable SHA, CPU/memory resource envelope and original 50 events/1 second
 | Single independent query duration | 389.366 ms | 185.861 ms |
 | Final assertion wall | 1590.606 ms | 1438.613 ms |
 
-There is no demonstrated net improvement: the selected path authenticated and inserted all 8506 observed rows, while TEMP cost increased. The query has only one sample per mode, so its nominal P95 is merely that sample and is not a distribution or speedup claim. Complete-mode new projection counters are null/unmeasured, not zero rows. The experiment stays default-off. No 5000 rerun was started on this evidence.
+There is no demonstrated net improvement: the selected path authenticated and inserted all 8506 observed rows, while TEMP cost increased. The query has only one sample per mode, so its nominal P95 is merely that sample and is not a distribution or speedup claim. Complete-mode new projection counters are null/unmeasured, not zero rows. The experiment remained default-off at a507fd9 and was subsequently withdrawn from production runtime as documented in SELECTED_FACT_HYDRATION_EXPERIMENT.md. No 5000 rerun was started on this evidence.
 
 All six targets were 0/1000/2000/3000/4000/5000 ms. Main-loop target recognition lag ranged 0.075–6.341 ms (complete) and 0.069–5.488 ms (selected), with no queued backlog at recognition. Those timestamps measure target recognition, not HTTP dispatch. Existing-timer callback lag by intake/drain/final: complete mean 0.864/2.126/9.587 ms and maxima 64.971/75.798/75.238 ms; selected mean 1.333/2.208/10.139 ms and maxima 75.536/54.232/62.750 ms. Histogram totals match sample counts. These are scheduling observations, not CPU attribution, and cannot be used to infer the old 13-drop run's unmeasured event-loop behavior.
 
 Next bounded investigation is the 057 coverage closure, measured at 21 calls / 21.638 cumulative seconds in the 2705000 run. Its repeated selected-run predicates across fourteen tables are a hypothesis requiring actual SQL-stage evidence and exact old/new digest equality; not a claimed root cause. Original body authentication, count/hash/HMAC, publication and privacy barriers remain mandatory.
+
+### Single-closure selected-run experiment: small oracle first
+
+Base a507fd9 plus four hashed experimental files, default-off `BAIZE_COVERAGE_SELECTED_RUNS=1` option. Three actual PG/CH cases passed without skips: exact digest/count equality, real 130-row sealed body authentication before/after PostgreSQL body pruning, empty owner/legacy references, UTC scope restoration, fresh selected sets after owner changes including captured generation above processed, invalid owner rejection and single-client cleanup. This is not whole application acceptance.
+
+The JSON-only reporter did not retain the console timing payload. A single first-case timing invocation with verbose+JSON reporters retained it (1 PASS / 2 filtered). Both paths hashed exactly 143 metadata rows to the same digest: old wall 17.708 ms / SQL cumulative 16.104 ms / 52 calls; candidate wall 18.758 ms / SQL cumulative 16.479 ms / 55 calls, with exactly one selected-set population. There is no small-sample benefit. A bounded moderate metadata-only diagnostic will distinguish repeated selected predicates, FETCH round-trips and canonical serialization before deciding whether to keep this candidate. It does not change the original 5000 benchmark.
+
+### Moderate closure-selection diagnostic (not capacity acceptance)
+
+The same frozen four-file candidate plus a separately hashed 10,000-row fixture passed all three actual PG/CH cases, zero failures/skips. The original sealed body was fully authenticated in bounded 100-row batches. Old and candidate metadata digests were identical across 10,111 rows. One sequential pair measured old wall 301.660 ms / SQL cumulative 253.094 ms / 150 calls versus candidate wall 223.636 ms / SQL cumulative 166.197 ms / 153 calls. The additional calls create, populate and drop the transaction-local selected set; no authentication or signature checks are omitted.
+
+Most observed difference was the same 10,000 fact-member rows fetched in 101 calls: 235.888 ms old versus 152.781 ms candidate. This is one ordered pair, not proof of stable benefit or identification of the whole-load bottleneck. A bounded counterbalanced measurement is required before load testing. Raw timing, test result and exact base/patch binding are archived beside the small fixture evidence. The earlier 5000 FAIL remains unchanged.
+
+### Counterbalanced closure-selection metadata measurement
+
+The same 10,000-effect fixture ran three pairs in one repeatable-read transaction: old/new, new/old, old/new. All three test cases passed, zero skips, source hashes unchanged and owned PostgreSQL schema/ClickHouse rows cleaned. Each pair had identical digest bytes and 10,111 metadata rows; original body receipt/hash/HMAC authentication still ran before and after measurement.
+
+| Order | Original wall | Candidate wall | Original member FETCH | Candidate member FETCH |
+| --- | ---: | ---: | ---: | ---: |
+| old/new | 299.057 ms | 189.586 ms | 222.021 ms | 129.196 ms |
+| new/old | 290.478 ms | 190.763 ms | 231.216 ms | 129.034 ms |
+| old/new | 276.447 ms | 190.462 ms | 219.375 ms | 131.589 ms |
+
+Every mode fetched the same 10,000 member rows in 101 bounded FETCH calls. Overall SQL-call count was 150 original / 153 candidate, with exactly one transaction-local selected-set population per candidate computation. The measured local benefit survives reversed order, but this is metadata fixture evidence, not a prediction of original 5000 capacity. The candidate remains opt-in pending real application/coverage/restore and fixed small-load A/B validation. No unmodified 5000 repeat was performed.
+
+The frozen candidate (base 9a51e83 plus five explicitly hashed patch files) completed 11 real PG/CH integration cases, 0 failures/skips, with coverage selected-run reuse enabled. This includes all eight existing coverage/upgrade cases plus three differential selected-set cases. Independent signed multi-run restoration is recorded separately when completed. The current full unit working-tree run passed 339 cases, 0 failures/skips; it is not a whole application/browser/image claim.
+
+Concurrency precondition: a closure computation must run in a repeatable-read/serializable snapshot or under the same site gate covering every metadata statement. Production statistics use the former; publication/retention/deletion/closure migration use the latter. An arbitrary bare READ COMMITTED client does not provide old/new digest equivalence. The materialized set is created anew for every capture/advance computation and is never cached across publication mutations, clients, transactions or requests.
+
+The same frozen candidate passed the native independent signed multi-run restore (1 PASS, 0 SKIP), including the latest A deletion/B preservation and restored owner/reference closure. A separately bound READ COMMITTED production-site-gate regression passed (1 PASS, 0 SKIP): the competing writer was observed waiting on its real advisory lock; the locked reader produced equal old/candidate digests, then after release and the writer commit a new locked scope produced changed but equal digests. The first lock invocation used the snapshot itself as the copy source, causing a missing fixture/no-test execution; corrected absolute project source copying ran the actual test successfully. This invocation failure remains in local logs and is not counted as an application assertion pass or failure.

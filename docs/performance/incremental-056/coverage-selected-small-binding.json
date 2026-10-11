@@ -1,0 +1,9 @@
+{
+  "base": "a507fd9e24dfa6a0812795ab4e815df56a8dc936",
+  "patches": {
+    "src/server/fact-coverage-witness.ts": "26e1062b4b831db9ed5577e5c73ed2379f4901b96021aa524b29556fed1a8ecc",
+    "src/server/fact-coverage-selected-runs.ts": "3787d6dc8fa9e0d1dd63612efabac29af5d68b8e733e0b82d2cafc656ea1a3c0",
+    "tests/unit/fact-coverage-selected-runs.test.ts": "78dd8ac45889b12171107ac6fd92d087584a1cc38195b11982abfa1871b5cb76",
+    "tests/integration/fact-coverage-selected-runs.test.ts": "2d1068dad6e2ad50ef7c7d0393acca0f9e0bc1db74f6e54c3629d8b2c82c4ece"
+  }
+}

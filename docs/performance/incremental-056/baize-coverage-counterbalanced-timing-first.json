@@ -1,0 +1,1014 @@
+{
+  "experiment": "coverage-selected-runs-micro",
+  "sourceCommit": null,
+  "sealedEffectRows": 10000,
+  "logicalBatchLimit": 100,
+  "bodyAuthenticationPassed": true,
+  "digestEqual": true,
+  "pairs": [
+    {
+      "order": "baseline_candidate",
+      "digestEqual": true,
+      "baseline": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 299.05660999999964,
+        "calls": 150,
+        "sqlMs": 249.38456000000224,
+        "selectedPopulationCalls": 0,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 2.546229000000494,
+            "fetchCalls": 2,
+            "fetchMs": 4.7610270000004675,
+            "fetchRows": 2,
+            "closeMs": 0.23486500000035448
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.28444000000035885,
+            "fetchCalls": 1,
+            "fetchMs": 0.14560999999957858,
+            "fetchRows": 0,
+            "closeMs": 0.11909000000014203
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.22029299999940122,
+            "fetchCalls": 1,
+            "fetchMs": 0.10899400000016612,
+            "fetchRows": 0,
+            "closeMs": 0.0941819999998188
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.1395010000005641,
+            "fetchCalls": 1,
+            "fetchMs": 0.08884500000021944,
+            "fetchRows": 0,
+            "closeMs": 0.05334000000038941
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.7183759999998074,
+            "fetchCalls": 2,
+            "fetchMs": 0.42152700000042387,
+            "fetchRows": 3,
+            "closeMs": 1.2773010000000795
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.7724470000002839,
+            "fetchCalls": 1,
+            "fetchMs": 0.1680740000001606,
+            "fetchRows": 0,
+            "closeMs": 0.06369699999959266
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.6689209999995,
+            "fetchCalls": 1,
+            "fetchMs": 0.16575100000045495,
+            "fetchRows": 0,
+            "closeMs": 0.09212899999965884
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.6232019999997647,
+            "fetchCalls": 1,
+            "fetchMs": 0.1444580000006681,
+            "fetchRows": 0,
+            "closeMs": 0.1480940000001283
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.4929549999997107,
+            "fetchCalls": 2,
+            "fetchMs": 0.40609500000027765,
+            "fetchRows": 6,
+            "closeMs": 0.06693099999938568
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.6926770000000033,
+            "fetchCalls": 2,
+            "fetchMs": 1.966363000000456,
+            "fetchRows": 100,
+            "closeMs": 0.1308680000001914
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.5464360000005399,
+            "fetchCalls": 101,
+            "fetchMs": 222.02100699999846,
+            "fetchRows": 10000,
+            "closeMs": 1.1680759999999282
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 1.0837880000008226,
+            "fetchCalls": 1,
+            "fetchMs": 0.21812899999986257,
+            "fetchRows": 0,
+            "closeMs": 0.13590500000009342
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.8832449999999881,
+            "fetchCalls": 1,
+            "fetchMs": 0.2011740000007194,
+            "fetchRows": 0,
+            "closeMs": 0.10656099999960134
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.7062380000006669,
+            "fetchCalls": 1,
+            "fetchMs": 2.019583000000239,
+            "fetchRows": 0,
+            "closeMs": 0.1349239999999554
+          }
+        }
+      },
+      "candidate": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 189.58569799999987,
+        "calls": 153,
+        "sqlMs": 142.46862999999394,
+        "selectedPopulationCalls": 1,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.2098470000000816,
+            "fetchCalls": 2,
+            "fetchMs": 0.27305299999989074,
+            "fetchRows": 2,
+            "closeMs": 0.05907999999999447
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.1446589999995922,
+            "fetchCalls": 1,
+            "fetchMs": 0.08714099999997416,
+            "fetchRows": 0,
+            "closeMs": 0.052910000000338187
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.1951150000004418,
+            "fetchCalls": 1,
+            "fetchMs": 0.1653599999999642,
+            "fetchRows": 0,
+            "closeMs": 0.09246999999959371
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.12776299999950425,
+            "fetchCalls": 1,
+            "fetchMs": 0.08571899999969901,
+            "fetchRows": 0,
+            "closeMs": 0.05111799999940558
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.18848499999967316,
+            "fetchCalls": 2,
+            "fetchMs": 0.29217099999914353,
+            "fetchRows": 3,
+            "closeMs": 0.054692000000613916
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.29723999999987427,
+            "fetchCalls": 1,
+            "fetchMs": 0.09548499999982596,
+            "fetchRows": 0,
+            "closeMs": 0.05210899999929097
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3097280000001774,
+            "fetchCalls": 1,
+            "fetchMs": 0.19228099999963888,
+            "fetchRows": 0,
+            "closeMs": 0.06509800000003452
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.29484599999977945,
+            "fetchCalls": 1,
+            "fetchMs": 0.09977100000014616,
+            "fetchRows": 0,
+            "closeMs": 0.05348099999991973
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.3196429999998145,
+            "fetchCalls": 2,
+            "fetchMs": 0.3940360000005967,
+            "fetchRows": 6,
+            "closeMs": 0.05641600000035396
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.307423999999628,
+            "fetchCalls": 2,
+            "fetchMs": 1.6084520000003977,
+            "fetchRows": 100,
+            "closeMs": 0.06031100000018341
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.36333899999954156,
+            "fetchCalls": 101,
+            "fetchMs": 129.19635899999685,
+            "fetchRows": 10000,
+            "closeMs": 0.8083719999995083
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.6176239999995232,
+            "fetchCalls": 1,
+            "fetchMs": 0.16588099999989936,
+            "fetchRows": 0,
+            "closeMs": 0.8170250000002852
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3750870000003488,
+            "fetchCalls": 1,
+            "fetchMs": 0.21317200000066805,
+            "fetchRows": 0,
+            "closeMs": 0.06785199999922042
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.3530739999996513,
+            "fetchCalls": 1,
+            "fetchMs": 0.12252499999976862,
+            "fetchRows": 0,
+            "closeMs": 0.05890900000031252
+          }
+        }
+      }
+    },
+    {
+      "order": "candidate_baseline",
+      "digestEqual": true,
+      "baseline": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 290.47803600000043,
+        "calls": 150,
+        "sqlMs": 246.25570200000766,
+        "selectedPopulationCalls": 0,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.22929600000043138,
+            "fetchCalls": 2,
+            "fetchMs": 0.31117100000119535,
+            "fetchRows": 2,
+            "closeMs": 0.07904899999994086
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.2208840000002965,
+            "fetchCalls": 1,
+            "fetchMs": 0.12740300000041316,
+            "fetchRows": 0,
+            "closeMs": 0.07963000000017928
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.17606599999999162,
+            "fetchCalls": 1,
+            "fetchMs": 0.12113399999998364,
+            "fetchRows": 0,
+            "closeMs": 0.07816800000000512
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.16985699999986537,
+            "fetchCalls": 1,
+            "fetchMs": 0.13752699999986362,
+            "fetchRows": 0,
+            "closeMs": 0.08045200000015029
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.5074370000002091,
+            "fetchCalls": 2,
+            "fetchMs": 0.535479000000123,
+            "fetchRows": 3,
+            "closeMs": 0.09048700000039389
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.5256540000000314,
+            "fetchCalls": 1,
+            "fetchMs": 0.23235099999965314,
+            "fetchRows": 0,
+            "closeMs": 0.10027200000058656
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.5147190000006958,
+            "fetchCalls": 1,
+            "fetchMs": 0.17655700000068464,
+            "fetchRows": 0,
+            "closeMs": 0.11096699999961857
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.5032510000000912,
+            "fetchCalls": 1,
+            "fetchMs": 0.17312200000014855,
+            "fetchRows": 0,
+            "closeMs": 0.09329100000013568
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.6344090000002325,
+            "fetchCalls": 2,
+            "fetchMs": 0.4225480000004609,
+            "fetchRows": 6,
+            "closeMs": 0.11000599999988481
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.525405000000319,
+            "fetchCalls": 2,
+            "fetchMs": 2.004609000000528,
+            "fetchRows": 100,
+            "closeMs": 0.12202400000023772
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.5381840000000011,
+            "fetchCalls": 101,
+            "fetchMs": 231.2157849999994,
+            "fetchRows": 10000,
+            "closeMs": 1.1575400000001537
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.8066390000003594,
+            "fetchCalls": 1,
+            "fetchMs": 0.22908100000040577,
+            "fetchRows": 0,
+            "closeMs": 0.11135799999919982
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.6348389999993742,
+            "fetchCalls": 1,
+            "fetchMs": 0.13965100000041275,
+            "fetchRows": 0,
+            "closeMs": 0.10042200000043522
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.7708450000000084,
+            "fetchCalls": 1,
+            "fetchMs": 0.20667200000025332,
+            "fetchRows": 0,
+            "closeMs": 0.08510800000021845
+          }
+        }
+      },
+      "candidate": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 190.76262700000007,
+        "calls": 153,
+        "sqlMs": 146.16027500000473,
+        "selectedPopulationCalls": 1,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.19112899999981892,
+            "fetchCalls": 2,
+            "fetchMs": 0.24772400000074413,
+            "fetchRows": 2,
+            "closeMs": 0.052819999999883294
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.14224500000000262,
+            "fetchCalls": 1,
+            "fetchMs": 0.1455500000001848,
+            "fetchRows": 0,
+            "closeMs": 0.2451710000004823
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.2085960000003979,
+            "fetchCalls": 1,
+            "fetchMs": 0.1041769999992539,
+            "fetchRows": 0,
+            "closeMs": 0.1844489999994039
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.14133399999991525,
+            "fetchCalls": 1,
+            "fetchMs": 0.09333100000003469,
+            "fetchRows": 0,
+            "closeMs": 0.062463999999636144
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.24558100000012928,
+            "fetchCalls": 2,
+            "fetchMs": 3.1988759999994727,
+            "fetchRows": 3,
+            "closeMs": 0.053351000000475324
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.3229880000008052,
+            "fetchCalls": 1,
+            "fetchMs": 0.10606999999981781,
+            "fetchRows": 0,
+            "closeMs": 0.10752299999967363
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3125030000001061,
+            "fetchCalls": 1,
+            "fetchMs": 0.09569499999997788,
+            "fetchRows": 0,
+            "closeMs": 0.0533610000002227
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.7231830000000627,
+            "fetchCalls": 1,
+            "fetchMs": 0.12039099999947211,
+            "fetchRows": 0,
+            "closeMs": 0.054682999999386084
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.33265299999948184,
+            "fetchCalls": 2,
+            "fetchMs": 0.32736600000134786,
+            "fetchRows": 6,
+            "closeMs": 0.05183800000031624
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3026880000006713,
+            "fetchCalls": 2,
+            "fetchMs": 2.0152459999999337,
+            "fetchRows": 100,
+            "closeMs": 0.05572500000016589
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.3120210000006409,
+            "fetchCalls": 101,
+            "fetchMs": 129.0344040000018,
+            "fetchRows": 10000,
+            "closeMs": 0.9338619999998627
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.5854950000002646,
+            "fetchCalls": 1,
+            "fetchMs": 0.20848500000010972,
+            "fetchRows": 0,
+            "closeMs": 0.1272820000003776
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.4631500000004962,
+            "fetchCalls": 1,
+            "fetchMs": 0.14210499999990134,
+            "fetchRows": 0,
+            "closeMs": 0.08259499999985565
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.4063139999998384,
+            "fetchCalls": 1,
+            "fetchMs": 0.3514420000001337,
+            "fetchRows": 0,
+            "closeMs": 0.11224899999979243
+          }
+        }
+      }
+    },
+    {
+      "order": "baseline_candidate",
+      "digestEqual": true,
+      "baseline": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 276.4468260000003,
+        "calls": 150,
+        "sqlMs": 231.85475099999258,
+        "selectedPopulationCalls": 0,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.2591420000007929,
+            "fetchCalls": 2,
+            "fetchMs": 0.2578000000003158,
+            "fetchRows": 2,
+            "closeMs": 0.05242999999973108
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.12368699999933597,
+            "fetchCalls": 1,
+            "fetchMs": 0.07760700000017096,
+            "fetchRows": 0,
+            "closeMs": 0.04745199999979377
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.107691999999588,
+            "fetchCalls": 1,
+            "fetchMs": 0.07009600000037608,
+            "fetchRows": 0,
+            "closeMs": 0.04542799999944691
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.12889499999982945,
+            "fetchCalls": 1,
+            "fetchMs": 0.11600499999985914,
+            "fetchRows": 0,
+            "closeMs": 0.05359099999986938
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.389868999999635,
+            "fetchCalls": 2,
+            "fetchMs": 0.42719100000067556,
+            "fetchRows": 3,
+            "closeMs": 0.06179299999985233
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.45612900000014633,
+            "fetchCalls": 1,
+            "fetchMs": 0.10335600000053091,
+            "fetchRows": 0,
+            "closeMs": 0.0533209999994142
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.4806060000000798,
+            "fetchCalls": 1,
+            "fetchMs": 0.12988599999971484,
+            "fetchRows": 0,
+            "closeMs": 0.05947999999989406
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.49890400000003865,
+            "fetchCalls": 1,
+            "fetchMs": 0.14433800000006158,
+            "fetchRows": 0,
+            "closeMs": 0.05920999999943888
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.4221580000003087,
+            "fetchCalls": 2,
+            "fetchMs": 0.5544279999994615,
+            "fetchRows": 6,
+            "closeMs": 0.08796299999994517
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.5081630000004225,
+            "fetchCalls": 2,
+            "fetchMs": 1.6532890000007683,
+            "fetchRows": 100,
+            "closeMs": 0.09773799999948096
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.4723340000000462,
+            "fetchCalls": 101,
+            "fetchMs": 219.37476899999456,
+            "fetchRows": 10000,
+            "closeMs": 0.9995410000001357
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.8630839999996169,
+            "fetchCalls": 1,
+            "fetchMs": 0.16430799999943702,
+            "fetchRows": 0,
+            "closeMs": 0.09252999999989697
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.5231709999998202,
+            "fetchCalls": 1,
+            "fetchMs": 0.12053199999991193,
+            "fetchRows": 0,
+            "closeMs": 0.05621499999961088
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.4764500000001135,
+            "fetchCalls": 1,
+            "fetchMs": 0.11574500000006083,
+            "fetchRows": 0,
+            "closeMs": 0.05639500000052067
+          }
+        }
+      },
+      "candidate": {
+        "digest": {
+          "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+          "rows": "10111"
+        },
+        "wallMs": 190.46226300000035,
+        "calls": 153,
+        "sqlMs": 145.26047399999788,
+        "selectedPopulationCalls": 1,
+        "perTable": {
+          "analytics_session_contribution_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.16144400000030146,
+            "fetchCalls": 2,
+            "fetchMs": 0.22552099999938946,
+            "fetchRows": 2,
+            "closeMs": 0.06093200000032084
+          },
+          "analytics_carry_heads": {
+            "declareCalls": 1,
+            "declareMs": 0.14070300000003044,
+            "fetchCalls": 1,
+            "fetchMs": 0.07622499999979482,
+            "fetchRows": 0,
+            "closeMs": 0.04510799999934534
+          },
+          "analytics_relational_buckets": {
+            "declareCalls": 1,
+            "declareMs": 0.10452799999984563,
+            "fetchCalls": 1,
+            "fetchMs": 0.06620999999995547,
+            "fetchRows": 0,
+            "closeMs": 0.043845999999575724
+          },
+          "analytics_session_rebuild_requests": {
+            "declareCalls": 1,
+            "declareMs": 0.09420299999965209,
+            "fetchCalls": 1,
+            "fetchMs": 0.06350600000041595,
+            "fetchRows": 0,
+            "closeMs": 0.04242400000021007
+          },
+          "analytics_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.19742800000040006,
+            "fetchCalls": 2,
+            "fetchMs": 0.34706499999992957,
+            "fetchRows": 3,
+            "closeMs": 0.049994999999398715
+          },
+          "analytics_header_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.29362399999990885,
+            "fetchCalls": 1,
+            "fetchMs": 0.13351199999942764,
+            "fetchRows": 0,
+            "closeMs": 0.07477299999936804
+          },
+          "analytics_header_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3407649999999194,
+            "fetchCalls": 1,
+            "fetchMs": 1.0135620000000927,
+            "fetchRows": 0,
+            "closeMs": 0.13058799999998882
+          },
+          "analytics_header_members": {
+            "declareCalls": 1,
+            "declareMs": 0.4815980000003037,
+            "fetchCalls": 1,
+            "fetchMs": 0.20576099999925646,
+            "fetchRows": 0,
+            "closeMs": 0.1421649999992951
+          },
+          "analytics_fact_store_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.38274900000033085,
+            "fetchCalls": 2,
+            "fetchMs": 0.4075960000009218,
+            "fetchRows": 6,
+            "closeMs": 0.08170300000074349
+          },
+          "analytics_fact_store_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.37760100000014063,
+            "fetchCalls": 2,
+            "fetchMs": 1.7784179999998742,
+            "fetchRows": 100,
+            "closeMs": 0.2042089999995369
+          },
+          "analytics_fact_store_members": {
+            "declareCalls": 1,
+            "declareMs": 0.40083600000070874,
+            "fetchCalls": 101,
+            "fetchMs": 131.58904699999857,
+            "fetchRows": 10000,
+            "closeMs": 0.9260599999997794
+          },
+          "analytics_remaining_fact_runs": {
+            "declareCalls": 1,
+            "declareMs": 0.5244430000002467,
+            "fetchCalls": 1,
+            "fetchMs": 0.1943940000001021,
+            "fetchRows": 0,
+            "closeMs": 0.08459700000003068
+          },
+          "analytics_remaining_fact_batches": {
+            "declareCalls": 1,
+            "declareMs": 0.3400039999996807,
+            "fetchCalls": 1,
+            "fetchMs": 0.08475900000030379,
+            "fetchRows": 0,
+            "closeMs": 0.04733200000009674
+          },
+          "analytics_remaining_fact_members": {
+            "declareCalls": 1,
+            "declareMs": 0.3035490000002028,
+            "fetchCalls": 1,
+            "fetchMs": 0.23423399999956018,
+            "fetchRows": 0,
+            "closeMs": 0.08544900000015332
+          }
+        }
+      }
+    }
+  ],
+  "baseline": {
+    "digest": {
+      "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+      "rows": "10111"
+    },
+    "wallMs": 299.05660999999964,
+    "calls": 150,
+    "sqlMs": 249.38456000000224,
+    "selectedPopulationCalls": 0,
+    "perTable": {
+      "analytics_session_contribution_heads": {
+        "declareCalls": 1,
+        "declareMs": 2.546229000000494,
+        "fetchCalls": 2,
+        "fetchMs": 4.7610270000004675,
+        "fetchRows": 2,
+        "closeMs": 0.23486500000035448
+      },
+      "analytics_carry_heads": {
+        "declareCalls": 1,
+        "declareMs": 0.28444000000035885,
+        "fetchCalls": 1,
+        "fetchMs": 0.14560999999957858,
+        "fetchRows": 0,
+        "closeMs": 0.11909000000014203
+      },
+      "analytics_relational_buckets": {
+        "declareCalls": 1,
+        "declareMs": 0.22029299999940122,
+        "fetchCalls": 1,
+        "fetchMs": 0.10899400000016612,
+        "fetchRows": 0,
+        "closeMs": 0.0941819999998188
+      },
+      "analytics_session_rebuild_requests": {
+        "declareCalls": 1,
+        "declareMs": 0.1395010000005641,
+        "fetchCalls": 1,
+        "fetchMs": 0.08884500000021944,
+        "fetchRows": 0,
+        "closeMs": 0.05334000000038941
+      },
+      "analytics_fact_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.7183759999998074,
+        "fetchCalls": 2,
+        "fetchMs": 0.42152700000042387,
+        "fetchRows": 3,
+        "closeMs": 1.2773010000000795
+      },
+      "analytics_header_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.7724470000002839,
+        "fetchCalls": 1,
+        "fetchMs": 0.1680740000001606,
+        "fetchRows": 0,
+        "closeMs": 0.06369699999959266
+      },
+      "analytics_header_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.6689209999995,
+        "fetchCalls": 1,
+        "fetchMs": 0.16575100000045495,
+        "fetchRows": 0,
+        "closeMs": 0.09212899999965884
+      },
+      "analytics_header_members": {
+        "declareCalls": 1,
+        "declareMs": 0.6232019999997647,
+        "fetchCalls": 1,
+        "fetchMs": 0.1444580000006681,
+        "fetchRows": 0,
+        "closeMs": 0.1480940000001283
+      },
+      "analytics_fact_store_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.4929549999997107,
+        "fetchCalls": 2,
+        "fetchMs": 0.40609500000027765,
+        "fetchRows": 6,
+        "closeMs": 0.06693099999938568
+      },
+      "analytics_fact_store_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.6926770000000033,
+        "fetchCalls": 2,
+        "fetchMs": 1.966363000000456,
+        "fetchRows": 100,
+        "closeMs": 0.1308680000001914
+      },
+      "analytics_fact_store_members": {
+        "declareCalls": 1,
+        "declareMs": 0.5464360000005399,
+        "fetchCalls": 101,
+        "fetchMs": 222.02100699999846,
+        "fetchRows": 10000,
+        "closeMs": 1.1680759999999282
+      },
+      "analytics_remaining_fact_runs": {
+        "declareCalls": 1,
+        "declareMs": 1.0837880000008226,
+        "fetchCalls": 1,
+        "fetchMs": 0.21812899999986257,
+        "fetchRows": 0,
+        "closeMs": 0.13590500000009342
+      },
+      "analytics_remaining_fact_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.8832449999999881,
+        "fetchCalls": 1,
+        "fetchMs": 0.2011740000007194,
+        "fetchRows": 0,
+        "closeMs": 0.10656099999960134
+      },
+      "analytics_remaining_fact_members": {
+        "declareCalls": 1,
+        "declareMs": 0.7062380000006669,
+        "fetchCalls": 1,
+        "fetchMs": 2.019583000000239,
+        "fetchRows": 0,
+        "closeMs": 0.1349239999999554
+      }
+    }
+  },
+  "candidate": {
+    "digest": {
+      "digest": "4dfd3237cc5d6e048c65c784294ff8dac0a0203347a4310075efac988cda0287",
+      "rows": "10111"
+    },
+    "wallMs": 189.58569799999987,
+    "calls": 153,
+    "sqlMs": 142.46862999999394,
+    "selectedPopulationCalls": 1,
+    "perTable": {
+      "analytics_session_contribution_heads": {
+        "declareCalls": 1,
+        "declareMs": 0.2098470000000816,
+        "fetchCalls": 2,
+        "fetchMs": 0.27305299999989074,
+        "fetchRows": 2,
+        "closeMs": 0.05907999999999447
+      },
+      "analytics_carry_heads": {
+        "declareCalls": 1,
+        "declareMs": 0.1446589999995922,
+        "fetchCalls": 1,
+        "fetchMs": 0.08714099999997416,
+        "fetchRows": 0,
+        "closeMs": 0.052910000000338187
+      },
+      "analytics_relational_buckets": {
+        "declareCalls": 1,
+        "declareMs": 0.1951150000004418,
+        "fetchCalls": 1,
+        "fetchMs": 0.1653599999999642,
+        "fetchRows": 0,
+        "closeMs": 0.09246999999959371
+      },
+      "analytics_session_rebuild_requests": {
+        "declareCalls": 1,
+        "declareMs": 0.12776299999950425,
+        "fetchCalls": 1,
+        "fetchMs": 0.08571899999969901,
+        "fetchRows": 0,
+        "closeMs": 0.05111799999940558
+      },
+      "analytics_fact_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.18848499999967316,
+        "fetchCalls": 2,
+        "fetchMs": 0.29217099999914353,
+        "fetchRows": 3,
+        "closeMs": 0.054692000000613916
+      },
+      "analytics_header_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.29723999999987427,
+        "fetchCalls": 1,
+        "fetchMs": 0.09548499999982596,
+        "fetchRows": 0,
+        "closeMs": 0.05210899999929097
+      },
+      "analytics_header_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.3097280000001774,
+        "fetchCalls": 1,
+        "fetchMs": 0.19228099999963888,
+        "fetchRows": 0,
+        "closeMs": 0.06509800000003452
+      },
+      "analytics_header_members": {
+        "declareCalls": 1,
+        "declareMs": 0.29484599999977945,
+        "fetchCalls": 1,
+        "fetchMs": 0.09977100000014616,
+        "fetchRows": 0,
+        "closeMs": 0.05348099999991973
+      },
+      "analytics_fact_store_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.3196429999998145,
+        "fetchCalls": 2,
+        "fetchMs": 0.3940360000005967,
+        "fetchRows": 6,
+        "closeMs": 0.05641600000035396
+      },
+      "analytics_fact_store_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.307423999999628,
+        "fetchCalls": 2,
+        "fetchMs": 1.6084520000003977,
+        "fetchRows": 100,
+        "closeMs": 0.06031100000018341
+      },
+      "analytics_fact_store_members": {
+        "declareCalls": 1,
+        "declareMs": 0.36333899999954156,
+        "fetchCalls": 101,
+        "fetchMs": 129.19635899999685,
+        "fetchRows": 10000,
+        "closeMs": 0.8083719999995083
+      },
+      "analytics_remaining_fact_runs": {
+        "declareCalls": 1,
+        "declareMs": 0.6176239999995232,
+        "fetchCalls": 1,
+        "fetchMs": 0.16588099999989936,
+        "fetchRows": 0,
+        "closeMs": 0.8170250000002852
+      },
+      "analytics_remaining_fact_batches": {
+        "declareCalls": 1,
+        "declareMs": 0.3750870000003488,
+        "fetchCalls": 1,
+        "fetchMs": 0.21317200000066805,
+        "fetchRows": 0,
+        "closeMs": 0.06785199999922042
+      },
+      "analytics_remaining_fact_members": {
+        "declareCalls": 1,
+        "declareMs": 0.3530739999996513,
+        "fetchCalls": 1,
+        "fetchMs": 0.12252499999976862,
+        "fetchRows": 0,
+        "closeMs": 0.05890900000031252
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import {withCoverageSelectedRuns} from './fact-coverage-selected-runs.js';
 import {createHash,createHmac,randomUUID,timingSafeEqual} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
 import {canonical} from './security.js';
@@ -33,21 +34,23 @@ function assertSeal(secret:string,record:FactCoverageWitnessRecord){const {seal,
 async function load(c:PoolClient,site:string){if(!(await c.query("SELECT to_regclass('analytics_fact_coverage_witnesses') present")).rows[0]?.present)return null;const row=(await c.query('SELECT * FROM analytics_fact_coverage_witnesses WHERE site_id=$1',[site])).rows[0];return row?normalized(row):null;}
 /** Metadata hash is bounded and includes empty owners and explicit zero-kind
  * completion. It supplements, never replaces, original sealed body readers. */
-async function closure(c:PoolClient,site:string){return withCoverageMetadataUtc(c,()=>closureUtc(c,site));}
+async function closure(c:PoolClient,site:string){return factCoverageMetadataDigest(c,site,{selectedRunReuse:process.env.BAIZE_COVERAGE_SELECTED_RUNS==='1'});}
+/** Differential metadata oracle; does not issue coverage or bypass body auth. */
+export async function factCoverageMetadataDigest(c:PoolClient,site:string,options:{selectedRunReuse?:boolean}={}){return withCoverageMetadataUtc(c,async()=>{await assertFactRunClosure(c,site,{forRebuild:true});return options.selectedRunReuse?withCoverageSelectedRuns(c,site,relation=>closureUtc(c,site,relation)):closureUtc(c,site);});}
 /** Transaction-local metadata serialization scope; does not change site rules. */
 export async function withCoverageMetadataUtc<T>(c:PoolClient,fn:()=>Promise<T>):Promise<T>{
  const priorTimezone=(await c.query("SELECT current_setting('TimeZone') timezone")).rows[0].timezone as string;
  await c.query("SELECT set_config('TimeZone','UTC',true)");
  let failed=false;try{return await fn();}catch(error){failed=true;throw error;}finally{try{await c.query("SELECT set_config('TimeZone',$1,true)",[priorTimezone]);}catch(error){if(!failed)throw error;}}
 }
-async function closureUtc(c:PoolClient,site:string){
- await assertFactRunClosure(c,site,{forRebuild:true});
+async function closureUtc(c:PoolClient,site:string,selectedRelation?:string){
  const hash=createHash('sha256');let rows=0n;
  const tables=['analytics_session_contribution_heads','analytics_carry_heads','analytics_relational_buckets','analytics_session_rebuild_requests','analytics_fact_runs','analytics_header_runs','analytics_header_batches','analytics_header_members','analytics_fact_store_runs','analytics_fact_store_batches','analytics_fact_store_members','analytics_remaining_fact_runs','analytics_remaining_fact_batches','analytics_remaining_fact_members'];
  const selected=selectedFactRunPredicate.replaceAll('a.processed_generation','a.generation');
  for(const table of tables){const cursor=`coverage_${randomUUID().replaceAll('-','')}`;const query=table==='analytics_fact_runs'?`SELECT to_jsonb(t) body FROM ${table} t JOIN aggregation_state a ON a.site_id=t.site_id WHERE t.site_id=$1 AND ${selected.replaceAll('r.','t.')}`:table==='analytics_session_rebuild_requests'||table==='analytics_session_contribution_heads'||table==='analytics_carry_heads'||table==='analytics_relational_buckets'?`SELECT to_jsonb(t) body FROM ${table} t WHERE t.site_id=$1`:`SELECT to_jsonb(t) body FROM ${table} t JOIN analytics_fact_runs r ON r.id=t.run_id JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selected}`;
-  await c.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT body FROM (${query}) q ORDER BY body::text`,[site]);
-  try{for(;;){const page=(await c.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!page.length)break;for(const item of page){hash.update(canonical({table,row:item.body})+'\n');rows++;}}}finally{await c.query(`CLOSE ${cursor}`);}
+  const reusableQuery=!selectedRelation?query:table==='analytics_fact_runs'?`SELECT to_jsonb(t) body FROM ${table} t JOIN ${selectedRelation} picked ON picked.id=t.id WHERE t.site_id=$1`:['analytics_session_rebuild_requests','analytics_session_contribution_heads','analytics_carry_heads','analytics_relational_buckets'].includes(table)?query:`SELECT to_jsonb(t) body FROM ${table} t JOIN ${selectedRelation} picked ON picked.id=t.run_id JOIN analytics_fact_runs r ON r.id=t.run_id WHERE r.site_id=$1`;
+  await c.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT body FROM (${reusableQuery}) q ORDER BY body::text`,[site]);
+  let cursorFailed=false;try{for(;;){const page=(await c.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!page.length)break;for(const item of page){hash.update(canonical({table,row:item.body})+'\n');rows++;}}}catch(error){cursorFailed=true;throw error;}finally{try{await c.query(`CLOSE ${cursor}`);}catch(error){if(!cursorFailed)throw error;}}
  }
  return {digest:hash.digest('hex'),rows:rows.toString()};
 }
