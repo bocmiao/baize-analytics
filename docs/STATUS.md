@@ -47,6 +47,6 @@
 
 B为**隔离PG durable inbox原型**，区分received/validated/published，未替换正式collect或202语义。已有持久幂等、摘要冲突、租约/来源代际、模拟ACK后PG回滚、删除区间重放、每站pending条数/字节上限与超限整批回滚测试。字节预算使用有界metadata SUM（不是O(1)账本），不涵盖published/failed历史总存储。
 
-已完成首轮同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证：21专项PASS（14PG+7PG/CH），详见 [真实CH第一轮](VALIDATION_DURABLE_INBOX_REAL_CH.md)。这是独立standard prepared研究接口，不是正式wire来源证明。已补已发布物理删除和缺正文重试拒绝；下一步准备同参数负载，生产独立fsync日志仍未接入；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
+已完成首轮同client真实CH发布/完整读回/PG白名单原子提交及orphan不可见故障验证：21专项PASS（14PG+7PG/CH），详见 [真实CH第一轮](VALIDATION_DURABLE_INBOX_REAL_CH.md)。这是独立standard prepared研究接口，不是正式wire来源证明。已补已发布物理删除和缺正文重试拒绝；B7研究原参数5000已FAIL：4850received/published、1HTTP429、2未发送，已接收排空和7finalchecks通过，finalHTTP25.49秒；见 [研究负载](VALIDATION_DURABLE_INBOX_LOAD.md)。下一步有证据的独立admission锁候选在制，生产独立fsync日志仍未接入；原wire/HMAC身份证明、真实identify/revenue副作用、独立fsync日志/签名pending恢复、全局公平与队列年龄仍未实现。不得将提前received当原严格accepted等价，原5000失败保留。
 
 逐项F01–F66/P2来源见 [实现清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md) 与各证据目录保留历史，不作为另一个当前入口。

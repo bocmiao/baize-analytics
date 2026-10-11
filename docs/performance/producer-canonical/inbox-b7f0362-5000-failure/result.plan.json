@@ -1,0 +1,18 @@
+{
+  "sourceSha": "b7f0362ac9b817b15692b601959969f3bdce677f",
+  "profile": "prepared_standard_research",
+  "production202Equivalent": false,
+  "events": 5000,
+  "batchEvents": 50,
+  "intervalMs": 1000,
+  "queryIntervalMs": 10000,
+  "maxQueued": 8,
+  "maxConcurrent": 2,
+  "drainLimitMs": 120000,
+  "coverageReuse": 1,
+  "pagePathBatch": 1,
+  "publicationConcurrency": 2,
+  "incrementalSessions": 1,
+  "cpuMax": "400000 100000",
+  "memoryMax": "34359738368"
+}
