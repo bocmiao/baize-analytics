@@ -1,0 +1,75 @@
+{
+  "note": "Repeated execution attempts of the same unfinished restore test; not independent feature-test totals. Failures retained in original workspace evidence.",
+  "attempts": [
+    {
+      "file": "baize-incremental-restore-v2.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v3.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v4.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v5-corrected.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v5-native.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v5-source-baseline.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v5.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v6-source-baseline.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v7-target-name.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    },
+    {
+      "file": "baize-incremental-restore-v8-diagnostic.json",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "success": false
+    }
+  ]
+}

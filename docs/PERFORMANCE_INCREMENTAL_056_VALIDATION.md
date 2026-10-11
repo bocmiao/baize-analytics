@@ -31,3 +31,7 @@
 056 正向访客范围按同一 site/client 在访客删除、身份段删除、journal 重放中物理清理，不依赖 raw 或 `changed=true`；只清 planner 元数据，不清幸存 B 的 run/head/正文。真实 strict PG/CH 专项修正 cursor 事务夹具后 1 PASS / 0 SKIP：A/B 同 delta run，删 A 保 B 的 owner 与认证 PV2，两次恢复残留范围再重放均清 A，新签名 namespace 备份无 A 正向范围、含 B。首轮尚未触删除的夹具 FAIL 保留。新专项未单独覆盖同一派生 visitor 的 A/B 身份段；此边界不冒称已新测。
 
 raw 保留物理 ACK 后，仅给同 epoch 的 complete cache owner 推进 live deletion fence，旧签名来源、hash、attempt 不改，stale/staging/其他站点/旧 aggregation 不被收养。真实 PG 1 PASS；相关删除与保留单元 5 PASS，类型和定向 lint EXIT0。独立签名恢复正在重验，仍不能把这些专项当作整轮通过。
+
+独立恢复继续发现真实混合闭包缺陷：旧 run PG 正文已裁剪为 0 行但有 130 条 CH receipts，旧迁移按 PG 0 行重新完成校验而拒绝。修复仅对 complete 且 PG kind 为 0 的旧正文完整认证读取 sealed CH，保留 receipt、attempt 和 source epoch；非空 PG 仍走原精确迁移与七 kind 对账。真实 PG/CH 专项 3 PASS / 0 SKIP（首轮一条错误码预期失败保留），包括混合旧130行与新PG run、非空PG篡改拒绝、缺失旧CH正文拒绝。恢复 v9 已越过事实闭包，但缓存范围 backing 仍失败，正在诊断；未完成独立恢复。
+
+当前完整单元目录 294 PASS / 0 FAIL / 0 SKIP，完整 lint、构建通过，记录绑定测试时源码哈希；发生在上述混合事实闭包修复之前，不作为新修复全轮绿灯。新修复的定向类型和 lint 通过，整轮应用/浏览器/镜像仍未执行。
