@@ -1,0 +1,6 @@
+{
+  "scope": "exact generated site/visitor/run from initial failed new fixture only",
+  "before": 1,
+  "after": 0,
+  "completed": true
+}

@@ -73,3 +73,8 @@
 每次dirty claim重建保留范围导致14,200条派生发布，不能把它们等同于300输入或简单去重丢弃。降低重复全范围重建需可信会话闭包和贡献supersession，涉及迟到、跨日carry、删除epoch和失败发布，属于更大协议变更：先给方案/风险，不直接实施。将多批INSERT/读回合并也涉及partial失败、孤儿attempt和逐批receipt；本批没有采用。
 
 观测sample缓冲达到上限（samplesTruncated=true），总体聚合仍持续累计；invalidObservations=0。`json_serialize`仍未instrumented，其他adapter用途/请求字节未全量覆盖。因此本轮不是完整成本分解，不把9.511秒减去若干包含计时后的差值命名为PG耗时。Node最终阶段峰610942976B（app+harness，不含PG/CH/Redis）；300样本不用于容量承诺。
+
+
+## 后续有界PG集合化结果
+
+候选 `5c3be16` 的两A/两B固定300对照已完成。members每行成本约降低79%，但总体worker收益未证实，B2多一轮重建；本批不追加5000追绿，原FAIL不变。专项与未验范围、当前有限容量边界、较大增量归约风险见 [PERFORMANCE_REMAINING_MEMBERS_AB.md](PERFORMANCE_REMAINING_MEMBERS_AB.md)。新HEAD尚无全轮/浏览器/新镜像联合验收，不能沿用旧源结果。

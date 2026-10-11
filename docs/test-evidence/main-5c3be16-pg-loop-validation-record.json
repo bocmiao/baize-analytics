@@ -1,0 +1,77 @@
+{
+  "candidateSource": "5c3be16aaa36db2a2cd751ac2257422deec014e5",
+  "baselineSource": "073f70d498ca7de67a474bc00b810cec72275b3e",
+  "checks": [
+    {
+      "command": "vitest run tests/unit/server-phase-metrics.test.ts tests/unit/performance-observation.test.ts tests/unit/fact-transport-phases.test.ts",
+      "exit": 0,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "artifact": "main-073f70d-pg-loop-observe-unit.json"
+    },
+    {
+      "command": "vitest run tests/integration/remaining-fact-store.test.ts tests/integration/remaining-fact-worker.test.ts tests/integration/strict-fact-worker.test.ts",
+      "exit": 0,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "artifact": "main-073f70d-pg-loop-observe-real.json"
+    },
+    {
+      "command": "vitest run tests/unit",
+      "exit": 0,
+      "passed": 247,
+      "failed": 0,
+      "skipped": 0,
+      "artifact": "main-5c3be16-remaining-bulk-unit.json"
+    },
+    {
+      "command": "vitest run tests/integration/remaining-fact-members.test.ts tests/integration/remaining-fact-store.test.ts tests/integration/remaining-fact-worker.test.ts tests/integration/strict-fact-worker.test.ts",
+      "exit": 1,
+      "passed": 11,
+      "failed": 1,
+      "skipped": 0,
+      "artifact": "main-5c3be16-remaining-bulk-real-first-failed.json",
+      "failure": "new fixture expected empty iterator when run rollback removed source; product correctly rejected REMAINING_FACT_SOURCE_FENCE. Product not weakened."
+    },
+    {
+      "command": "vitest run tests/integration/remaining-fact-members.test.ts",
+      "exit": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "artifact": "main-5c3be16-remaining-bulk-real-fixed.json",
+      "scope": "fixture-only correction; exact site/visitor cleanup also in finally"
+    },
+    {
+      "command": "npm run lint",
+      "exit": 0,
+      "artifact": "main-5c3be16-pg-loop-final-lint.log"
+    },
+    {
+      "command": "npm run typecheck",
+      "exit": 0,
+      "artifact": "main-5c3be16-pg-loop-final-types.log"
+    }
+  ],
+  "benchmark": {
+    "runner": "scripts/independent-pipeline-benchmark.ts",
+    "baseline": "073f70d498ca7de67a474bc00b810cec72275b3e",
+    "candidate": "5c3be16aaa36db2a2cd751ac2257422deec014e5",
+    "configuration": "BENCHMARK_STORAGE=strict-clickhouse BENCHMARK_BATCHES=6 BENCHMARK_SITES=1; explicit APP_ROOT from git archive; SOURCE_REPOSITORY original repo; SOURCE_SHA full immutable commit; existing local PG/CH/Redis",
+    "A1Exit": 0,
+    "A2Exit": 0,
+    "B1Exit": 0,
+    "B2Exit": 0,
+    "summary": "main-5c3be16-pg-loop-ab-summary.json"
+  },
+  "untested": [
+    "candidate full integration suite",
+    "candidate browser",
+    "candidate Docker image and independent restore",
+    "candidate original-parameter 5000 (not run: no stable overall gain)",
+    "GitHub Actions/CNB (prohibited)"
+  ],
+  "counting": "Counts refer to each actual run; do not add overlapping suites or claim a single12-pass rerun. Unit/initial-real executed before candidate commit; product code retained unchanged; only failed integration fixture corrected before commit."
+}
