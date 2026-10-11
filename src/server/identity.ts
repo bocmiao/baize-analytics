@@ -33,9 +33,19 @@ export async function userDeletionRecords(client:PoolClient,site:string,userHash
  const rows=(await client.query('SELECT visitor_id,started_at::text,ended_at::text FROM identity_bindings WHERE site_id=$1 AND user_id=$2 ORDER BY visitor_id,started_at',[site,userHash])).rows;
  const deleted_at=new Date().toISOString();return rows.map(row=>({site_id:site,visitor_id:row.visitor_id,user_id:userHash,started_at:row.started_at,ended_at:row.ended_at??null,deleted_at,source:'identity-segment'}));
 }
+/** Positive planner metadata is not an identity tombstone or a published owner.
+ * Caller holds the site transaction gate. Identity segments conservatively remove
+ * this visitor's planning scope, while preserving every surviving body/head. */
+export async function purgeIncrementalVisitorMetadata(client:PoolClient,site:string,visitors:string[]):Promise<number>{
+ if(!visitors.length)return 0;
+ if(!(await client.query("SELECT to_regclass('analytics_incremental_run_visitors') AS relation")).rows[0]?.relation)return 0;
+ const result=await client.query(`DELETE FROM analytics_incremental_run_visitors v USING analytics_fact_runs r WHERE r.id=v.run_id AND r.site_id=$1 AND v.visitor_id=ANY($2::text[])`,[site,[...new Set(visitors)]]);
+ return result.rowCount??0;
+}
 /** Persist interval tombstones before precise purge. A deleted episode cannot be revived by an anonymous old retry. */
 export async function purgeIdentity(client:PoolClient,site:string,records:IdentityDeletionRecord[]){
  if(records.some(r=>r.site_id!==site))throw Error('Identity deletion site mismatch');
+ await purgeIncrementalVisitorMetadata(client,site,records.map(r=>r.visitor_id));
  const replayIndexCleanup=await removeReplayKeySegments(client,site,records.map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
  for(const record of records){
   if(record.site_id!==site)throw Error('Identity deletion site mismatch');

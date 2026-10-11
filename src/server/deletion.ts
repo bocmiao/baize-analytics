@@ -25,7 +25,7 @@ import { join } from 'node:path';
 import { transaction,lockSite,dirtySite } from './db.js';
 import { HttpError,visitorHash } from './security.js';
 import {scheduleExportCleanup,runFileCleanup} from './file-cleanup.js';
-import {userDeletionRecords,purgeIdentity,type IdentityDeletionRecord} from './identity.js';
+import {userDeletionRecords,purgeIdentity,purgeIncrementalVisitorMetadata,type IdentityDeletionRecord} from './identity.js';
 export interface DeletionRecord {site_id:string;visitor_id:string;user_id:string|null;deleted_at:string;source:string;started_at?:string;ended_at?:string|null}
 interface JournalWatermark {records:number;sha256:string}
 function journalRecords(data:Buffer):DeletionRecord[]{
@@ -102,6 +102,7 @@ async function invalidateDerived(client:PoolClient,siteId:string,dataDir:string)
   await client.query("UPDATE export_jobs SET status='revoked',path=NULL WHERE site_id=$1",[siteId]);
 }
 async function purge(client:PoolClient,siteId:string,visitors:string[],dataDir:string){
+  await purgeIncrementalVisitorMetadata(client,siteId,visitors);
   await client.query('DELETE FROM events WHERE site_id=$1 AND visitor_id=ANY($2::text[])',[siteId,visitors]);
   for(const table of ['event_keys','outbox','identity_map','identity_bindings','visitor_first_seen','sessions','revenue_orders'])await client.query(`DELETE FROM ${table} WHERE site_id=$1 AND visitor_id=ANY($2::text[])`,[siteId,visitors]);
   await client.query('DELETE FROM experiment_assignments WHERE visitor_id=ANY($2::text[]) AND experiment_id IN(SELECT id FROM experiments WHERE site_id=$1)',[siteId,visitors]);
@@ -176,6 +177,7 @@ export async function replayDeletionJournal(pool:Pool,dataDir:string,extraPath?:
     if(existing?.rowCount){await purge(client,siteId,visitors,dataDir);changed=false;}
     if(changed)await invalidateDerived(client,siteId,dataDir);
     await purgeProvenanceSegments(client,siteId,list.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>({visitorId:r.visitor_id,from:r.started_at,to:r.ended_at==='infinity'?undefined:r.ended_at??undefined})));
+    await purgeIncrementalVisitorMetadata(client,siteId,list.filter(r=>r.source==='identity-segment'||!r.visitor_id.startsWith('user:')).map(r=>r.visitor_id));
     // Old backups can restore derived data even when all tombstones already exist.
     await invalidateSiteAi(client,siteId);
     const relational=Boolean((await client.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND query_version=2 AND status='published' LIMIT 1",[siteId])).rowCount);if(relational)await rebasePublishedFactEpoch(client,siteId);else await invalidateSiteFacts(client,siteId);

@@ -18,10 +18,16 @@
 
 不可变候选 `a49aec17034d8c6344528da5d702630839592578` 同条件 300 事件 EXIT0，300 接收、0 未发送、最终积压 0。墙钟 17.025s（基线 21.165s），进程峰值 499176KiB（基线 624092KiB），采集 P95 274.436ms、查询 P95 355.557ms、最终断言 1405.234ms。044 旧事实读取仍为 9,364,444 字节，请求由 8 增至 11；发布 INSERT/独立读回各由 144 降至 88 请求。只证明该短样本减少派生发布，不能证明持续容量；跨 run 认证请求增加仍是风险。
 
-该候选随后真实复现归档正确性 P1：同 visitor 已关闭旧会话与当前会话隔离，当前追加增量使独立保存的旧区间 PV 从 2 降至 0。原 FAIL 已入证据目录；因此上述性能结果不能作为候选可交付验收。修复后真实 PG/CH 专项 1 PASS / 0 FAIL / 0 SKIP，明确观察 `fullPlans=1`、`deltaPlans=0`、`archived_dirty_owner`，旧区间 PV2/session2/vitals2、owner run/generation 和正文哈希不变，当前 PV2、dirty/outbox 排空。没有用受损后强制全量当 oracle。056 正向访客元数据删除专项仍待结果。独立恢复 v4 另实测 `CACHE_SOURCE_FENCE` 失败，原证据保留；TTL live receipt 重绑定修复尚待真实回归，不宣称恢复通过。
+该候选随后真实复现归档正确性 P1：同 visitor 已关闭旧会话与当前会话隔离，当前追加增量使独立保存的旧区间 PV 从 2 降至 0。原 FAIL 已入证据目录；因此上述性能结果不能作为候选可交付验收。修复后真实 PG/CH 专项 1 PASS / 0 FAIL / 0 SKIP，明确观察 `fullPlans=1`、`deltaPlans=0`、`archived_dirty_owner`，旧区间 PV2/session2/vitals2、owner run/generation 和正文哈希不变，当前 PV2、dirty/outbox 排空。没有用受损后强制全量当 oracle。056 正向访客元数据删除专项已通过，范围见下。独立恢复 v4 另实测 `CACHE_SOURCE_FENCE` 失败，原证据保留；TTL live receipt 重绑定修复尚待真实回归，不宣称恢复通过。
 
 ## 计数口径
 
 `reusedSessions` 只数已认证 session summary 与当前有效 owner 的精确匹配；`reusedOwnerHeads` 包含空退役 owner，因此另列。`producedEffectRows` 为 staging 派生行，`hydratedEffectRows` 为认证后可见旧 TEMP 行，均不是唯一事件或 HMAC 实际认证总量。阶段时间可嵌套/累计，不能相加作为墙钟比例。每轮 fallback 原因固定枚举；关闭功能不计为真正 fallback。
 
 本批未运行任何 CNB/同步/GitHub Actions。原始证据见 [目录](performance/incremental-056/)。
+
+## 后续删除与保留专项（非整轮验收）
+
+056 正向访客范围按同一 site/client 在访客删除、身份段删除、journal 重放中物理清理，不依赖 raw 或 `changed=true`；只清 planner 元数据，不清幸存 B 的 run/head/正文。真实 strict PG/CH 专项修正 cursor 事务夹具后 1 PASS / 0 SKIP：A/B 同 delta run，删 A 保 B 的 owner 与认证 PV2，两次恢复残留范围再重放均清 A，新签名 namespace 备份无 A 正向范围、含 B。首轮尚未触删除的夹具 FAIL 保留。新专项未单独覆盖同一派生 visitor 的 A/B 身份段；此边界不冒称已新测。
+
+raw 保留物理 ACK 后，仅给同 epoch 的 complete cache owner 推进 live deletion fence，旧签名来源、hash、attempt 不改，stale/staging/其他站点/旧 aggregation 不被收养。真实 PG 1 PASS；相关删除与保留单元 5 PASS，类型和定向 lint EXIT0。独立签名恢复正在重验，仍不能把这些专项当作整轮通过。
