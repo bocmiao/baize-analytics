@@ -64,3 +64,12 @@
 本批完整单元243PASS/0FAIL/0SKIP EXIT0；7文件31真实PG/CH项PASS/0FAIL/0SKIP EXIT0；lint/typecheck EXIT0。首次单元242PASS/1FAIL是观测字段白名单旧预期，已修正复验；首次lint两项为冻结原型CommonJS require，添加仅该验证文件的规则例外后通过，未修改原型视觉/源码。初次失败和最终日志均保留。此观察范围未重跑浏览器或Docker，也未触发任何托管CI。
 
 原始诊断、分区对账、单元/集成JSON与首轮失败日志：`docs/test-evidence/main-88b90b8-ch-phase-*`。UI v2两次视觉交付均未获用户认可，已冻结，等待成熟产品真实界面审美基准；功能测试通过不构成UI设计完成。
+
+
+### 下一项优化决策与边界
+
+当前选择的是PG逐条归属/成员/完成校验的有界集合化候选，而非扩大CH发布批次。先分别观测 `buildSessionFacts` 归约、remaining逐条ownership、成员INSERT及完成验证的调用数/累计/墙钟，确认贡献后才改为每批最多100条集合SQL；每条归属匹配、PK/FK、rowCount完整性及所有拒绝必须保持，不以ON CONFLICT吞错。这条候选不要求改变CH发布协议。它尚未实现，尚无收益证据。
+
+每次dirty claim重建保留范围导致14,200条派生发布，不能把它们等同于300输入或简单去重丢弃。降低重复全范围重建需可信会话闭包和贡献supersession，涉及迟到、跨日carry、删除epoch和失败发布，属于更大协议变更：先给方案/风险，不直接实施。将多批INSERT/读回合并也涉及partial失败、孤儿attempt和逐批receipt；本批没有采用。
+
+观测sample缓冲达到上限（samplesTruncated=true），总体聚合仍持续累计；invalidObservations=0。`json_serialize`仍未instrumented，其他adapter用途/请求字节未全量覆盖。因此本轮不是完整成本分解，不把9.511秒减去若干包含计时后的差值命名为PG耗时。Node最终阶段峰610942976B（app+harness，不含PG/CH/Redis）；300样本不用于容量承诺。
