@@ -82,7 +82,7 @@ There is **no universal pagination cursor/page/pageSize contract**. Most lists a
 | POST S/write-key | admin | One-time collection key and HMAC instructions |
 | GET /api/tracker/config/:siteId | Public; optional cookie_domain query and Origin | Privacy/consent/replay/heatmap/vitals configuration, no write secret |
 
-Setup/login share a ten-attempt/minute in-memory IP-digest limit. Passwords are 12–256 characters. Create a site with `{name,domain,timezone?,privacy_mode?,retention_days?,tags?,config?}`. Name is at most 128 characters; retention is 1–3650 days, default 365; at most 20 tags of at most 64 characters. Privacy modes are `standard` and `daily_salt`, default standard. Timezone defaults to Asia/Shanghai.
+Setup/login share a ten-attempt/minute in-memory IP-digest limit. Passwords are 12–1024 characters. Create a site with `{name,domain,timezone?,privacy_mode?,retention_days?,tags?,config?}`. Name is at most 128 characters; retention is 1–3650 days, default 365; at most 20 tags of at most 64 characters. Privacy modes are `standard` and `daily_salt`, default standard. Timezone defaults to Asia/Shanghai.
 
 Config supports `allowed_hosts`, `consent_required`, `replay`, `heatmap`, `vitals`, `experiments`, `excluded_ips`, `session_timeout_minutes` (1–1440), `seoAutoScan`, `channel_rules` and `ai_referrer_hosts`. Allowed hosts must be exact DNS hosts within the same registrable site domain. Channel rules, maximum 50, use `{name,channel,referrer_host?,include_subdomains?,utm_medium?,utm_source?}`; at least one condition is required, combined conditions all match, and ordering matters. Channels are direct/referral/search/social/ai/paid/email. AI hosts are exact hosts, maximum 100. Timezone/session-timeout changes queue recomputation.
 
@@ -318,3 +318,13 @@ d67 full actual EXIT1/cleanup:645 backend(217 unit+428 integration)ALL PASS;brow
 661 formal full:215 unit+426 real integration=641 PASS,30 E2E(28 real Chromium+2 date)PASS,EXIT0/cleanup. Fixed1000 PASS(finalHTTP5.047623651s). Fixed5000 overall FAIL:4350accepted/13unsent/35delayed,drainfalse120s;accepted4350 final PV4350/coverage1/CH and six integrity assertions PASS,21.102973929s.Not5000/SLO acceptance.
 
 New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/install/manifest/budget/55DDL/licensing/seed passed,native phase not started,targetcleanup complete.F archives evidence;no inferred root cause.Local01e2c5d saved,remote confirmation not claimed.Hosted workflows not triggered.Historical validation sections are marked by SHA; the API and installation operating guide below still describes current contracts.
+
+## 本批安全契约 / Security contracts
+
+实例 `/api/admin/*` 仅接受真实管理员 Cookie 会话；站点 API Token（包括管理员签发或 admin scope）以及 Cookie + Authorization 混用均拒绝。站点创建、配置和写入密钥轮换与审计同事务提交，审计失败回滚业务变更，不使旧密钥失效。
+
+Instance administration requires an administrator browser Cookie session. Site API tokens and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation.
+
+账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，已有短密码分享仍可验证。
+
+Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](../API_RATE_LIMIT_CURRENT.md).

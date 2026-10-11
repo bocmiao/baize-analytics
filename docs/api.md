@@ -90,7 +90,7 @@ Most lists have fixed limits and no public pagination cursor. Do not invent page
 | POST S/write-key | admin | 一次返回key与HMAC签名说明；不是管理API Token |
 | GET /api/tracker/config/:siteId | 公开；Origin与可选cookie_domain | 隐私/同意/回放/热图/vitals开关；不返回写密钥 |
 
-登录/初始化每内存IP摘要10次/分钟。密码12–256字符，邮箱最长256。站点创建 `{name,domain,timezone?,privacy_mode?,retention_days?,tags?,config?}`；name≤128，retention_days 1–3650（默认365），tags≤20，每项≤64。privacy_mode为standard或daily_salt，默认standard。config支持allowed_hosts、consent_required、replay、heatmap、vitals、experiments、excluded_ips、session_timeout_minutes（1–1440）、seoAutoScan、channel_rules、ai_referrer_hosts。allowed_hosts为同可注册站点域的精确DNS主机，不是任意第三方域/通配符。channel_rules最多50条，按顺序匹配：`{name,channel,referrer_host?,include_subdomains?,utm_medium?,utm_source?}`；至少一个条件，组合条件同时成立。ai_referrer_hosts最多100个精确主机。不要把邮箱或用户标识放进规则名称或属性。
+登录/初始化每内存IP摘要10次/分钟。密码12–1024字符（最多4096 UTF-8字节，与邀请注册一致），邮箱最长256。站点创建 `{name,domain,timezone?,privacy_mode?,retention_days?,tags?,config?}`；name≤128，retention_days 1–3650（默认365），tags≤20，每项≤64。privacy_mode为standard或daily_salt，默认standard。config支持allowed_hosts、consent_required、replay、heatmap、vitals、experiments、excluded_ips、session_timeout_minutes（1–1440）、seoAutoScan、channel_rules、ai_referrer_hosts。allowed_hosts为同可注册站点域的精确DNS主机，不是任意第三方域/通配符。channel_rules最多50条，按顺序匹配：`{name,channel,referrer_host?,include_subdomains?,utm_medium?,utm_source?}`；至少一个条件，组合条件同时成立。ai_referrer_hosts最多100个精确主机。不要把邮箱或用户标识放进规则名称或属性。
 
 Create a site before installing the public tracker. Changing timezone/session timeout queues recomputation. A populated site's identity mode cannot be changed in place; create a separate site.
 
@@ -338,3 +338,13 @@ d67整轮实际EXIT1/cleanup：645后端（217单元+428集成）ALL PASS；浏�
 正式全轮215单元+426真实集成=641PASS，30E2E（28真实Chromium+2日期）PASS，EXIT0/cleanup。固定1000PASS、finalHTTP5.047623651秒；固定5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/CH且六完整性断言PASS21.102973929秒，不是5000或SLO验收通过。
 
 新镜像实际EXIT1：CH target233/ENOSPC创建preprocessed_configs；build/install/manifest/budget/55DDL/licensing/seed已过，native阶段未开始，targetcleanup完成，F归档证据。不推测底层原因。本地01e2c5d已保存，不预称远端确认；托管不触发。历史验收段以SHA标记；下方API/安装操作手册仍描述当前契约。预算不保证scan/heap或性能收益。
+
+## 本批安全契约 / Security contracts
+
+实例 `/api/admin/*` 仅接受真实管理员 Cookie 会话；站点 API Token（包括管理员签发或 admin scope）以及 Cookie + Authorization 混用均拒绝。站点创建、配置和写入密钥轮换与审计同事务提交，审计失败回滚业务变更，不使旧密钥失效。
+
+Instance administration requires an administrator browser Cookie session. Site API tokens and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation.
+
+账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，已有短密码分享仍可验证。
+
+Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](API_RATE_LIMIT_CURRENT.md).

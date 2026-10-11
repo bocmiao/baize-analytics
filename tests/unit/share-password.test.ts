@@ -1,0 +1,4 @@
+import {it,expect} from 'vitest';
+import {scryptSync} from 'node:crypto';
+import {passwordHash,checkPassword} from '../../src/server/governance.js';
+it('async share hashes preserve legacy 32-byte short-password format and safely reject malformed hashes',async()=>{const salt='ab'.repeat(16),legacy=`${salt}:${scryptSync('short',salt,32).toString('hex')}`;expect(await checkPassword('short',legacy)).toBe(true);expect(await checkPassword('wrong',legacy)).toBe(false);const long='界'.repeat(1024),hash=await passwordHash(long);expect(await checkPassword(long,hash)).toBe(true);expect(await checkPassword('x'.repeat(1025),hash)).toBe(false);await expect(passwordHash('x'.repeat(1025))).rejects.toThrow();for(const malformed of ['','salt:00',`${salt}:gg`,`${salt}:${'00'.repeat(31)}`,`${salt}:${'00'.repeat(32)}:extra`])expect(await checkPassword('short',malformed)).toBe(false);});

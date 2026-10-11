@@ -32,6 +32,7 @@ import { gunzipSync } from 'node:zlib';
 import { createPool,migrate,transaction,lockSite } from './db.js';
 import { masterKey,HttpError } from './security.js';
 import { authFunctions,registerAuth } from './auth.js';
+import { registerRequestRateLimits } from './request-rate-limit.js';
 import { registerSites } from './sites.js';
 import { registerCollect } from './collect.js';
 import { registerAnalytics } from './analytics.js';
@@ -121,6 +122,7 @@ export async function createApp(options:AppOptions={}){
   app.addHook('preParsing',async(req,_reply,payload)=>{if(req.headers['content-encoding']!=='gzip')return payload;let size=0;const chunks:Buffer[]=[];for await(const chunk of payload){const bytes=Buffer.from(chunk);size+=bytes.length;if(size>1024*1024)throw new HttpError(413,'请求过大');chunks.push(bytes);}let out:Buffer;try{out=gunzipSync(Buffer.concat(chunks),{maxOutputLength:1024*1024});}catch{throw new HttpError(400,'无效或过大的 gzip 请求');}delete req.headers['content-encoding'];req.headers['content-length']=String(out.length);const {Readable}=await import('node:stream');return Readable.from(out);});
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
+  registerRequestRateLimits(app,ctx);
   await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);

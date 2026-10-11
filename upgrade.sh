@@ -16,6 +16,10 @@ trap 'rm -f "$reserve"' EXIT
 # concurrent writes. This is a downtime upgrade, not a claimed zero-downtime one.
 old_image="$(docker compose images -q app)"
 [ -n "$old_image" ] || { echo 'No installed app image.' >&2; exit 1; }
+app_container="$(docker compose ps --all -q app)"
+[ -n "$app_container" ] || { echo 'No installed app container; application left running.' >&2; exit 1; }
+app_uid_gid="$(docker inspect "$app_container" --format '{{.Config.User}}')"
+[[ "$app_uid_gid" =~ ^[0-9]+:[0-9]+$ ]] || { echo 'Cannot determine application volume ownership; application left running.' >&2; exit 1; }
 docker compose stop app
 if ! backup_dir="$(scripts/backup.sh)"; then
   BAIZE_IMAGE="$old_image" docker compose up -d app
@@ -44,7 +48,7 @@ rollback() {
   scripts/ops-restore-volume.sh "$backup_dir" "$old_image"
   if [ -n "$rollback_proof" ]; then
     docker compose cp "$rollback_proof" app:/app/data/rollback-retention-proof.json
-    BAIZE_IMAGE="$old_image" docker compose run --rm --no-deps --user 0 --entrypoint node app -e 'const fs=require("node:fs"),p="/app/data/rollback-retention-proof.json";fs.chownSync(p,1000,1000);fs.chmodSync(p,0o600);const f=fs.openSync(p,"r");fs.fsyncSync(f);fs.closeSync(f);const d=fs.openSync("/app/data","r");fs.fsyncSync(d);fs.closeSync(d)'
+    BAIZE_IMAGE="$old_image" docker compose run --rm --no-deps --user 0 --entrypoint node --env "RESTORE_UID=${app_uid_gid%:*}" --env "RESTORE_GID=${app_uid_gid#*:}" app -e 'const fs=require("node:fs"),p="/app/data/rollback-retention-proof.json";fs.chownSync(p,+process.env.RESTORE_UID,+process.env.RESTORE_GID);fs.chmodSync(p,0o600);const f=fs.openSync(p,"r");fs.fsyncSync(f);fs.closeSync(f);const d=fs.openSync("/app/data","r");fs.fsyncSync(d);fs.closeSync(d)'
   fi
   # Reconcile while the web application remains stopped. Never expose restored
   # queries before journal, CH physical deletion, privacy and rebuild verification.

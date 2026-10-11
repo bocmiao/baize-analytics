@@ -1,0 +1,31 @@
+# 当前批次性能复核
+
+本复核以父任务指定的 `957431ba` 为当前批次基线，只读生产路径及既有证据；没有新负载、产品修改或性能收益证明。历史测试按各自源码保留，不外推至当前基线。
+
+## 已测边界
+
+原固定50 events/s、独立10秒查询、队列8、并发2、120秒排空的strict5000仍为FAIL。`5c02abf`全部5000接收，36次延迟、查询失败0，但排空失败、最后积压2600，最终完整性断言未完成。这不证明数据丢失，也不证明可持续容量。1000短时PASS不是5000或日均百万SLO通过。
+
+旧源87e的低速有限探索也保持原结果：10 events/s计划、独立30秒查询下，PG1000/5000通过，strict1000通过，strict5000全部接收但120秒未排空、最后积压500、最终断言未完成。因此连较低速约495秒发送窗口也不能作为strict持续容量承诺。具体发送窗口率、清理与原始报告见既有容量证据；不覆盖任何FAIL。
+
+300事件分段诊断证明了局部成本，不证明总体瓶颈因果。A1/A2同1394成员行、22批，成员写入217.304/218.024毫秒；有界集合INSERT后的B1为46.769毫秒。B1 worker9.636秒仍位于A的9.103–9.937秒波动范围；B2多一轮重建，工作量不同。完成循环约20毫秒，归属循环约277–280毫秒（A），不是据此继续微调的充分理由。各stage累计且可嵌套，不能相加为CPU或墙钟百分比。原记录见 [055固定负载](PERFORMANCE_055_FIXED.md) 与 [成员写入A/B](PERFORMANCE_REMAINING_MEMBERS_AB.md)。
+
+## 本批结论：没有已证明的下一项窄优化
+
+现有集合SQL改动已有局部效果，但尚无证据支持再改变归属、发布协议或参数来关闭5000欠项。当前不实施优化，不追加benchmark追绿。
+
+此前提出的按需加载旧044正文方案撤回：即使某轮归约不消费旧effects/vitals，省略已承诺的旧正文认证会改变缺正文故障语义。所有现有hash、HMAC、count、source/epoch/delete fence与缺正文拒绝必须保留。不能把metadata完整解释为正文可用，也不能因PG正文为空猜测零贡献。
+
+`worker-facts.ts`每次dirty claim仍全保留期归约并重新发布派生正文。300输入跨5次重建产生14,200派生行，另一轮6次产生18,453行；这是重复工作存在的证据，尚非它主导全部墙钟的因果证明。旧044/047 hydration也不是可直接删的无用读：前缀复制读取effects/vitals；seed与精确去重读取checkpoint/keys；`publishSessionCarry`读取旧sessions以撤销已消失的贡献owner；恢复还要认证header coverage。简单范围裁剪会破坏这些依赖。
+
+## 若后续实施会话闭包与贡献重用，必须先建立的契约
+
+1. **变更类别可信。** 仅有queued outbox不能证明同时没有定义、时区、隐私、身份或删除变更。需要同快照绑定的events-only证据；不能证明时完整重建。现独立`DirtySessionPlan`读取PG events/sessions，不适合直接套用strict CH权威与PG正文裁剪后的生产路径。
+2. **闭包按事件时间完整。** 迟到事件可连接两个原会话，也可改变entry、归因、目标与漏斗；需要旧相邻边界、当前raw、可信header、cutoff前prefix联合闭包。跨本地日daily_salt、跨保留边界、无page组件随后出现page、heartbeat/order精确去重都不可缩成固定窗口。
+3. **复用保留原归属与认证。** 未变化贡献仍引用原sealed run/attempt/provenance，按现有方式认证正文；不能改run_id、重签receipt或复制metadata伪装新正文。会话summary、目标、漏斗与入口/出口等可变贡献不能当不可变prefix直接复用。
+4. **选择谓词原子一致。** 当前session contribution heads与hour refs共同决定有效贡献；新head、旧head撤销、hour/day控制行、processed generation、高水位必须同一发布事务一致。UV、漏斗按visitor精确distinct，不可相加桶UV；vitals按原event/sample及权重选择，不重复或遗漏。
+5. **删除与恢复闭环。** fsync journal及physical ACK、A区间删除保B、changed=false重放、CH成功PG失败孤儿不可见、authority/epoch变更、独立签名恢复都需要原认证闭包。无法恢复旧边界时保持明确不可用，不能输出coverage1的空统计。
+
+这将跨planner、producer、贡献选择、发布、删除与备份契约，属于较大的增量归约改动，而非单个≤100行SQL替换。当前不实施、无预计收益。若以后授权，先以小样本纯函数oracle及上述真实PG/CH差分故障用例证明语义，再由父任务决定一次固定原参数负载；不能先改验收阈值或无限重复。
+
+本批只新增此文档；未改产品、迁移、预算、限额或认证，未运行测试、Git提交、托管CI或重型任务。

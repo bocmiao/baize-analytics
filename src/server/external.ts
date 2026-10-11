@@ -9,7 +9,7 @@ import {queryAiPublishedSeries} from './ai-fact-query.js';
 import {reserveAiBudget,settleAiReservation,expireAiReservations} from './ai-budget.js';
 import {readQuestionAggregate,runEvidenceQuestion,persistQuestionEvidence} from './ai-evidence.js';
 import {aiReadQuerySchema,aiQuestionEvidenceSchema,type AiQuestionEvidence} from '../../packages/contracts/ai-evidence.js';
-import {authFunctions} from './auth.js';
+import {authFunctions,requireAdminSession} from './auth.js';
 import {HttpError} from './security.js';
 import {fetchGaWindow,gaRange} from './ga4-import.js';
 import {lockSite} from './db.js';
@@ -47,7 +47,7 @@ async function querySemanticStats(ctx:AppContext,siteId:string,start:string,end:
 }
 export async function registerExternal(app:FastifyInstance,ctx:AppContext,transport:Transport=safeFetch){
  const {pool}=ctx;
- app.post('/api/admin/keys/rotate',async req=>{const user=await ctx.user(req);if(!user.is_admin)throw new ExternalError('external_permission_required');const result=await rotateKeyring(ctx);await ctx.audit(user.id,null,'keys.rotate',result);return result;});
+ app.post('/api/admin/keys/rotate',async req=>{const user=await requireAdminSession(ctx,req);const result=await rotateKeyring(ctx);await ctx.audit(user.id,null,'keys.rotate',result);return result;});
  async function connection(site:string,kind:string){const r=await pool.query('SELECT * FROM external_connections WHERE site_id=$1 AND kind=$2',[site,kind]);if(!r.rows[0])throw new ExternalError('connector_missing');return {...r.rows[0],secret:unsealSecret(r.rows[0].encrypted as Envelope,ctx.config)};}
  app.post('/api/sites/:siteId/external/jobs/retry',async req=>{const {siteId}=req.params as {siteId:string};const user=await ctx.authorize(req,siteId,'admin');const b=z.object({kind:z.string().max(100),jobKey:z.string().max(200),day:z.iso.date()}).strict().parse(req.body);const r=await pool.query("UPDATE external_jobs SET next_attempt_at=now() WHERE site_id=$1 AND kind=$2 AND job_key=$3 AND day=$4 AND status='failed' AND attempts<5 RETURNING site_id",[siteId,b.kind,b.jobKey,b.day]);await ctx.audit(user.id,siteId,'external.retry',{kind:b.kind,jobKey:b.jobKey});return {queued:!!r.rowCount};});
  app.get('/api/sites/:siteId/external/jobs',async req=>{const {siteId}=req.params as {siteId:string};await ctx.authorize(req,siteId);return {jobs:(await pool.query('SELECT * FROM external_jobs WHERE site_id=$1 ORDER BY day DESC,started_at DESC LIMIT 100',[siteId])).rows};});

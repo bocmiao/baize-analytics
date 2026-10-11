@@ -5,6 +5,14 @@ import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
 import { hashToken,hashPassword,checkPassword,HttpError } from './security.js';
 import { transaction } from './db.js';
+import { ApplicationError } from '../shared/error-codes.js';
+import { accountPasswordSchema } from '../shared/account-password.js';
+export async function requireAdminSession(ctx:Pick<AppContext,'user'>,req:FastifyRequest):Promise<User>{
+  if(!req.cookies.baize_session||req.headers.authorization!==undefined)throw new ApplicationError('admin_cookie_required');
+  const user=await ctx.user(req);
+  if(!user.is_admin)throw new ApplicationError('instance_admin_required');
+  return user;
+}
 export function authFunctions(pool:Pick<Pool,'query'>){
   async function user(req:FastifyRequest):Promise<User>{
     const bearer=req.headers.authorization?.startsWith('Bearer ')?req.headers.authorization.slice(7):null;
@@ -26,7 +34,7 @@ export function authFunctions(pool:Pick<Pool,'query'>){
   return {user,authorize};
 }
 export async function registerAuth(app:FastifyInstance,ctx:AppContext){
-  const loginSchema=z.object({email:z.email().max(256).transform(v=>v.toLowerCase()),password:z.string().min(12).max(256),name:z.string().min(1).max(128).optional()});
+  const loginSchema=z.object({email:z.email().max(256).transform(v=>v.toLowerCase()),password:accountPasswordSchema,name:z.string().min(1).max(128).optional()});
   const limits=new Map<string,{count:number,time:number}>();
   const attempt=(req:FastifyRequest)=>{const k=hashToken(req.ip);const now=Date.now();const entry=limits.get(k);if(entry&&now-entry.time<60000){if(++entry.count>10)throw new HttpError(429,'登录尝试过多');}else limits.set(k,{count:1,time:now});if(limits.size>10000)limits.clear();};
   app.get('/api/setup',async()=>({required:Number((await ctx.pool.query('SELECT count(*) FROM users')).rows[0].count)===0}));
