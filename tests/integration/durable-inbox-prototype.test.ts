@@ -1,0 +1,51 @@
+import {randomUUID} from 'node:crypto';
+import {Pool} from 'pg';
+import {afterEach,beforeEach,describe,expect,it} from 'vitest';
+import {DurableInboxPrototype,type PreparedEventRow} from '../../scripts/prototypes/durable-inbox.js';
+import {isolatedTestConnectionString} from '../support/database-url.js';
+/** Real isolated PG persistence; publisher callbacks below simulate transport
+ * ACK/failure. These are not CH publication or production collect proofs. */
+describe.skipIf(!process.env.TEST_DATABASE_URL)('isolated durable inbox research prototype',()=>{
+ let admin:Pool,pool:Pool,schema:string,inbox:DurableInboxPrototype;const site='prototype-only';
+ const event=(overrides:Partial<PreparedEventRow>={}):PreparedEventRow=>({event_id:randomUUID(),page_id:randomUUID(),visitor_id:'already-derived-visitor',ts:new Date().toISOString(),type:'pageview',path:'/public',payload:{props:{campaign:'summer'}},dimensions:{device:'desktop'},...overrides});
+ beforeEach(async()=>{schema='inbox_proto_'+randomUUID().replaceAll('-','');admin=new Pool({connectionString:process.env.TEST_DATABASE_URL});await admin.query(`CREATE SCHEMA ${schema}`);pool=new Pool({connectionString:isolatedTestConnectionString(),max:2,options:`-c search_path=${schema}`});inbox=new DurableInboxPrototype(pool,{pendingLimit:2,leaseMs:250});await inbox.initialize();await inbox.addSite(site);});
+ afterEach(async()=>{await pool?.end();if(admin){await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();}});
+ it('received means durable PG commit, retries preserve exact digest and conflicts roll back the whole batch',async()=>{
+ const row=event();expect(await inbox.receive(site,[row])).toEqual({receipt:'received',received:1,duplicates:0});const reopened=new DurableInboxPrototype(pool);expect(await reopened.receive(site,[row])).toMatchObject({received:0,duplicates:1});expect(await inbox.published(site)).toEqual([]);
+ await expect(inbox.receive(site,[event(),{...row,path:'/changed'}])).rejects.toMatchObject({code:'event_conflict',status:409});expect(Number((await pool.query('SELECT count(*) n FROM prototype_inbox_events')).rows[0].n)).toBe(1);
+ await inbox.validate(site);const claim=await inbox.claim(site);await inbox.publish(claim,async()=>{});expect(await inbox.published(site)).toEqual([row]);
+ });
+ it('bounded admission and failure remain explicit, daily aliases and raw input never cross the prepared boundary',async()=>{
+ await inbox.receive(site,[event(),event()]);await expect(inbox.receive(site,[event()])).rejects.toMatchObject({code:'pending_backpressure',status:429});await expect(inbox.receive(site,Array.from({length:51},()=>event()))).rejects.toMatchObject({code:'batch_limit',status:400});
+ await inbox.addSite('daily','daily_salt');const daily=event({payload:{title:'public',props:{customer_id:'stable',accepted:true,email:'person@example.test'}},dimensions:{device:'mobile'}});await inbox.receive('daily',[daily]);expect((await pool.query("SELECT body FROM prototype_inbox_events WHERE site='daily'")).rows[0].body.payload).toEqual({title:'public',props:{accepted:true}});
+ await expect(inbox.receive('daily',[event({type:'identify'})])).rejects.toMatchObject({code:'daily_identity_unsupported'});await expect(inbox.receive('daily',[{...event(),raw_ip:'192.0.2.1'} as PreparedEventRow])).rejects.toMatchObject({code:'prepared_row_invalid'});
+ });
+ it('publisher simulated ACK followed by PG rollback stays unpublished and expired leases reject stale completions',async()=>{
+ const row=event();await inbox.receive(site,[row]);await inbox.validate(site);const abandoned=await inbox.claim(site);await new Promise(resolve=>setTimeout(resolve,300));const reclaimed=await inbox.claim(site);expect(reclaimed.rows[0]!.fence).not.toBe(abandoned.rows[0]!.fence);await expect(inbox.publish(abandoned,async()=>{throw Error('must not invoke');})).rejects.toMatchObject({code:'claim_fence'});
+ await pool.query("CREATE FUNCTION prototype_publish_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.state='published' THEN RAISE EXCEPTION 'prototype publication rollback'; END IF; RETURN NEW; END $$");await pool.query('CREATE TRIGGER prototype_publish_fault BEFORE UPDATE ON prototype_inbox_events FOR EACH ROW EXECUTE FUNCTION prototype_publish_fault()');let simulatedAck=0;
+ await expect(inbox.publish(reclaimed,async()=>{simulatedAck++;})).rejects.toMatchObject({code:'inbox_transaction_failed',status:503});expect(simulatedAck).toBe(1);expect(await inbox.published(site)).toEqual([]);expect((await pool.query('SELECT state FROM prototype_inbox_events')).rows[0].state).toBe('validated');await pool.query('DROP TRIGGER prototype_publish_fault ON prototype_inbox_events');await new Promise(resolve=>setTimeout(resolve,300));const retry=await inbox.claim(site);await inbox.publish(retry,async()=>{});expect(await inbox.published(site)).toEqual([row]);
+ });
+ it('latest durable deletion journal purges pending restore rows and keeps event-time B outside the A interval',async()=>{
+ const now=Date.now(),a=event({ts:new Date(now-2000).toISOString(),type:'identify',payload:{user_id:'already-hashed-A'}}),b=event({ts:new Date(now).toISOString(),payload:{user_id:'already-hashed-B'}});await inbox.receive(site,[a,b]);await inbox.validate(site);const stale=await inbox.claim(site);const originalB=(await pool.query('SELECT body,digest,source_epoch FROM prototype_inbox_events WHERE event_id=$1',[b.event_id])).rows[0];await inbox.deleteSegments(site,[{visitorId:a.visitor_id,to:new Date(now-1000).toISOString()}]);await expect(inbox.receive(site,[a])).rejects.toMatchObject({code:'deleted_event',status:410});
+ expect((await pool.query('SELECT state,body FROM prototype_inbox_events WHERE event_id=$1',[a.event_id])).rows[0]).toEqual({state:'deleted',body:{}});expect((await pool.query('SELECT body FROM prototype_inbox_events WHERE event_id=$1',[b.event_id])).rows[0].body).toEqual(b);
+ // Restore fixture deliberately reintroduces a pending body; independently
+ // retained journal must remove it again before any publication is allowed.
+ await pool.query("UPDATE prototype_inbox_events SET state='received',body=$2,visitor_id=$3 WHERE event_id=$1",[a.event_id,a,a.visitor_id]);await inbox.replayLatestJournal(site);expect((await pool.query('SELECT state,body FROM prototype_inbox_events WHERE event_id=$1',[a.event_id])).rows[0]).toEqual({state:'deleted',body:{}});expect(await inbox.validate(site)).toBe(1);await expect(inbox.publish(stale,async()=>{throw Error('stale publisher must not run');})).rejects.toMatchObject({code:'claim_fence'});const rebound=(await pool.query('SELECT body,digest,source_epoch FROM prototype_inbox_events WHERE event_id=$1',[b.event_id])).rows[0];expect(rebound).toEqual(originalB);const latest=await inbox.claim(site);await inbox.publish(latest,async()=>{});expect(await inbox.published(site)).toEqual([b]);expect((await pool.query('SELECT visitor_id,digest FROM prototype_inbox_events WHERE event_id=$1',[a.event_id])).rows[0]).toEqual({visitor_id:'',digest:''});
+ });
+ it('retry attempts are bounded and simulated publisher failure never publishes a pending row',async()=>{
+ const limited=new DurableInboxPrototype(pool,{leaseMs:20,maxAttempts:1});await limited.receive(site,[event()]);await limited.validate(site);const claim=await limited.claim(site);await expect(limited.publish(claim,async()=>{throw Error('simulated downstream refusal');})).rejects.toMatchObject({code:'publisher_unavailable',status:503});expect(await limited.published(site)).toEqual([]);await new Promise(resolve=>setTimeout(resolve,35));expect((await limited.claim(site)).rows).toEqual([]);expect((await pool.query('SELECT state,attempts FROM prototype_inbox_events')).rows[0]).toEqual({state:'failed',attempts:1});
+ });
+ it('duplicate forged claim rows are rejected before any simulated publication',async()=>{
+ await inbox.receive(site,[event()]);await inbox.validate(site);const claim=await inbox.claim(site);let calls=0;await expect(inbox.publish({...claim,rows:[...claim.rows,...claim.rows]},async()=>{calls++;})).rejects.toMatchObject({code:'claim_scope',status:400});expect(calls).toBe(0);expect(await inbox.published(site)).toEqual([]);
+ });
+ it('timeout keeps the privacy gate until the injected publisher actually settles',async()=>{
+ const bounded=new DurableInboxPrototype(pool,{leaseMs:150});const row=event();await bounded.receive(site,[row]);await bounded.validate(site);const claim=await bounded.claim(site);let aborted!:()=>void;const abortObserved=new Promise<void>(resolve=>{aborted=resolve;});let transportSettled=false,simulatedWrites=0;
+ const publishing=bounded.publish(claim,async(_rows,signal)=>{signal.addEventListener('abort',aborted,{once:true});await new Promise(resolve=>setTimeout(resolve,300));simulatedWrites++;transportSettled=true;});const result=publishing.catch(error=>error);
+ await abortObserved;let deletionSettled=false;const deleting=bounded.deleteSegments(site,[{visitorId:row.visitor_id}]).then(()=>{expect(transportSettled).toBe(true);deletionSettled=true;});await new Promise(resolve=>setTimeout(resolve,30));expect(deletionSettled).toBe(false);expect(await result).toMatchObject({code:'publisher_deadline',status:503});await deleting;expect(simulatedWrites).toBe(1);expect(await bounded.published(site)).toEqual([]);
+ // This proves PG privacy gate order, not erasure of the simulated external
+ // write. A real transport still requires downstream physical delete ACK.
+ });
+ it('source epoch changes refuse publication before the simulated transport runs',async()=>{
+ await inbox.receive(site,[event()]);await inbox.validate(site);const claim=await inbox.claim(site);await pool.query('UPDATE prototype_inbox_sites SET source_epoch=$2 WHERE id=$1',[site,randomUUID()]);let calls=0;await expect(inbox.publish(claim,async()=>{calls++;})).rejects.toMatchObject({code:'source_fence'});expect(calls).toBe(0);expect(await inbox.published(site)).toEqual([]);
+ });
+});
