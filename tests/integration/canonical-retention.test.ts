@@ -1,3 +1,4 @@
+import {beginSiteSnapshot} from '../../src/server/site-snapshot.js';
 import {recordControlledEventProvenance} from '../../src/server/canonical-shadow-provenance.js';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -30,6 +31,13 @@ describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('application deletion with rea
   const cutoff=new Date(Date.now()-3600000),events=[-1,1].map((offset,index)=>({site_id:site,event_id:randomUUID(),page_id:randomUUID(),visitor_id:index?'B':'A',ts:new Date(+cutoff+offset).toISOString(),type:'pageview',path:'/proof',payload:{},dimensions:{}} as StoredEvent));
   const c=await pool.connect();try{await c.query('BEGIN');for(const event of events){await c.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site,event.event_id,'accepted',event.ts,event.visitor_id]);await recordControlledEventProvenance(c,{id:site,salt_secret:'safe',timezone:'UTC',privacy_mode:'standard'},event,{ip:'127.0.0.1',ua:'normal',wirePageId:event.page_id});}await ch.publishBatch(c,site,randomUUID(),epoch,events.map(event=>({event,acceptedHash:'accepted'})));await c.query('COMMIT');
    await c.query("CREATE FUNCTION proof_retention_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'proof retention fault'; END $$");await c.query('CREATE TRIGGER proof_retention_fault BEFORE DELETE ON canonical_shadow_provenance FOR EACH ROW EXECUTE FUNCTION proof_retention_fault()');await c.query('BEGIN');await expect(retireCanonicalSiteEvents(c,pool,site,cutoff)).rejects.toThrow('proof retention fault');await c.query('ROLLBACK');expect((await c.query('SELECT count(*)::int n FROM canonical_shadow_provenance WHERE event_id=ANY($1::uuid[])',[events.map(e=>e.event_id)])).rows[0].n).toBe(2);expect(await ch.readAnyVerifiedEvent(site,events[0]!.event_id)).toBeNull();expect((await c.query('SELECT 1 FROM canonical_event_members WHERE site_id=$1 AND event_id=$2',[site,events[0]!.event_id])).rowCount).toBe(1);
+   // A fresh read snapshot still owns the old PG manifest after rollback.
+   // Authenticate before yielding: missing physically erased A cannot become
+   // a successful empty range, even though B's body remains intact.
+   await beginSiteSnapshot(c,site);
+   const unreadable=ch.streamCommitted(c,site);
+   try{await expect(unreadable.next()).rejects.toThrow('CANONICAL_UNAVAILABLE');}
+   finally{await unreadable.return(undefined);await c.query('ROLLBACK');}
    await c.query('DROP TRIGGER proof_retention_fault ON canonical_shadow_provenance');await c.query('BEGIN');expect(await retireCanonicalSiteEvents(c,pool,site,cutoff)).toMatchObject({physicalAck:true});await c.query('COMMIT');expect((await c.query('SELECT event_id::text FROM canonical_shadow_provenance WHERE event_id=ANY($1::uuid[])',[events.map(e=>e.event_id)])).rows).toEqual([{event_id:events[1]!.event_id}]);expect(await ch.readAnyVerifiedEvent(site,events[1]!.event_id)).not.toBeNull();
   }finally{await c.query('ROLLBACK');c.release();}
  },10000);

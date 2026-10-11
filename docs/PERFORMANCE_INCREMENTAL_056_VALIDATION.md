@@ -93,3 +93,9 @@ v18 独立恢复修订真实 1 PASS / 0 FAIL / 0 SKIP，EXIT0，总 runner 31.66
 
 
 058 修复后隔离专项 2 PASS / 0 FAIL，另 5 项由 -t 过滤：physical TTL 已提交、缩窗 worker 未执行就扩大，有/无 witness 均拒绝，旧 owner/ref/run/receipt/hash/已认证正文不变。生产基线 b78d7cb 加 058 guard/TTL/DDL 精确补丁 hash 保存，其他 backup/restore 在制文件不纳本次通过范围。13 单元与类型/lint 通过。058 仅记真实成功 ACK 后同事务的单调 frontier；不拿 FULL.from 伪称物理退役，不猜 pre058 旧历史。跨库 ACK 后 PG rollback 的缺记录恢复边界尚未覆盖，另见 RAW_RETIREMENT_058_BOUNDARY。签名备份/独立恢复与完整新源码验收待收齐。
+
+
+不可变 `15e1cf0a60901d3f45e6bf1a3174e53985b2b808` 完整单元 323 PASS / 0 SKIP；同提交全部 coverage-witness 7 用例与独立签名恢复 1 用例合计 8 PASS / 0 SKIP，EXIT0。包括两种 deferred shrink-worker 时序、legacy 无 witness、frontier 签名备份/隔离 target 重绑定及完整源/目标差分。不是完整集成目录、浏览器、最终镜像或性能5000通过。
+
+
+ACK 后 PG rollback 真实 reader 专项 2 PASS / 0 SKIP：原故障注入成功物理删 CH A、PG 旧 manifest 仍保留；新 snapshot 首次 streamCommitted.next() 拒绝 CANONICAL_UNAVAILABLE、未 yield 数据，随后同 cutoff 重试保留 B 和证明。此验证 fail-closed 普通 raw reader 与重试，不扩称 rollback 后扩大 FULL、任意 legacy unknown 历史均已证明安全。生产固定 15e1cf0，仅 test 断言 patch 单独 hash 绑定。
