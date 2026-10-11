@@ -1,0 +1,161 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.09kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.5s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:24-bookworm-slim
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 222B done
+#5 DONE 0.0s
+
+#6 [build 1/6] FROM docker.io/library/node:24-bookworm-slim
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 57.58MB 0.5s done
+#7 DONE 0.5s
+
+#8 [build 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [build 3/6] COPY package.json package-lock.json ./
+#9 CACHED
+
+#10 [build 4/6] RUN --mount=type=secret,id=proxy_ca NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm ci --strict-ssl=true
+#10 CACHED
+
+#11 [build 5/6] COPY . .
+#11 DONE 2.6s
+
+#12 [build 6/6] RUN npm run build && chmod -R a+rX dist public src scripts sdk packages plugins db LICENSE package.json package-lock.json tsconfig*.json vite.config.ts
+#12 1.264 
+#12 1.264 > baize-analytics@0.1.0 build
+#12 1.264 > npm run build:tracker && vite build && tsc -p tsconfig.server.json
+#12 1.264 
+#12 1.351 
+#12 1.351 > baize-analytics@0.1.0 build:tracker
+#12 1.351 > tsx scripts/build-tracker.ts
+#12 1.351 
+#12 1.883 tracker: Zopfli gzip 5087; default zlib gzip 5282
+#12 2.201 tracker-min: Zopfli gzip 4506; default zlib gzip 4690
+#12 2.527 tracker-vitals: Zopfli gzip 5316; default zlib gzip 5503
+#12 3.814 tracker-replay: Zopfli gzip 57320; default zlib gzip 59511
+#12 3.826 tracker-heatmap: Zopfli gzip 1173; default zlib gzip 1197
+#12 4.295 tracker-consent: Zopfli gzip 1327; default zlib gzip 1395
+#12 4.296 {
+#12 4.296   tracker: 5087,
+#12 4.296   'tracker-min': 4506,
+#12 4.296   'tracker-vitals': 5316,
+#12 4.296   'tracker-replay': 57320,
+#12 4.296   'tracker-heatmap': 1173,
+#12 4.296   'tracker-consent': 1327
+#12 4.296 }
+#12 4.505 vite v8.3.4 building client environment for production...
+#12 4.515 transforming...
+#12 4.682 ✓ 791 modules transformed.
+#12 4.787 rendering chunks...
+#12 4.909 computing gzip size...
+#12 4.924 dist/web/index.html                          0.41 kB │ gzip:   0.31 kB
+#12 4.924 dist/web/assets/index-jrvW08EU.css          55.68 kB │ gzip:   9.54 kB
+#12 4.924 dist/web/assets/aomen-DXLsqBrz.js            1.78 kB │ gzip:   0.72 kB
+#12 4.924 dist/web/assets/xianggang-B-GwqNoD.js       11.67 kB │ gzip:   4.78 kB
+#12 4.924 dist/web/assets/shanghai-D5fADUyQ.js        11.94 kB │ gzip:   5.88 kB
+#12 4.924 dist/web/assets/ningxia-Bpe_w3T9.js         12.15 kB │ gzip:   7.40 kB
+#12 4.924 dist/web/assets/tianjin-BIND3J0Y.js         12.34 kB │ gzip:   6.51 kB
+#12 4.924 dist/web/assets/beijing-6J6D0v26.js         21.11 kB │ gzip:  10.70 kB
+#12 4.924 dist/web/assets/shanxi-sF6r9BMA.js          22.38 kB │ gzip:  13.82 kB
+#12 4.924 dist/web/assets/jiangsu-CfAV2ncg.js         22.88 kB │ gzip:  13.91 kB
+#12 4.924 dist/web/assets/hainan-ByIDMKTK.js          28.66 kB │ gzip:  16.29 kB
+#12 4.924 dist/web/assets/taiwan-DuhSbPaK.js          29.36 kB │ gzip:   8.04 kB
+#12 4.924 dist/web/assets/anhui-BSaniTrc.js           30.61 kB │ gzip:  18.31 kB
+#12 4.924 dist/web/assets/shanxi1-B0i8biAP.js         30.90 kB │ gzip:  18.59 kB
+#12 4.924 dist/web/assets/jiangxi-CMNmFB4L.js         31.85 kB │ gzip:  18.52 kB
+#12 4.924 dist/web/assets/guizhou-BUdXZdgN.js         31.94 kB │ gzip:  19.18 kB
+#12 4.924 dist/web/assets/henan-ByBj5SKi.js           35.56 kB │ gzip:  21.02 kB
+#12 4.924 dist/web/assets/hubei-CbKDql3J.js           38.20 kB │ gzip:  22.44 kB
+#12 4.924 dist/web/assets/hebei-T7l9OzzS.js           39.20 kB │ gzip:  22.67 kB
+#12 4.924 dist/web/assets/jilin-i0ZAtsll.js           41.10 kB │ gzip:  23.34 kB
+#12 4.924 dist/web/assets/fujian-CnXpqkhe.js          42.82 kB │ gzip:  22.41 kB
+#12 4.924 dist/web/assets/qinghai-Bql4kmYY.js         43.59 kB │ gzip:  26.52 kB
+#12 4.924 dist/web/assets/hunan-CWxspgVh.js           45.15 kB │ gzip:  26.21 kB
+#12 4.924 dist/web/assets/guangxi-B63_XU_1.js         46.52 kB │ gzip:  26.82 kB
+#12 4.924 dist/web/assets/gansu-Bi_VQQwS.js           46.94 kB │ gzip:  28.39 kB
+#12 4.924 dist/web/assets/chongqing-Cl1EA9FX.js       47.72 kB │ gzip:  25.78 kB
+#12 4.924 dist/web/assets/liaoning-CQP2PqVX.js        49.47 kB │ gzip:  27.61 kB
+#12 4.924 dist/web/assets/shandong-G1nzS6sL.js        49.98 kB │ gzip:  28.33 kB
+#12 4.924 dist/web/assets/zhejiang-DSbk7J7A.js        50.65 kB │ gzip:  25.95 kB
+#12 4.924 dist/web/assets/neimenggu-CwzZW05h.js       57.11 kB │ gzip:  35.95 kB
+#12 4.924 dist/web/assets/yunnan-z_D5KTxc.js          62.07 kB │ gzip:  35.74 kB
+#12 4.924 dist/web/assets/guangdong-CX_QD5Pr.js       71.46 kB │ gzip:  38.25 kB
+#12 4.924 dist/web/assets/heilongjiang-BpPsHrM9.js    78.21 kB │ gzip:  44.62 kB
+#12 4.924 dist/web/assets/sichuan-BiKg7TEf.js         83.55 kB │ gzip:  47.33 kB
+#12 4.924 dist/web/assets/xinjiang-CVqQoyx6.js        87.53 kB │ gzip:  54.44 kB
+#12 4.924 dist/web/assets/GeographicMap-CQls25BA.js  127.03 kB │ gzip:  67.29 kB
+#12 4.924 dist/web/assets/Charts-BlZoHb21.js         141.03 kB │ gzip:  48.10 kB
+#12 4.924 dist/web/assets/ReplayViewer-Dgl4M54D.js   262.05 kB │ gzip:  81.00 kB
+#12 4.924 dist/web/assets/install-qMokNpU6.js        436.23 kB │ gzip: 147.94 kB
+#12 4.924 dist/web/assets/index-CgeNF5sI.js          600.13 kB │ gzip: 190.07 kB
+#12 4.924 dist/web/assets/xizang-C9xTaVmy.js         686.05 kB │ gzip: 127.65 kB
+#12 4.924 
+#12 4.925 ✓ built in 419ms
+#12 4.926 [plugin builtin:vite-reporter] 
+#12 4.926 (!) Some chunks are larger than 500 kB after minification. Consider:
+#12 4.926 - Using dynamic import() to code-split the application
+#12 4.926 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#12 4.926 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#12 DONE 11.4s
+
+#13 [stage-1 3/4] RUN mkdir -p /app/data /app/keys && chown -R node:node /app/data /app/keys && chmod 1777 /app/data /app/keys
+#13 CACHED
+
+#14 [stage-1 4/4] COPY --from=build /app /app
+#14 DONE 1.1s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 1.9s done
+#15 writing image sha256:daafc23c1fc444c1bd176207b26917c32b141f14753a5eafa2a2d92e0602b660 done
+#15 naming to docker.io/library/baize-analytics:local done
+#15 DONE 2.0s
+ Network baize_round2_72ea9291b69c_default  Creating
+ Network baize_round2_72ea9291b69c_default  Created
+ Volume baize_round2_72ea9291b69c_app_keys  Creating
+ Volume baize_round2_72ea9291b69c_app_keys  Created
+ Volume baize_round2_72ea9291b69c_postgres_data  Creating
+ Volume baize_round2_72ea9291b69c_postgres_data  Created
+ Volume baize_round2_72ea9291b69c_redis_data  Creating
+ Volume baize_round2_72ea9291b69c_redis_data  Created
+ Volume baize_round2_72ea9291b69c_app_data  Creating
+ Volume baize_round2_72ea9291b69c_app_data  Created
+ Container baize_round2_72ea9291b69c-redis-1  Creating
+ Container baize_round2_72ea9291b69c-postgres-1  Creating
+ Container baize_round2_72ea9291b69c-redis-1  Created
+ Container baize_round2_72ea9291b69c-postgres-1  Created
+ Container baize_round2_72ea9291b69c-app-1  Creating
+ Container baize_round2_72ea9291b69c-app-1  Created
+ Container baize_round2_72ea9291b69c-postgres-1  Starting
+ Container baize_round2_72ea9291b69c-redis-1  Starting
+ Container baize_round2_72ea9291b69c-redis-1  Started
+ Container baize_round2_72ea9291b69c-postgres-1  Started
+ Container baize_round2_72ea9291b69c-redis-1  Waiting
+ Container baize_round2_72ea9291b69c-postgres-1  Waiting
+ Container baize_round2_72ea9291b69c-postgres-1  Healthy
+ Container baize_round2_72ea9291b69c-redis-1  Healthy
+ Container baize_round2_72ea9291b69c-app-1  Starting
+ Container baize_round2_72ea9291b69c-app-1  Started
+ Container baize_round2_72ea9291b69c-redis-1  Waiting
+ Container baize_round2_72ea9291b69c-app-1  Waiting
+ Container baize_round2_72ea9291b69c-postgres-1  Waiting
+ Container baize_round2_72ea9291b69c-redis-1  Healthy
+ Container baize_round2_72ea9291b69c-postgres-1  Healthy
+ Container baize_round2_72ea9291b69c-app-1  Healthy
+Baize is listening locally. Open your configured PUBLIC_URL and create the administrator.

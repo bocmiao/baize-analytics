@@ -1,0 +1,6 @@
+stage=prebuild dockerRequiredBytes=5368709120
+Filesystem     1024-blocks     Used Available Capacity Mounted on
+none              17453020 10703772   6749248      62% /tmp
+overlay           32978704 25454792   5829808      82% /workspace
+overlay           32978704 25454792   5829808      82% /
+stage=installed dockerRequiredBytes=2147483648

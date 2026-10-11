@@ -1,0 +1,1 @@
+{"exit":0,"sourceCommit":"72ea9291b69c30cba5369a63f44c0b2842bcbcd3","imageId":"sha256:daafc23c1fc444c1bd176207b26917c32b141f14753a5eafa2a2d92e0602b660","existingImageManifestVerified":true,"newBuild":false,"scope":"prior actual installer plus compiled imports and original independent native signed restore; not a repeated full lifecycle matrix"}
