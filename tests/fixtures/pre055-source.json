@@ -1,6 +1,6 @@
 {
   "sourceCommit": "d67bb8aeda34652010125e889019392aaa0788f8",
-  "status": "Authentic published pre055 producer; no algorithm modifications",
+  "status": "Authentic frozen pre055 producer; no algorithm modifications; local commit, not claimed pushed",
   "files": [
     {
       "originalPath": "src/server/fact-store.ts",

@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "10082b6872275678464ad341cf20bc16bb8e31b8",
+  "exit": 1,
+  "unit": {
+    "passed": 229,
+    "failed": 0
+  },
+  "integration": {
+    "passed": 437,
+    "failed": 2,
+    "skipped": 0,
+    "files": 160
+  },
+  "browser": "not-run: integration runner exit1",
+  "failures": [
+    "legacy triple-request count uses new hinted receipts",
+    "cross-day privacy fixture becomes single civil day at UTC 00h"
+  ],
+  "productSourceChangedDuringRun": false,
+  "docsChangedDuringRun": true,
+  "sourceHashFile": "main-10082b6-full-failed-source.sha256"
+}

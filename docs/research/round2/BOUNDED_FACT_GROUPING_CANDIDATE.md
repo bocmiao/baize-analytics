@@ -2,11 +2,11 @@
 
 ## 当前候选实施状态（2026-10-11 UTC）
 
-唯一finite bounded候选目前在本地WIP实作，尚未交付：C store新增055 hint/MAC/严格EOF JSONEachRow，B显式v1/v2备份profile，root readiness与history sidecar profile，A准备真实专项。当前仅typing与轻量C16/B3单元通过；真实PG/CH、镜像、收益未验收，不能把static通过写成完成。已验功能645/30/image仍绑定既有d67应用源，不外推此候选。remote e441仍push blocked，无托管；GC后9.1GiB仅观察，不代表新清理或资源SLO。
+本地候选已保存 `10082b6`：055 signed bounded JSONEachRow读取分组、显式v1/v2备份投影及history scope055已实作。真实PG/CH三文件11专项PASS/0skip；首次10PASS/1fixtureFAIL原记录保留，修正不降低断言。全229单元PASS，lint/type EXIT0。正式空库10082b6全轮实际EXIT1：229单元PASS，160集成文件158PASS/2FAIL，439检查437PASS/2FAIL/0skip，E2E未跑；main-10082b6-full-failed-*原失败已归档。两失败为旧3请求fixture使用新hint及跨日fixture UTC00实际同日，A仅修fixture、产品不改，修复验证待；新镜像与性能收益未知，不能把专项/静态通过写成完整交付或SLO。已验功能645/30/image仍绑定既有d67应用源，不外推候选。remote e441仍push blocked，无托管；资源观察不证明隔离SLO。
 
 ## 历史d67设计起点（保留原结论）
 
-以下“未实现/未创建055/生产三批”仅描述当时d67设计起点；后续WIP状态以上方为准。原容量与5000FAIL记录保持，不据合批设计预称提速。
+以下“未实现/未创建055/生产三批”仅描述当时d67设计起点；后续已保存候选状态以上方为准。原容量与5000FAIL记录保持，不据合批设计预称提速。
 
 本记录仅为后续候选设计，**未实现、未实测**。当前生产读取仍最多三批；未创建055迁移，未增加byte hint、12批读取、SELECT JSONEachRow协议或备份v2。下一步优先探索普通PG与strict模式各自的低速容量包络，不增加batch数掩盖现有慢查询。
 
@@ -56,7 +56,7 @@ hint与实际响应都必须受检查。hint低估、实际编码超过所声明
 
 预期作用仅是减少CH合批SELECT次数和网络往返；不会自动减少逐记录SHA/HMAC或TEMP写入，也不会改变PG manifest查询次数。保持站点锁、同RR snapshot、source/deletion epoch fence、完整认证与原响应/操作预算。不存在跨record、跨请求、跨epoch缓存，未修改CH ORDER BY或权威模型。若serializer或备份兼容证明不能闭合，应停止此候选，保持当前三批实现。
 
-## 2026-10-11 授权候选实现状态（未收益实测）
+## 历史2026-10-11轻量WIP冻结（后续真实专项见顶栏）
 
 根已授权唯一候选的轻量代码实现。新增055_fact_response_budget.sql及两个pure helper，fact-store producer从实际sealedbody计算hint并签immutable source，reader仅对有可信hint的组使用普通JSONEachRow；旧NULL组仍最多3。本节取代上文“未创建”作为在制状态，原只读阶段记录保留。最大12不是已验收容量或性能承诺；没有运行负载、真实PG/CH或镜像，实际serializer/旧签名恢复验收尚待根串行闸。
 

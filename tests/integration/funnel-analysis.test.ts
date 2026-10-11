@@ -52,7 +52,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('actual PG collector funnel loss
  });
  it('marks daily cross-day and expired/future/oversized ranges unavailable instead of returning historical zero',async()=>{
   await pool.query("UPDATE sites SET privacy_mode='daily_salt' WHERE id=$1",[site]);
-  const crossday=`from=${new Date(hour).toISOString()}&to=${new Date(hour+86400000).toISOString()}`;expect((await request(loose,crossday)).json()).toMatchObject({status:'unsupported_in_this_mode',coverage:0,steps:[]});
+  const crossday=`from=${new Date(hour-86400000).toISOString()}&to=${new Date(hour+3600000).toISOString()}`;expect((await request(loose,crossday)).json()).toMatchObject({status:'unsupported_in_this_mode',coverage:0,steps:[]});
   await pool.query("UPDATE sites SET privacy_mode='standard',retention_days=1 WHERE id=$1",[site]);expect((await request()).json()).toMatchObject({status:'outside_raw_retention',coverage:0,steps:[]});
   expect((await request(loose,`from=${new Date(hour-100*86400000).toISOString()}&to=${new Date(hour).toISOString()}`)).statusCode).toBe(400);
   expect((await request(loose,`from=${new Date(hour).toISOString()}&to=${new Date(Date.now()+86400000).toISOString()}`)).statusCode).toBe(400);
