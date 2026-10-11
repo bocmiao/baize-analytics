@@ -99,3 +99,6 @@ v18 独立恢复修订真实 1 PASS / 0 FAIL / 0 SKIP，EXIT0，总 runner 31.66
 
 
 ACK 后 PG rollback 真实 reader 专项 2 PASS / 0 SKIP：原故障注入成功物理删 CH A、PG 旧 manifest 仍保留；新 snapshot 首次 streamCommitted.next() 拒绝 CANONICAL_UNAVAILABLE、未 yield 数据，随后同 cutoff 重试保留 B 和证明。此验证 fail-closed 普通 raw reader 与重试，不扩称 rollback 后扩大 FULL、任意 legacy unknown 历史均已证明安全。生产固定 15e1cf0，仅 test 断言 patch 单独 hash 绑定。
+
+
+固定 `a90d4f352d62a18450aa861f1f19b1c6c9b16f19` 300 事件入口首次 EXIT1：bootstrapFailed=true，尚未进入正式发送调度；真实 cleanup 四项全部完成、sourceUnchanged=true，整个 Node wall5.835823031秒、largest child peak320948KiB。不是 300 intake 成败/性能改善结果，不能填 accepted=0 当负载指标。既有 harness 隐去 bootstrap 原因，正在补固定阶段/安全错误码观测；没有启动新5000，也未改原50/1s/10s/8/2/120参数。

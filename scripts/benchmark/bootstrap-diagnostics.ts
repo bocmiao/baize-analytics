@@ -1,0 +1,8 @@
+/** Fixed diagnostic vocabulary only. Never serialize Error, message, URL or scope. */
+export const bootstrapStages=['configuration','hook_scan','module_load','resource_setup','redis_ping','ch_namespace','pg_namespace','application_start','http_listen','admin_setup','site_create','operator_auth','store_initialize','seed_collect','seed_drain','header_migration','fact_migration','cache_migration','shadow','verify','activate','canonical_drain','signed_backup','header_backup','fact_backup','remaining_backup','cache_backup','fact_backup_proof','raw_backup','raw_backup_proof','strict_activation','raw_prune','bootstrap_complete'] as const;
+export type BootstrapStage=typeof bootstrapStages[number];
+const knownCodes=new Set(['ECONNREFUSED','ECONNRESET','ETIMEDOUT','ENOSPC','ENOENT','EACCES','28P01','3D000','42P01','42703','23505','23503','23514','40001','40P01','57014','canonical_unavailable','analytics_query_limit','aggregate_source_changed','BOOTSTRAP_ASSERTION_FAILED','BOOTSTRAP_UNKNOWN_FAILURE','BENCHMARK_CH_COMMAND_FAILED','HOOK_SCAN_BOUND','HOOK_FILE_BOUND','BOOTSTRAP_SITE_BOUND','HTTP_BODY_MISSING','HTTP_BODY_LIMIT']);
+export function safeBootstrapDiagnostic(stage:unknown,error:unknown):{bootstrapStage:BootstrapStage;bootstrapErrorCode:string}{
+ let code:unknown;try{code=(error as {code?:unknown})?.code;}catch{/* Untrusted diagnostic properties are not read further. */}
+ return {bootstrapStage:bootstrapStages.includes(stage as BootstrapStage)?stage as BootstrapStage:'configuration',bootstrapErrorCode:typeof code==='string'&&knownCodes.has(code)?code:'BOOTSTRAP_UNKNOWN_FAILURE'};
+}
