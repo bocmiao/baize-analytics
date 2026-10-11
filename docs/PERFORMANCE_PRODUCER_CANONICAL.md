@@ -55,3 +55,17 @@ root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据�
 `2d2dda2219c0c755fc3570926c7138c5269c9fb5` Git archive重新逐blob绑定后，使用全新独立PG/CH/Redis运行相同 `scripts/validate-local-final.sh`。359单元、490真实集成（183文件）、31真实Chromium浏览器均通过，0失败/0跳过；lint、类型、SDK、journal、tracker/Vite/server构建、迁移、编译生产入口启动均通过。完整入口 **EXIT0**，其自有服务/卷清理完成。证据 [完整log](performance/producer-canonical/full-2d2dda2-pass/regular.txt)、[集成JSON](performance/producer-canonical/full-2d2dda2-pass/integration.json)、[源码绑定](performance/producer-canonical/full-2d2dda2-pass/source-binding.json)。新镜像和独立恢复仍待执行，性能5000 FAIL不变。
 
 镜像前资源处理：本项目四个已结束且无容器引用的 `security-e991f4c`、`ops-failed-26948`、`security-05360be`、`ops-fallback-c610` 镜像完整保存到 `/tmp/baize-ended-images-20261011/old-ops-four.tar`，1220518400字节，SHA256 `cfab15e900ba01d53e89c990675979f7b3299a50e6067d4ee505f8a04083fa13`，配置ID与所有layer可读性校验后仅非force移除四tag。可用归档`docker image load`恢复；共享层仍被cache引用，workspace空余仍约5.7GiB，未声称释放标称容量。未prune、未清理源码/卷/有效证据/其他项目。归档本身在另一tmp盘占用约1.22GB，不算释放该盘空间。
+
+## 新镜像恢复阶段：失败分段保留，尚未EXIT0
+
+- 首次：浏览器生成的截图JSON改变archive的docs文件，Git全树预检拒绝，未构建。另取同2d2dda2干净archive解决；应用manifest与已测源码一致。
+- r2：实际镜像安装健康后，2GiB磁盘floor拒绝，自有资源清理。
+- r3：临时helper把阶段要求记录2GiB但实际硬编码5GiB，是helper错误；保留FAIL，修后六个3GiB/1GiB阶段阈值回归通过，未降低安全底线。
+- r4：独立目标CH启动后，实际2GiB floor拒绝，恢复未执行。可恢复迁移1534704157字节checkpoint到 `/tmp/baize-checkpoints-preserved-20261011`，保留原path符号链接；完整旧日志归档到 `/tmp/baize-clickhouse-ended-logs-20261011`（992528284字节，manifest逐文件SHA），停用未使用的本项目开发CH后，只清空已校验的709292283字节结束日志，恢复相同容器且SELECT1通过。数据卷不变，实际workspace约释放0.66GiB，tmp相应占用；不是永久删除或回收站释放。
+- r5：镜像安装/源码产物对账/60迁移/许可/预算/编译helper验证通过；独立恢复在**源备份导出**时失败 `FACT_COVERAGE_CLOSURE_MISMATCH`，目标导入/最新journal/worker/cache阶段未到达。初步发现运维fixture在真实worker签名后手工追加legacy carry，导致原closure证明失效；待最小生命周期修复及阶段化证据确认，产品guard保持不变。整体仍**EXIT1**，不称新镜像恢复通过。
+
+各次 [预检](performance/producer-canonical/image-preflight-first.txt)、[r2](performance/producer-canonical/image-disk-r2.txt)、[r3](performance/producer-canonical/image-helper-gate-r3.txt)、[r4](performance/producer-canonical/image-disk-r4.txt)、[r5](performance/producer-canonical/image-native-r5-failure.txt) 保留，不靠无变化重跑覆盖失败。
+
+## 下一性能入口：真实HTTP的047成本
+
+固定239原负载分adapter安全提取见 [JSON](performance/producer-canonical/http-239-adapter-diagnostic.json)。047 remaining真实input读取864请求，67071397响应字节，累计9838.127ms；authentication累计3663.633ms、TEMP2040.473ms。认证有store/bridge嵌套计数，不可把132968计rows写成双倍HMAC或把inclusive时间相加当wall占比。044facts读取transport累计25506.148ms、认证46164.591ms、TEMP25766.205ms仍更大。下一步先做同SHA实际HTTP固定source分段，再仅有实际收益时采用047有界receipt读取和认证后TEMP合批；每receipt100行、全部hash/HMAC/fence与删除门不变，不能unlock后仅复查epoch，ACK后PGrollback可使epoch不变。没有新增缓存证明或5000追绿。

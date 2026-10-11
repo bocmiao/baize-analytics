@@ -1,0 +1,2 @@
+NOTICE:  058/059 receipts, exact column contracts, four classifications and site trigger installed
+2GiB source/evidence/workspace floor reached

@@ -1,0 +1,42 @@
+{
+  "helperSha256": "20022824a3cab03af7e28b9548cac7616f5244e36e96dae82c65c1d328562e0c",
+  "results": [
+    {
+      "freeGiB": 3,
+      "phase": "prebuild",
+      "exit": 1,
+      "expectedExit": 1
+    },
+    {
+      "freeGiB": 3,
+      "phase": "installed",
+      "exit": 0,
+      "expectedExit": 0
+    },
+    {
+      "freeGiB": 3,
+      "phase": "target_started",
+      "exit": 0,
+      "expectedExit": 0
+    },
+    {
+      "freeGiB": 1,
+      "phase": "prebuild",
+      "exit": 1,
+      "expectedExit": 1
+    },
+    {
+      "freeGiB": 1,
+      "phase": "installed",
+      "exit": 1,
+      "expectedExit": 1
+    },
+    {
+      "freeGiB": 1,
+      "phase": "target_started",
+      "exit": 1,
+      "expectedExit": 1
+    }
+  ],
+  "testsPassed": 6
+}
