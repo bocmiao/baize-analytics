@@ -1,0 +1,60 @@
+{
+  "sourceCommit": "2753b5a90747a0b7d058159df0b445d6045efcec",
+  "exit": 0,
+  "scope": "targeted cleanup only; not full regular or hosted CI",
+  "distinctTests": {
+    "unit": 2,
+    "realPGRedisIntegration": 2
+  },
+  "repeatedRuns": [
+    {
+      "scope": "host",
+      "run": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "scope": "host",
+      "run": 5,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "scope": "container",
+      "run": 6,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "scope": "container",
+      "run": 7,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "scope": "container",
+      "run": 8,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    }
+  ],
+  "totalRepeatedAssertions": 20,
+  "productionDiffFrom2d05e7c": false,
+  "typecheck": 0,
+  "targetedEslint": 0,
+  "containerConfiguration": "existing Dockerfile.ci + docker-compose.cnb.yml; targeted command override only; npm ci then npm exec vitest run the two files",
+  "fullRegularRun": false,
+  "browserRun": false,
+  "applicationImageRebuilt": false,
+  "cleanup": "owned Compose stack/image removed; three original dev services retained"
+}

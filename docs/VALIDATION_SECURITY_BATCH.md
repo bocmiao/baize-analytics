@@ -55,3 +55,7 @@ strict5000仍FAIL；本批无已证实下一窄性能优化，不降低旧044认
 实际非默认UID失败后仅改`ops-restore-volume`脚本及新增独立helper/3项Node回归，src/db/packages与05360be逐字节一致。新源码`e991f4c3aad96398a34d080a8bb6ecbf6d1de1a1`新镜像安装及独立签名恢复EXIT0，manifest`416b68607411cfb0f8a246a06c52102e14967dd60ba31ea087ce2b37ea3c88d4`/403文件/56迁移，镜像`5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57`。完整265/454/31仍引用05360be同应用树，不称新SHA重跑；新增文件回归3项不累计成268单元。源码/新镜像/独立恢复证据见`security-batch-e991f4c-*`。
 
 最终非默认UID运行：固定e991f4c、同源镜像sha256:5e14b5a3807b26853664eb9290ff5ed26f20ccc9fdba071692d4fc64e51ead57，隔离PG/Redis/CH和合成key，实际app2000:2000。仓库 `scripts/ops-upgrade-custom-user-test.sh` 注入9999已提交schema变更+HTTP503，真实数据库/文件/应用回滚EXIT0；恢复重算verified、schema探针消失、health200、proof UID/GID2000/mode0600/可读。source-image和source-after diff均空。证据`test-evidence/security-batch-e991f4c-custom-user-result.json`。自有卷/容器清理，原dev服务保留，剩余约6.9GiB。此为同物理机本地验收，Windows原生与跨物理机未测不变。
+
+## 父CNB清理失败后的测试窄修
+
+父最终2d05e7ca托管实际EXIT1（453集成passed/1Docker能力skip、1afterAll套件错误，浏览器未运行）已保留。仅测试2753b5a修stale-ready→QUIT竞态，2确定性单元与2真实PG/Redis集成在宿主2轮/现有Compose runner3轮各4PASS0skip；不改生产、不重跑完整应用或镜像。见[定向验收](VALIDATION_REDIS_TEARDOWN_FIX.md)，新托管尚待父统一运行。
