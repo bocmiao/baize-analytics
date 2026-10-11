@@ -69,3 +69,9 @@ root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据�
 ## 下一性能入口：真实HTTP的047成本
 
 固定239原负载分adapter安全提取见 [JSON](performance/producer-canonical/http-239-adapter-diagnostic.json)。047 remaining真实input读取864请求，67071397响应字节，累计9838.127ms；authentication累计3663.633ms、TEMP2040.473ms。认证有store/bridge嵌套计数，不可把132968计rows写成双倍HMAC或把inclusive时间相加当wall占比。044facts读取transport累计25506.148ms、认证46164.591ms、TEMP25766.205ms仍更大。下一步先做同SHA实际HTTP固定source分段，再仅有实际收益时采用047有界receipt读取和认证后TEMP合批；每receipt100行、全部hash/HMAC/fence与删除门不变，不能unlock后仅复查epoch，ACK后PGrollback可使epoch不变。没有新增缓存证明或5000追绿。
+
+## d90e09a 运维夹具与资源检查点
+
+源worker有效证明后，运维夹具人为追加legacy贡献必须先明确失效，而非继续沿用旧proof。07e9216修此生命周期后，真实恢复在journal预处理先遇缺失goals，尚未进入worker；d90e09a将两阶段分开断言。真实PG/CH专项 **EXIT0**：预worker 42P01拒绝且无假成功；直接真实恢复worker三次失败进入dead letter；恢复goals后完整恢复成功，最新journal删除A保B、源未改变及签名/正文对账均通过。该目标仅独立namespace，`targetClickHouseServerIndependent:false`，不能称独立服务器恢复完成。见 [原始log](performance/producer-canonical/native-d90e09a-pass/native.txt) 与 [源码绑定](performance/producer-canonical/native-d90e09a-pass/source-binding.json)。
+
+新d90镜像实际构建/安装健康后被2GiB磁盘floor阻断，尚未执行独立恢复；保留FAIL。随后仅精确删除三个已结束项目COPY构建缓存：64keq2gghd2whsgix50241c8m、ksh2sl8vpuyfdy9gv2afowuw2、vnx8y6qp2jzcsciu8p2rpiowz。均Shared=false/Reclaimable=true，并已与上述old-ops-four.tar对应镜像层校验；归档1220518400字节及SHA不变，可docker load恢复镜像内容，构建缓存索引不可恢复。实际workspace仍3904933888空余字节，不声称释放标称945MB；不全局prune、不改当前镜像/有效卷。
