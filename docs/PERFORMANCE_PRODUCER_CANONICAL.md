@@ -49,3 +49,9 @@ root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据�
 唯一失败 `canonical-daily-backup.test.ts` 为 `HISTORY_NAMESPACE_FACT_BACKING_MISMATCH`，堆栈位于历史 namespace 恢复对账。初步查证该夹具未复制059 origin及完整aggregation元数据，尚待窄修专项确认；产品签名与checksum guard不修改。原始 [集成JSON](performance/producer-canonical/full-21a3c20-failure/integration.json)、[完整入口log](performance/producer-canonical/full-21a3c20-failure/regular.txt)、[源码绑定](performance/producer-canonical/full-21a3c20-failure/source-binding.json) 均保留。入口自然结束并清理本轮所属服务/卷后，workspace空余恢复约5.4GiB；未清理其他项目数据。
 
 窄修确认：夹具复制源完整 `aggregation_state` 和 `analytics_raw_retirement_origins`，在同站锁事务下对两表全行精确对账，替代触发代际变更的 epoch-only UPDATE。真实PG/CH单文件专项1断言通过，1393ms，类型及scoped lint通过。产品代码、签名、guard不变。证据 [JSON](performance/producer-canonical/daily-backup-fixture-fix.json) / [log](performance/producer-canonical/daily-backup-fixture-fix.txt)。修后完整入口尚待新不可变提交运行。
+
+## 修后不可变2d2dda2完整本地入口：EXIT0
+
+`2d2dda2219c0c755fc3570926c7138c5269c9fb5` Git archive重新逐blob绑定后，使用全新独立PG/CH/Redis运行相同 `scripts/validate-local-final.sh`。359单元、490真实集成（183文件）、31真实Chromium浏览器均通过，0失败/0跳过；lint、类型、SDK、journal、tracker/Vite/server构建、迁移、编译生产入口启动均通过。完整入口 **EXIT0**，其自有服务/卷清理完成。证据 [完整log](performance/producer-canonical/full-2d2dda2-pass/regular.txt)、[集成JSON](performance/producer-canonical/full-2d2dda2-pass/integration.json)、[源码绑定](performance/producer-canonical/full-2d2dda2-pass/source-binding.json)。新镜像和独立恢复仍待执行，性能5000 FAIL不变。
+
+镜像前资源处理：本项目四个已结束且无容器引用的 `security-e991f4c`、`ops-failed-26948`、`security-05360be`、`ops-fallback-c610` 镜像完整保存到 `/tmp/baize-ended-images-20261011/old-ops-four.tar`，1220518400字节，SHA256 `cfab15e900ba01d53e89c990675979f7b3299a50e6067d4ee505f8a04083fa13`，配置ID与所有layer可读性校验后仅非force移除四tag。可用归档`docker image load`恢复；共享层仍被cache引用，workspace空余仍约5.7GiB，未声称释放标称容量。未prune、未清理源码/卷/有效证据/其他项目。归档本身在另一tmp盘占用约1.22GB，不算释放该盘空间。
