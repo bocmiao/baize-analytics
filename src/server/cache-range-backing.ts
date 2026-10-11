@@ -1,3 +1,4 @@
+import {factReadRelations} from './fact-read-context.js';
 import type {Pool,PoolClient} from 'pg';
 import {assertCurrentFactRangeBacking} from './fact-range-backing.js';
 import {verifyFactCoverageWitness} from './fact-coverage-witness.js';
@@ -17,5 +18,7 @@ export async function assertCacheSnapshotRangeBacking(c:PoolClient,pool:Pool,sit
  }
  const witness=await verifyFactCoverageWitness(c,site,{from,to,bucketSnapshot:true});
  await assertFactRunClosure(c,site);
- return withRemainingFactReadSource(c,pool,site,async()=>witness);
+ // This proof callback consumes no TEMP rows. Inherit only an authenticated
+ // bound projection; unbound calls still authenticate the complete source.
+ return withRemainingFactReadSource(c,pool,site,async()=>witness,{hydration:factReadRelations(c).hydration??'complete'});
 }

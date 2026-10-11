@@ -146,3 +146,11 @@ The first combined complete unit directory failed: 348 PASS, 1 FAIL, 0 SKIP. The
 The updated complete unit directory completed EXIT 0: **349 PASS, 0 FAIL, 0 SKIP**, with explicit base/patch binding. Only the asserted envelope contract was corrected, preserving actual session identity, one JSON parameter/write, duplicate records and batch limit checks. This is unit-directory acceptance, not whole application, browser, image or capacity acceptance.
 
 The first combined HTTP integration run failed: 2 PASS, 8 FAIL, 0 SKIP. All eight coverage-witness cases failed on the first historical stats HTTP call before their target mutation, while the independent projection and admin-jobs cases passed. A subsequent single-case test-only diagnostic emitted only the fixed allowlisted `FACT_SOURCE_PROJECTION_INCOMPATIBLE` code, proving that a nested complete-source consumer rejected the explicitly selected request context. This is a real integration defect, not a ClickHouse body-authentication failure. Performance testing is paused until explicit consumer contracts are corrected; no global partial-as-complete compatibility bypass is permitted.
+
+### Explicit selected-query candidate correctness
+
+The corrected frozen patch set completed **355 unit PASS, 0 FAIL, 0 SKIP** and **10 real PG/CH integration PASS, 0 FAIL, 0 SKIP** with the query experiment explicitly enabled. This includes all eight coverage/upgrade cases, the real administrator jobs test, and the selected bridge oracle. The earlier 8-case HTTP failure is retained. Nested retention and proof-only callbacks now declare their own authenticated source contract instead of weakening generic complete-source requests.
+
+A subsequent narrow standalone-retention change keeps unbound default reads complete and inherits bound hydration explicitly. Its exact revised hash is recorded separately. The default-mode actual PG retention suite passed all six cases with zero skips; experiment-mode validation is recorded separately. These are scoped tests, not a complete integration directory, browser or new image claim. See SELECTED_FACT_HYDRATION_EXPERIMENT.md for the default-off switch and A/B protocol.
+
+Experiment-mode standalone retention also completed **6 PASS, 0 FAIL, 0 SKIP** on that revised binding. No source was changed while either mode ran.

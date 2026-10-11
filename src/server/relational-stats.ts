@@ -1,3 +1,4 @@
+import {statsFactHydration} from './stats-read-hydration.js';
 import {withStatsReadBudget,withBudgetedPgClient} from './stats-read-budget.js';
 import {withStatsReadSnapshot} from './stats-read-snapshot.js';
 import {measurePerformanceStage} from './performance-observation.js';
@@ -33,7 +34,7 @@ async function queryStatsRelationalInternal(ctx:AppContext,siteId:string,from:st
  try{await assertSessionContributionOwners(client,siteId);}catch(error){if(error instanceof Error&&error.message==='CARRY_CONTRIBUTION_SOURCE_UNAVAILABLE')throw new ApplicationError('aggregate_source_changed');throw error;}
  const captured=(await client.query('SELECT epoch::text,processed_generation::text FROM aggregation_state WHERE site_id=$1',[siteId])).rows[0];
  const legacyWindow=Boolean((await client.query("SELECT 1 FROM stats_hourly WHERE site_id=$1 AND hour>=date_trunc('hour',$2::timestamptz) AND hour<$3 AND NOT(data ? 'relationalVersion') LIMIT 1",[siteId,from,to])).rowCount);
- const result=legacyWindow?await withCacheReadSource(client,ctx.pool,siteId,()=>queryFacts(ctx,siteId,from,to,filters,{client}),{kinds:['hourly_rollup','legacy_centroid']}):await withRemainingFactReadSource(client,ctx.pool,siteId,()=>queryFacts(ctx,siteId,from,to,filters,{client}));
+ const result=legacyWindow?await withCacheReadSource(client,ctx.pool,siteId,()=>queryFacts(ctx,siteId,from,to,filters,{client}),{kinds:['hourly_rollup','legacy_centroid'],hydration:statsFactHydration()}):await withRemainingFactReadSource(client,ctx.pool,siteId,()=>queryFacts(ctx,siteId,from,to,filters,{client}),{hydration:statsFactHydration()});
  if(owned){await client.query('COMMIT');const live=(await client.query('SELECT epoch::text,generation::text,processed_generation::text FROM aggregation_state WHERE site_id=$1',[siteId])).rows[0];if(live?.epoch!==captured?.epoch)throw new ApplicationError('aggregate_source_changed');if(live?.processed_generation!==captured?.processed_generation||live?.generation!==live?.processed_generation)result.coverage=0;}
  return result;
  }catch(error){if(owned)await client.query('ROLLBACK').catch(()=>{});if(error instanceof Error&&(error.message.startsWith('FACT_STORE_')||error.message.startsWith('REMAINING_FACT_')||error.message.startsWith('CACHE_')))throw new ApplicationError(error.message==='FACT_STORE_SOURCE_FENCE'?'aggregate_source_changed':'aggregate_members_unavailable');throw error;}finally{if(owned)client.release();}

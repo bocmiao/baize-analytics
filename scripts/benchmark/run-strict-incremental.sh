@@ -17,6 +17,11 @@ done
 # Atomic reservation prevents two runs using the same evidence destination.
 (set -o noclobber; : > "$BENCHMARK_OUTPUT.run-lock") || exit 1
 export BENCHMARK_STORAGE=strict-clickhouse BENCHMARK_SITES=1
+# A/B uses the same immutable source and schedule, differing only in this read projection.
+case "${BAIZE_PERF_SELECTED:-0}" in
+  0|1) export BAIZE_SELECTED_FACT_HYDRATION="${BAIZE_PERF_SELECTED:-0}" ;;
+  *) echo 'Invalid selected-hydration experiment switch.' >&2; exit 1 ;;
+esac
 case "${BAIZE_PERF_EVENTS:-300}" in
   300) export BENCHMARK_BATCHES=6 ;;
   5000) export BENCHMARK_BATCHES=100 ;;
@@ -29,7 +34,7 @@ free="$(df -Pk "$APP_ROOT" | awk 'NR==2{printf "%.0f",$4*1024}')"
 # PGschema/CHdatabase and owns their verified cleanup; no containers are created.
 export FROZEN_SOURCE_SHA="$SOURCE_SHA"
 python3 "$runner_dir/verify-archive-binding.py" > "$BENCHMARK_OUTPUT.source-binding.txt"
-printf '{"sourceSha":"%s","events":%s,"batchEvents":50,"intervalMs":1000,"queryIntervalMs":10000,"maxQueued":8,"maxConcurrent":2,"drainLimitMs":120000,"freeBytesBefore":%s}\n' "$SOURCE_SHA" "${BAIZE_PERF_EVENTS:-300}" "$free" > "$BENCHMARK_OUTPUT.plan.json"
+printf '{"sourceSha":"%s","events":%s,"selectedHydration":%s,"batchEvents":50,"intervalMs":1000,"queryIntervalMs":10000,"maxQueued":8,"maxConcurrent":2,"drainLimitMs":120000,"freeBytesBefore":%s}\n' "$SOURCE_SHA" "${BAIZE_PERF_EVENTS:-300}" "$BAIZE_SELECTED_FACT_HYDRATION" "$free" > "$BENCHMARK_OUTPUT.plan.json"
 status=0
 python3 - "$BENCHMARK_OUTPUT" <<'PYWALL' || status=$?
 import resource,subprocess,sys,time

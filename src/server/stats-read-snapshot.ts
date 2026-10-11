@@ -1,3 +1,4 @@
+import {statsFactHydration} from './stats-read-hydration.js';
 import {registerStatsMirrorSnapshot} from './stats-read-client-scope.js';
 import {withStatsReadBudget,budgetedPoolConnect,withBudgetedPgClient} from './stats-read-budget.js';
 import type {PoolClient} from 'pg';
@@ -15,7 +16,7 @@ export async function withStatsReadSnapshot<T>(ctx:AppContext,siteId:string,from
   const relational=(await client.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND query_version=2 AND status='published' LIMIT 1",[siteId])).rowCount;
   const legacy=relational&&(await client.query("SELECT 1 FROM stats_hourly WHERE site_id=$1 AND hour>=date_trunc('hour',$2::timestamptz) AND hour<$3::timestamptz AND NOT(data ? 'relationalVersion') LIMIT 1",[siteId,from,to])).rowCount;
   // Legacy cache wrappers do not reuse existing cache context: preserve their original reads.
-  const value=relational&&!legacy?await withRemainingFactReadSource(client,ctx.pool,siteId,()=>read(client)):await read(client);
+  const value=relational&&!legacy?await withRemainingFactReadSource(client,ctx.pool,siteId,()=>read(client),{hydration:statsFactHydration()}):await read(client);
   await client.query('COMMIT');const live=(await client.query(stateSql,[siteId])).rows[0];
   if(live?.epoch!==captured?.epoch||live?.authority!==captured?.authority||live?.canonical_epoch!==captured?.canonical_epoch||live?.deletion_epoch!==captured?.deletion_epoch||live?.mirror_mode!==captured?.mirror_mode||live?.mirror_snapshot_id!==captured?.mirror_snapshot_id||live?.mirror_epoch!==captured?.mirror_epoch||live?.mirror_generation!==captured?.mirror_generation||live?.mirror_format!==captured?.mirror_format)throw new ApplicationError('aggregate_source_changed');
   return {value,dirty:live?.processed_generation!==captured?.processed_generation||live?.generation!==live?.processed_generation};

@@ -1,0 +1,3 @@
+import {expect,it} from 'vitest';
+import {statsFactHydration} from '../../src/server/stats-read-hydration.js';
+it('requires an explicit experimental projection opt-in and otherwise retains complete reads',()=>{const prior=process.env.BAIZE_SELECTED_FACT_HYDRATION;try{delete process.env.BAIZE_SELECTED_FACT_HYDRATION;expect(statsFactHydration()).toBe('complete');for(const value of ['0','true','selected','']){process.env.BAIZE_SELECTED_FACT_HYDRATION=value;expect(statsFactHydration()).toBe('complete');}process.env.BAIZE_SELECTED_FACT_HYDRATION='1';expect(statsFactHydration()).toBe('selected');}finally{if(prior===undefined)delete process.env.BAIZE_SELECTED_FACT_HYDRATION;else process.env.BAIZE_SELECTED_FACT_HYDRATION=prior;}});

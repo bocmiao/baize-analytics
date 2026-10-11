@@ -4,7 +4,7 @@ export function discoverLiteralPerformanceStages(source:string){return serverSta
 const adapters=['canonical','facts','session_headers','remaining','cache','mirror','other'] as const;
 const operations=['http_request','background_worker','database_migration','operator'] as const;
 const chPhases=['input_read','publication_insert','publication_readback','other'] as const;
-const countFields=['rows','batches','bytes','requests','requestBodyBytes','responseBodyBytes','queryTextBytes','dirtyVisitors','reusedSessions','reusedOwnerHeads','rebuiltSessions','producedEffectRows','hydratedEffectRows','inputEvents','fullPlans','deltaPlans','fallbackPlans'] as const;
+const countFields=['rows','batches','bytes','requests','requestBodyBytes','responseBodyBytes','queryTextBytes','dirtyVisitors','reusedSessions','reusedOwnerHeads','rebuiltSessions','producedEffectRows','hydratedEffectRows','authenticatedRows','selectedHydratedRows','inputEvents','fullPlans','deltaPlans','fallbackPlans'] as const;
 type CountField=typeof countFields[number];
 type Counts=Record<CountField,number>&Record<`${CountField}MeasuredCalls`,number>;
 type Aggregate=Counts&{operation:PerformanceOperation;stage:PerformanceStage;calls:number;failed:number;totalMs:number;maxMs:number;histogram:number[]};
@@ -27,6 +27,7 @@ export function createServerPhaseMetrics(instrumentedStages:ReadonlySet<Performa
   if(fallback!==undefined&&(observation.stage!=='incremental_session_reuse'||!incrementalFallbacks.some(code=>code===fallback)))throw Error('INVALID_INCREMENTAL_FALLBACK');
   if(observation.adapter!==undefined&&!adapters.includes(observation.adapter))throw Error('INVALID_ADAPTER');
   if(observation.chPhase!==undefined&&(observation.stage!=='ch_transport'||!chPhases.includes(observation.chPhase)))throw Error('INVALID_CH_PHASE');
+  if((observation.authenticatedRows!==undefined||observation.selectedHydratedRows!==undefined)&&(observation.stage!=='temp_fill'||observation.adapter!=='facts'))throw Error('INVALID_HYDRATION_SCOPE');
   for(const field of countFields){const value=observation[field];if(value!==undefined&&(!Number.isSafeInteger(value)||value<0))throw Error('INVALID_COUNT');}
   if(fallback!==undefined)fallbackCounts.set(fallback,add(fallbackCounts.get(fallback)??0,1));
   const known=scopes.get(observation.operation)??new Set<string>();if(known.size<1024)known.add(observation.correlationId);else if(!known.has(observation.correlationId))truncatedScopes.add(observation.operation);scopes.set(observation.operation,known);
@@ -41,6 +42,7 @@ export function createServerPhaseMetrics(instrumentedStages:ReadonlySet<Performa
   adapterMeaning:'fixed store label; other includes unlabelled observations; original operation/stage aggregate remains unchanged',
   chPhaseAggregates:[...chPhaseMetrics.values()].map(summarize),chPhaseAggregationBound:adapters.length*operations.length*chPhases.length,
   chPhaseMeaning:'disjoint classification of the SAME ch_transport leaf events; never add phase view to adapter/stage view. calls=timed attempts; requests=actual fetch dispatches only when instrumented; null means unmeasured',
+  selectedHydrationMeaning:'authenticatedRows and selectedHydratedRows are cumulative counts observed only at facts temp_fill selected reads: full authenticated input versus actual inserted selected TEMP rows; not distinct people, not all authentication.rows, never add these views. Null/zero remain distinct.',
   incrementalCountMeaning:'dirtyVisitors/reusedSessions/reusedOwnerHeads/rebuiltSessions/producedEffectRows/hydratedEffectRows/inputEvents are cumulative observed counts across plan invocations, including repeat work; not distinct people or unique effects. fullPlans/deltaPlans/fallbackPlans are emitted numeric plan indicators; unmeasured counts remain null. Only separately allowlisted fallback reason codes are emitted, never arbitrary text or identity',
   byteMeaning:'requestBodyBytes=UTF8 POST body; responseBodyBytes=actual body chunks read, including partial failure; queryTextBytes=UTF8 SQL only, not parameters. Excludes URLs, headers, compression, TLS and network wire overhead. bytes retains historical adapter-specific definition; do not sum it with new byte fields',
   stageStatus:serverStages.map(stage=>({stage,status:[...metrics.values()].some(value=>value.stage===stage)?'observed':instrumentedStages.has(stage)?'instrumented_no_event':'not_instrumented'})),

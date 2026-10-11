@@ -1,5 +1,5 @@
 import type {PoolClient} from 'pg';
-export interface FactReadRelations {effectsRelation:string;vitalsRelation:string;sessionsRelation?:string;numericsRelation?:string;membersRelation?:string;carryCheckpointsRelation?:string;carryKeysRelation?:string;hourlyRelation?:string;dailyRelation?:string;pageVitalsRelation?:string;legacyVitalsRelation?:string;heatmapRelation?:string;source?:'postgres'|'clickhouse'|'hybrid'}
+export interface FactReadRelations {hydration?:'complete'|'selected';effectsRelation:string;vitalsRelation:string;sessionsRelation?:string;numericsRelation?:string;membersRelation?:string;carryCheckpointsRelation?:string;carryKeysRelation?:string;hourlyRelation?:string;dailyRelation?:string;pageVitalsRelation?:string;legacyVitalsRelation?:string;heatmapRelation?:string;source?:'postgres'|'clickhouse'|'hybrid'}
 const selected=new WeakMap<PoolClient,FactReadRelations>();
 /** Only internal authenticated TEMP/source adapters may install identifiers. */
 export function bindFactReadRelations(client:PoolClient,relations:FactReadRelations){
