@@ -1,6 +1,6 @@
 # ADR 060：采集回执与持久收件箱的有限容量实验
 
-状态：**隔离 B 已有 14 项 PG byte-cap 验证（e7afef9）；f75f089 联合 17 项通过（14 PG + 3 真实 PG/CH），生产未接入、物理删除下一轮在制、容量未验收**。060 是本文编号，不分配数据库迁移编号。不替换正式采集入口、不新增依赖、不部署；先验证原型，再决定是否值得改变公开契约。
+状态：**当前隔离专项 36 项实际 PASS（14 base + 8 admission + 14 两模式 PG/CH）；真实 physical 删除闭环此前 21 项已通过。生产未接入，新增超时与负载验证尚待结果，不宣称性能改善。** 060 是本文编号，不分配数据库迁移编号。不替换正式采集入口、不新增依赖、不部署。历史 e7afef9 14 项、f75f089 联合 17 项保留下文，不与新专项重复累加。
 
 ## 当前事实与决策
 
@@ -17,6 +17,12 @@ B 的 `published` 同样只表示权威事件正文与 PG 回执已发布，**�
 
 父集成负责人提供的实际证据：239 源 5000 固定负载仍 FAIL，4900 accepted、2 queue-full 未发送；另 A72 原 5000 FAIL，4700 accepted、6 未发送，均保留；047 的同站点 100 条实验在特定配置下约有 19–21% HTTP 改善；正文传输字节与请求数量也不同，父提供请求数 71→25，不能解读为等工作量的约 21% 请求数下降或容量通过。本文未重新执行这些基准。已有短时改善不抵消 5000 FAIL，也不能声称日均百万、P0 聚合滞后或资源隔离 SLO 已达标。A72 完整本地验收已通过，5000 仍失败；不据短时净收益写成容量通过。
 
+## 当前独立 admission 候选
+
+独立 admission **默认关闭**，模式持久化且不可变，不能同站点运行中悄悄切换。新模式 receive 使用 `P → 762` 短锁，不取得 parent 行锁；publish 使用 `P/site → 761` 并读取 parent（plain read）；原型 delete 使用 `P/site → 761 → 762 → parent FOR UPDATE`。容量检查为保守 snapshot，不通过共享计数更新重新引入 parent 写竞争。
+
+该锁序只属于隔离原型，**生产删除尚不取得 762**，因此不声称已兼容正式采集/删除接线。PG 同 schema journal 不是独立文件 fsync 最新日志。36 项实际通过只能支持对应功能与故障范围；新增 timeout 与负载结果尚未完成，不能从解耦锁推断性能或容量提升。
+
 ## 后续必须保留的协议不变量（不是当前原型完成清单）
 
 1. `(site,event_id)` 同内容重试幂等，不同内容明确冲突。批次重复、收入订单别名、回放序列仍各自遵守原策略；不能因 inbox 重试重复 identify、收入或治理副作用。
@@ -30,11 +36,11 @@ B 的 `published` 同样只表示权威事件正文与 PG 回执已发布，**�
 
 ## 隔离原型与决策闸
 
-当前实施边界为 `scripts/prototypes/durable-inbox.ts` 与独立测试：14 项 PG 已覆盖 per-site pending bytes（默认 16 MiB）等原型约束；另有真实标准 prepared publisher 3 项 PG/CH 验证，复用生产 CH 写入、完整读回及 PG 白名单协议，见[真实 CH 验证记录](VALIDATION_DURABLE_INBOX_REAL_CH.md)。原型独立 PG 删除日志提交/重放不等于生产独立文件 fsync 删除日志；每日域身份由受控上游提供并在原型脱敏校验，不能称已验证真实 collector。历史模拟首轮结果为 1 文件 8 tests PASS、0 skip、EXIT0；CLI received=1、publishedEvents=1、publisher=simulated_transport、productionIntegrated=false，详见[原型验证记录](VALIDATION_DURABLE_INBOX_PROTOTYPE.md)。当前联合 17 项通过结果以真实 CH 文档的 source binding 为准；历史模拟结果保留，均不表示未来故障闸全部完成。
+历史 e7afef9/f75f089 实施记录（当前以顶栏 36 项为准）：`scripts/prototypes/durable-inbox.ts` 与独立测试的 14 项 PG 已覆盖 per-site pending bytes（默认 16 MiB）等原型约束；另有真实标准 prepared publisher 3 项 PG/CH 验证，复用生产 CH 写入、完整读回及 PG 白名单协议，见[真实 CH 验证记录](VALIDATION_DURABLE_INBOX_REAL_CH.md)。原型独立 PG 删除日志提交/重放不等于生产独立文件 fsync 删除日志；每日域身份由受控上游提供并在原型脱敏校验，不能称已验证真实 collector。历史模拟首轮结果为 1 文件 8 tests PASS、0 skip、EXIT0；CLI received=1、publishedEvents=1、publisher=simulated_transport、productionIntegrated=false，详见[原型验证记录](VALIDATION_DURABLE_INBOX_PROTOTYPE.md)。历史联合 17 项通过结果以真实 CH 文档的 source binding 为准；历史模拟结果保留，均不表示未来故障闸全部完成。
 
 仅在随机 schema/独立 namespace 上实现可撤销试验，不注册正式 HTTP endpoint、不改正式 `accepted` 字段。两方案使用相同事件、站点、节奏、队列、超时和故障；同时报告收到、验证、发布的实际数量与耗时，不把降速探索替代原固定负载。
 
-以下仍是下一阶段验收要求，不能将当前联合 17 项（14 PG + 3 PG/CH）等同于全部完成：必须通过真实 PG/CH 故障夹具：提交前/后进程终止；CH 写成功后 PG 回滚；两项并发中第一/第二失败；重复和冲突 event_id；收件后删除与处理期间删除；迟到 identify A→B 与删除 A 保 B；跨午夜/DST 每日盐；源/删除 epoch 变更；队列满/公平性；带 pending 的签名备份独立恢复与最新日志重放。每项保存预先建立的正文/指标/owner/hash oracle，不能受损后重算作为唯一正确答案。
+以下仍是下一阶段验收要求，不能将历史联合 17 项或当前 36 项等同于全部完成：必须通过真实 PG/CH 故障夹具：提交前/后进程终止；CH 写成功后 PG 回滚；两项并发中第一/第二失败；重复和冲突 event_id；收件后删除与处理期间删除；迟到 identify A→B 与删除 A 保 B；跨午夜/DST 每日盐；源/删除 epoch 变更；队列满/公平性；带 pending 的签名备份独立恢复与最新日志重放。每项保存预先建立的正文/指标/owner/hash oracle，不能受损后重算作为唯一正确答案。
 
 性能闸要求完整发送、可解释拒绝、真实最终 PV/UV/会话与成员对账、水位/outbox 排空、无 unhandled promise、清理源不变。报告 p50/p95 接收和发布延迟、队列峰值/年龄、Node RSS（不含数据库时明说）、PG/CH 存储量、锁等待和恢复时间。若 A 无稳定净收益或 B 仅提前回执而最终发布更慢，不宣称解决 5000。先由实际结果决定保留、撤回或继续；本文不预设数字 SLO。
 
@@ -42,7 +48,7 @@ B 的 `published` 同样只表示权威事件正文与 PG 回执已发布，**�
 
 原型 `validated` 只表示 prepared shape/digest、当前 source epoch 和 tombstone 检查；保存事件时间和给定删除区间，未实现真实 identify 映射、迟到身份重分段、每日 HMAC 与跨日/DST 身份证明。单行 16 KiB、批次最多 100 条和 pending 条数有界，尚无全局队列字节、全局公平、年龄或总历史存储限制；每站点 pending 字节现已实际验证。
 
-同 schema PG 删除日志提交/重放不是独立文件 fsync 最新日志，也不是签名 pending 备份的跨数据库恢复。真实 CH standard prepared 路径已验证读回和 PG 提交白名单；但 prepared digest 不是原 wire 回执，也不是每日身份 HMAC 证明。identify/revenue/daily_salt 未由真实 publisher 支持，已发布正文 downstream physical-delete ACK 仍在制。publisher 超时触发 AbortSignal 后仍持 privacy gate 等待实际 callback settle；若 callback 不配合取消，可能无限等待。这是安全 fail closed，不是有界墙钟延迟。模拟外部写入不能宣称已物理擦除。
+同 schema PG 删除日志提交/重放不是独立文件 fsync 最新日志，也不是签名 pending 备份的跨数据库恢复。真实 CH standard prepared 路径已验证读回和 PG 提交白名单；但 prepared digest 不是原 wire 回执，也不是每日身份 HMAC 证明。identify/revenue/daily_salt 未由真实 publisher 支持，真实隔离 publisher 的已发布正文 physical-delete ACK 已由此前 21 项验证；PG journal 仍非生产独立 fsync 日志，不能外推正式删除或跨数据库恢复。publisher 超时触发 AbortSignal 后仍持 privacy gate 等待实际 callback settle；若 callback 不配合取消，可能无限等待。这是安全 fail closed，不是有界墙钟延迟。模拟外部写入不能宣称已物理擦除。
 
 这些欠项属于 B 原型下一闸，不表示既有产品功能整体未交付，也不宣称 B 性能或容量闭环。
 
