@@ -8,7 +8,7 @@ const countFields=['rows','batches','bytes','requests','requestBodyBytes','respo
 type CountField=typeof countFields[number];
 type Counts=Record<CountField,number>&Record<`${CountField}MeasuredCalls`,number>;
 type Aggregate=Counts&{operation:PerformanceOperation;stage:PerformanceStage;calls:number;failed:number;totalMs:number;maxMs:number;histogram:number[]};
-const incrementalFallbacks=['not_strict','feature_disabled','missing_baseline','source_fence','non_event_change','configuration_change','no_queued_visitors','unknown_visitor','session_rebuild_request','missing_retained_boundary','retirement_boundary_crossed','incomplete_session_owners','unowned_topology_component'] as const;
+const incrementalFallbacks=['not_strict','feature_disabled','missing_baseline','source_fence','non_event_change','configuration_change','no_queued_visitors','unknown_visitor','session_rebuild_request','missing_retained_boundary','retirement_boundary_crossed','incomplete_session_owners','unowned_topology_component','archived_dirty_owner'] as const;
 const bounds=[1,5,10,50,100,500,1000,5000,Infinity];
 const add=(a:number,b:number)=>Math.min(Number.MAX_SAFE_INTEGER,a+b);
 const createCounts=()=>Object.fromEntries(countFields.flatMap(field=>[[field,0],[`${field}MeasuredCalls`,0]])) as Counts;

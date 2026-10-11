@@ -18,8 +18,9 @@ describe('bounded incremental plan counters',()=>{
   const metrics=createServerPhaseMetrics(new Set());
   const base={operation:'background_worker',stage:'incremental_session_reuse',correlationId:'00000000-0000-0000-0000-000000000001',durationMs:1,result:'success'};
   metrics.sink({...base,incrementalFallback:'missing_baseline',fallbackPlans:1} as PerformanceObservation);
+  metrics.sink({...base,incrementalFallback:'archived_dirty_owner',fallbackPlans:1} as PerformanceObservation);
   metrics.sink({...base,incrementalFallback:'visitor-private-value'} as PerformanceObservation);
-  const report=metrics.snapshot();expect(report.incrementalFallbackReasons.find(row=>row.reason==='missing_baseline')?.plans).toBe(1);expect(report.invalidObservations).toBe(1);expect(JSON.stringify(report)).not.toContain('visitor-private-value');
+  const report=metrics.snapshot();expect(report.incrementalFallbackReasons.find(row=>row.reason==='missing_baseline')?.plans).toBe(1);expect(report.incrementalFallbackReasons.find(row=>row.reason==='archived_dirty_owner')?.plans).toBe(1);expect(report.incrementalFallbackReasons).toHaveLength(14);expect(report.invalidObservations).toBe(1);expect(JSON.stringify(report)).not.toContain('visitor-private-value');
  });
 
 });

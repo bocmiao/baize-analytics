@@ -13,7 +13,7 @@ export function hasPerformanceObservation(){return Boolean(context.getStore());}
 const operations=new Set(['http_request','background_worker','database_migration','operator']);
 const stages=new Set(['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall','incremental_session_reuse']);
 const chPhases=new Set(['input_read','publication_insert','publication_readback','other']);
-const incrementalFallbacks=new Set(['not_strict','feature_disabled','missing_baseline','source_fence','non_event_change','configuration_change','no_queued_visitors','unknown_visitor','session_rebuild_request','missing_retained_boundary','retirement_boundary_crossed','incomplete_session_owners','unowned_topology_component']);
+const incrementalFallbacks=new Set(['not_strict','feature_disabled','missing_baseline','source_fence','non_event_change','configuration_change','no_queued_visitors','unknown_visitor','session_rebuild_request','missing_retained_boundary','retirement_boundary_crossed','incomplete_session_owners','unowned_topology_component','archived_dirty_owner']);
 /** No identifier from the request or database is accepted as correlation metadata. */
 export function withPerformanceObservation<T>(operation:PerformanceOperation,sink:PerformanceSink|undefined,fn:()=>T):T {
   if(!sink||!operations.has(operation))return fn();

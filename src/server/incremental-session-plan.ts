@@ -41,6 +41,10 @@ export async function captureIncrementalSessionPlan(client:PoolClient,identity:I
    if((await client.query('SELECT 1 FROM analytics_session_rebuild_requests WHERE site_id=$1 LIMIT 1',[identity.siteId])).rowCount){reject('session_rebuild_request');return;}
    if(!parent.retained_from){reject('missing_retained_boundary');return;}
    const relations=factReadRelations(client);
+   // Visitor replacement retires every old owner. The prefix checkpoint only
+   // represents its final component, so it cannot reconstruct earlier closed
+   // archived sessions. Keep the original full path for any such dirty owner.
+   if((await client.query(`SELECT 1 FROM ${relations.effectsRelation} e JOIN ${visitorTable} v ON v.visitor_id=e.visitor_id WHERE ${sessionContributionPredicate} AND e.event_ts<$2 LIMIT 1`,[identity.siteId,identity.retainedFrom])).rowCount){reject('archived_dirty_owner');return;}
    if((await client.query(`SELECT 1 FROM ${relations.effectsRelation} e WHERE ${sessionContributionPredicate} AND e.event_ts>=$2 AND e.event_ts<$3 LIMIT 1`,[identity.siteId,parent.retained_from,identity.retainedFrom])).rowCount){reject('retirement_boundary_crossed');return;}
    const missing=(await client.query(`SELECT 1 FROM ${relations.effectsRelation} e WHERE ${sessionContributionPredicate} AND NOT EXISTS(SELECT 1 FROM analytics_session_contribution_heads h JOIN analytics_fact_runs r ON r.id=h.run_id WHERE h.site_id=$1 AND h.session_id=e.session_id AND h.run_id=e.run_id AND h.visitor_id=e.visitor_id AND h.epoch=$2 AND h.generation<=$3 AND r.status='published' AND r.site_id=$1) LIMIT 1`,[identity.siteId,identity.epoch,state.processed_generation])).rowCount;
    if(missing)reject('incomplete_session_owners');

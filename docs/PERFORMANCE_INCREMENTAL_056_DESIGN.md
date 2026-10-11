@@ -25,6 +25,8 @@
 
 ## Expired carry、删除与并发
 
+第一版delta保守拒绝dirty visitor任何有效旧owner的effect.event_ts早于本次retainedFrom，fallbackReason为`archived_dirty_owner`。最后一个carry checkpoint不能重产该visitor更早已闭合的全部归档session，因此不能先将所有历史heads指向empty owner再仅归约最后prefix。该检查在原完整认证hydration后进行，认证异常不转换成成功fallback；full发布路径保持原有归档保留规则。
+
 dirty visitor的不可变expired贡献来自认证旧owner，不凭raw保留范围推测完整；可变session summary/entry/exit/goal/funnel必须由可信prefix+tail重新归约。旧anchor或keys不足时完整fallback也不能伪造源：继续明确不可用。
 
 capture后新采集可推进generation，最终发布只完成capture HWM，并保留后续queued事件；parent head/revision/authority/delete fences必须fresh验证。删除与restore仍先journal/fsync、物理ACK，再重base合规survivors；delta lineage不能让旧A owner经parent/hour复活。任何非事件revision变化使本次plan失效，按原错误与重试路径退出。
