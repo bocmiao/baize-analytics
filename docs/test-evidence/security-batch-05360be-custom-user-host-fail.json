@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "05360be137a66e3863605393602b87db3f6782be",
+  "exit": 1,
+  "stage": "before any container startup",
+  "error": "host chown to UID/GID2000 returned EINVAL",
+  "adaptation": "isolated owned Docker key volume; same synthetic key and0600; no production permissions changed"
+}

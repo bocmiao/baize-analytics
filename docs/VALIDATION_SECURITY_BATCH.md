@@ -9,22 +9,22 @@
 - 统计/站点管理按真实用户跨站共用600/60s预算；公共分享/embed可信IP HMAC共用120/60s；429带Retry-After。Redis故障/超时503且不重置预算，未配Redis才有界单进程内存，不信任XFF。分享scrypt32改异步，旧格式/短密码兼容，输入有界。
 - 站点创建、配置、write-key轮换与audit_logs同一事务及同一持锁client；故障回滚旧hash/config/generation，恢复一操作一审计。
 - GSC/旧GA4 adapter对畸形200、分页行类型/数量失败关闭，保留已有明细与窗口；模拟异常不能冒称真实Google联调。
-- 非1000安装UID的升级回滚proof按实际numeric UID/GID写入0600；run.bat先切脚本目录。运行时回滚待最终镜像阶段，Windows执行器仍阻塞，静态不算原生验收。
+- 非1000安装UID的升级回滚proof按实际numeric UID/GID写入0600；run.bat先切脚本目录。运行时回滚结果在最终记录单列，Windows执行器仍阻塞，静态不算原生验收。
 
-## 实际已运行结果
+## a834589历史专项结果
 
 | 阶段 | 结果 | 证据 |
 |---|---|---|
 | 原957431隔离授权复现 | EXIT1；read site Token令临时keys rotate返回200/version2，403断言失败 | security-batch-admin-baseline-fail.json |
-| 当前全部单元 | EXIT0，264通过，0fail/skip | security-batch-unit.json |
-| 当前12文件专项 | EXIT0，67通过=25unit+42真实PG/Redis集成，0fail/skip，16.69s | security-batch-targeted.json |
+| a834589全部单元 | EXIT0，264通过，0fail/skip | security-batch-unit.json |
+| a834589的12文件专项 | EXIT0，67通过=25unit+42真实PG/Redis集成，0fail/skip，16.69s | security-batch-targeted.json |
 | 初轮分享夹具 | EXIT1，48通过1失败；夹具未处理ZodError，非生产createApp | security-batch-share-fixture-fail.json |
 | 初轮guard顺序 | EXIT1，6通过1失败；limiter先ctx.user返回401，修为管理guard先行 | security-batch-guard-order-fail.json |
 | Redis teardown竞态 | EXIT1，67断言通过但suite失败；显式disconnect后quit竞态，修清理状态 | security-batch-redis-teardown-fail.json |
 
 专项命令使用明确TEST_DATABASE_URL与REDIS_URL指向本任务本地测试服务，不接生产。每个实际应用测试使用独立schema/keyDir并清理。授权测试真实setup/login/invite/API Token，无权限stub；测试密钥仅在临时目录。站点审计触发器故障注入无真实站点变更。Redis两实例原子窗口/恢复/隔离/伪XFF/断连，7单元含容量/超时拒绝。
 
-生产manifest SHA256：920671bf6aaa63e84192f5ad584d899d5daa6f1c3a93d520d45deac2c590b24c。源清单与精确commit在冻结后补记；当前专项不代表新源码空库全轮/浏览器/镜像已经验收。
+a834589生产manifest SHA256：920671bf6aaa63e84192f5ad584d899d5daa6f1c3a93d520d45deac2c590b24c。该历史专项不代表后来05360be的空库全轮/浏览器/镜像验收，最终同源结果见下文。
 
 ## 保留欠项
 
@@ -39,3 +39,13 @@ strict5000仍FAIL；本批无已证实下一窄性能优化，不降低旧044认
 第一个调整Redis夹具的专项实际EXIT1（34通过1失败）：enableOfflineQueue=false时ping早于连接ready；改显式lazyConnect/connect，不改产品策略。旧JSON保留。
 
 兼容补修实际专项：4文件35项通过/0skip（含2真实collector Redis正常/断连、23治理PG、10单元），独立真实createApp/HTTP旧长密码测试1项通过/0skip，全部单元265通过/0skip。首个独立HTTP fixture误断言embed包含站点名称，既有embed契约仅热门页面标题；修为验证真实HTML标题/类型及错误密码404，不改产品页面。其失败JSON保留。scrypt四在途/第五busy/结束后释放由确定性单元验证；未用计时或睡眠制造HTTP占槽，最终HTTP忙态header为固定共享错误handler分支。
+
+## 最终不可变源码05360be（2026-10-11 UTC）
+
+实际命令入口为仓库 `scripts/validate-local-final.sh`，在 `git archive 05360be137a66e3863605393602b87db3f6782be` 的独立目录运行。空库正式全轮EXIT0：65文件265单元；166文件454真实PG17/CH25.8/Redis7集成；31浏览器目录检查=29真实Chromium+2日期函数，全部0fail/0skip。lint、type、SDK、journal、build及编译应用入口通过。集成strict身份独立恢复此次实际执行，不能外推此前CNB的Docker能力跳过。
+
+生产manifest为 `55f47171539d96df6a64e32c900e4d57179a261caffb42e1d911b07fa0e3a642`，401文件/56迁移；完整结果在 `test-evidence/security-batch-05360be-full-*.json` 和source-binding。新镜像 `sha256:4d5c1084b7fe04aef7311b323c46590de7fe5dc30fd2d29d25c6636c9195365e` 与同源manifest一致，安装、独立目标CH签名恢复EXIT0：最新journal删A保B、源不变、缺sidecar/篡改/worker失败/未知未来schema/已有目标覆盖均拒绝，失败后实际修复恢复通过。该独立目标仍在同一物理执行器，不算跨物理机灾备。证据为image-result/image-native-result/image-binding JSON。
+
+非1000UID试验初次在容器启动前失败：宿主UID1000的chown至2000返回EINVAL。仅测试runner改用自有Docker命名卷传入同一合成测试key，0600及UID/GID2000不变，不放宽生产权限、不改安装器；其最终结果另列。所有测试卷仅清理本批自有项目，原三个dev服务保留。旧失败完整保留；没有新5000负载、没有任何托管CI或真实外部账号操作。
+
+非默认UID2000实际故障回滚EXIT1：数据库已恢复，但文件helper在读取宿主解包bind目录`/restore-data`时EACCES，应用未恢复；已清理自有栈，失败记录`security-batch-05360be-custom-user-fail.json`保留。053的默认UID镜像/独立恢复EXIT0不能冒称此场景已通过；需要窄修后新源码重验。
