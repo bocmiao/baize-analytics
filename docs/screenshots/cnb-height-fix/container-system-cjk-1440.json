@@ -1,0 +1,27 @@
+{
+  "webSourceTreeSha256": "82a872f6e4879591c08e6e73c3124277721df11e4efbf9e98424157b913d808c",
+  "sourceMeaning": "actual source tree digest; SOURCE_SHA is base commit only when worktree changes exist",
+  "siteId": "4c6f38111a9671052e81d842",
+  "timezone": "UTC",
+  "from": "2026-09-11",
+  "to": "2026-10-10",
+  "expectedPv": 511,
+  "expectedUv": 30,
+  "fixtureDays": 60,
+  "queryDays": 30,
+  "comparisonPv": 120,
+  "fixtureHourUtc": 12,
+  "expectedChange": "325.8%",
+  "screenshot": "container-system-cjk-1440.png",
+  "sha256": "9787ad5aa872773d16a9a1a9536bb827db494952e9e1a233a898b41b4fa1ec9c",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "sourceSha": null,
+  "guidelinesSha": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234",
+  "fixture": "actual-api-collector-60-days-query30-pg-v1",
+  "mocked": false,
+  "testedCodeCommit": "8ff8a9b49f56e550ad8f8666d3b695890396911e",
+  "browserEnvironment": "local disposable Compose runner; Debian Chromium154 with fonts-wqy-zenhei; not CNB bundled"
+}

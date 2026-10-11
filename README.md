@@ -1,5 +1,7 @@
 # 白泽 Baize Analytics
 
+最新有限修复：CNB 收起卡片高度差异已补桌面230px最小高度，原断言保留。本地完整浏览器和含CJK字体容器各31项通过；CNB重验待父手动运行，恢复测试的容器能力跳过仍单列。见 [本批实际记录](docs/VALIDATION_CNB_UI_HEIGHT_FIX.md)，不把本次浏览器复验当成新后端全轮。
+
 ## 当前验收入口（81415f4）
 
 已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](docs/VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。

@@ -1,0 +1,185 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 714B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.ci
+#2 transferring dockerfile: 478B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24-bookworm-slim
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 222B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/node:24-bookworm-slim
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 47.67MB 0.5s done
+#6 DONE 0.5s
+
+#7 [2/4] WORKDIR /workspace
+#7 CACHED
+
+#8 [3/4] COPY . .
+#8 DONE 1.3s
+
+#9 [4/4] RUN chmod -R a+rX /workspace
+#9 DONE 1.5s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 0.5s done
+#10 writing image sha256:cb061f6e36e6ee3c8439c645a32df2eb5ffa1ee807bd92b2e1667b3206973e4d done
+#10 naming to docker.io/library/baize-cnb-ci:baize_cnb_13944_11638 done
+#10 DONE 0.5s
+
+#11 resolving provenance for metadata file
+#11 DONE 0.0s
+ baize-cnb-ci:baize_cnb_13944_11638  Built
+CI runner image: sha256:cb061f6e36e6ee3c8439c645a32df2eb5ffa1ee807bd92b2e1667b3206973e4d
+ Network baize_cnb_13944_11638_default  Creating
+ Network baize_cnb_13944_11638_default  Created
+ Container baize_cnb_13944_11638-redis-1  Creating
+ Container baize_cnb_13944_11638-postgres-1  Creating
+ Container baize_cnb_13944_11638-clickhouse-1  Creating
+ Container baize_cnb_13944_11638-clickhouse-1  Created
+ Container baize_cnb_13944_11638-redis-1  Created
+ Container baize_cnb_13944_11638-postgres-1  Created
+ Container baize_cnb_13944_11638-runner-1  Creating
+ Container baize_cnb_13944_11638-runner-1  Created
+Attaching to clickhouse-1, postgres-1, redis-1, runner-1
+redis-1  | 1:C 11 Oct 2026 04:26:38.525 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis-1  | 1:C 11 Oct 2026 04:26:38.525 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1  | 1:C 11 Oct 2026 04:26:38.525 * Redis version=7.4.11, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1  | 1:C 11 Oct 2026 04:26:38.525 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1  | 1:M 11 Oct 2026 04:26:38.526 * monotonic clock: POSIX clock_gettime
+redis-1  | 1:M 11 Oct 2026 04:26:38.526 * Running mode=standalone, port=6379.
+redis-1  | 1:M 11 Oct 2026 04:26:38.527 * Server initialized
+redis-1  | 1:M 11 Oct 2026 04:26:38.527 * Ready to accept connections tcp
+postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  | 
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  | 
+postgres-1  | Data page checksums are disabled.
+postgres-1  | 
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default "max_connections" ... 100
+postgres-1  | selecting default "shared_buffers" ... 128MB
+postgres-1  | selecting default time zone ... Etc/UTC
+postgres-1  | creating configuration files ... ok
+clickhouse-1  | /entrypoint.sh: create new user 'baize' instead 'default'
+postgres-1    | running bootstrap script ... ok
+clickhouse-1  | Processing configuration file '/etc/clickhouse-server/config.xml'.
+clickhouse-1  | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
+clickhouse-1  | Logging trace to /var/log/clickhouse-server/clickhouse-server.log
+clickhouse-1  | Logging errors to /var/log/clickhouse-server/clickhouse-server.err.log
+postgres-1    | performing post-bootstrap initialization ... ok
+postgres-1    | syncing data to disk ... ok
+postgres-1    | 
+postgres-1    | 
+postgres-1    | Success. You can now start the database server using:
+postgres-1    | 
+postgres-1    |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1    | 
+postgres-1    | initdb: warning: enabling "trust" authentication for local connections
+postgres-1    | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres-1    | waiting for server to start....2026-10-11 04:26:39.236 UTC [49] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+postgres-1    | 2026-10-11 04:26:39.237 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1    | 2026-10-11 04:26:39.239 UTC [52] LOG:  database system was shut down at 2026-10-11 04:26:39 UTC
+postgres-1    | 2026-10-11 04:26:39.243 UTC [49] LOG:  database system is ready to accept connections
+postgres-1    |  done
+postgres-1    | server started
+postgres-1    | CREATE DATABASE
+postgres-1    | 
+postgres-1    | 
+postgres-1    | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1    | 
+postgres-1    | waiting for server to shut down....2026-10-11 04:26:39.416 UTC [49] LOG:  received fast shutdown request
+postgres-1    | 2026-10-11 04:26:39.416 UTC [49] LOG:  aborting any active transactions
+postgres-1    | 2026-10-11 04:26:39.418 UTC [49] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+postgres-1    | 2026-10-11 04:26:39.418 UTC [50] LOG:  shutting down
+postgres-1    | 2026-10-11 04:26:39.419 UTC [50] LOG:  checkpoint starting: shutdown immediate
+postgres-1    | 2026-10-11 04:26:39.485 UTC [50] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.059 s, total=0.067 s; sync files=301, longest=0.001 s, average=0.001 s; distance=4238 kB, estimate=4238 kB; lsn=0/190A9C0, redo lsn=0/190A9C0
+postgres-1    | 2026-10-11 04:26:39.489 UTC [49] LOG:  database system is shut down
+postgres-1    |  done
+postgres-1    | server stopped
+postgres-1    | 
+postgres-1    | PostgreSQL init process complete; ready for start up.
+postgres-1    | 
+postgres-1    | 2026-10-11 04:26:39.532 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+postgres-1    | 2026-10-11 04:26:39.533 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1    | 2026-10-11 04:26:39.533 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1    | 2026-10-11 04:26:39.534 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1    | 2026-10-11 04:26:39.536 UTC [65] LOG:  database system was shut down at 2026-10-11 04:26:39 UTC
+postgres-1    | 2026-10-11 04:26:39.540 UTC [1] LOG:  database system is ready to accept connections
+runner-1      | npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+runner-1      | npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+runner-1      | npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+runner-1      | 
+runner-1      | added 396 packages, and audited 397 packages in 6s
+runner-1      | 
+runner-1      | 139 packages are looking for funding
+runner-1      |   run `npm fund` for details
+runner-1      | 
+runner-1      | 2 high severity vulnerabilities
+runner-1      | 
+runner-1      | To address all issues (including breaking changes), run:
+runner-1      |   npm audit fix --force
+runner-1      | 
+runner-1      | Run `npm audit` for details.
+runner-1      | npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+runner-1      | npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+runner-1      | npm warn install-scripts
+runner-1      | npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+runner-1      | npm notice
+runner-1      | npm notice New major version of npm available! 11.19.0 -> 12.2.0
+runner-1      | npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+runner-1      | npm notice To update run: npm install -g npm@12.2.0
+runner-1      | npm notice
+runner-1      | 
+runner-1      | > baize-analytics@0.1.0 lint
+runner-1      | > eslint .
+runner-1      | 
+runner-1      | 
+runner-1      | > baize-analytics@0.1.0 typecheck
+runner-1      | > tsc --noEmit
+runner-1      | 
+
+runner-1 exited with code 143
+Aborting on container exit...
+ Container baize_cnb_13944_11638-runner-1  Stopping
+ Container baize_cnb_13944_11638-runner-1  Stopped
+ Container baize_cnb_13944_11638-redis-1  Stopping
+ Container baize_cnb_13944_11638-postgres-1  Stopping
+ Container baize_cnb_13944_11638-clickhouse-1  Stopping
+redis-1       | 1:signal-handler (1791692822) Received SIGTERM scheduling shutdown...
+postgres-1    | 2026-10-11 04:27:02.168 UTC [1] LOG:  received fast shutdown request
+postgres-1    | 2026-10-11 04:27:02.170 UTC [1] LOG:  aborting any active transactions
+postgres-1    | 2026-10-11 04:27:02.172 UTC [1] LOG:  background worker "logical replication launcher" (PID 68) exited with exit code 1
+postgres-1    | 2026-10-11 04:27:02.173 UTC [63] LOG:  shutting down
+postgres-1    | 2026-10-11 04:27:02.173 UTC [63] LOG:  checkpoint starting: shutdown immediate
+postgres-1    | 2026-10-11 04:27:02.180 UTC [63] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.008 s; sync files=3, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/190AA70, redo lsn=0/190AA70
+postgres-1    | 2026-10-11 04:27:02.183 UTC [1] LOG:  database system is shut down
+redis-1       | 1:M 11 Oct 2026 04:27:02.250 * User requested shutdown...
+redis-1       | 1:M 11 Oct 2026 04:27:02.250 * Saving the final RDB snapshot before exiting.
+redis-1       | 1:M 11 Oct 2026 04:27:02.251 * DB saved on disk
+redis-1       | 1:M 11 Oct 2026 04:27:02.251 # Redis is now ready to exit, bye bye...
+ Container baize_cnb_13944_11638-postgres-1  Stopped
+
+postgres-1 exited with code 0
+ Container baize_cnb_13944_11638-redis-1  Stopped
+
+redis-1 exited with code 0
+ Container baize_cnb_13944_11638-clickhouse-1  Stopped
+
+clickhouse-1 exited with code 0
+
+Containerized shared regular CI exit=143; logs: /tmp/baize-cnb-ci-logs.r32JzC
