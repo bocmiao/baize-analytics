@@ -1,5 +1,5 @@
 import {createHash,createHmac,randomUUID,timingSafeEqual} from 'node:crypto';
-import type {PoolClient} from 'pg';
+import type {Pool,PoolClient} from 'pg';
 import {canonical} from './security.js';
 import {assertFactRunClosure,selectedFactRunPredicate} from './fact-run-closure.js';
 
@@ -64,6 +64,7 @@ export async function captureFactCoverageWitness(c:PoolClient,site:string):Promi
  * original CH publication authentication. Ordinary migration/export is not an
  * initialization entry. Run metadata is an additional fence, not a raw oracle. */
 export async function captureFullFactCoverageSource(c:PoolClient,site:string,runId:string):Promise<FullFactCoverageSource>{
+ await assertRawRetirementOrigin(c,site);
  const s=await current(c,site),run=(await c.query(`SELECT r.*,p.mode,p.non_event_generation::text captured_non_event FROM analytics_fact_runs r JOIN analytics_incremental_run_plans p ON p.run_id=r.id WHERE r.id=$1 AND r.site_id=$2`,[runId,site])).rows[0];
  if(!run||run.mode!=='full'||!['ready','published'].includes(run.status)||run.epoch!==s.epoch||run.source_authority!=='clickhouse'||run.canonical_epoch!==s.canonical_epoch||String(run.canonical_deletion_epoch)!==s.deletion_epoch||run.captured_non_event!==s.non_event_generation||!run.retained_from)throw Error('FACT_COVERAGE_FULL_SOURCE_FENCE');
  const token=Object.freeze({kind:'fact_coverage_full_source' as const});fullSources.set(token,{client:c,site,run:runId,from:iso(run.retained_from),high:String(run.outbox_high_watermark),generation:String(run.generation),nonEvent:s.non_event_generation,configHash:s.configHash,epoch:s.epoch,canonical:s.canonical_epoch,deletion:s.deletion_epoch});return token;
@@ -205,4 +206,55 @@ export async function restoreRawRetirementFrontier(c:PoolClient,site:string,toke
  const body={site_id:site,canonical_epoch:state.canonical_epoch,retired_before:source.record.retired_before};
  await c.query('UPDATE analytics_raw_retirement_frontiers SET canonical_epoch=$2,seal=$3 WHERE site_id=$1',[site,body.canonical_epoch,frontierSeal(state.secret,body)]);
  storedFrontiers.delete(token);
+}
+
+interface RawRetirementOrigin {site_id:string;origin_id:string;classification:'legacy_unknown'|'known_frontier'|'new_site_pending'|'authenticated_new_site';seal:string|null}
+function originSeal(secret:string,body:Omit<RawRetirementOrigin,'seal'>){return createHmac('sha256',secret).update(canonical(['fact-raw-retirement-origin-v1',body])).digest('hex');}
+async function origin(c:PoolClient,site:string){if(!(await c.query("SELECT to_regclass('analytics_raw_retirement_origins') present")).rows[0]?.present)return {available:false as const,record:null};const record=(await c.query('SELECT * FROM analytics_raw_retirement_origins WHERE site_id=$1',[site])).rows[0] as RawRetirementOrigin|undefined;return {available:true as const,record:record??null};}
+function assertOriginSeal(secret:string,record:RawRetirementOrigin){const {seal,...body}=record;const actual=Buffer.from(seal??''),expected=Buffer.from(originSeal(secret,body));if(actual.length!==expected.length||!timingSafeEqual(actual,expected))throw Error('FACT_RAW_RETIREMENT_ORIGIN_SEAL_INVALID');}
+/** Only the genuine site-creation transaction, or authenticated first FULL
+ * before any published history, can complete a pending origin. Missing/deleted
+ * markers and migration-classified legacy history can never become new here. */
+export async function initializeNewSiteCoverageOrigin(c:PoolClient,site:string,run:string){
+ const marker=await origin(c,site);if(!marker.available)return;
+ const row=marker.record;if(!row)throw Error('FACT_RAW_RETIREMENT_ORIGIN_NOT_NEW');if(row.classification!=='new_site_pending')return;
+ const producer=(await c.query("SELECT r.id FROM analytics_fact_runs r JOIN analytics_incremental_run_plans p ON p.run_id=r.id JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.id=$1 AND r.site_id=$2 AND r.status='ready' AND p.mode='full' AND r.epoch=a.epoch AND r.generation<=a.generation AND a.processed_generation<=r.generation AND a.lease_owner IS NOT NULL AND a.lease_until>now()",[run,site])).rows[0];if(!producer)throw Error('FACT_RAW_RETIREMENT_ORIGIN_FULL_SOURCE');
+ if((await c.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' LIMIT 1",[site])).rowCount)throw Error('FACT_RAW_RETIREMENT_ORIGIN_HISTORY');
+ const secret=(await c.query('SELECT salt_secret FROM sites WHERE id=$1',[site])).rows[0]?.salt_secret;if(!secret)throw Error('FACT_COVERAGE_SITE_MISSING');
+ const body={site_id:site,origin_id:row.origin_id,classification:'authenticated_new_site' as const};
+ await c.query("UPDATE analytics_raw_retirement_origins SET classification=$2,seal=$3 WHERE site_id=$1",[site,body.classification,originSeal(secret,body)]);
+}
+export async function assertRawRetirementOrigin(c:PoolClient,site:string,options:{allowPendingFirstFull?:boolean}={}){
+ const marker=await origin(c,site);if(!marker.available)return;
+ const row=marker.record;if(row?.classification==='new_site_pending'&&options.allowPendingFirstFull===true){if((await c.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' LIMIT 1",[site])).rowCount)throw Error('FACT_RAW_RETIREMENT_ORIGIN_HISTORY');return;}
+ if(!row||row.classification==='legacy_unknown'||row.classification==='new_site_pending')throw Error('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');
+ const state=await current(c,site);
+ if(row.classification==='authenticated_new_site')assertOriginSeal(state.secret,row);
+ else {const frontier=await rawFrontier(c,site);if(!frontier)throw Error('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');assertFrontierSeal(state.secret,frontier);if(frontier.canonical_epoch!==state.canonical_epoch)throw Error('FACT_RAW_RETIREMENT_NAMESPACE');}
+}
+
+export interface StoredRawRetirementOrigin {readonly kind:'stored_raw_retirement_origin'}
+const storedOrigins=new WeakMap<StoredRawRetirementOrigin,{client:PoolClient;site:string;record:RawRetirementOrigin}>();
+/** Preserve unknown classifications too; a signed restore is not an upgrade. */
+export async function verifyStoredRawRetirementOrigin(c:PoolClient,site:string):Promise<StoredRawRetirementOrigin|null>{
+ const marker=await origin(c,site);if(!marker.available)return null;if(!marker.record)throw Error('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');
+ const row=marker.record;
+ if(row.classification==='authenticated_new_site'){const secret=(await c.query('SELECT salt_secret FROM sites WHERE id=$1',[site])).rows[0]?.salt_secret;if(!secret)throw Error('FACT_COVERAGE_SITE_MISSING');assertOriginSeal(secret,row);}
+ if(row.classification==='known_frontier'&&!await verifyStoredRawRetirementFrontier(c,site))throw Error('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');
+ const token=Object.freeze({kind:'stored_raw_retirement_origin' as const});storedOrigins.set(token,{client:c,site,record:{...row}});return token;
+}
+export async function restoreRawRetirementOrigin(c:PoolClient,site:string,token:StoredRawRetirementOrigin,assertSignedIsolatedTarget:()=>Promise<void>){
+ const source=storedOrigins.get(token);if(!source||source.client!==c||source.site!==site)throw Error('FACT_RAW_RETIREMENT_ORIGIN_RESTORE_SCOPE');
+ await assertSignedIsolatedTarget();const marker=await origin(c,site);if(!marker.record||canonical(marker.record)!==canonical(source.record))throw Error('FACT_RAW_RETIREMENT_ORIGIN_RESTORE_CHANGED');
+ if(source.record.classification==='authenticated_new_site'){const secret=(await c.query('SELECT salt_secret FROM sites WHERE id=$1',[site])).rows[0]?.salt_secret;if(!secret)throw Error('FACT_COVERAGE_SITE_MISSING');const {seal:ignored,...body}=source.record;void ignored;await c.query('UPDATE analytics_raw_retirement_origins SET seal=$2 WHERE site_id=$1',[site,originSeal(secret,body)]);}
+ storedOrigins.delete(token);
+}
+
+/** Administrator-only jobs metadata. No source bodies, private seals or secrets. */
+export async function rawRetirementRecoveryStatus(c:Pool|PoolClient,site:string){
+ const available=!!(await c.query("SELECT to_regclass('analytics_raw_retirement_origins') present")).rows[0]?.present;
+ const row=available?(await c.query('SELECT classification FROM analytics_raw_retirement_origins WHERE site_id=$1',[site])).rows[0]:undefined;
+ const classification=available?row?.classification??'missing':'unavailable';
+ const blocked=classification==='legacy_unknown'||classification==='missing'||classification==='unavailable';
+ return {classification,blocked,error:blocked?'FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN':null,recovery:blocked?{action:'preserve_or_new_site',message:'Historical raw-retirement origin is unknown. Preserve existing data; use an independently verified trusted-origin signed restore, or create a new tracking site. Unknown-origin backups remain unknown; in-place origin repair is not supported.',inPlaceRepairSupported:false}:null};
 }

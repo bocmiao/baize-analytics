@@ -136,3 +136,13 @@ Future candidate runs record bounded target/actual scheduling samples and per-st
 ### 059 signed independent restore (isolated patch binding)
 
 Base 8e832c4 with ten explicitly hashed 059 patches: `incremental-session-restore.test.ts` completed EXIT 0, 1 PASS, 0 FAIL, 0 SKIP. This validates the signed origin scope and independent target restoration without changing source ClickHouse data. It is not whole-directory acceptance or a new performance result. Source/patch binding and JSON are archived beside the earlier isolated upgrade evidence.
+
+### 059 operator error and recovery validation
+
+The frozen combined source (base 724bb20 plus explicit patch binding) passed the actual upgraded-schema/admin-session jobs regression: 1 PASS, 0 FAIL, 0 SKIP. It verifies `legacy_unknown`, the fixed error/recovery hint, viewer 403 and anonymous 401, unchanged origin metadata and a single-connection pool. It does not certify the origin seal from classification alone. Supported operator steps and limitations are in `RAW_RETIREMENT_059_RECOVERY.md`.
+
+The first combined complete unit directory failed: 348 PASS, 1 FAIL, 0 SKIP. The existing mixed-source batch test expected the old two-field JSON envelope and did not yet assert the new authenticated `sessionId` required for selected vitals. This result is retained; an affected assertion update must check the actual session identity and existing one-write/duplicate invariants, then repeat the complete directory. The selected PG/CH oracle plus dedicated units passed 11 tests separately; those passes do not replace this failed whole-directory result.
+
+The updated complete unit directory completed EXIT 0: **349 PASS, 0 FAIL, 0 SKIP**, with explicit base/patch binding. Only the asserted envelope contract was corrected, preserving actual session identity, one JSON parameter/write, duplicate records and batch limit checks. This is unit-directory acceptance, not whole application, browser, image or capacity acceptance.
+
+The first combined HTTP integration run failed: 2 PASS, 8 FAIL, 0 SKIP. All eight coverage-witness cases failed on the first historical stats HTTP call before their target mutation, while the independent projection and admin-jobs cases passed. A subsequent single-case test-only diagnostic emitted only the fixed allowlisted `FACT_SOURCE_PROJECTION_INCOMPATIBLE` code, proving that a nested complete-source consumer rejected the explicitly selected request context. This is a real integration defect, not a ClickHouse body-authentication failure. Performance testing is paused until explicit consumer contracts are corrected; no global partial-as-complete compatibility bypass is permitted.

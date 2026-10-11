@@ -1,4 +1,4 @@
-import {assertStrictRetainedWindowContinuity,assertRawRetirementWindowContinuity} from './fact-coverage-witness.js';
+import {assertStrictRetainedWindowContinuity,assertRawRetirementWindowContinuity,assertRawRetirementOrigin} from './fact-coverage-witness.js';
 import {captureIncrementalSessionPlan} from './incremental-session-plan.js';
 import {measurePerformanceStage,hasPerformanceObservation} from './performance-observation.js';
 import {getCacheStore} from './cache-store.js';
@@ -73,6 +73,7 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  if(strict&&sourceState.authority==='clickhouse'){
   await assertRawRetirementWindowContinuity(source,claim.site_id,retainedFrom);
   const baseline=(await source.query(`SELECT EXISTS(SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published') has_history,(SELECT retained_from FROM analytics_fact_runs WHERE site_id=$1 AND epoch=$2 AND query_version=2 AND status='published' ORDER BY generation DESC,created_at DESC,id DESC LIMIT 1) retained_from`,[claim.site_id,claim.epoch])).rows[0];
+  await assertRawRetirementOrigin(source,claim.site_id,{allowPendingFirstFull:!baseline.has_history});
   assertStrictRetainedWindowContinuity({strict,authority:sourceState.authority,retainedFrom,hasPublishedBaseline:baseline.has_history,previousRetainedFrom:baseline.retained_from?new Date(baseline.retained_from):null});
  }
  // The first 036 build of an existing 033 site must bootstrap from every still
@@ -112,7 +113,7 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  if(remainingStore)await publishRemainingFactBodies(source,remainingStore,claim.site_id,run,{expectedAggregationEpoch:claim.epoch,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence},headerStore);
  if(strict&&cacheStore)await cacheStore.completeOwnerKind(source,claim.site_id,run,'legacy_centroid',0,{expectedAggregationEpoch:claim.epoch,expectedGeneration:claim.generation,expectedCanonicalEpoch:sourceState.canonicalEpoch,expectedDeletionEpoch:sourceState.deletionEpoch,verifyLiveFence:verifyHeaderFence});
  const coverageTracking=sourceState.authority==='clickhouse'&&!!headerStore&&!!factStore&&!!remainingStore;
- options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels,coverageTracking,coverageSnapshotAt,authenticatedFullProducer:coverageTracking&&plan.mode==='full'};
+ options={run,leaseOwner:claim.lease_owner,retainedFrom,timezone,privacy,goals,funnels,coverageTracking,coverageSnapshotAt,authenticatedNewSiteProducer:plan.mode==='full'&&!hasPublished,authenticatedFullProducer:coverageTracking&&plan.mode==='full'};
  const publicationStaging=strict?await preserveStrictPublicationStaging(source,claim.site_id,run):undefined;
  await source.query('COMMIT');
  if(publicationStaging){releaseFactSource?.();releaseFactSource=undefined;const restore=bindFactReadRelations(source,publicationStaging.relations);try{await hooks.afterSnapshot?.();await source.query('BEGIN');await plan.assertPublicationFence(source);await publishSessionFacts(source,options);await source.query('COMMIT');return true;}catch(error){await source.query('ROLLBACK');throw error;}finally{restore();await publicationStaging.cleanup();}}

@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage,assertStrictRetainedWindowContinuity,recordRawRetirementAfterAck,assertRawRetirementWindowContinuity} from '../../src/server/fact-coverage-witness.js';
+import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage,assertStrictRetainedWindowContinuity,recordRawRetirementAfterAck,assertRawRetirementWindowContinuity,assertRawRetirementOrigin,initializeNewSiteCoverageOrigin} from '../../src/server/fact-coverage-witness.js';
 
 describe('coverage witness capability and legacy boundaries',()=>{
  it('legacy absent table captures null and advances without accessing canonical authority',async()=>{
@@ -103,5 +103,21 @@ describe('coverage witness capability and legacy boundaries',()=>{
  const c=connection();await recordRawRetirementAfterAck(c.client,'site',new Date('2026-10-10T12:00:00Z'));
  c.replace({...c.row()!,retired_before:'2025-01-01T00:00:00.000Z'});
  await expect(assertRawRetirementWindowContinuity(c.client,'site',new Date('2026-10-11T00:00:00Z'))).rejects.toThrow('FACT_RAW_RETIREMENT_SEAL_INVALID');
+ });
+ });
+
+ describe('059 origin classification never infers new from absence',()=>{
+ function client(record:Record<string,unknown>|null){const query=vi.fn(async(sql:string)=>({rows:sql.includes('to_regclass')?[{present:'analytics_raw_retirement_origins'}]:sql.includes('SELECT * FROM analytics_raw_retirement_origins')?(record?[record]:[]):[],rowCount:0}));return {c:{query} as unknown as PoolClient,query};}
+ it('rejects migrated legacy unknown and missing markers even for an empty first publication',async()=>{
+ for(const row of [null,{site_id:'site',origin_id:'origin',classification:'legacy_unknown',seal:null}]){const x=client(row);await expect(assertRawRetirementOrigin(x.c,'site',{allowPendingFirstFull:true})).rejects.toThrow('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');}
+ });
+ it('permits a real inserted pending marker only when no published baseline exists',async()=>{
+ const x=client({site_id:'site',origin_id:'origin',classification:'new_site_pending',seal:null});await assertRawRetirementOrigin(x.c,'site',{allowPendingFirstFull:true});
+ expect(x.query.mock.calls.some(([sql])=>sql.includes("status='published'"))).toBe(true);
+ await expect(assertRawRetirementOrigin(x.c,'site')).rejects.toThrow('FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN');
+ });
+ it('a legacy unknown FULL does not upgrade classification',async()=>{
+ const x=client({site_id:'site',origin_id:'origin',classification:'legacy_unknown',seal:null});await initializeNewSiteCoverageOrigin(x.c,'site','run');
+ expect(x.query.mock.calls.some(([sql])=>sql.startsWith('UPDATE'))).toBe(false);
  });
  });

@@ -1,5 +1,5 @@
 import {readIncrementalSessionPublication} from './incremental-session-publication.js';
-import {captureFactCoverageWitness,captureFullFactCoverageSource,advanceFactCoverageWitness} from './fact-coverage-witness.js';
+import {captureFactCoverageWitness,captureFullFactCoverageSource,advanceFactCoverageWitness,initializeNewSiteCoverageOrigin} from './fact-coverage-witness.js';
 import {measurePerformanceStage} from './performance-observation.js';
 import {factReadSql} from './fact-read-context.js';
 import {discardStrictRunStaging} from './strict-fact-storage.js';
@@ -15,7 +15,7 @@ export interface FactPublicationOptions {
  goals:(GoalDefinition&{name?:string})[];funnels:(FunnelDefinition&{name?:string})[];
  maxBucketBytes?:number;
  /** Only the worker sets these after authenticating all source and producer bodies. */
- coverageTracking?:boolean;authenticatedFullProducer?:boolean;coverageSnapshotAt?:Date;
+ coverageTracking?:boolean;authenticatedFullProducer?:boolean;authenticatedNewSiteProducer?:boolean;coverageSnapshotAt?:Date;
 }
 /** Caller owns fresh BEGIN/COMMIT/ROLLBACK. All reads and writes reuse its single connection. */
 export async function publishSessionFacts(client:PoolClient,options:FactPublicationOptions):Promise<void>{
@@ -23,6 +23,7 @@ export async function publishSessionFacts(client:PoolClient,options:FactPublicat
  const strict=(await client.query("SELECT body_mode='strict' strict FROM canonical_event_authority WHERE site_id=$1",[siteId])).rows[0]?.strict===true;
  const relational=(await client.query('SELECT query_version FROM analytics_fact_runs WHERE id=$1',[options.run])).rows[0].query_version===2;
  const plan=await readIncrementalSessionPublication(client,siteId,options.run);const delta=plan.mode==='visitor_delta';if(delta&&(!strict||!relational))throw Error('INCREMENTAL_PUBLICATION_FENCE');
+ if(options.authenticatedNewSiteProducer===true&&!delta)await initializeNewSiteCoverageOrigin(client,siteId,options.run);
  const trackCoverage=options.coverageTracking===true&&!!(await client.query("SELECT to_regclass('analytics_fact_coverage_witnesses') present")).rows[0]?.present;
  const priorCoverage=trackCoverage?await measurePerformanceStage('coverage_witness_wall',()=>captureFactCoverageWitness(client,siteId),{adapter:'facts'}):null;
  const floor=new Date(Math.floor(+options.retainedFrom/3600000)*3600000);

@@ -1,0 +1,12 @@
+{
+  "productionBase": "27057e438949639ba16856a79dba71bd84242100",
+  "patches": {
+    "db/migrations/059_raw_retirement_origin.sql": "568efe9ec55646ac05c537210e02c8e2d1051d3cb9f35bf544d74a71d9e7bcec",
+    "src/server/fact-coverage-witness.ts": "279b7239e6715c95bd22c7035eb6143371a2892690f652811b598d96a69437fa",
+    "src/server/worker-facts.ts": "3a5a760e2de7f8dbb124ec54ab805592c1e9e26194f32eab18a4e1262054831c",
+    "src/server/session-facts-publication.ts": "7a74e75ce53ffbd8db0237410d5d0bdab3f3038ca01bfa52d73a91f5fcaa5cc1",
+    "tests/integration/incremental-session-coverage-witness.test.ts": "d465add6d6c4827b772190b8ed61d7534cdc3ebded2107f7a49ed8d099e6088e",
+    "tests/fixtures/pre058-retention.ts": "da47d5b61c6dc63b3e55ed81d8eb6dfb4fe89ee167b3a56356d5fdfde6306953"
+  },
+  "scope": "059 guard/new-site init + real pre058 fixture; no parallel selected-hydration WIP"
+}
