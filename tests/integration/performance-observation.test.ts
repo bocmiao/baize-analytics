@@ -32,13 +32,19 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('actual Fastify concurrent collector s
   for(const observation of observations){
    expect(observation.operation).toBe('http_request');expect(observation.durationMs).toBeGreaterThanOrEqual(0);expect(observation.result).toBe('success');
    const items=groups.get(observation.correlationId)??[];items.push(observation);groups.set(observation.correlationId,items);
-   expect(Object.keys(observation).sort()).toEqual(['correlationId','durationMs','operation','result','stage']);
+   expect(Object.keys(observation).sort()).toEqual(['correlationId','durationMs','endedAtMs','operation','result','route','stage','startedAtMs']);
   }
-  expect(groups.size).toBe(2);
+  expect(groups.size).toBe(2);for(const reply of replies){const scope=reply.headers['x-baize-performance-scope'];expect(typeof scope).toBe('string');expect(groups.has(String(scope))).toBe(true);}for(const group of groups.values())expect(group.every(event=>event.route==='collect'&&event.endedAtMs>=event.startedAtMs)).toBe(true);
   for(const group of groups.values())expect(new Set(group.map(event=>event.stage))).toEqual(new Set(['pool_acquire','partition_lock','site_lock']));
   const serialized=JSON.stringify(observations);for(const sensitive of [visitor,site,'perf-owner@example.test','performance.example.test','SELECT','password'])expect(serialized).not.toContain(sensitive);
-  expect(pool.waitingCount).toBe(0);
+  observations.length=0;const stats=await app.inject({method:'GET',url:`/api/v1/sites/${site}/stats?from=${encodeURIComponent(new Date(Date.now()-60000).toISOString())}&to=${encodeURIComponent(new Date().toISOString())}`,headers:{cookie,'x-baize-performance-scope':'spoofed-client-value'}});expect(stats.statusCode).toBe(200);expect(stats.headers['x-baize-performance-scope']).not.toBe('spoofed-client-value');expect(observations.some(o=>o.route==='stats'&&o.stage==='site_shared_lock')).toBe(true);expect(observations.some(o=>o.route==='stats'&&o.stage==='stats_snapshot_hold')).toBe(true);expect(pool.waitingCount).toBe(0);
  }finally{
   await runtime?.app.close();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});
  }
+},30000);
+
+it.skipIf(!process.env.TEST_DATABASE_URL)('default application never emits diagnostic scope headers or trusts a client supplied scope',async()=>{
+ const schema='perf_default_'+randomUUID().replaceAll('-',''),admin=new Pool({connectionString:process.env.TEST_DATABASE_URL}),pool=new Pool({connectionString:process.env.TEST_DATABASE_URL,options:`-c search_path=${schema},public`}),dir=await mkdtemp(join(tmpdir(),'baize-performance-default-'));let runtime:Awaited<ReturnType<typeof createApp>>|undefined;
+ try{await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,clickhouse:null,canonical:null,history:null,dataDir:dir,keyDir:join(dir,'keys'),masterKey:Buffer.alloc(32,9),background:false});const reply=await runtime.app.inject({url:'/healthz',headers:{'x-baize-performance-scope':'spoofed-client-value'}});expect(reply.statusCode).toBe(200);expect(reply.headers['x-baize-performance-scope']).toBeUndefined();}
+ finally{await runtime?.app.close();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}
 },30000);

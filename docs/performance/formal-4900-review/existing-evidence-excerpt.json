@@ -1,0 +1,533 @@
+{
+  "source239": "239bb53c706f0f5f4fab0379bd551b2b566dbd03",
+  "source72": "72ea9291b69c30cba5369a63f44c0b2842bcbcd3",
+  "sourcePaths": {
+    "72result": "docs/performance/producer-canonical/strict5000-72ea929-failure/result.json",
+    "239result": "docs/performance/publication-pipeline/baize-239bb53-5000-pipeline.json",
+    "72plan": "docs/performance/producer-canonical/strict5000-72ea929-failure/plan.json"
+  },
+  "sha256Originals": {
+    "docs/performance/producer-canonical/strict5000-72ea929-failure/result.json": "5fa1f8e5b246d310673fe75b5dd38a0df34df414d49ac825706495aa9338bad0",
+    "docs/performance/publication-pipeline/baize-239bb53-5000-pipeline.json": "4cc47fcb9238a0655b773b3f3a9fcb004cad034193fd14d7cec234aeda1b7f1c"
+  },
+  "plan72": {
+    "sourceSha": "72ea9291b69c30cba5369a63f44c0b2842bcbcd3",
+    "events": 5000,
+    "batchEvents": 50,
+    "intervalMs": 1000,
+    "queryIntervalMs": 10000,
+    "maxQueued": 8,
+    "maxConcurrent": 2,
+    "drainLimitMs": 120000,
+    "freeBytesBefore": 7000199168,
+    "coverageReuse": 1,
+    "pagePathBatch": 1,
+    "publicationConcurrency": 2
+  },
+  "unsent72": [
+    {
+      "index": 68,
+      "scheduledAtMs": 68000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 79,
+      "scheduledAtMs": 79000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 80,
+      "scheduledAtMs": 80000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 81,
+      "scheduledAtMs": 81000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 82,
+      "scheduledAtMs": 82000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 83,
+      "scheduledAtMs": 83000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    }
+  ],
+  "queries72": [
+    {
+      "window": "intake",
+      "atMs": 0.9452080000000933,
+      "durationMs": 404.19149800000014,
+      "ok": true,
+      "pv": 0,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 10000.480211,
+      "durationMs": 2503.0141619999995,
+      "ok": true,
+      "pv": 350,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 20004.925362,
+      "durationMs": 2862.0574620000007,
+      "ok": true,
+      "pv": 550,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 30005.50075,
+      "durationMs": 4555.9680910000025,
+      "ok": true,
+      "pv": 850,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 40005.003789999995,
+      "durationMs": 7423.206134,
+      "ok": true,
+      "pv": 1300,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 50004.713083999995,
+      "durationMs": 7148.10828,
+      "ok": true,
+      "pv": 1300,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 60002.868794999995,
+      "durationMs": 8479.345738000004,
+      "ok": true,
+      "pv": 1950,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 70040.962513,
+      "durationMs": 12722.555615999998,
+      "ok": true,
+      "pv": 1950,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 90002.283624,
+      "durationMs": 11226.715330000006,
+      "ok": true,
+      "pv": 1950,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "drain",
+      "atMs": 110054.773988,
+      "durationMs": 19403.544810000007,
+      "ok": true,
+      "pv": 3300,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "drain",
+      "atMs": 130056.953394,
+      "durationMs": 16170.622537000017,
+      "ok": true,
+      "pv": 3300,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "drain",
+      "atMs": 150056.73715899998,
+      "durationMs": 14110.932901000022,
+      "ok": true,
+      "pv": 3300,
+      "coverage": 0,
+      "source": "clickhouse"
+    }
+  ],
+  "windows72": {
+    "intake": {
+      "fromMs": 0,
+      "toMs": 103216.72864100001
+    },
+    "drain": {
+      "fromMs": 103216.72864100001,
+      "toMs": 169382.696272
+    },
+    "final": {
+      "fromMs": 169382.696272,
+      "toMs": 188870.23663099998
+    }
+  },
+  "nodeRss72": {
+    "intakePeakBytes": 690663424,
+    "drainPeakBytes": 727773184,
+    "finalPeakBytes": 715403264,
+    "scope": "same Node process (app+harness); excludes PG/CH/Redis"
+  },
+  "bootstrap72": {
+    "background": true,
+    "manualWorker": false,
+    "storage": "strict-clickhouse",
+    "strictSignedBootstrap": true,
+    "ownedNamespace": "independent_3a331dde4dfc1937"
+  },
+  "runtimeLimitsHistorical": "CPU quota, RAM limit and exact Node/PG/CH versions not captured in these raw reports; current environment must not be substituted",
+  "query239": [
+    {
+      "window": "intake",
+      "atMs": 60008.068417,
+      "durationMs": 8183.068736999994,
+      "ok": true,
+      "pv": 1900,
+      "coverage": 0,
+      "source": "clickhouse"
+    },
+    {
+      "window": "intake",
+      "atMs": 70067.709428,
+      "durationMs": 11655.264234000002,
+      "ok": true,
+      "pv": 1900,
+      "coverage": 0,
+      "source": "clickhouse"
+    }
+  ],
+  "criticalBatches239": [
+    {
+      "index": 70,
+      "scheduledAtMs": 70000,
+      "sentAtMs": 70067.266669,
+      "delayMs": 67.26666900000419,
+      "durationMs": 765.7494569999981,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 81,
+      "scheduledAtMs": 81000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 82,
+      "scheduledAtMs": 82000,
+      "sentAtMs": null,
+      "delayMs": null,
+      "durationMs": null,
+      "status": null,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 71,
+      "scheduledAtMs": 71000,
+      "sentAtMs": 71016.228557,
+      "delayMs": 16.228556999994908,
+      "durationMs": 11074.816702000011,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 72,
+      "scheduledAtMs": 72000,
+      "sentAtMs": 72067.18539700001,
+      "delayMs": 67.18539700000838,
+      "durationMs": 10322.426029999988,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 73,
+      "scheduledAtMs": 73000,
+      "sentAtMs": 82100.767535,
+      "delayMs": 9100.767535000006,
+      "durationMs": 669.7001739999978,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 74,
+      "scheduledAtMs": 74000,
+      "sentAtMs": 82401.433768,
+      "delayMs": 8401.433768000003,
+      "durationMs": 677.7280029999965,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 75,
+      "scheduledAtMs": 75000,
+      "sentAtMs": 82779.696429,
+      "delayMs": 7779.696429000003,
+      "durationMs": 566.5292959999933,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 76,
+      "scheduledAtMs": 76000,
+      "sentAtMs": 83079.961189,
+      "delayMs": 7079.961188999994,
+      "durationMs": 709.4689690000087,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 77,
+      "scheduledAtMs": 77000,
+      "sentAtMs": 83347.860686,
+      "delayMs": 6347.860686,
+      "durationMs": 727.170987000005,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 78,
+      "scheduledAtMs": 78000,
+      "sentAtMs": 83794.520793,
+      "delayMs": 5794.520793000003,
+      "durationMs": 682.4235029999982,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 79,
+      "scheduledAtMs": 79000,
+      "sentAtMs": 84081.355301,
+      "delayMs": 5081.355301000003,
+      "durationMs": 707.8327299999946,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 80,
+      "scheduledAtMs": 80000,
+      "sentAtMs": 84481.022891,
+      "delayMs": 4481.0228910000005,
+      "durationMs": 751.9392959999968,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 83,
+      "scheduledAtMs": 83000,
+      "sentAtMs": 84794.709357,
+      "delayMs": 1794.7093569999997,
+      "durationMs": 875.1723139999958,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 84,
+      "scheduledAtMs": 84000,
+      "sentAtMs": 85239.18771700001,
+      "delayMs": 1239.187717000008,
+      "durationMs": 767.8102309999958,
+      "status": 202,
+      "outcome": "202"
+    },
+    {
+      "index": 85,
+      "scheduledAtMs": 85000,
+      "sentAtMs": 85669.941271,
+      "delayMs": 669.9412710000033,
+      "durationMs": 950.0594049999927,
+      "status": 202,
+      "outcome": "202"
+    }
+  ],
+  "criticalScheduler239": [
+    {
+      "index": 70,
+      "targetAtMs": 70000,
+      "actualScheduledAtMs": 70067.262763,
+      "latenessMs": 67.26276300000609,
+      "queueDepth": 0,
+      "activeCalls": 1,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 71,
+      "targetAtMs": 71000,
+      "actualScheduledAtMs": 71016.22360900001,
+      "latenessMs": 16.223609000007855,
+      "queueDepth": 0,
+      "activeCalls": 0,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 72,
+      "targetAtMs": 72000,
+      "actualScheduledAtMs": 72067.182142,
+      "latenessMs": 67.18214200000511,
+      "queueDepth": 0,
+      "activeCalls": 1,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 73,
+      "targetAtMs": 73000,
+      "actualScheduledAtMs": 73023.166392,
+      "latenessMs": 23.166391999999178,
+      "queueDepth": 0,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 74,
+      "targetAtMs": 74000,
+      "actualScheduledAtMs": 74052.863406,
+      "latenessMs": 52.863406000004034,
+      "queueDepth": 1,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 75,
+      "targetAtMs": 75000,
+      "actualScheduledAtMs": 75004.6422,
+      "latenessMs": 4.642200000002049,
+      "queueDepth": 2,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 76,
+      "targetAtMs": 76000,
+      "actualScheduledAtMs": 76010.26934,
+      "latenessMs": 10.26933999999892,
+      "queueDepth": 3,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 77,
+      "targetAtMs": 77000,
+      "actualScheduledAtMs": 77008.84039900001,
+      "latenessMs": 8.840399000007892,
+      "queueDepth": 4,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 78,
+      "targetAtMs": 78000,
+      "actualScheduledAtMs": 78049.662276,
+      "latenessMs": 49.66227600000275,
+      "queueDepth": 5,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 79,
+      "targetAtMs": 79000,
+      "actualScheduledAtMs": 79006.24512400001,
+      "latenessMs": 6.245124000008218,
+      "queueDepth": 6,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 80,
+      "targetAtMs": 80000,
+      "actualScheduledAtMs": 80005.927985,
+      "latenessMs": 5.9279850000020815,
+      "queueDepth": 7,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 81,
+      "targetAtMs": 81000,
+      "actualScheduledAtMs": 81008.677267,
+      "latenessMs": 8.677267000006395,
+      "queueDepth": 8,
+      "activeCalls": 2,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 82,
+      "targetAtMs": 82000,
+      "actualScheduledAtMs": 82019.260219,
+      "latenessMs": 19.260219000003417,
+      "queueDepth": 8,
+      "activeCalls": 2,
+      "outcome": "queue_full_unsent"
+    },
+    {
+      "index": 83,
+      "targetAtMs": 83000,
+      "actualScheduledAtMs": 83004.667215,
+      "latenessMs": 4.66721499999403,
+      "queueDepth": 5,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 84,
+      "targetAtMs": 84000,
+      "actualScheduledAtMs": 84003.220854,
+      "latenessMs": 3.2208539999992354,
+      "queueDepth": 3,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    },
+    {
+      "index": 85,
+      "targetAtMs": 85000,
+      "actualScheduledAtMs": 85007.232552,
+      "latenessMs": 7.232552000001306,
+      "queueDepth": 1,
+      "activeCalls": 2,
+      "outcome": "enqueued"
+    }
+  ]
+}

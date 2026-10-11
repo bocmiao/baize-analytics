@@ -10,7 +10,7 @@ import {registerIntakeStatus} from './intake-status.js';
 import {registerBotObservations} from './bot-observations.js';
 import {registerSelfHostDiagnostics} from './self-host-diagnostics.js';
 import {registerSiteAnnotations} from './site-annotations.js';
-import {withPerformanceObservation,type PerformanceSink} from './performance-observation.js';
+import {withPerformanceObservation,getPerformanceScopeId,type PerformanceSink} from './performance-observation.js';
 import {registerCanonicalOperations} from './canonical-routes.js';
 import {registerTrackerAssets} from './tracker-assets.js';
 import {invalidateSiteAi} from './ai-invalidation.js';
@@ -110,7 +110,7 @@ export async function createApp(options:AppOptions={}){
   if(geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
   const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});
   await app.register(cookie);
-  if(options.performanceSink)app.addHook('onRequest',(_req,_reply,done)=>{withPerformanceObservation('http_request',options.performanceSink,()=>done());});
+  if(options.performanceSink)app.addHook('onRequest',(req,reply,done)=>{const path=req.url.split('?')[0]!;const route=path==='/api/collect'?'collect':/^\/api\/v1\/sites\/[^/]+\/stats$/.test(path)?'stats':'other';withPerformanceObservation('http_request',options.performanceSink,()=>{const scope=getPerformanceScopeId();if(scope)reply.header('X-Baize-Performance-Scope',scope);done();},route);});
   app.addHook('onRequest',async(req,reply)=>{
     reply.header('X-Content-Type-Options','nosniff').header('Referrer-Policy','strict-origin-when-cross-origin');
     if(!req.url.startsWith('/embed/'))reply.header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");

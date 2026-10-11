@@ -1,5 +1,5 @@
 import type {PerformanceSink,PerformanceStage,PerformanceOperation,PerformanceAdapter,PerformanceChPhase,PerformanceObservation} from '../../src/server/performance-observation.js';
-export const serverStages=['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall','incremental_session_reuse','coverage_witness_wall','page_path_lookup'] as const;
+export const serverStages=['pool_acquire','partition_lock','site_lock','ch_transport','authentication','temp_fill','aggregate_sql','json_serialize','manifest_sql','worker_facts_wall','publication_readback_wall','session_build_wall','remaining_ownership_wall','remaining_members_wall','remaining_complete_wall','incremental_session_reuse','coverage_witness_wall','page_path_lookup','site_shared_lock','stats_snapshot_hold'] as const;
 export function discoverLiteralPerformanceStages(source:string){return serverStages.filter(stage=>new RegExp(`measurePerformanceStage\\(\\s*['"]${stage}['"]`).test(source));}
 const adapters=['canonical','facts','session_headers','remaining','cache','mirror','other'] as const;
 const operations=['http_request','background_worker','database_migration','operator'] as const;
@@ -13,7 +13,16 @@ const bounds=[1,5,10,50,100,500,1000,5000,Infinity];
 const add=(a:number,b:number)=>Math.min(Number.MAX_SAFE_INTEGER,a+b);
 const createCounts=()=>Object.fromEntries(countFields.flatMap(field=>[[field,0],[`${field}MeasuredCalls`,0]])) as Counts;
 const summarize=<T extends Aggregate>(entry:T)=>({...entry,...Object.fromEntries(countFields.map(field=>[field,entry[`${field}MeasuredCalls`]?entry[field]:null])),histogram:[...entry.histogram],upperBoundsMs:bounds.map(value=>Number.isFinite(value)?value:null)});
-export function createServerPhaseMetrics(instrumentedStages:ReadonlySet<PerformanceStage>){
+export interface ServerPhaseMetricsOptions {timeline?:boolean;maxTimeline?:number;maxTimelineScopes?:number;originMs?:number;timelineStages?:readonly PerformanceStage[]}
+/** Optional diagnostic view: anonymous scope numbers are local to this instance. */
+export function createServerPhaseMetrics(instrumentedStages:ReadonlySet<PerformanceStage>,options:ServerPhaseMetricsOptions={}){
+ const timelineEnabled=options.timeline??false,maxTimeline=options.maxTimeline??10000,maxTimelineScopes=options.maxTimelineScopes??400,originMs=options.originMs??performance.now();
+ if(typeof timelineEnabled!=='boolean'||!Number.isSafeInteger(maxTimeline)||maxTimeline<1||maxTimeline>10000||!Number.isSafeInteger(maxTimelineScopes)||maxTimelineScopes<1||maxTimelineScopes>400||!Number.isFinite(originMs)||originMs<0||originMs>Number.MAX_SAFE_INTEGER)throw Error('INVALID_TIMELINE_OPTIONS');
+ const requestedTimelineStages=options.timelineStages??serverStages;if(!Array.isArray(requestedTimelineStages)||requestedTimelineStages.length>serverStages.length||requestedTimelineStages.some(stage=>!serverStages.includes(stage)))throw Error('INVALID_TIMELINE_STAGES');const timelineStages=new Set(requestedTimelineStages);
+ const timelineScopes=new Map<string,number>();let scopeLimitReached=false,timelineLimitReached=false,invalidTimelineObservations=0,timingUnavailable=0;
+ const timeline:{scope:number;operation:PerformanceOperation;stage:PerformanceStage;route:'collect'|'stats'|'other'|null;startMs:number;endMs:number;durationMs:number;result:'success'|'failure'}[]=[];
+ const scopeNumber=(correlationId:string):number|null=>{if(!timelineEnabled||typeof correlationId!=='string'||!/^[-a-f0-9]{36}$/i.test(correlationId))return null;const known=timelineScopes.get(correlationId);if(known!==undefined)return known;if(timelineScopes.size>=maxTimelineScopes){scopeLimitReached=true;return null;}const number=timelineScopes.size+1;timelineScopes.set(correlationId,number);return number;};
+ const recordTimeline=(observation:Readonly<PerformanceObservation>)=>{if(!timelineEnabled||!timelineStages.has(observation.stage))return;const {startedAtMs,endedAtMs,route}=observation;if(startedAtMs===undefined&&endedAtMs===undefined){timingUnavailable=add(timingUnavailable,1);return;}if(!Number.isFinite(startedAtMs)||!Number.isFinite(endedAtMs)||startedAtMs<0||endedAtMs<startedAtMs||endedAtMs>Number.MAX_SAFE_INTEGER||Math.abs((endedAtMs-startedAtMs)-observation.durationMs)>1||route!==undefined&&!['collect','stats','other'].includes(route)){invalidTimelineObservations=add(invalidTimelineObservations,1);return;}const scope=scopeNumber(observation.correlationId);if(scope===null)return;if(timeline.length>=maxTimeline){timelineLimitReached=true;return;}timeline.push({scope,operation:observation.operation,stage:observation.stage,route:route??null,startMs:startedAtMs-originMs,endMs:endedAtMs-originMs,durationMs:observation.durationMs,result:observation.result});};
  const metrics=new Map<string,Aggregate>();
  const fallbackCounts=new Map<string,number>();
  const adapterMetrics=new Map<string,Aggregate&{adapter:PerformanceAdapter}>();
@@ -34,9 +43,11 @@ export function createServerPhaseMetrics(instrumentedStages:ReadonlySet<Performa
   const key=observation.operation+':'+observation.stage;const entry=metrics.get(key)??create(observation);update(entry,observation);metrics.set(key,entry);
   const adapter=observation.adapter??'other';const adapterKey=adapter+':'+key;const byAdapter=adapterMetrics.get(adapterKey)??{...create(observation),adapter};update(byAdapter,observation);adapterMetrics.set(adapterKey,byAdapter);
   if(observation.stage==='ch_transport'){const chPhase=observation.chPhase??'other',phaseKey=adapter+':'+observation.operation+':'+chPhase;const byPhase=chPhaseMetrics.get(phaseKey)??{...create(observation),adapter,chPhase};update(byPhase,observation);chPhaseMetrics.set(phaseKey,byPhase);}
+  recordTimeline(observation);
   if(samples.length<256)samples.push({operation:entry.operation,stage:entry.stage,durationMs:observation.durationMs,result:observation.result});else samplesTruncated=true;
  }catch{invalidObservations=add(invalidObservations,1);}};
- return {sink,snapshot(){return {
+ return {sink,scopeNumber,snapshot(){return {
+  ...(timelineEnabled?{timeline:{stages:[...timelineStages],originMonotonicMs:originMs,entries:timeline.map(entry=>({...entry})),registeredScopes:timelineScopes.size,maxScopes:maxTimelineScopes,maxEntries:maxTimeline,scopeLimitReached,entryLimitReached:timelineLimitReached,invalidObservations:invalidTimelineObservations,timingUnavailable,meaning:'Anonymous instance-local scopes; monotonic elapsed endpoints include nested/overlapping calls. Do not add timeline durations to aggregates or interpret them as CPU. Missing route is unclassified; ordering is observation arrival, not start time.'}}:{}),
   incrementalFallbackReasons:incrementalFallbacks.map(reason=>({reason,plans:fallbackCounts.get(reason)??0})),incrementalFallbackMeaning:'fixed allowlisted reason counters, cumulative observed reason events (feature_disabled/not_strict are full-plan reasons, not actual fallbacks); not unique people or IDs; arbitrary text rejected',
   adapterAggregates:[...adapterMetrics.values()].map(summarize),adapterAggregationBound:adapters.length*operations.length*serverStages.length,
   adapterMeaning:'fixed store label; other includes unlabelled observations; original operation/stage aggregate remains unchanged',

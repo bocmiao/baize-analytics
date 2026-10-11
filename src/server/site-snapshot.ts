@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import type {PoolClient} from 'pg';
 import {lockPartitionWrites} from './db.js';
 /** Obtain every waiting gate before fixing RR, so completed deletion is visible. */
@@ -6,7 +7,7 @@ export async function beginSiteSnapshot(client:PoolClient,siteId:string){
  let heldPartition=false,heldSite=false;
  try{
   await client.query(`SELECT pg_advisory_lock_shared(${partition})`);heldPartition=true;
-  await client.query('SELECT pg_advisory_lock_shared(hashtextextended($1,0))',[siteId]);heldSite=true;
+  await measurePerformanceStage('site_shared_lock',()=>client.query('SELECT pg_advisory_lock_shared(hashtextextended($1,0))',[siteId]));heldSite=true;
   await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
   await lockPartitionWrites(client);
   await client.query('SELECT pg_advisory_xact_lock_shared(hashtextextended($1,0))',[siteId]);

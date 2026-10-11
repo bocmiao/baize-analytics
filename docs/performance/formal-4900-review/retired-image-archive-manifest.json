@@ -1,0 +1,13 @@
+{
+  "image": "sha256:611d2da964e3bd60057e0bd38ca3d79f89b90bb98530e32878cc020bf1f9aae5",
+  "archive": "/tmp/baize-checkpoints-preserved-20261011/retired-image-611d-20261011/baize-image-611d2da964e3.docker-save.tar.gz",
+  "archiveBytes": 206273792,
+  "archiveSha256": "408b53486cb4a98706f9a614c2a8649b2140cd9765890e1aab3539b3f6c5945f",
+  "manifestConfigMatchesImage": true,
+  "containerUseChecked": true,
+  "workspaceAvailableBefore": 3328937984,
+  "workspaceAvailableAfter": 3331235840,
+  "netAvailableChangeBytes": 2297856,
+  "restore": "gzip -dc <archive> | docker load",
+  "protected": "current daaf image, all containers/volumes/source/evidence kept"
+}
