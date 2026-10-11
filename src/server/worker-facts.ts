@@ -1,3 +1,4 @@
+import {measurePerformanceStage} from './performance-observation.js';
 import {getCacheStore} from './cache-store.js';
 import {preserveStrictPublicationStaging} from './strict-fact-staging.js';
 import {prepareRemainingFactReadSource} from './remaining-fact-source.js';
@@ -23,7 +24,8 @@ import type {Claim} from './worker.js';
 
 export interface WorkerFactHooks {afterSnapshot?:()=>Promise<void>;afterSourceStarted?:(client:PoolClient)=>Promise<void>;leaseSeconds?:number;heartbeatIntervalMs?:number}
 /** Exact full-retained rebuild. One dedicated autocommit lease connection keeps max=1 source work live. */
-export async function rebuildSiteFacts(pool:Pool,claim:Claim,hooks:WorkerFactHooks={}):Promise<boolean>{
+export async function rebuildSiteFacts(pool:Pool,claim:Claim,hooks:WorkerFactHooks={}):Promise<boolean>{return measurePerformanceStage('worker_facts_wall',()=>rebuildSiteFactsInternal(pool,claim,hooks),{adapter:'facts'});}
+async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHooks):Promise<boolean>{
  const leaseSeconds=hooks.leaseSeconds??60,intervalMs=hooks.heartbeatIntervalMs??15000;
  if(!Number.isInteger(leaseSeconds)||leaseSeconds<1||!Number.isInteger(intervalMs)||intervalMs<10||intervalMs>=leaseSeconds*1000)throw Error('WORKER_LEASE_INTERVAL_INVALID');
  const renewer=new Client({...pool.options,application_name:'baize-worker-lease',connectionTimeoutMillis:5000,query_timeout:5000});
