@@ -154,3 +154,24 @@ The corrected frozen patch set completed **355 unit PASS, 0 FAIL, 0 SKIP** and *
 A subsequent narrow standalone-retention change keeps unbound default reads complete and inherits bound hydration explicitly. Its exact revised hash is recorded separately. The default-mode actual PG retention suite passed all six cases with zero skips; experiment-mode validation is recorded separately. These are scoped tests, not a complete integration directory, browser or new image claim. See SELECTED_FACT_HYDRATION_EXPERIMENT.md for the default-off switch and A/B protocol.
 
 Experiment-mode standalone retention also completed **6 PASS, 0 FAIL, 0 SKIP** on that revised binding. No source was changed while either mode ran.
+
+### 267f660 same-source 300 A/B: no demonstrated net benefit
+
+Same immutable SHA, CPU/memory resource envelope and original 50 events/1 second, independent 10-second query, queue 8/concurrency 2/drain 120 seconds. Separate random test schemas/namespaces and full bootstrap/cleanup were used. Only `BAIZE_PERF_SELECTED=0` versus `1` changed. Both runs passed: 300 accepted, six 202 batches, zero unsent/query/probe failures, drained final assertions, unchanged source and successful cleanup. This is one sequential pair, not statistical capacity evidence; it does not replace any 5000 FAIL.
+
+| Measurement | Complete | Selected |
+| --- | ---: | ---: |
+| Whole runner wall, including bootstrap/cleanup | 17.153 s | 17.290 s |
+| Largest child peak RSS | 547716 KiB | 488044 KiB |
+| HTTP facts authentication rows | 8506 | 8506 |
+| Selected TEMP inserted rows | unmeasured | 8506 |
+| HTTP facts TEMP cumulative time | 208.008 ms | 256.188 ms |
+| Independent query samples (intake/drain) | 1 / 0 | 1 / 0 |
+| Single independent query duration | 389.366 ms | 185.861 ms |
+| Final assertion wall | 1590.606 ms | 1438.613 ms |
+
+There is no demonstrated net improvement: the selected path authenticated and inserted all 8506 observed rows, while TEMP cost increased. The query has only one sample per mode, so its nominal P95 is merely that sample and is not a distribution or speedup claim. Complete-mode new projection counters are null/unmeasured, not zero rows. The experiment stays default-off. No 5000 rerun was started on this evidence.
+
+All six targets were 0/1000/2000/3000/4000/5000 ms. Main-loop target recognition lag ranged 0.075–6.341 ms (complete) and 0.069–5.488 ms (selected), with no queued backlog at recognition. Those timestamps measure target recognition, not HTTP dispatch. Existing-timer callback lag by intake/drain/final: complete mean 0.864/2.126/9.587 ms and maxima 64.971/75.798/75.238 ms; selected mean 1.333/2.208/10.139 ms and maxima 75.536/54.232/62.750 ms. Histogram totals match sample counts. These are scheduling observations, not CPU attribution, and cannot be used to infer the old 13-drop run's unmeasured event-loop behavior.
+
+Next bounded investigation is the 057 coverage closure, measured at 21 calls / 21.638 cumulative seconds in the 2705000 run. Its repeated selected-run predicates across fourteen tables are a hypothesis requiring actual SQL-stage evidence and exact old/new digest equality; not a claimed root cause. Original body authentication, count/hash/HMAC, publication and privacy barriers remain mandatory.
