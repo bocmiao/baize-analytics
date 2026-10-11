@@ -1,0 +1,46 @@
+{
+  "sourceSha": "88b90b88a05c12b7786af086b429f645b9dfa74b",
+  "checks": [
+    {
+      "operation": "http_request",
+      "adapter": "canonical",
+      "partitionMatches": true
+    },
+    {
+      "operation": "background_worker",
+      "adapter": "session_headers",
+      "partitionMatches": true
+    },
+    {
+      "operation": "background_worker",
+      "adapter": "facts",
+      "partitionMatches": true
+    },
+    {
+      "operation": "background_worker",
+      "adapter": "remaining",
+      "partitionMatches": true
+    },
+    {
+      "operation": "background_worker",
+      "adapter": "cache",
+      "partitionMatches": true
+    },
+    {
+      "operation": "background_worker",
+      "adapter": "canonical",
+      "partitionMatches": true
+    },
+    {
+      "operation": "http_request",
+      "adapter": "facts",
+      "partitionMatches": true
+    },
+    {
+      "operation": "http_request",
+      "adapter": "remaining",
+      "partitionMatches": true
+    }
+  ],
+  "allPassed": true
+}
