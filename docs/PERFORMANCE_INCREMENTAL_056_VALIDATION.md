@@ -81,3 +81,6 @@ v16 新增精确状态读取诊断后仍实际 1 FAIL / 0 SKIP，约 30.24 秒�
 
 
 v17 精确 head 诊断仍实际 1 FAIL / 0 SKIP，但定位到首次不一致：选中最新 generation12（等于 processed12），并非错选旧高代 run；epoch_matches=true、authority_matches=false、dirty=true、deletion_advanced=true。恢复后的 createApp 即使 background:false 仍正常重放删除 journal，推进删除 epoch，夹具随后未运行 worker 就查询旧聚合。生产 guard 正确拒绝。下一修订按真实启动契约等待真实 worker 发布，并显式检查 dirty/错误/队列清净，不改 selector、不放宽删除或签名检查。
+
+
+v18 独立恢复修订真实 1 PASS / 0 FAIL / 0 SKIP，EXIT0，总 runner 31.66 秒（测试约 30 秒，夹具既有显式 180 秒上限）。生产源码与 6434ed6 一致，夹具增加真实启动 journal 后有界 worker 发布检查。最新 journal 再删 A 后 generation12→13，原 365 天 witness 保持；同区间源/目标 totals、pages、LCP900 sampleCount1、funnels[1,1] 精确差分通过。多 run 导入、carry、旧 receipt/hash 认证、A 无贡献、B 身份、收入别名及源原始签名/正文不变全部通过。Centroid 可重建 privacy 标记可能仍存在，reader 用真实已认证 V2 样本；不宣称所有标记清空。仅测试自身资源已清理，旧 FAIL 全保留。此为独立恢复全链专项，不是最新源码完整应用/浏览器/镜像或 5000 性能验收。
