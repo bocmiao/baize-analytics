@@ -7,11 +7,11 @@
 | 源/阶段 | 实际结果与边界 |
 |---|---|
 | 5c02abf正式全轮 | actualEXIT0：229单元+439真实集成=668后端，0fail/0skip/0unhandled；30检查（28真实Chromium+2日期）全PASS，freshCompose清理完成；证据main-5c02abf-full-* |
-| 新055镜像 | root86029正在执行，尚未完成，不预称通过 |
-| 新固定负载 | 未运行；旧d67固定负载与PG/strict容量探索各按原SHA保留，不能冲销性能FAIL |
+| 新055镜像 | 实际EXIT0，56DDL/394manifest/独立签名恢复、源不变及失败拒绝；见 main-5c02abf-image-* |
+| 新固定负载 | 整体EXIT1：1000PASS finalHTTP3.881271447秒；5000FAIL全部5000accepted/0unsent/36delayed/queryfail0，120秒未排空、lastBacklog2600、最终断言未通过；见 main-5c02abf-fixed-*，旧FAIL/容量探索保留 |
 | Git/托管/UI | Git授权恢复、正常push5c成功并校验bundle；视觉方向暂停，托管全部禁止 |
 
-原d88157P01与7ed25P04完整EXIT1保持历史失败。旧d67的645/30/镜像不外推055当前源；新性能与镜像结果单独等待。
+原d88157P01与7ed25P04完整EXIT1保持历史失败。旧d67的645/30/镜像不外推055当前源；新镜像已单独验收，固定5000仍FAIL；不称性能收工或触发托管。
 
 ## 原回合交接历史原文（失败与当时授权状态保留）
 
