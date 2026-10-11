@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "d67bb8aeda34652010125e889019392aaa0788f8",
+  "status": "Authentic published pre055 producer; no algorithm modifications",
+  "files": [
+    {
+      "originalPath": "src/server/fact-store.ts",
+      "fixture": "tests/fixtures/pre055-fact-store.ts",
+      "originalSha256": "9275f8cd1944479221d5d5e39364924a3bbd969cc37c8a2de65a82af54c586d0",
+      "fixtureSha256": "f1786a7cecc9ce262473d5e1268d6d7ba39f37ae255813a28a2530276b86cd50",
+      "change": "Only relative import paths; legacy fact backup uses frozen legacy fact adapter."
+    },
+    {
+      "originalPath": "src/server/fact-body-backup.ts",
+      "fixture": "tests/fixtures/pre055-fact-body-backup.ts",
+      "originalSha256": "34958fdf534cf0f5f0428f9a81e853883c86bd547a138a90a7fe5fd1806d7aed",
+      "fixtureSha256": "636a93872cbc38c6cb88fa60d60296ae856563313cb6e89547b8489b8670b071",
+      "change": "Only relative import paths; legacy fact backup uses frozen legacy fact adapter."
+    },
+    {
+      "originalPath": "src/server/history-namespace-backup.ts",
+      "fixture": "tests/fixtures/pre055-history-namespace-backup.ts",
+      "originalSha256": "87a021a1d6a3d17bb62501c7056399b111d65f0599d15aba5b243191ab0af780",
+      "fixtureSha256": "c174589ce52730b3674da83f60a6919681cf457bb7c521e0c7099e242a2f528f",
+      "change": "Only relative import paths; legacy fact backup uses frozen legacy fact adapter."
+    }
+  ]
+}

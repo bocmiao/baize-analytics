@@ -1,5 +1,13 @@
 # 有界事实合批读取候选：只读评估
 
+## 当前候选实施状态（2026-10-11 UTC）
+
+唯一finite bounded候选目前在本地WIP实作，尚未交付：C store新增055 hint/MAC/严格EOF JSONEachRow，B显式v1/v2备份profile，root readiness与history sidecar profile，A准备真实专项。当前仅typing与轻量C16/B3单元通过；真实PG/CH、镜像、收益未验收，不能把static通过写成完成。已验功能645/30/image仍绑定既有d67应用源，不外推此候选。remote e441仍push blocked，无托管；GC后9.1GiB仅观察，不代表新清理或资源SLO。
+
+## 历史d67设计起点（保留原结论）
+
+以下“未实现/未创建055/生产三批”仅描述当时d67设计起点；后续WIP状态以上方为准。原容量与5000FAIL记录保持，不据合批设计预称提速。
+
 本记录仅为后续候选设计，**未实现、未实测**。当前生产读取仍最多三批；未创建055迁移，未增加byte hint、12批读取、SELECT JSONEachRow协议或备份v2。下一步优先探索普通PG与strict模式各自的低速容量包络，不增加batch数掩盖现有慢查询。
 
 ## 实际源码与证据边界
@@ -47,3 +55,18 @@ hint与实际响应都必须受检查。hint低估、实际编码超过所声明
 必要验证包括：合法最大Unicode/slash正文、sentinel101、12批末批故障无early yield、混kind尾及NULL路径、hint低估/篡改/越界、累计预算typed拒绝、删除保守hint、恢复重封装hint、旧v1原签名包升级恢复、新包metadata篡改，以及max1事务/连接清理。此次没有执行这些测试。
 
 预期作用仅是减少CH合批SELECT次数和网络往返；不会自动减少逐记录SHA/HMAC或TEMP写入，也不会改变PG manifest查询次数。保持站点锁、同RR snapshot、source/deletion epoch fence、完整认证与原响应/操作预算。不存在跨record、跨请求、跨epoch缓存，未修改CH ORDER BY或权威模型。若serializer或备份兼容证明不能闭合，应停止此候选，保持当前三批实现。
+
+## 2026-10-11 授权候选实现状态（未收益实测）
+
+根已授权唯一候选的轻量代码实现。新增055_fact_response_budget.sql及两个pure helper，fact-store producer从实际sealedbody计算hint并签immutable source，reader仅对有可信hint的组使用普通JSONEachRow；旧NULL组仍最多3。本节取代上文“未创建”作为在制状态，原只读阶段记录保留。最大12不是已验收容量或性能承诺；没有运行负载、真实PG/CH或镜像，实际serializer/旧签名恢复验收尚待根串行闸。
+
+官方文档网页请求实际403；随后只读获取官方v25.8.1.5101-lts源码：
+
+- [JSONEachRowRowOutputFormat.cpp](https://github.com/ClickHouse/ClickHouse/blob/v25.8.1.5101-lts/src/Processors/Formats/Impl/JSONEachRowRowOutputFormat.cpp)：普通格式注册pretty=false；array_of_rows=false时每行{、逗号、}及LF，无meta/statistics；exception suffix另行输出。
+- [JSONUtils.cpp](https://github.com/ClickHouse/ClickHouse/blob/v25.8.1.5101-lts/src/Formats/JSONUtils.cpp)：非pretty字段名/值序列化。
+
+固定四字段规范ASCII UUID/hex/base64，slash escaping关闭，紧凑JSON行含LF的非base64开销精确227字节，512为保守值。decoder还要求原行等于JSON.stringify(parsedRow)，拒pretty、重复JSON字段、额外progress/exception、非规范编码及缺LF；这是形式论证加pure测试，尚不冒称真实CH已满足。已有原三批near32KiB最大合法正文合同保持；新hint单sealedbody上限33027，不静默降低原上限。
+
+备份owner独占fact-body-backup.ts，约定v1固定044历史三表列投影、v2新增response_byte_upper_bound/response_bound_seal及独立metadata profile/HMACdomain。054仅索引未改列。新增列后旧v1不能直接当前全行to_jsonb；所有原HMAC/checksum检查须保留。
+
+轻量检查（2026-10-11，冻结源码摘要，非真实PG/CH验收）：完整`npm run typecheck` EXIT0；owned ESLint EXIT0；`fact-response-budget.test.ts`4 + `fact-json-each-row.test.ts`4 + 既有`fact-pair-response.test.ts`7 =15 PASS/0 FAIL。六个实现/迁移/测试文件hash前后一致，`git diff --check`通过。初次在制typecheck的prepared推断和kind类型错误保留在临时日志，修复后重新冻结再检查。真实serializer、迁移、备份兼容、删除恢复及性能仍未运行。

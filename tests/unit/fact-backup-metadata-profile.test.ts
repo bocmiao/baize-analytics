@@ -1,0 +1,10 @@
+import {describe,it,expect} from 'vitest';
+import {factBackupMetadataProjection,factBackupManifestDomain,FACT_BACKUP_METADATA_PROFILE,type FactBackupMetadataTable} from '../../src/server/fact-body-backup.js';
+describe('explicit signed fact backup metadata profiles',()=>{
+ it('v1 keeps exact 044 columns including nullable source and timestamp types',()=>{
+  expect(factBackupMetadataProjection('analytics_fact_store_runs',1)).toBe("jsonb_build_object('run_id',t.run_id,'site_id',t.site_id,'kind',t.kind,'state',t.state,'aggregation_epoch',t.aggregation_epoch,'source_aggregation_epoch',t.source_aggregation_epoch,'canonical_epoch',t.canonical_epoch,'deletion_epoch',t.deletion_epoch)");
+  const batch=factBackupMetadataProjection('analytics_fact_store_batches',1);expect(batch).toContain("'created_at',t.created_at");expect(batch).not.toContain('response_');expect(batch).not.toContain('::text');expect(factBackupManifestDomain({version:1})).toBe('baize-fact-body-backup-v1');
+ });
+ it('v2 explicitly covers both response fields and separates signature domain',()=>{const projection=factBackupMetadataProjection('analytics_fact_store_batches',2);expect(projection).toContain("'response_byte_upper_bound',t.response_byte_upper_bound,'response_bound_seal',t.response_bound_seal");expect(factBackupMetadataProjection('analytics_fact_store_members',2)).toBe(factBackupMetadataProjection('analytics_fact_store_members',1));expect(factBackupManifestDomain({version:2,metadataProfile:FACT_BACKUP_METADATA_PROFILE})).toBe('baize-fact-body-backup-v2');});
+ it('rejects unknown or crossed profile versions without retrying another checksum',()=>{for(const value of [{version:1,metadataProfile:FACT_BACKUP_METADATA_PROFILE},{version:2},{version:2,metadataProfile:'unknown'},{version:3}])expect(()=>factBackupManifestDomain(value)).toThrow('FACT_BACKUP_SIGNATURE_OR_SCOPE_INVALID');expect(()=>factBackupMetadataProjection('constructor' as FactBackupMetadataTable,1)).toThrow('FACT_BACKUP_METADATA_PROFILE_INVALID');expect(()=>factBackupMetadataProjection('analytics_fact_store_runs',3 as 1)).toThrow('FACT_BACKUP_METADATA_PROFILE_INVALID');});
+});

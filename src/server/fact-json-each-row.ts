@@ -1,0 +1,15 @@
+import {ApplicationError} from '../shared/error-codes.js';
+import {FACT_RESPONSE_CAP} from './fact-response-budget.js';
+import type {DecodedFactPairRow} from './fact-pair-response.js';
+const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+const hex=/^[a-f0-9]{64}$/;
+/** Ordinary compact JSONEachRow, array_of_rows=0, escape_forward_slashes=0.
+ * Valid ASCII projected row framing is 227 bytes excluding base64; bound512.
+ * Reject unknown progress/exception/provider fields rather than treating them as data. */
+export function decodeFactJsonEachRow(text:string,attempts:readonly string[],bounds:readonly number[]):DecodedFactPairRow[][]{
+ if(attempts.length<1||attempts.length>12||new Set(attempts).size!==attempts.length||attempts.some(a=>!uuid.test(a))||bounds.length!==attempts.length||bounds.some(b=>!Number.isSafeInteger(b)||b<=0||b>FACT_RESPONSE_CAP)||Buffer.byteLength(text)>FACT_RESPONSE_CAP||bounds.reduce((a,b)=>a+b,0)>FACT_RESPONSE_CAP)throw Error('FACT_STORE_READ_LIMIT');
+ if(text&&!text.endsWith('\n'))throw Error('FACT_STORE_BODY_UNAVAILABLE');const groups:DecodedFactPairRow[][]=attempts.map(()=>[]),sizes=attempts.map(()=>0),keys=attempts.map(()=>new Set<string>());
+ const lines=text?text.slice(0,-1).split('\n'):[];if(lines.length>attempts.length*101)throw Error('FACT_STORE_READ_LIMIT');
+ for(const line of lines){let row:Record<string,unknown>;try{row=JSON.parse(line);}catch{throw Error('FACT_STORE_BODY_UNAVAILABLE');}if(row&&typeof row==='object'&&!Array.isArray(row)&&Object.keys(row).length===1&&Object.hasOwn(row,'exception')&&row.exception!==null&&row.exception!==undefined&&row.exception!=='')throw new ApplicationError('canonical_unavailable');if(line!==JSON.stringify(row))throw Error('FACT_STORE_BODY_UNAVAILABLE');if(!row||typeof row!=='object'||Array.isArray(row)||Object.keys(row).sort().join(',')!=='attempt_id,body_base64,body_hash,row_key')throw Error('FACT_STORE_BODY_UNAVAILABLE');const {attempt_id,row_key,body_hash,body_base64}=row;if(typeof attempt_id!=='string'||!uuid.test(attempt_id)||typeof row_key!=='string'||!hex.test(row_key)||typeof body_hash!=='string'||!hex.test(body_hash)||typeof body_base64!=='string'||body_base64.length>44036||! /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body_base64))throw Error('FACT_STORE_BODY_UNAVAILABLE');const index=attempts.indexOf(attempt_id);if(index<0||keys[index]!.has(row_key))throw Error('FACT_STORE_BODY_UNAVAILABLE');sizes[index]!+=Buffer.byteLength(line)+1;if(sizes[index]!>bounds[index]!)throw Error('FACT_STORE_RESPONSE_BOUND_INVALID');if(groups[index]!.length>=100)throw Error('FACT_STORE_READ_LIMIT');const bytes=Buffer.from(body_base64,'base64');if(bytes.toString('base64')!==body_base64||bytes.length>33027)throw Error('FACT_STORE_BODY_UNAVAILABLE');let body:string;try{body=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);}catch{throw Error('FACT_STORE_BODY_UNAVAILABLE');}keys[index]!.add(row_key);groups[index]!.push({row_key,body_hash,body});}
+ for(const group of groups)group.sort((a,b)=>a.row_key<b.row_key?-1:a.row_key>b.row_key?1:0);return groups;
+}
