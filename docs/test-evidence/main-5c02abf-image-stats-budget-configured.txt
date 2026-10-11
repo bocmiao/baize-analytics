@@ -1,0 +1,1 @@
+{"deadlineMs":120000,"maxSelects":20000,"maxDecodedBytes":2147483648}

@@ -1,0 +1,78 @@
+{
+  "sourceCommit": "5c02abf45d1cdc235ac203e7d42f8f1a3420a008",
+  "exit": 0,
+  "imageId": "f4714671f28f27320e9d6d4a3abb7304fabddf27214857a400234a691bdf6934",
+  "sourceManifestFiles": 394,
+  "migrationFiles": 56,
+  "scope": "local image install and actual independent target signed recovery; no external deploy or traffic switch",
+  "cleanup": "completed; original fixture services retained",
+  "rawExcluded": [
+    "state.json",
+    "services.txt",
+    "target.yml",
+    "generated .env and runtime keys"
+  ],
+  "artifacts": [
+    {
+      "file": "main-5c02abf-image-source.sha256",
+      "sha256": "f3be579266be50de5723a57f61ec90e3a32f69bbd44caf5adece11088068b7bd"
+    },
+    {
+      "file": "main-5c02abf-image-image.sha256",
+      "sha256": "f3be579266be50de5723a57f61ec90e3a32f69bbd44caf5adece11088068b7bd"
+    },
+    {
+      "file": "main-5c02abf-image-source-image.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "main-5c02abf-image-image.id",
+      "sha256": "cad1c16781adc11b13b3e5d91549ef74904e16249e834ef44f82ed457f7a4416"
+    },
+    {
+      "file": "main-5c02abf-image-build-input.sha256",
+      "sha256": "919d60bd736febb23b0080fd2310eb76e60a162da1132346e9699d6979e06dd2"
+    },
+    {
+      "file": "main-5c02abf-image-migrations.txt",
+      "sha256": "415bc389f1b76562401366cec535cd24527d7e0d6bf8d1520038b49ae6c0d2e6"
+    },
+    {
+      "file": "main-5c02abf-image-stats-budget-configured.txt",
+      "sha256": "8805bdd478636b0da4d6071f0b954a6057cdf1548e44f97f1ca2ed4f732c49a4"
+    },
+    {
+      "file": "main-5c02abf-image-migration-054-installed.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "file": "main-5c02abf-image-index-054-installed.txt",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "file": "main-5c02abf-image-migration-055-constraints.txt",
+      "sha256": "c1ec8ce6cadcdc2eff5d41f9a9d9d6084c27d21a136eaf3a3074c6c2caa1a89b"
+    },
+    {
+      "file": "main-5c02abf-image-notices.txt",
+      "sha256": "eb01845f448cb9f74acdd2600cfb3ec58538cb83c5b46769937c4f83cd2a889a"
+    },
+    {
+      "file": "main-5c02abf-image-target-isolation.txt",
+      "sha256": "70af17bc0484d4236c76e64c9152c720044e3e026d35204f2f8f1dad5be97828"
+    },
+    {
+      "file": "main-5c02abf-image-native-entry.txt",
+      "sha256": "bd36138267775b7f60be520eea18800d8de3c34c2f2f0dfbbbf92039f87f461f"
+    },
+    {
+      "file": "main-5c02abf-image-result.json",
+      "sha256": "002362a17c8d4aa5619a8bd7ed4dc4dc5dac1c4d3517d3d07b95739e80c03634"
+    },
+    {
+      "file": "main-5c02abf-image-cleanup.txt",
+      "sha256": "39911bd01a025e1506fd6a4f2b4b8701e60d796badb0c334c6332b1e0ad55c73"
+    }
+  ],
+  "hostedCI": "forbidden; not triggered"
+}
