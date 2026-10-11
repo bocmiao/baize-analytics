@@ -1,0 +1,33 @@
+/workspace/baize-analytics/node_modules/pg/lib/client.js:694
+          Error.captureStackTrace(err)
+                ^
+
+error: relation "goals" does not exist
+    at /workspace/baize-analytics/node_modules/pg/lib/client.js:694:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async current (/tmp/baize-ops-07e9216/src/server/fact-coverage-witness.ts:26:15)
+    at async advanceFactCoverageWitness (/tmp/baize-ops-07e9216/src/server/fact-coverage-witness.ts:80:20)
+    at async replaySite (/tmp/baize-ops-07e9216/src/server/deletion.ts:194:5)
+    at async transaction (/tmp/baize-ops-07e9216/src/server/db.ts:11:51)
+    at async replayDeletionJournal (/tmp/baize-ops-07e9216/src/server/deletion.ts:196:61)
+    at async <anonymous> (/tmp/baize-ops-07e9216/scripts/restore-runtime.ts:43:2508) {
+  length: 104,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '33',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+
+Node.js v24.19.0
