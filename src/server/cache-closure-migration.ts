@@ -9,7 +9,7 @@ import {assertCurrentFactRangeBacking} from './fact-range-backing.js';
 import {withRemainingFactReadSource} from './remaining-fact-source.js';
 import {exportedPublishedRollups} from './published-export-projections.js';
 import type {Pool} from 'pg';
-import {sanitizeDailyValue} from './daily-privacy-policy.js';
+import {sanitizeDailyCacheBucket} from './daily-cache-privacy.js';
 /** Actual original PG cache → immutable per-bucket CH pointers. Site lock plus
  * clean state protects the source baseline and captured canonical batch coverage.
  * Each body has its original currency and weighted centroid representation.
@@ -38,7 +38,7 @@ export async function migratePublishedCacheClosure(c:PoolClient,store:ClickHouse
  for(const [kind,table]of Object.entries({hourly_rollup:'stats_hourly',daily_rollup:'stats_daily',page_centroid:'page_vitals',heatmap_cache:'heatmap_points'}) as [CacheKind,string][]){
   const cursor='cache_closure_'+randomUUID().replaceAll('-','');await c.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT to_jsonb(t) body FROM ${table} t WHERE site_id=$1 ORDER BY to_jsonb(t)::text`,[site]);let count=0;
   try{for(;;){const batch=(await c.query(`FETCH 100 FROM ${cursor}`)).rows;if(!batch.length)break;for(const item of batch){
-   const body=item.body;if(state.privacy_mode==='daily_salt'){if(canonical(sanitizeDailyValue(body.data??{}))!==canonical(body.data??{}))throw Error('CACHE_MIGRATION_DAILY_UNSAFE_BODY');if((kind==='hourly_rollup'||kind==='daily_rollup')&&body.data?.relationalVersion!==2)throw Error('CACHE_MIGRATION_DAILY_LEGACY_SOURCE_UNAVAILABLE');}
+   const body=item.body;if(state.privacy_mode==='daily_salt'){if(canonical(sanitizeDailyCacheBucket(body.data??{}))!==canonical(body.data??{}))throw Error('CACHE_MIGRATION_DAILY_UNSAFE_BODY');if((kind==='hourly_rollup'||kind==='daily_rollup')&&body.data?.relationalVersion!==2)throw Error('CACHE_MIGRATION_DAILY_LEGACY_SOURCE_UNAVAILABLE');}
    const owner=randomUUID(),normalized=normalizeCacheRow(site,owner,kind,body),key=cacheRowKey(kind,normalized),pointer=(await c.query('SELECT owner_id FROM analytics_cache_pointers WHERE site_id=$1 AND kind=$2 AND row_key=$3',[site,kind,key])).rows[0];
    const routingControl=(kind==='hourly_rollup'||kind==='daily_rollup')&&body.data&&typeof body.data==='object'&&Object.keys(body.data).every(k=>k==='relationalVersion'||k==='cacheBodyStored'||k==='relationalUnavailable')&&(body.data.relationalVersion===2||body.data.cacheBodyStored===true);
    if(pointer){let matches=0,keyMatches=0,olderSource=false;for await(const published of store.streamRows(c,site,pointer.owner_id,kind))for(const record of published)if(cacheRowKey(kind,record.row)===key){keyMatches++;olderSource=BigInt(record.source.generation)<BigInt(state.processed_generation);

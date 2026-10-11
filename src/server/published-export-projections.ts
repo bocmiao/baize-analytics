@@ -1,16 +1,25 @@
 import type {PoolClient} from 'pg';
 import {factReadSql} from './fact-read-context.js';
+import {sessionContributionPredicate,assertSessionContributionOwners} from './session-contribution-overlay.js';
+import {factAuthorityMatches} from './fact-authority.js';
 /** Reconstruct compatibility views from authenticated remaining-fact relations,
  * retaining precise owner selection and the existing export table bound. */
 export async function exportedPublishedSessions(c:PoolClient,site:string){
  return (await c.query(factReadSql(c,`SELECT DISTINCT ON(e.session_id) e.session_id AS id,$1::text AS site_id,e.visitor_id,d.*,r.generation FROM analytics_session_facts e JOIN analytics_fact_runs r ON r.id=e.run_id JOIN aggregation_state a ON a.site_id=r.site_id LEFT JOIN analytics_session_contribution_heads h ON h.site_id=r.site_id AND h.session_id=e.session_id CROSS JOIN LATERAL jsonb_to_record(e.data)d(started_at timestamptz,last_active timestamptz,entry_path text,exit_path text,pageviews integer,duration_s double precision,visible_ms double precision,bounced boolean,dimensions jsonb) WHERE r.site_id=$1 AND r.status='published' AND r.epoch=a.epoch AND (h.session_id IS NULL OR(h.run_id=e.run_id AND h.epoch=a.epoch AND h.generation<=a.processed_generation)) AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=e.visitor_id) ORDER BY e.session_id,r.generation DESC,r.created_at DESC,r.id LIMIT 100001`),[site])).rows;
 }
 export async function exportedPublishedDefinitions(c:PoolClient,site:string){
- const run=(await c.query("SELECT r.id,r.generation FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND r.status='published' AND r.query_version=2 AND r.epoch=a.epoch ORDER BY r.generation DESC,r.created_at DESC LIMIT 1",[site])).rows[0];if(!run)return[];
- const sessions=Number((await c.query(factReadSql(c,'SELECT count(*)::text n FROM analytics_session_facts WHERE run_id=$1'),[run.id])).rows[0].n);
- const goalRows=(await c.query(factReadSql(c,"SELECT key->>0 id,sum(value)::float n FROM analytics_numeric_facts WHERE run_id=$1 AND bucket_kind='hourly' AND metric='goal' GROUP BY 1"),[run.id])).rows;
- const channels=(await c.query(factReadSql(c,"SELECT (key->>0)::jsonb->>'goalId' id,(key->>0)::jsonb->>'channel' channel,sum(value)::float n FROM analytics_numeric_facts WHERE run_id=$1 AND bucket_kind='hourly' AND metric='goalAttribution' GROUP BY 1,2"),[run.id])).rows;
- const steps=(await c.query(factReadSql(c,"SELECT key->>0 id,(key->>1)::int step,count(DISTINCT visitor_id)::int n FROM analytics_member_facts WHERE run_id=$1 AND bucket_kind='hourly' AND metric='funnel' GROUP BY 1,2"),[run.id])).rows;
+ const state=(await c.query('SELECT generation::text,processed_generation::text FROM aggregation_state WHERE site_id=$1',[site])).rows[0];
+ if(!state||state.generation!==state.processed_generation)throw Error('EXPORT_AGGREGATION_PENDING');
+ const run=(await c.query(`SELECT r.id,r.generation FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id LEFT JOIN canonical_event_authority c ON c.site_id=r.site_id WHERE r.site_id=$1 AND r.status='published' AND r.query_version=2 AND r.epoch=a.epoch AND r.generation=a.processed_generation AND ${factAuthorityMatches} ORDER BY r.generation DESC,r.created_at DESC LIMIT 1`,[site])).rows[0];if(!run)return[];
+ await assertSessionContributionOwners(c,site);
+ // Complete current session contributions include immutable older runs. Numeric/member
+ // run summaries cannot be unioned: they would count superseded contributions twice.
+ const selected=`${sessionContributionPredicate} AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=e.visitor_id)`;
+ const sessions=Number((await c.query(factReadSql(c,`SELECT COALESCE(sum(e.value),0)::text n FROM analytics_effect_facts e WHERE ${selected} AND NOT e.member AND e.metric='sessions'`),[site])).rows[0].n);
+ const goalRows=(await c.query(factReadSql(c,`SELECT e.key->>0 id,sum(e.value)::float n FROM analytics_effect_facts e WHERE ${selected} AND NOT e.member AND e.metric='goal' GROUP BY 1 LIMIT 100001`),[site])).rows;
+ const channels=(await c.query(factReadSql(c,`SELECT (e.key->>0)::jsonb->>'goalId' id,(e.key->>0)::jsonb->>'channel' channel,sum(e.value)::float n FROM analytics_effect_facts e WHERE ${selected} AND NOT e.member AND e.metric='goalAttribution' GROUP BY 1,2 LIMIT 100001`),[site])).rows;
+ const steps=(await c.query(factReadSql(c,`SELECT e.key->>0 id,(e.key->>1)::int step,count(DISTINCT e.visitor_id)::int n FROM analytics_effect_facts e WHERE ${selected} AND e.member AND e.metric='funnel' GROUP BY 1,2 LIMIT 100001`),[site])).rows;
+ if(goalRows.length>100000||channels.length>100000||steps.length>100000)throw Error('Export table exceeds 100000 rows');
  const goals=(await c.query('SELECT id,name FROM goals WHERE site_id=$1 ORDER BY id LIMIT 100001',[site])).rows.map(g=>{const conversions=Number(goalRows.find(r=>r.id===g.id)?.n??0);return {id:g.id,name:g.name,conversions,rate:sessions?conversions/sessions:0,channels:Object.fromEntries(channels.filter(r=>r.id===g.id).map(r=>[r.channel,Number(r.n)]))}});
  const funnels=(await c.query('SELECT id,name,steps FROM funnels WHERE site_id=$1 ORDER BY id LIMIT 100001',[site])).rows.map(f=>{const counts=f.steps.map((_:unknown,i:number)=>Number(steps.find(r=>r.id===f.id&&r.step===i)?.n??0));return {id:f.id,name:f.name,steps:counts,dropoff:counts.map((n:number,i:number)=>i?counts[i-1]-n:0),rate:counts[0]?counts.at(-1)/counts[0]:0}});
  if(goals.length>100000||funnels.length>100000)throw Error('Export table exceeds 100000 rows');return[{site_id:site,data:{goals,funnels},generation:run.generation}];

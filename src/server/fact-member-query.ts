@@ -55,6 +55,14 @@ export async function publishFactHourReferences(client:PoolClient,siteId:string,
  await client.query(factReadSql(client,`INSERT INTO analytics_relational_buckets SELECT $2,hour,r.id,r.epoch,r.generation FROM analytics_fact_runs r CROSS JOIN LATERAL(SELECT DISTINCT date_trunc('hour',event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour FROM analytics_effect_facts WHERE run_id=r.id) hours WHERE r.id=$1 AND hour>=$3`),[run,siteId,replaceFrom]);
 }
 
+/** A complete-owner delta may create routing for a new hour, but must never
+ * replace an existing mixed A/B hour's immutable backing reference. Caller
+ * owns the fenced publication transaction and already proved complete owners. */
+export async function appendMissingFactHourReferences(client:PoolClient,siteId:string,run:string,replaceFrom:Date){
+ if((await client.query('SELECT site_id FROM analytics_fact_runs WHERE id=$1',[run])).rows[0]?.site_id!==siteId)throw Error('FACT_SITE_SCOPE');
+ await client.query(factReadSql(client,`INSERT INTO analytics_relational_buckets SELECT $2,hour,r.id,r.epoch,r.generation FROM analytics_fact_runs r CROSS JOIN LATERAL(SELECT DISTINCT date_trunc('hour',event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AS hour FROM analytics_effect_facts WHERE run_id=r.id) hours WHERE r.id=$1 AND hour>=$3 AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets existing WHERE existing.site_id=$2 AND existing.hour=hours.hour) ON CONFLICT(site_id,hour) DO NOTHING`),[run,siteId,replaceFrom]);
+}
+
 /** Raw expiry does not erase unique archived aggregate membership; only unreferenced fact runs are disposable. */
 export async function pruneUnreferencedFactRuns(client:PoolClient,siteId:string):Promise<void>{
  const current=(await client.query("SELECT id FROM analytics_fact_runs WHERE site_id=$1 AND query_version=2 AND status='published' ORDER BY generation DESC,created_at DESC LIMIT 1",[siteId])).rows[0]?.id??null;
@@ -62,6 +70,11 @@ export async function pruneUnreferencedFactRuns(client:PoolClient,siteId:string)
  await client.query(`DELETE FROM analytics_fact_runs r WHERE site_id=$1 AND status<>'staging' AND id IS DISTINCT FROM $2::uuid AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.run_id=r.id) AND NOT ${carryRunReferenced}`,[siteId,current]);
  for(const table of ['analytics_effect_facts','analytics_vital_samples'])await client.query(`DELETE FROM ${table} e USING analytics_fact_runs r WHERE e.run_id=r.id AND r.site_id=$1 AND r.id IS DISTINCT FROM $2::uuid AND r.status='published' AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.run_id=r.id AND p.hour=date_trunc('hour',e.event_ts AT TIME ZONE 'UTC') AT TIME ZONE 'UTC') AND NOT (${table==='analytics_effect_facts'?carryEffectReferenced:carryVitalReferenced})`,[siteId,current]);
  // Older V2 runs are queried through provenance, not duplicate hourly/daily compatibility sets.
- for(const table of ['analytics_numeric_facts','analytics_member_facts','analytics_vitals_facts'])await client.query(`DELETE FROM ${table} f USING analytics_fact_runs r WHERE f.run_id=r.id AND r.site_id=$1 AND r.id IS DISTINCT FROM $2::uuid AND r.query_version=2 AND r.status='published'`,[siteId,current]);
+ // A delta publication replaces only dirty session owners. Older selected
+ // compatibility rows remain authoritative until their precise owner retires.
+ for(const table of ['analytics_numeric_facts','analytics_member_facts'])await client.query(`DELETE FROM ${table} f USING analytics_fact_runs r WHERE f.run_id=r.id AND r.site_id=$1 AND r.id IS DISTINCT FROM $2::uuid AND r.query_version=2 AND r.status='published' AND NOT EXISTS(SELECT 1 FROM analytics_session_contribution_heads h JOIN aggregation_state a ON a.site_id=h.site_id WHERE h.site_id=r.site_id AND h.run_id=f.run_id AND h.session_id=f.session_id AND h.epoch=a.epoch AND h.generation<=a.processed_generation)`,[siteId,current]);
+ // Legacy centroids have no session ownership key. Keep the complete run
+ // whenever any live head or archived hour still refers to it; never split a digest.
+ await client.query(`DELETE FROM analytics_vitals_facts f USING analytics_fact_runs r WHERE f.run_id=r.id AND r.site_id=$1 AND r.id IS DISTINCT FROM $2::uuid AND r.query_version=2 AND r.status='published' AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.run_id=r.id) AND NOT ${carryRunReferenced}`,[siteId,current]);
  await client.query("DELETE FROM analytics_session_facts f USING analytics_fact_runs r WHERE f.run_id=r.id AND r.site_id=$1 AND r.id IS DISTINCT FROM $2::uuid AND r.query_version=2 AND r.status='published' AND NOT EXISTS(SELECT 1 FROM analytics_effect_facts e WHERE e.run_id=f.run_id AND e.session_id=f.session_id) AND NOT EXISTS(SELECT 1 FROM analytics_fact_store_members m WHERE m.run_id=f.run_id AND m.kind='effects' AND m.session_id=f.session_id)",[siteId,current]);
 }

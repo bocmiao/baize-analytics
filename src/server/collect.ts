@@ -56,7 +56,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
       const canonicalTarget=await resolveCanonicalIngest(ctx.pool,client,site.id);
       const canonicalInput:CanonicalInput[]=[];
-      let changed=false;
+      let changed=false,eventsOnly=true;
       const verifyReceipt=async(eventId:string)=>{if(canonicalTarget&&!canonicalInput.some(input=>input.event.event_id===eventId))await verifyCanonicalRetryReceipt(client,site.id,canonicalTarget,eventId);};
       for(const [index,rawEvent] of envelope.events.entries()){
         const parsed=eventSchema.safeParse(rawEvent);if(!parsed.success){rejected.push({index,event_id:(rawEvent as any)?.event_id,reason:'invalid_event'});continue;}
@@ -105,10 +105,17 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         await ingestGovernance(client,site,clean as unknown as Record<string,unknown>,visitor,{canonical:Boolean(canonicalTarget)});
         if(!canonicalTarget)for(const [key,value] of Object.entries(clean.props??{}))await client.query('INSERT INTO event_data(site_id,event_id,ts,data_key,data_type,string_value,number_value,boolean_value) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[site.id,wire.event_id,new Date(wire.ts),key,typeof value==='string'?'s':typeof value==='number'?'n':'b',typeof value==='string'?value:null,typeof value==='number'?value:null,typeof value==='boolean'?value:null]);
         // Identity projection updates happen only on event-time identify transitions.
+        if(wire.type==='identify'||wire.type==='revenue')eventsOnly=false;
         await client.query('INSERT INTO outbox(site_id,event_id,ts,visitor_id) VALUES($1,$2,$3,$4)',[site.id,wire.event_id,new Date(wire.ts),visitor]);changed=true;accepted++;lastAcceptedEventTime=Math.max(lastAcceptedEventTime,wire.ts);
       }
       if(canonicalTarget)await publishCanonicalIngest(client,site.id,canonicalTarget,canonicalInput);
-      if(changed){await dirtySite(client,site.id);await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);await recordIntakeObservation(client,site.id,accepted,lastAcceptedEventTime);}
+      if(changed){
+        // Only this transaction's ordinary intake generation can be reused.
+        // Identity and globally ordered revenue invalidate the incremental baseline.
+        if(eventsOnly)await client.query("SELECT set_config('baize.aggregation_ingest_site',$1,true)",[site.id]);
+        try{await dirtySite(client,site.id);}finally{if(eventsOnly)await client.query("SELECT set_config('baize.aggregation_ingest_site','',true)");}
+        await client.query('UPDATE sites SET last_event_at=now() WHERE id=$1',[site.id]);await recordIntakeObservation(client,site.id,accepted,lastAcceptedEventTime);
+      }
     });
     if(ignored)return reply.code(204).send();
     return reply.code(202).send({accepted,duplicates,rejected,clock_skew:Math.abs(Date.now()-envelope.sent_at)>86400000});

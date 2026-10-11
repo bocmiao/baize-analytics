@@ -67,6 +67,10 @@ async function invalidateFactSegmentsInner(client:PoolClient,siteId:string,segme
 
 /** Rebase verified aggregate backing after restore/deletion; stale worker claims still fail their old epoch fence. */
 export async function rebasePublishedFactEpoch(client:PoolClient,siteId:string):Promise<void>{
+ // Caller already holds the authorised configuration/deletion/restore site gate.
+ // Match heads to their existing published owner BEFORE rotating that owner's
+ // epoch; unrelated stale/mismatched heads must not gain a valid epoch here.
+ for(const table of ['analytics_carry_heads','analytics_session_contribution_heads'])await client.query(`UPDATE ${table} h SET epoch=s.epoch FROM analytics_fact_runs r,aggregation_state s WHERE h.site_id=$1 AND r.id=h.run_id AND r.site_id=h.site_id AND s.site_id=h.site_id AND r.status='published' AND h.epoch=r.epoch AND h.generation<=r.generation AND r.generation<=s.generation`,[siteId]);
  await client.query("UPDATE analytics_fact_runs r SET epoch=s.epoch FROM aggregation_state s WHERE r.site_id=$1 AND s.site_id=r.site_id AND r.status='published' AND (r.query_version=2 OR EXISTS(SELECT 1 FROM analytics_carry_heads h WHERE h.site_id=r.site_id AND h.run_id=r.id) OR EXISTS(SELECT 1 FROM analytics_session_contribution_heads h WHERE h.site_id=r.site_id AND h.run_id=r.id) OR EXISTS(SELECT 1 FROM analytics_relational_buckets b WHERE b.site_id=r.site_id AND b.run_id=r.id))",[siteId]);
  await client.query('UPDATE analytics_relational_buckets p SET epoch=s.epoch FROM aggregation_state s WHERE p.site_id=$1 AND s.site_id=p.site_id',[siteId]);
  await client.query("DELETE FROM analytics_fact_runs WHERE site_id=$1 AND status<>'published'",[siteId]);
