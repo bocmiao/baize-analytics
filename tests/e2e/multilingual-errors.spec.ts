@@ -1,4 +1,4 @@
-import {navigateWorkspace} from './navigation';
+import {navigateWorkspace,openWorkspaceAccount} from './navigation';
 import { expect, test } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 test('real English login, revoked permission, share and unconfigured connector errors use stable safe messages', async ({ page, browser, baseURL }) => {
@@ -16,5 +16,5 @@ test('real English login, revoked permission, share and unconfigured connector e
         await viewer.goto(`${baseURL}/share/${randomUUID().replaceAll('-', '')}`); await expect(viewer.getByRole('alert')).toHaveText('HTTP 404: The share is unavailable, expired, revoked, or its password is invalid.');
         const invalid = await viewer.request.post('/api/login', { data: { email: 'acceptance@example.test', password: 'IncorrectPassword2026!' } }); expect(invalid.status()).toBe(401); expect((await invalid.json()).error).toBe('login_invalid');
     } finally { await context.close(); }
-    await page.goto('/app'); await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(site.id); await navigateWorkspace(page, "AI"); await page.getByLabel('Question', { exact: true }).fill('Explain the actual aggregate coverage.'); await page.getByRole('button', { name: 'Query and explain evidence', exact: true }).click(); await expect(page.getByRole('alert')).toHaveText('HTTP 409: Configure the connector first.'); await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
+    await page.goto('/app'); await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(site.id); await navigateWorkspace(page, "AI"); await page.getByLabel('Question', { exact: true }).fill('Explain the actual aggregate coverage.'); await page.getByRole('button', { name: 'Query and explain evidence', exact: true }).click(); await expect(page.getByRole('alert')).toHaveText('HTTP 409: Configure the connector first.'); await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
 });
