@@ -2,9 +2,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mode="${1:-regular}"
-case "$mode" in regular|heavy-ops|heavy-million) ;; *) echo 'Unknown CI mode' >&2; exit 2;; esac
-if [ "$mode" = regular ] && [ "${CI_RUNNER_IN_COMPOSE:-0}" = 1 ]; then
+case "$mode" in regular|browser-only|heavy-ops|heavy-million) ;; *) echo 'Unknown CI mode' >&2; exit 2;; esac
+if { [ "$mode" = regular ] || [ "$mode" = browser-only ]; } && [ "${CI_RUNNER_IN_COMPOSE:-0}" = 1 ]; then
  # Delegate before npm/browser work. Inner job uses service-name endpoints.
+ export CI_TEST_SCOPE="$mode"
  exec bash scripts/ci-compose-runner.sh
 fi
 if [ "${CI_SKIP_INSTALL:-0}" != 1 ]; then npm ci; fi
@@ -42,9 +43,11 @@ cleanup(){ if [ -n "$app_pid" ]; then kill "$app_pid" 2>/dev/null || true; wait 
 trap cleanup EXIT
 npm run lint
 npm run typecheck
+if [ "$mode" = regular ]; then
 npm run test:unit -- --reporter=default --reporter=json --outputFile.json="$reports/unit.json"
 node --import tsx scripts/ops-sdk-test.ts
 node scripts/ops-journal-test.mjs
+fi
 npm run build
 case "${CI_BROWSER_MODE:-bundled}" in
  bundled)
@@ -55,7 +58,7 @@ case "${CI_BROWSER_MODE:-bundled}" in
   # Install only inside the disposable runner, using signed distro packages.
   [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] || { echo 'System browser installation is restricted to the disposable CI container' >&2; exit 1; }
   apt-get update
-  apt-get install -y --no-install-recommends chromium
+  apt-get install -y --no-install-recommends chromium fonts-wqy-zenhei
   export PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium
   ;;
  *) echo 'Unknown CI browser mode' >&2; exit 2 ;;
@@ -66,7 +69,9 @@ if [ "${CI_CONTAINER_RUNNER:-0}" = 1 ] && [ ! -e /usr/bin/chromium ]; then
  bundled_chromium="$(node --input-type=module -e 'import {chromium} from "@playwright/test";import {accessSync,constants} from "node:fs";const path=chromium.executablePath();accessSync(path,constants.X_OK);process.stdout.write(path)')"
  ln -s "$bundled_chromium" /usr/bin/chromium
 fi
+if [ "$mode" = regular ]; then
 npm run test:integration -- --reporter=default --reporter=json --outputFile.json="$reports/integration.json"
+fi
 # Integration fixtures own their schemas; apply the separate application URL only
 # after they finish, so URL search_path cannot override their Pool options.
 export DATABASE_URL="${CI_APPLICATION_DATABASE_URL:-$DATABASE_URL}"
@@ -77,4 +82,4 @@ healthy=0
 for attempt in $(seq 1 40); do if node -e 'fetch(process.env.PUBLIC_URL+"/healthz").then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))'; then healthy=1; break; fi; if ! kill -0 "$app_pid" 2>/dev/null; then break; fi; sleep 1; done
 [ "$healthy" = 1 ] || { echo "Compiled application startup failed; diagnostic log: $ci_dir/app.log" >&2; exit 1; }
 npm run test:e2e
-printf 'Shared regular CI passed; logs retained at %s\n' "$ci_dir"
+printf 'Shared %s checks passed; logs retained at %s\n' "$mode" "$ci_dir"

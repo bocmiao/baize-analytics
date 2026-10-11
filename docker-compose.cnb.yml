@@ -9,6 +9,8 @@ services:
       CI_RUNNER_IN_COMPOSE: '0'
       CI_START_SERVICES: '0'
       CI_CONTAINER_RUNNER: '1'
+      E2E_STRICT_FACTS: '1'
+      CI_TEST_SCOPE: ${CI_TEST_SCOPE:-regular}
       CI_BROWSER_MODE: ${CI_BROWSER_MODE:-bundled}
       DATABASE_URL: postgres://baize:ci-local-only@postgres:5432/baize_ci
       TEST_DATABASE_URL: postgres://baize:ci-local-only@postgres:5432/baize_ci

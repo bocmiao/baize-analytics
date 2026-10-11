@@ -31,5 +31,5 @@ if [ -n "$container" ] && [ "${CI_COPY_BROWSER_ARTIFACTS:-0}" = 1 ]; then
  # Copy only test artifacts; never app data, master keys, cookies or environment.
  docker cp "$container:/workspace/test-results" "$logs/test-results" 2>/dev/null || true
 fi
-printf 'Containerized shared regular CI exit=%s; logs: %s\n' "$status" "$logs"
+printf 'Containerized shared %s checks exit=%s; logs: %s\n' "${CI_TEST_SCOPE:-regular}" "$status" "$logs"
 exit "$status"

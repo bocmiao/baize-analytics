@@ -4,4 +4,4 @@ WORKDIR /workspace
 COPY . .
 # Public source/config only; .dockerignore excludes credentials and live data.
 RUN chmod -R a+rX /workspace
-CMD ["bash", "-c", "if [ -f /tmp/baize-public-proxy-ca.pem ]; then export NODE_EXTRA_CA_CERTS=/tmp/baize-public-proxy-ca.pem; fi; exec bash scripts/ci-common.sh regular"]
+CMD ["bash", "-c", "if [ -f /tmp/baize-public-proxy-ca.pem ]; then export NODE_EXTRA_CA_CERTS=/tmp/baize-public-proxy-ca.pem; fi; exec bash scripts/ci-common.sh \"${CI_TEST_SCOPE:-regular}\""]

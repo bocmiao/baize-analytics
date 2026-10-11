@@ -40,3 +40,6 @@ button.overview-insight-toggle{display:inline-flex;align-items:center;justify-co
 @media(max-width:650px){.approved-overview .overview-trend-legend{gap:4px 8px;max-width:100%;justify-content:flex-end}.overview-trend-legend span{font-size:11px}.overview-trend-legend b{font-size:12px}.overview-trend-legend small{width:100%;text-align:right}.overview-trend-legend i{width:10px}.overview-funnel-ratios{gap:6px}.overview-insight-evidence{gap:8px}}
 /* Long factual summaries get their own phone row; never squeeze chart titles vertically. */
 @media(max-width:650px){.approved-overview .overview-trend-header h2{white-space:nowrap}.approved-overview .overview-trend-control{grid-column:1 / -1;grid-row:2;justify-self:start;white-space:nowrap}.approved-overview .overview-trend-legend{grid-column:1 / -1;grid-row:3;justify-self:start;justify-content:flex-start}.approved-overview .overview-trend-legend small{text-align:left;width:auto}}
+
+/* Desktop collapsed cards retain their approved minimum across CJK font metrics. */
+@media(min-width:1200px){.approved-overview.insights-closed .overview-detail-grid>.panel:not(.overview-content-panel){min-block-size:230px}}
