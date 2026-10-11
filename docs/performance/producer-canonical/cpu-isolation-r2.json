@@ -1,0 +1,79 @@
+{
+  "kind": "SIMULATED_producer_canonical_CPU_microbench",
+  "status": "passed",
+  "sourceOrder": [
+    "baseline",
+    "candidate",
+    "baseline",
+    "candidate"
+  ],
+  "rows": 10000,
+  "logicalBatchRows": 100,
+  "trials": [
+    {
+      "sourceKind": "baseline",
+      "width": 2,
+      "wallMs": 728.1077500000001,
+      "cpuUserMs": 868.508,
+      "cpuSystemMs": 75.066,
+      "cpuTotalMs": 943.574,
+      "pgQueries": 706,
+      "insertBatches": 100,
+      "insertRows": 10000,
+      "readbacks": 100,
+      "memberRows": 10000,
+      "receiptRows": 100,
+      "fenceChecks": 202,
+      "digest": "32e642cb250919f9dd1e9e122977db701f9656deed557369f3e925f63df6f13f"
+    },
+    {
+      "sourceKind": "candidate",
+      "width": 2,
+      "wallMs": 548.940439,
+      "cpuUserMs": 759.584,
+      "cpuSystemMs": 35.912,
+      "cpuTotalMs": 795.496,
+      "pgQueries": 706,
+      "insertBatches": 100,
+      "insertRows": 10000,
+      "readbacks": 100,
+      "memberRows": 10000,
+      "receiptRows": 100,
+      "fenceChecks": 202,
+      "digest": "32e642cb250919f9dd1e9e122977db701f9656deed557369f3e925f63df6f13f"
+    },
+    {
+      "sourceKind": "baseline",
+      "width": 2,
+      "wallMs": 639.7145950000001,
+      "cpuUserMs": 740.364,
+      "cpuSystemMs": 6.924,
+      "cpuTotalMs": 747.288,
+      "pgQueries": 706,
+      "insertBatches": 100,
+      "insertRows": 10000,
+      "readbacks": 100,
+      "memberRows": 10000,
+      "receiptRows": 100,
+      "fenceChecks": 202,
+      "digest": "32e642cb250919f9dd1e9e122977db701f9656deed557369f3e925f63df6f13f"
+    },
+    {
+      "sourceKind": "candidate",
+      "width": 2,
+      "wallMs": 497.5702940000001,
+      "cpuUserMs": 587.445,
+      "cpuSystemMs": 21.683,
+      "cpuTotalMs": 609.128,
+      "pgQueries": 706,
+      "insertBatches": 100,
+      "insertRows": 10000,
+      "readbacks": 100,
+      "memberRows": 10000,
+      "receiptRows": 100,
+      "fenceChecks": 202,
+      "digest": "32e642cb250919f9dd1e9e122977db701f9656deed557369f3e925f63df6f13f"
+    }
+  ],
+  "boundary": "Zero-latency simulated PG/CH transport; actual source classes execute canonicalization, HMAC and readback hash verification. Not real PG/CH acceptance, throughput, application scale or SLO."
+}

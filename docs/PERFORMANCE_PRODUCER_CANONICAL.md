@@ -1,0 +1,32 @@
+# Producer canonical 候选：证据与保留决策
+
+本页只归档有限候选专项，不是完整应用验收或规模吞吐通过。真实 PG/CH 对照使用旧 `239bb53c706f0f5f4fab0379bd551b2b566dbd03` 与冻结候选 `21a3c202118e38b16a68733419ad8f885bfeed72` 的不可变 archive；上游 cached 产品引用为 `6c77c4a1e49eb18ccb78c193dbc64471d6b10fb0`。原始 JSON 不含源码 SHA，因此身份另存于 [source binding](performance/producer-canonical/same-data-source-binding.json)，没有改写原始报告。root 已重新验证 21a 的 Git blob 全树绑定，报告为 `/tmp/baize-21a3c20-full-local.binding.json`；本次文档归档没有自行重新验证 archive，也没有执行测试。不可变 21a 全轮正在运行，结果未出，不标记通过。
+
+## 真实 PG/CH 同数据对照
+
+原始 [JSON](performance/producer-canonical/same-data-real-pgch.json) 与 [log](performance/producer-canonical/same-data-real-pgch.txt) 按原字节归档，两者 SHA256 均为 `a913da44069e4dd9f48e87ba9a94744c284f326551931f904da8895d42855ded`。
+
+同一 held client、site、run、salt 与 records，按 baseline → candidate → baseline → candidate 顺序执行，trial 之间事务回滚。每组 1000 行、10 个逻辑批、22 次 fence 检查，发布宽度 2，每批最多 100 行、最多两个 pending；四组 digest 相同。这是发布微基准，不是应用 HTTP 负载或 SLO。
+
+| 配对 | publication 墙钟 ms：旧 → 新 | authentication ms：旧 → 新 | whole ms：旧 → 新 |
+| --- | --- | --- | --- |
+| 第一对 | 277.888 → 245.950 | 110.358 → 92.062 | 403.826 → 358.179 |
+| 第二对 | 210.121 → 207.047 | 87.127 → 96.582 | 308.901 → 326.219 |
+
+两对 publication 均缩短，但第二对 whole 变慢。不能称稳定端到端收益，不能把累计嵌套阶段相加作为墙钟，也不能据此直接进入或宣称 5000 事件通过。最近 239 的 5000 结果为 4900 accepted / 2 unsent，仍为 FAIL；更早 4550 accepted / 9 unsent 的 FAIL 也保留，不能只呈现较早记录。
+
+## 单元与 native 专项
+
+已归档的完整单元报告为 359 个通过，native 报告为 6 文件、22 个通过（37.32 秒）。它们是本候选的验证范围，不能代替整轮联合应用、浏览器或托管 CI。原报告及源码文件摘要位于 [证据目录](performance/producer-canonical/)。
+
+## CPU 隔离诊断与首次失败
+
+首次模拟 CPU 诊断 [JSON](performance/producer-canonical/cpu-isolation-first-failure.json) / [log](performance/producer-canonical/cpu-isolation-first-failure.txt) 保留：`status=failed`，`trials=[]`，错误 `SIMULATED_RECEIPT_BOUND`。根协调确认原因是夹具 row_count 参数错误；不是实际产品 PG/CH 失败。不能将尚未产生的 trial 当作收益数据。
+
+修正后的 r2 实际 EXIT0，[JSON](performance/producer-canonical/cpu-isolation-r2.json) / [log](performance/producer-canonical/cpu-isolation-r2.txt) 已另存。两对 process CPU 为 943.574 → 795.496 ms、747.288 → 609.128 ms。四组均为 10000 行、706 次模拟 PG query、100 个 INSERT batch、100 次 readback、10000 member rows、100 receipts、202 fence 检查，digest 相同。使用实际源类执行序列化、HMAC 与 readback hash 校验，但 PG/CH transport 为零延迟模拟；因此仅支持该模拟条件下 CPU 成本降低，不能冒充真实 PG/CH、应用容量或净端到端墙钟收益。首次失败文件不覆盖。
+
+## 维护成本与建议
+
+候选需维护 producer canonical 字节表示与现有认证 oracle 的等值关系，以及避免重复计算时的生命周期边界；错误复用、失效或表示差异都可能损害完整 readback 认证。保留必须以既有认证与 fence 不减、真实同数据 digest 等值及维护成本可控为前提。
+
+root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据是模拟条件下 CPU 成本降低与摘要/计数等值，不是稳定真实端到端收益。strict 容量目标仍未闭合，不追加 5000 负载，不因本候选改写原规模失败。若后续无法形成可复核净收益，应撤回而非增加默认复杂度；不得把专项通过写成全计划完成。

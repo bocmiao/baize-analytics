@@ -1,0 +1,6 @@
+{
+  "kind": "SIMULATED_producer_canonical_CPU_microbench",
+  "status": "failed",
+  "trials": [],
+  "error": "SIMULATED_RECEIPT_BOUND"
+}

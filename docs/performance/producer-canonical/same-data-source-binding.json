@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "bindingSource": "root supplied immutable archive identities; not embedded in original report",
+  "baselineCommit": "239bb53c706f0f5f4fab0379bd551b2b566dbd03",
+  "baselineArchive": "/tmp/baize-publication-equal-239bb53",
+  "candidateCommit": "21a3c202118e38b16a68733419ad8f885bfeed72",
+  "candidateArchive": "/tmp/baize-producer-candidate-frozen",
+  "archiveVerificationPerformedByThisDocumentationTask": false,
+  "originalReportSha256": "a913da44069e4dd9f48e87ba9a94744c284f326551931f904da8895d42855ded",
+  "upstreamCachedProductCommit": "6c77c4a1e49eb18ccb78c193dbc64471d6b10fb0",
+  "candidateArchiveVerifiedByRoot": true,
+  "candidateRootBindingReport": "/tmp/baize-21a3c20-full-local.binding.json"
+}
