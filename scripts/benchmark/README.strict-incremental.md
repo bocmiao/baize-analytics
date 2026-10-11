@@ -24,3 +24,9 @@ bash scripts/benchmark/run-strict-incremental.sh
 本次只通过 Bash/Python 静态语法检查，尚未用这个仓库内新入口执行负载。原 `/usr/bin/time` 缺失导致的 EXIT127 及后续失败证据均保留。
 
 057 closure selected-run A/B uses `BAIZE_PERF_COVERAGE_REUSE=0|1` (default `0`) to explicitly set the server's `BAIZE_COVERAGE_SELECTED_RUNS`. The resolved numeric value is archived as `coverageReuse` in the plan. It changes only transaction-local run-ID materialization, not body authentication, schedule, queue, concurrency or drain. Invalid values fail before bootstrap or evidence reservation. The retired `BAIZE_PERF_SELECTED` hydration projection experiment is no longer supported.
+
+## 同源码页面路径查找 A/B
+
+`BAIZE_PERF_PAGE_PATH_BATCH=0|1` 默认为 `0`，入口显式覆盖子进程 `BAIZE_SESSION_PAGE_PATH_BATCH`，不会隐式沿用父进程开关。非法值在资源/输出锁之前拒绝。plan 的 `pagePathBatch` 记录实际采用的数值；`coverageReuse` 仍独立记录 `BAIZE_PERF_COVERAGE_REUSE=0|1`（默认0），映射 `BAIZE_COVERAGE_SELECTED_RUNS`。
+
+同一完整SHA、同一机器与所有原参数，先 scalar0 的300，再 batch1 的300，各用不同新证据路径；仅开关不同。`page_path_lookup` 是实际SQL叶计时，`lookupInputRows` / `lookupReturnedRows` 是累计输入 / SQL返回行数（包含NULL路径的返回），不是唯一事件或匹配路径数。它嵌套在会话构建墙钟中，不相加。开关不改变50/1s/10s/queue8/concurrency2/drain120，不改变每FETCH100边界，不自动宣称收益。此说明未运行负载。
