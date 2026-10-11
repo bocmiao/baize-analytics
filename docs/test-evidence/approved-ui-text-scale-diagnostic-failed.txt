@@ -1,0 +1,46 @@
+Browser-first evidence=/tmp/baize-browser-final.ljui81
+
+> baize-analytics@0.1.0 test:e2e
+> playwright test tests/e2e/workspace-navigation.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:1327124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope (6.1s)
+
+
+  1) tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      24 |  await testInfo.attach('workspace-computed-style-and-keyboard-evidence',{body:JSON.stringify({viewport:page.viewportSize(),sourceSha:process.env.SOURCE_SHA||null,siteId:site.id,domain:site.domain,timezone:site.timezone,expectedActualPv:2,from:today,to:today,contrastSamples,focusOutline,method:'Computed sRGB foreground and ancestor alpha backgrounds, representative normal text; not full WCAG or screen-reader certification'},null,2),contentType:'application/json'});
+      25 |  // Double computed text sizes, including fixed-pixel labels; this is not a physical-device or screen-reader test.
+    > 26 |  const textScale=await page.evaluate(()=>{const heading=document.querySelector('main h1') as HTMLElement;const before=parseFloat(getComputedStyle(heading).fontSize);const elements=Array.from(document.querySelectorAll<HTMLElement>('body *')).filter(element=>element instanceof HTMLElement&&!['SCRIPT','STYLE','CANVAS'].includes(element.tagName));const sizes=elements.map(element=>parseFloat(getComputedStyle(element).fontSize));elements.forEach((element,index)=>{element.style.fontSize=`${sizes[index]*2}px`;});return{before,after:parseFloat(getComputedStyle(heading).fontSize)};});expect(textScale.after).toBe(textScale.before*2);const textScaleLayout=await page.evaluate(()=>({viewport:{width:innerWidth,height:innerHeight},docWidth:document.documentElement.scrollWidth,offenders:Array.from(document.body.querySelectorAll<HTMLElement>('*')).filter(element=>element.getClientRects().length>0).flatMap(element=>{const r=element.getBoundingClientRect();if(r.left>=0&&r.right<=innerWidth)return [];const css=getComputedStyle(element);return [{tag:element.tagName,className:typeof element.className==='string'?element.className:'',left:r.left,right:r.right,width:r.width,scrollWidth:element.scrollWidth,clientWidth:element.clientWidth,minWidth:css.minWidth,whiteSpace:css.whiteSpace,textOverflow:css.textOverflow,overflowX:css.overflowX,display:css.display,text:['INPUT','TEXTAREA','SELECT'].includes(element.tagName)?undefined:element.textContent?.trim().slice(0,100)}];}).slice(0,100)}));await testInfo.attach('text-scale-overflow-diagnostic',{body:JSON.stringify(textScaleLayout,null,2),contentType:'application/json'});await page.screenshot({path:'/tmp/baize-final-text-scale-overflow.png',fullPage:false});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:testInfo.outputPath('workspace-after-390-text-200.png')});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
+      27 | });
+      28 |
+        at /workspace/baize-analytics/tests/e2e/workspace-navigation.spec.ts:26:1790
+
+    Error Context: test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/error-context.md
+
+    attachment #6: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Browser-first exit=1; evidence=/tmp/baize-browser-final.ljui81

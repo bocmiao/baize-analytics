@@ -1,0 +1,77 @@
+Browser-first evidence=/tmp/baize-browser-final.C2860f
+
+> baize-analytics@0.1.0 test:e2e
+> playwright test
+
+
+Running 31 tests using 1 worker
+
+(node:1319128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/ai-evidence-language.spec.ts:12:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (11.3s)
+  ✓   2 tests/e2e/approved-ui.spec.ts:15:1 › approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries (21.6s)
+  ✓   3 tests/e2e/connector-settings.spec.ts:10:1 › real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider (2.2s)
+  ✓   4 tests/e2e/extended-analysis.spec.ts:4:1 › real retained content, global campaign filter, repair CSV and advanced English controls (4.9s)
+  ✓   5 tests/e2e/funnel-dropoff.spec.ts:6:1 › actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries (3.9s)
+  ✓   6 tests/e2e/ga4-history.spec.ts:9:1 › real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors (4.4s)
+  ✓   7 tests/e2e/manual-search-import.spec.ts:7:1 › actual custom CSV upload, column mapping, preview and idempotent independent import (2.1s)
+  ✓   8 tests/e2e/multilingual-errors.spec.ts:4:1 › real English login, revoked permission, share and unconfigured connector errors use stable safe messages (3.2s)
+  ✓   9 tests/e2e/operations-observations.spec.ts:11:1 › real observed intake, bot explanation, manual annotation lifecycle and sanitized admin diagnostic download (5.5s)
+  ✓  10 tests/e2e/realtime-retention.spec.ts:4:1 › complete realtime Top exceeds 200-row preview and retention never renders immature days as zero (4.2s)
+  ✓  11 tests/e2e/report-members.spec.ts:4:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls (3.9s)
+  ✓  12 tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status (4.6s)
+  ✓  13 tests/e2e/revenue-identity.spec.ts:18:1 › actual tracker revenue keeps currencies separate and event-time account switches isolated (3.0s)
+  ✓  14 tests/e2e/revenue-identity.spec.ts:46:1 › actual consented experiment assignment and tracker conversion survive stop and resume (2.5s)
+  ✓  15 tests/e2e/seo-gsc-evidence.spec.ts:11:1 › real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT (3.8s)
+  ✓  16 tests/e2e/strict-storage.spec.ts:18:1 › strict real CH facts show verified source and clear stale values after authoritative body loss (4.8s)
+  ✓  17 tests/e2e/time.spec.ts:3:1 › Chinese date picker uses the selected site timezone rather than browser UTC (1ms)
+  ✓  18 tests/e2e/time.spec.ts:4:1 › date range includes the whole civil day across US daylight saving transition (1ms)
+  ✓  19 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Decline and private heatmap exclusions (727ms)
+  ✓  20 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Accept and private heatmap exclusions (942ms)
+  ✓  21 tests/e2e/workflow.spec.ts:4:1 › product landing is the default, login is an explicit action (449ms)
+  ✓  22 tests/e2e/workflow.spec.ts:5:1 › real administrator → site → durable collection → aggregate → Chinese dashboard (2.7s)
+  ✓  23 tests/e2e/workflow.spec.ts:57:1 › tracker consent does not identify or transmit before grant and stops after revoke (7.0s)
+  ✓  24 tests/e2e/workflow.spec.ts:101:1 › real goal, funnel, saved report, protected share and revocation workflows (3.6s)
+  ✓  25 tests/e2e/workflow.spec.ts:152:1 › core English interface preference and Chinese reset (576ms)
+  ✓  26 tests/e2e/workflow.spec.ts:153:1 › invited viewer registration is scoped and cannot administer other sites (967ms)
+  ✓  27 tests/e2e/workflow.spec.ts:158:1 › opened realtime view receives a newly persisted event and heartbeat online count without refresh (3.5s)
+  ✓  28 tests/e2e/workflow.spec.ts:160:1 › local immutable evidence → suggestion states → actual recheck → verified without a paid model (2.1s)
+  ✓  29 tests/e2e/workflow.spec.ts:163:1 › Chinese dashboard remains usable at mobile width without page overflow (689ms)
+  ✓  30 tests/e2e/workflow.spec.ts:165:1 › actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap (4.3s)
+  ✘  31 tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope (6.4s)
+
+
+  1) tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      24 |  await testInfo.attach('workspace-computed-style-and-keyboard-evidence',{body:JSON.stringify({viewport:page.viewportSize(),sourceSha:process.env.SOURCE_SHA||null,siteId:site.id,domain:site.domain,timezone:site.timezone,expectedActualPv:2,from:today,to:today,contrastSamples,focusOutline,method:'Computed sRGB foreground and ancestor alpha backgrounds, representative normal text; not full WCAG or screen-reader certification'},null,2),contentType:'application/json'});
+      25 |  // Double computed text sizes, including fixed-pixel labels; this is not a physical-device or screen-reader test.
+    > 26 |  const textScale=await page.evaluate(()=>{const heading=document.querySelector('main h1') as HTMLElement;const before=parseFloat(getComputedStyle(heading).fontSize);const elements=Array.from(document.querySelectorAll<HTMLElement>('body *')).filter(element=>element instanceof HTMLElement&&!['SCRIPT','STYLE','CANVAS'].includes(element.tagName));const sizes=elements.map(element=>parseFloat(getComputedStyle(element).fontSize));elements.forEach((element,index)=>{element.style.fontSize=`${sizes[index]*2}px`;});return{before,after:parseFloat(getComputedStyle(heading).fontSize)};});expect(textScale.after).toBe(textScale.before*2);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:testInfo.outputPath('workspace-after-390-text-200.png')});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ^
+      27 | });
+      28 |
+        at /workspace/baize-analytics/tests/e2e/workspace-navigation.spec.ts:26:713
+
+    Error Context: test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+  30 passed (2.1m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Browser-first exit=1; evidence=/tmp/baize-browser-final.C2860f

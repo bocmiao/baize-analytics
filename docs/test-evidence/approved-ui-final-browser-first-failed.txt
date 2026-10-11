@@ -1,0 +1,147 @@
+Browser-first evidence=/tmp/baize-browser-final.DMq4D3
+
+> baize-analytics@0.1.0 test:e2e
+> playwright test
+
+
+Running 31 tests using 1 worker
+
+(node:1310326) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/ai-evidence-language.spec.ts:12:1 › actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport (11.0s)
+  ✓   2 tests/e2e/approved-ui.spec.ts:15:1 › approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries (22.2s)
+  ✓   3 tests/e2e/connector-settings.spec.ts:10:1 › real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider (2.2s)
+  ✘   4 tests/e2e/extended-analysis.spec.ts:4:1 › real retained content, global campaign filter, repair CSV and advanced English controls (5.0s)
+(node:1312169) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 tests/e2e/funnel-dropoff.spec.ts:6:1 › actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries (4.0s)
+  ✓   6 tests/e2e/ga4-history.spec.ts:9:1 › real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors (4.6s)
+  ✓   7 tests/e2e/manual-search-import.spec.ts:7:1 › actual custom CSV upload, column mapping, preview and idempotent independent import (2.0s)
+  ✓   8 tests/e2e/multilingual-errors.spec.ts:4:1 › real English login, revoked permission, share and unconfigured connector errors use stable safe messages (3.0s)
+  ✓   9 tests/e2e/operations-observations.spec.ts:11:1 › real observed intake, bot explanation, manual annotation lifecycle and sanitized admin diagnostic download (5.5s)
+  ✓  10 tests/e2e/realtime-retention.spec.ts:4:1 › complete realtime Top exceeds 200-row preview and retention never renders immature days as zero (6.1s)
+  ✓  11 tests/e2e/report-members.spec.ts:4:1 › actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls (4.6s)
+  ✘  12 tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status (3.0s)
+(node:1314033) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 tests/e2e/revenue-identity.spec.ts:18:1 › actual tracker revenue keeps currencies separate and event-time account switches isolated (4.1s)
+  ✓  14 tests/e2e/revenue-identity.spec.ts:46:1 › actual consented experiment assignment and tracker conversion survive stop and resume (2.2s)
+  ✓  15 tests/e2e/seo-gsc-evidence.spec.ts:11:1 › real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT (4.4s)
+  ✓  16 tests/e2e/strict-storage.spec.ts:18:1 › strict real CH facts show verified source and clear stale values after authoritative body loss (5.0s)
+  ✓  17 tests/e2e/time.spec.ts:3:1 › Chinese date picker uses the selected site timezone rather than browser UTC (4ms)
+  ✓  18 tests/e2e/time.spec.ts:4:1 › date range includes the whole civil day across US daylight saving transition (2ms)
+  ✓  19 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Decline and private heatmap exclusions (710ms)
+  ✓  20 tests/e2e/tracker-addon-privacy.spec.ts:8:51 › ordered English consent addon Accept and private heatmap exclusions (921ms)
+  ✓  21 tests/e2e/workflow.spec.ts:4:1 › product landing is the default, login is an explicit action (343ms)
+  ✓  22 tests/e2e/workflow.spec.ts:5:1 › real administrator → site → durable collection → aggregate → Chinese dashboard (2.0s)
+  ✓  23 tests/e2e/workflow.spec.ts:57:1 › tracker consent does not identify or transmit before grant and stops after revoke (7.0s)
+  ✓  24 tests/e2e/workflow.spec.ts:101:1 › real goal, funnel, saved report, protected share and revocation workflows (4.1s)
+  ✓  25 tests/e2e/workflow.spec.ts:152:1 › core English interface preference and Chinese reset (505ms)
+  ✓  26 tests/e2e/workflow.spec.ts:153:1 › invited viewer registration is scoped and cannot administer other sites (1.1s)
+  ✓  27 tests/e2e/workflow.spec.ts:158:1 › opened realtime view receives a newly persisted event and heartbeat online count without refresh (3.4s)
+  ✓  28 tests/e2e/workflow.spec.ts:160:1 › local immutable evidence → suggestion states → actual recheck → verified without a paid model (2.8s)
+  ✓  29 tests/e2e/workflow.spec.ts:163:1 › Chinese dashboard remains usable at mobile width without page overflow (672ms)
+  ✓  30 tests/e2e/workflow.spec.ts:165:1 › actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap (4.6s)
+  ✘  31 tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope (5.5s)
+
+
+  1) tests/e2e/extended-analysis.spec.ts:4:1 › real retained content, global campaign filter, repair CSV and advanced English controls 
+
+    Error: locator.click: Error: strict mode violation: locator('.workspace-toolbar details.toolbar-preferences').locator('summary') resolved to 2 elements:
+        1) <summary>工作空间选项</summary> aka getByText('工作空间选项')
+        2) <summary>站点详情</summary> aka getByText('站点详情')
+
+    Call log:
+      - waiting for locator('.workspace-toolbar details.toolbar-preferences').locator('summary')
+
+
+       at navigation.ts:10
+
+       8 | export async function openWorkspaceAccount(page:Page){const nav=await openWorkspaceNavigation(page);const details=nav.locator('details.nav-account');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();await expect(details).toHaveAttribute('open','');return details;}
+       9 |
+    > 10 | export async function openWorkspacePreferences(page:Page){const details=page.locator('.workspace-toolbar details.toolbar-preferences');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();return details;}
+         |                                                                                                                                                                                                                                                                                       ^
+      11 | export async function openOverviewInterpretation(page:Page){const details=page.locator('.query-health > details');await expect(details).toBeAttached();if(!await details.isVisible())await openWorkspacePreferences(page);await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();return details;}
+      12 |
+        at openWorkspacePreferences (/workspace/baize-analytics/tests/e2e/navigation.ts:10:279)
+        at /workspace/baize-analytics/tests/e2e/extended-analysis.spec.ts:4:6052
+
+    Error Context: test-results/extended-analysis-real-ret-845d8-d-advanced-English-controls/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/extended-analysis-real-ret-845d8-d-advanced-English-controls/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/extended-analysis-real-ret-845d8-d-advanced-English-controls/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "rgb(95, 107, 137)"
+    Received: "rgb(116, 80, 25)"
+
+       9 |  // Language switching currently reloads the application; bind acceptance to the actually recorded site after reload.
+      10 |  await page.getByLabel('Select site').selectOption(site.id);await expect(page.getByLabel('Select site')).toHaveValue(site.id);await expect(page.locator('.metrics strong').first()).toHaveText('1');
+    > 11 |  for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});await expect(page.locator('.chart').first()).toBeVisible();await expect.poll(()=>page.locator('.chart').first().evaluate(element=>{const chart=element as HTMLElement,canvas=chart.querySelector('canvas');return canvas?Math.abs(canvas.getBoundingClientRect().width-chart.getBoundingClientRect().width)<2:false;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await openOverviewInterpretation(page);const watermark=page.locator('.watermark').first();await expect(watermark).toBeVisible();expect(await watermark.evaluate(element=>getComputedStyle(element).color)).toBe('rgb(95, 107, 137)');const contrast=await watermark.evaluate(element=>{const parse=(value:string)=>value.match(/[\d.]+/g)!.map(Number);const text=parse(getComputedStyle(element).color);let parent:Element|null=element,background:number[]|undefined;while(parent){const color=parse(getComputedStyle(parent).backgroundColor);if(color.length===3||color[3]===1){background=color;break;}parent=parent.parentElement;}if(!background)throw new Error('No opaque background found');const luminance=(rgb:number[])=>rgb.slice(0,3).map(v=>{const s=v/255;return s<=0.04045?s/12.92:((s+0.055)/1.055)**2.4;}).reduce((sum,v,i)=>sum+v*[0.2126,0.7152,0.0722][i],0);const a=luminance(text),b=luminance(background);return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05);});expect(contrast).toBeGreaterThanOrEqual(4.5);await page.screenshot({path:testInfo.outputPath(`overview-${width}.png`)});}
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+      12 |  // Element-only resizing proves ResizeObserver, rather than window.resize, updates the canvas.
+      13 |  const chart=page.locator('.chart').first();await chart.evaluate(element=>(element as HTMLElement).style.width='300px');await expect.poll(()=>chart.evaluate(element=>Math.round(element.querySelector('canvas')!.getBoundingClientRect().width))).toBe(300);await chart.evaluate(element=>(element as HTMLElement).style.removeProperty('width'));
+      14 |  await navigateWorkspace(page, "Replay");for(const width of [375,768,1440]){await page.setViewportSize({width,height:900});const play=page.getByRole('button',{name:'Play',exact:true}),pause=page.getByRole('button',{name:'Pause',exact:true});await expect(play).toBeVisible();await play.focus();await page.keyboard.press('Enter');await pause.focus();await page.keyboard.press('Enter');await page.getByLabel('Playback speed').selectOption('2');const range=page.getByLabel('Playback position');await range.focus();await page.keyboard.press('ArrowRight');await expect(range).toHaveAttribute('aria-valuetext',/seconds/);const frame=page.locator('.baize-replay-viewport iframe');await expect(frame).toHaveCount(1);expect(await frame.getAttribute('sandbox')).toBe('allow-same-origin');await expect.poll(()=>frame.evaluate(element=>{const frameBounds=element.getBoundingClientRect(),viewportBounds=element.closest('.baize-replay-viewport')!.getBoundingClientRect();return frameBounds.width>0&&frameBounds.width<=viewportBounds.width+1;})).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator('.baize-replay-player').innerText()).not.toContain(secret);await expect(range).toBeFocused();await page.screenshot({path:testInfo.outputPath(`replay-${width}.png`)});}
+        at /workspace/baize-analytics/tests/e2e/responsive-replay.spec.ts:11:710
+
+    Error Context: test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-replay-real-col-c2d94-ontrols-and-readable-status/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+
+    Error: locator.click: Error: strict mode violation: locator('.workspace-toolbar details.toolbar-preferences').locator('summary') resolved to 3 elements:
+        1) <summary>工作空间选项</summary> aka getByText('工作空间选项')
+        2) <summary>站点详情</summary> aka getByText('站点详情')
+        3) <summary>查看数据口径 / 详情</summary> aka getByText('查看数据口径 / 详情')
+
+    Call log:
+      - waiting for locator('.workspace-toolbar details.toolbar-preferences').locator('summary')
+
+
+       at navigation.ts:10
+
+       8 | export async function openWorkspaceAccount(page:Page){const nav=await openWorkspaceNavigation(page);const details=nav.locator('details.nav-account');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();await expect(details).toHaveAttribute('open','');return details;}
+       9 |
+    > 10 | export async function openWorkspacePreferences(page:Page){const details=page.locator('.workspace-toolbar details.toolbar-preferences');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();return details;}
+         |                                                                                                                                                                                                                                                                                       ^
+      11 | export async function openOverviewInterpretation(page:Page){const details=page.locator('.query-health > details');await expect(details).toBeAttached();if(!await details.isVisible())await openWorkspacePreferences(page);await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator('summary').click();return details;}
+      12 |
+        at openWorkspacePreferences (/workspace/baize-analytics/tests/e2e/navigation.ts:10:279)
+        at /workspace/baize-analytics/tests/e2e/workspace-navigation.spec.ts:11:545
+
+    Error Context: test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workspace-navigation-actua-bd6c6-ite-data-and-keyboard-scope/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests/e2e/extended-analysis.spec.ts:4:1 › real retained content, global campaign filter, repair CSV and advanced English controls 
+    tests/e2e/responsive-replay.spec.ts:4:1 › real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status 
+    tests/e2e/workspace-navigation.spec.ts:5:1 › actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope 
+  28 passed (2.2m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Browser-first exit=1; evidence=/tmp/baize-browser-final.DMq4D3
