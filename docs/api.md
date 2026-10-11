@@ -191,7 +191,7 @@ GET S/replay(admin)接受path/page_id/from/to/limit（1–1000，默认1000）�
 | /retention | PATCH admin `{days:1..3650}` | 更改保留策略；缩短后异步清理，不恢复已删明细 |
 | /delete-visitor | POST admin `{visitor_id?,user_id?}` | 至少一个；持久独立删除journal后完成；daily_salt不支持跨日user_id删除 |
 | /exports | POST/GET admin；GET /:id admin下载 | `{format:csv|json,full?:boolean}`→`{id,status:pending}`；列表追踪pending/running/complete/failed/revoked与read_metadata |
-| /shares | GET/POST admin；DELETE /:id admin | `{password?:至少8字符,expires_at?,frame_origins?:精确HTTP来源[]}`；创建一次token/url；删除撤销 |
+| /shares | GET/POST admin；DELETE /:id admin | `{password?:8–1024字符/4096 UTF-8字节,expires_at?,frame_origins?:精确HTTP来源[]}`；创建一次token/url；删除撤销 |
 
 Traffic告警比较完整上一小时与28天同小时可覆盖样本，至少7样本、连续两小时异常；保存observed_hour/baseline_samples/generation/coverage，未处理旧事件时等待而非编零。goal/funnel/storage/SERP的config具体由UI填写，当前为record而非稳定强类型配置；避免假定未文档化字段。SERP通知使用真实保存的排名变化。通知失败最多3次，持久退避；SMTP/HTTP集成测试不等于真实邮件/企业账号交付。
 
@@ -345,6 +345,6 @@ d67整轮实际EXIT1/cleanup：645后端（217单元+428集成）ALL PASS；浏�
 
 Instance administration requires an administrator browser Cookie session. Site API tokens and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation.
 
-账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，已有短密码分享仍可验证。
+账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，旧格式密码验证允许至1MiB UTF-8字节，仍受原HTTP整份正文1MiB上限；不截断、不扩大请求上限。全进程最多4个分享密码派生任务，无等待队列，满额503/share_password_busy并Retry-After:1。
 
 Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](API_RATE_LIMIT_CURRENT.md).

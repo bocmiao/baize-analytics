@@ -29,3 +29,13 @@
 ## 保留欠项
 
 strict5000仍FAIL；本批无已证实下一窄性能优化，不降低旧044认证/逐批receipt/HMAC/删除屏障。会话闭包与贡献重用属于更大契约改动，见PERFORMANCE_CURRENT_BATCH_REVIEW.md，未实施，不标外部阻塞。真实Google/付费SERP/MaxMind/SMTP/SSO/模型账号、Windows执行器、小程序真机、跨物理机灾备/读屏仍准确未测。Ollama下载403属于网络阻断。
+
+## a834589完整回归与兼容补修（旧失败保留）
+
+同源完整浏览器先跑实际EXIT0：31通过/0skip，2.1分钟，证据路径/tmp/baize-browser-final.UD2NsO；随后原生空库全轮EXIT1：264单元通过，452集成中451通过/1失败/0skip。失败bot-collector Redis故障夹具在正常建站之前已断Redis，管理API按新契约503，采集断言未执行；修为同一Redis真实连接先建站后断连，管理API503断言保留，采集fallback断言不降低。compiled E2E阶段未进入，不把先跑浏览器当全轮EXIT0。
+
+父复审新增本批兼容回归：旧share创建密码无字符上限，仅1MiB整HTTP正文，新checkPassword的1024上限锁死旧长密码。修订维持新创建1024字符/4096字节，旧salt:hex32验证最多1MiB UTF8，仍受原HTTP/gzip1MiB，不截断；有效且未撤销未过期分享查到后异步scrypt。全进程4任务无队列，满额503/share_password_busy/Retry-After1秒，finally释放。旧1025/8192ASCII、实际HTTP/embed、新建拒绝、绝对超字节不派生回归追加；结果与新SHA待最终保存。
+
+第一个调整Redis夹具的专项实际EXIT1（34通过1失败）：enableOfflineQueue=false时ping早于连接ready；改显式lazyConnect/connect，不改产品策略。旧JSON保留。
+
+兼容补修实际专项：4文件35项通过/0skip（含2真实collector Redis正常/断连、23治理PG、10单元），独立真实createApp/HTTP旧长密码测试1项通过/0skip，全部单元265通过/0skip。首个独立HTTP fixture误断言embed包含站点名称，既有embed契约仅热门页面标题；修为验证真实HTML标题/类型及错误密码404，不改产品页面。其失败JSON保留。scrypt四在途/第五busy/结束后释放由确定性单元验证；未用计时或睡眠制造HTTP占槽，最终HTTP忙态header为固定共享错误handler分支。

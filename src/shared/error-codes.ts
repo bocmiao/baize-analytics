@@ -1,5 +1,8 @@
 // Fixed public error messages only. Never add provider payloads or dynamic exceptions here.
 export const API_ERRORS = {
+  request_rate_limit_exceeded: { statusCode: 429, zh: "请求次数过多，请稍后重试", en: "The request budget is exhausted. Retry after the stated interval." },
+  request_rate_limit_unavailable: { statusCode: 503, zh: "请求额度服务暂不可用，请稍后重试", en: "The request budget service is unavailable. Retry after the stated interval." },
+  share_password_busy: { statusCode: 503, zh: "分享密码验证繁忙，请稍后重试", en: "Share password verification is busy. Try again shortly." },
   stats_read_budget_exceeded: {statusCode:503,zh:"统计读取超过操作预算，请缩小范围或重试",en:"The analytics read exceeded its operation budget. Narrow the range or retry."},
   canonical_backup_required: { statusCode: 409, zh: "裁剪须先验证签名备份，请使用本地运维命令", en: "Pruning requires a verified signed backup. Use the local operations command." },
   historical_coverage_unavailable: { statusCode: 409, zh: "历史数据覆盖不足，无法精确重建", en: "Historical coverage is incomplete and cannot be reconstructed exactly." },

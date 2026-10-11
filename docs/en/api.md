@@ -325,6 +325,6 @@ New image actualEXIT1:CH target233/ENOSPC creating preprocessed_configs;build/in
 
 Instance administration requires an administrator browser Cookie session. Site API tokens and mixed Cookie/Authorization credentials are rejected. Site creation, configuration and write-key rotation commit their audit in the same transaction; an audit failure rolls back the mutation.
 
-账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，已有短密码分享仍可验证。
+账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，旧格式密码验证允许至1MiB UTF-8字节，仍受原HTTP整份正文1MiB上限；不截断、不扩大请求上限。全进程最多4个分享密码派生任务，无等待队列，满额503/share_password_busy并Retry-After:1。
 
 Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](../API_RATE_LIMIT_CURRENT.md).
