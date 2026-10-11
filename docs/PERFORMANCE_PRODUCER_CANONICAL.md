@@ -75,3 +75,9 @@ root 在 r2 后决定保留低复杂度的 per-record 序列化复用：依据�
 源worker有效证明后，运维夹具人为追加legacy贡献必须先明确失效，而非继续沿用旧proof。07e9216修此生命周期后，真实恢复在journal预处理先遇缺失goals，尚未进入worker；d90e09a将两阶段分开断言。真实PG/CH专项 **EXIT0**：预worker 42P01拒绝且无假成功；直接真实恢复worker三次失败进入dead letter；恢复goals后完整恢复成功，最新journal删除A保B、源未改变及签名/正文对账均通过。该目标仅独立namespace，`targetClickHouseServerIndependent:false`，不能称独立服务器恢复完成。见 [原始log](performance/producer-canonical/native-d90e09a-pass/native.txt) 与 [源码绑定](performance/producer-canonical/native-d90e09a-pass/source-binding.json)。
 
 新d90镜像实际构建/安装健康后被2GiB磁盘floor阻断，尚未执行独立恢复；保留FAIL。随后仅精确删除三个已结束项目COPY构建缓存：64keq2gghd2whsgix50241c8m、ksh2sl8vpuyfdy9gv2afowuw2、vnx8y6qp2jzcsciu8p2rpiowz。均Shared=false/Reclaimable=true，并已与上述old-ops-four.tar对应镜像层校验；归档1220518400字节及SHA不变，可docker load恢复镜像内容，构建缓存索引不可恢复。实际workspace仍3904933888空余字节，不声称释放标称945MB；不全局prune、不改当前镜像/有效卷。
+
+## 已构建d90镜像独立恢复：EXIT0
+
+为避免同源码重复构建占盘，复用精确镜像 `sha256:611d2da964e3bd60057e0bd38ca3d79f89b90bb98530e32878cc020bf1f9aae5`，源码与镜像424文件manifest完全一致。此前真实installer健康日志及SHA独立记录；本次没有新build/installer。项目入口 `scripts/ops-existing-image-restore.sh` 只启动一个无hostports独立目标CH25.8容器/卷，阶段2GiB floor不变，原生产签名恢复入口与所有原断言保持，实际 **EXIT0**，`targetClickHouseServerIndependent:true`。真实原生入口恢复PG快照/签名正文/非空carry/headers；最新journal删A保B、缺sidecar/未知schema/篡改拒绝、pre-worker和worker失败拒绝、修复后恢复、源未变全部通过。compiled helper imports另有断言，不把原生tsx恢复冒充compiled恢复。
+
+[结果](performance/producer-canonical/image-d90-independent-pass/result.json)、[原生完整记录](performance/producer-canonical/image-d90-independent-pass/native-entry.txt)、[此前安装绑定](performance/producer-canonical/image-d90-independent-pass/prior-installer.safe.json)、[源码绑定](performance/producer-canonical/image-d90-independent-pass/git-blob-binding.json) 均保存。目标自有容器/卷清理完成，workspace峰后实际约3.6GiB空余。这是此前真实新镜像安装与本次独立恢复的组合证据，不冒称重复完整运维矩阵；旧各次FAIL原样保留。产品应用树与2d全轮相同，后续仅测试/脚本/证据修改；047候选尚未纳入这些已验结果。
