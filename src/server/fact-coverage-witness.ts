@@ -158,3 +158,12 @@ export async function advanceRevenueIntakeCoverage(c:PoolClient,site:string,toke
  await write(c,{...body,non_event_generation:state.non_event_generation},state.secret);
  revenueSources.delete(token);
 }
+
+/** Conservative strict-source rebuild guard. An expanded raw-retention window
+ * does not prove that already-expired closed sessions can be reconstructed. */
+export function assertStrictRetainedWindowContinuity(input:{strict:boolean;authority:string|null;retainedFrom:Date;previousRetainedFrom:Date|null;hasPublishedBaseline?:boolean}){
+ if(!input.strict||input.authority!=='clickhouse')return;
+ if(input.previousRetainedFrom===null){if(input.hasPublishedBaseline)throw Error('FACT_RETAINED_WINDOW_BASELINE_UNAVAILABLE');return;}
+ if(!Number.isFinite(+input.retainedFrom)||!Number.isFinite(+input.previousRetainedFrom))throw Error('FACT_RETAINED_WINDOW_BOUNDARY_INVALID');
+ if(+input.retainedFrom<+input.previousRetainedFrom)throw Error('FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN');
+}

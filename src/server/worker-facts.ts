@@ -1,3 +1,4 @@
+import {assertStrictRetainedWindowContinuity} from './fact-coverage-witness.js';
 import {captureIncrementalSessionPlan} from './incremental-session-plan.js';
 import {measurePerformanceStage,hasPerformanceObservation} from './performance-observation.js';
 import {getCacheStore} from './cache-store.js';
@@ -65,6 +66,14 @@ async function rebuildSiteFactsInternal(pool:Pool,claim:Claim,hooks:WorkerFactHo
  const hasPublished=Boolean((await source.query("SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND query_version=2 AND status='published' LIMIT 1",[claim.site_id])).rowCount);
  if(factStore&&hasPublished){const readSource=await prepareFactReadSource(source,pool,claim.site_id,{forRebuild:true,forAuthorityTransition:true});releaseFactSource=bindFactReadRelations(source,readSource);cleanupFactSource=readSource.cleanup;}
  if(remainingStore&&hasPublished){const remainingSource=await prepareRemainingFactReadSource(source,pool,claim.site_id,{forRebuild:true,forAuthorityTransition:true});const restore=bindFactReadRelations(source,{...remainingSource,effectsRelation:factReadRelations(source).effectsRelation,vitalsRelation:factReadRelations(source).vitalsRelation});const priorRelease=releaseFactSource,priorCleanup=cleanupFactSource;releaseFactSource=()=>{restore();priorRelease?.();};cleanupFactSource=async()=>{await remainingSource.cleanup();await priorCleanup?.();};}
+ // Full body authentication above remains mandatory, including missing-body
+ // failures. An expanded retention setting cannot recreate expired closed
+ // sessions from only the final carry checkpoint; reject before any build or
+ // publication mutation. The boundary also protects legacy sites without 057.
+ if(strict&&sourceState.authority==='clickhouse'){
+  const baseline=(await source.query(`SELECT EXISTS(SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published') has_history,(SELECT retained_from FROM analytics_fact_runs WHERE site_id=$1 AND epoch=$2 AND query_version=2 AND status='published' ORDER BY generation DESC,created_at DESC,id DESC LIMIT 1) retained_from`,[claim.site_id,claim.epoch])).rows[0];
+  assertStrictRetainedWindowContinuity({strict,authority:sourceState.authority,retainedFrom,hasPublishedBaseline:baseline.has_history,previousRetainedFrom:baseline.retained_from?new Date(baseline.retained_from):null});
+ }
  // The first 036 build of an existing 033 site must bootstrap from every still
  // available source row. An older V2 run alone is not evidence of a complete prefix.
  const hasCarryBaseline=hasPublished&&Boolean((await source.query('SELECT 1 FROM analytics_session_contribution_heads WHERE site_id=$1 LIMIT 1',[claim.site_id])).rowCount);

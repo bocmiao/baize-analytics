@@ -52,3 +52,18 @@ raw 保留物理 ACK 后，仅给同 epoch 的 complete cache owner 推进 live 
 
 
 v13 全链仍 EXIT1：源/目标及 runtime 均保持原 365 天范围，旧缓存范围拒绝已消失；签名 sidecar 恢复、缓存迁移、strict CLI、B 身份查询通过。失败是夹具要求恢复 FULL 后仍至少两个 owner run；当前允许 FULL 合法合并，但修订必须在源备份及目标重建前断言多 run 导入完整，并以源删 A 后保存的真实 totals/pages/vitals/funnels 与目标差分及 archive/carry/head/receipt/hash 断言验收。v14 尚未运行。057 构建 EXIT0（现有 chunk 体积提示保留），本次保存是功能在制检查点，不是完整应用/负载验收。
+
+
+不可变提交 `a111d639e57601b62669ab3a1ab838c2bb5ebc89` 的 v14 独立恢复为 1 FAIL / 0 SKIP（约 27.68 秒）。原覆盖范围已保持，随后目标缓存闭包因 `page_centroid/legacy_centroid` 的 `privacy_invalidated` 且 `rebuildable_v2=false` 返回 `CACHE_BASELINE_UNAVAILABLE`；新增真实 LCP900 暴露该确定缺口。源删 A 后的真实查询仍有 sampleCount=1、p75/p90=900。目标完整差分断言尚未到达，不冒称全链通过。正在对 centroid 转换做独立真实样本重建专项，不删除失效标记或降 LCP/漏斗断言，不无变更重跑整链。
+
+
+`a111d63` 不可变快照相关回归：9 个文件、21 项真实 PG/CH 测试全部 PASS、0 SKIP（strict 主闭环、迟到/跨日/无页组件、发布失败 fencing、057 覆盖转换、归档 owner、generation、混合 pruned facts、TTL cache fence、056 删除元数据）。这是该提交的相关专项，不包含独立恢复，也不作为后续 centroid 在制改动或最终整轮验收的证据。
+
+
+## 保留期扩大正确性修复（独立于 centroid）
+
+隔离 `a111d63` 生产源码与新增回归夹具，实际复现 `365→1→365`：3 天前独立旧区间 PV2 / session2 在 FULL 后归零。操作前已保存旧 totals/vitals/head/hash 对照，不在受损库后 force full 当 oracle。首次直接工作区测试被并行 centroid 在制 bootstrap 阻断，未到扩窗，不算该 P1 复现；之后隔离生产文件的真实失败才是复现证据。
+
+修复仅在 strict CH 原完整正文认证之后、任何 prefix/build/publication 之前限制窗口向过去移动。有已发布历史但无可认证边界也明确拒绝，不依赖 057 witness 是否存在；完全无历史才可首次 bootstrap。拒绝 `FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN` 时旧 owner/ref/run/receipt/body hash 不修改，新事件仍 queued，dirty 状态不能假完整查询。保守拒绝不等于证明原始正文永久无法恢复；需真正认证的历史正文/backfill 才能支持扩大，不能仅改变保留天数。
+
+隔离仅该 guard 的真实 PG/CH 专项 2 PASS，另 3 项由 `-t` 过滤；含正常 witness 与 legacy 无 witness，再次 FULL 都不能抹历史或创建假证明。数据证据与源文件补丁 hash 一同保存；并行 centroid 在制变更不计入这两项通过范围。guard 定向 11 单元、类型和 lint EXIT0，最终完整目录仍待冻结后执行。

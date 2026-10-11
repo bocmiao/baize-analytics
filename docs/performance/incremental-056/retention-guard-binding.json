@@ -1,0 +1,9 @@
+{
+  "base": "a111d639e57601b62669ab3a1ab838c2bb5ebc89",
+  "patches": {
+    "src/server/fact-coverage-witness.ts": "f02bc0f8055442e1f22bc09c0128b4fa00968c2b5e069b95259e51b37e89bd77",
+    "src/server/worker-facts.ts": "43a218af4e48dc265308b39762dd9e77bccd9b751f8d541ffe7cf59efb30a072",
+    "tests/integration/incremental-session-coverage-witness.test.ts": "683c2a2441c08fa635385b37d1c329cf68e5abaf53ad2695889796ab5ddc6d01"
+  },
+  "scope": "isolated retention guard only; centroid WIP excluded"
+}

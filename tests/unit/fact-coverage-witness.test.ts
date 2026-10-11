@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage} from '../../src/server/fact-coverage-witness.js';
+import {advanceFactCoverageWitness,captureFactCoverageWitness,coverageConfigHash,restoreFactCoverageWitness,withCoverageMetadataUtc,advanceRestoreRebuildCoverage,advanceRevenueIntakeCoverage,assertStrictRetainedWindowContinuity} from '../../src/server/fact-coverage-witness.js';
 
 describe('coverage witness capability and legacy boundaries',()=>{
  it('legacy absent table captures null and advances without accessing canonical authority',async()=>{
@@ -64,4 +64,19 @@ describe('coverage witness capability and legacy boundaries',()=>{
  await advanceRevenueIntakeCoverage(c,'site',null);
  await expect(advanceRevenueIntakeCoverage(c,'site',{kind:'fact_coverage_revenue_intake'})).rejects.toThrow('FACT_COVERAGE_REVENUE_SCOPE');
  expect(query).not.toHaveBeenCalled();
+ });
+
+ describe('strict retained source window continuity',()=>{
+ const previous=new Date('2026-10-10T12:00:00Z');
+ it('rejects backwards cutoff without inferring expired raw from old witness coverage',()=>{
+ expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom:new Date('2025-10-11T12:00:00Z'),previousRetainedFrom:previous})).toThrow('FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN');
+ });
+ it('refuses legacy published history with an unknown rebuild boundary even without a witness',()=>{
+ expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom:previous,previousRetainedFrom:null,hasPublishedBaseline:true})).toThrow('FACT_RETAINED_WINDOW_BASELINE_UNAVAILABLE');
+ });
+ it('allows equal or forward cutoffs and genuine first bootstrap; leaves PG oracle unchanged',()=>{
+ for(const retainedFrom of [previous,new Date('2026-10-10T12:00:01Z')])expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom,previousRetainedFrom:previous})).not.toThrow();
+ expect(()=>assertStrictRetainedWindowContinuity({strict:true,authority:'clickhouse',retainedFrom:previous,previousRetainedFrom:null})).not.toThrow();
+ expect(()=>assertStrictRetainedWindowContinuity({strict:false,authority:'postgres',retainedFrom:new Date('2025-01-01'),previousRetainedFrom:previous})).not.toThrow();
+ });
  });
