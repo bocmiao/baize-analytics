@@ -1,0 +1,2 @@
+Filesystem     1024-blocks    Used Available Capacity Mounted on
+none              17453020 5512436  11940584      32% /tmp
