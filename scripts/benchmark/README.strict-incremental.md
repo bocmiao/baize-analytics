@@ -30,3 +30,9 @@ bash scripts/benchmark/run-strict-incremental.sh
 `BAIZE_PERF_PAGE_PATH_BATCH=0|1` 默认为 `0`，入口显式覆盖子进程 `BAIZE_SESSION_PAGE_PATH_BATCH`，不会隐式沿用父进程开关。非法值在资源/输出锁之前拒绝。plan 的 `pagePathBatch` 记录实际采用的数值；`coverageReuse` 仍独立记录 `BAIZE_PERF_COVERAGE_REUSE=0|1`（默认0），映射 `BAIZE_COVERAGE_SELECTED_RUNS`。
 
 同一完整SHA、同一机器与所有原参数，先 scalar0 的300，再 batch1 的300，各用不同新证据路径；仅开关不同。`page_path_lookup` 是实际SQL叶计时，`lookupInputRows` / `lookupReturnedRows` 是累计输入 / SQL返回行数（包含NULL路径的返回），不是唯一事件或匹配路径数。它嵌套在会话构建墙钟中，不相加。开关不改变50/1s/10s/queue8/concurrency2/drain120，不改变每FETCH100边界，不自动宣称收益。此说明未运行负载。
+
+## 有界事实发布流水线 A/B
+
+`BAIZE_PERF_FACT_PUBLICATION_CONCURRENCY=1|2` 默认 `1`，显式覆盖子进程 `BAIZE_FACT_PUBLICATION_CONCURRENCY`。非法值在资源和证据锁之前失败。plan 的数字 `publicationConcurrency` 记录解析结果；`coverageReuse` 和 `pagePathBatch` 仍独立保存。
+
+正确性快照冻结后，在相同完整SHA上分别并发1/2各运行300；两组均明确设 `BAIZE_PERF_COVERAGE_REUSE=1 BAIZE_PERF_PAGE_PATH_BATCH=1`，其余原参数不变，使用不同新证据路径。该开关只改变内部有界发布流水线，不改变入口发送并发2、50事件批、每秒调度、10秒查询、queue8或drain120秒。两组必须真实事实计数和最终完整性等价；不把发布阶段累积耗时相加当墙钟收益。本说明没有执行负载。

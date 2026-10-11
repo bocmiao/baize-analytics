@@ -1,0 +1,6 @@
+ce0e4cbded73414a125ad3b8a3e5aba77be202ce28cd29239a9496f5dde08f88  src/server/fact-store.ts
+cb237cb559676a10e24e9e0eebe2ee9c89657a49e5c88918b8a8cba4d5fccc50  src/server/fact-store-publication.ts
+d53a97556d4136835fa99dc2d0595c87771dd5a346c41b33f532757a164b9892  src/server/fact-publication-pipeline.ts
+360e222de9dda0bca3eb41bac25d1d0393acd8cadfdeab69307a198cf9cabe13  src/server/fact-closure-migration.ts
+cce0a5280c9f55a720494f6f4c9da81d7d5d6717de724de60a645233678900fc  tests/integration/fact-publication-pipeline.test.ts
+9545929626202083e4d4fa740ac42190fedd1357a3269573b62d6fdd0e1909c3  tests/unit/fact-publication-pipeline.test.ts

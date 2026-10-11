@@ -39,7 +39,9 @@ export async function migratePublishedFactClosure(client:PoolClient,siteId:strin
  await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT r.id FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selectedFactRunPredicate} ORDER BY r.id`,[siteId]);
  try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!rows.length)break;for(const row of rows){
   await assertPublishedDailyFactProvenance(client,siteId,row.id,stores.headers);
-  await publishRunFactBodies(client,{stageRecords:(...args)=>stores.facts.migratePublishedRecords(...args),completeRunKind:async(c,site,run,kind,f)=>{if(!await authenticateAlreadyPrunedKind(c,site,run,kind,stores,f))await stores.facts.completePublishedRunKind(c,site,run,kind,f);}},siteId,row.id,fence);
+  // Published backfill keeps per-row PG source authentication in its original
+  // single-batch adapter; the worker pipeline only stages fresh run records.
+  await publishRunFactBodies(client,{stageRecords:(...args)=>stores.facts.migratePublishedRecords(...args),completeRunKind:async(c,site,run,kind,f)=>{if(!await authenticateAlreadyPrunedKind(c,site,run,kind,stores,f))await stores.facts.completePublishedRunKind(c,site,run,kind,f);}},siteId,row.id,fence,{concurrency:1});
   await publishRemainingFactBodies(client,{stageRecords:(...args)=>stores.remaining.migratePublishedRecords(...args),completeRunKind:async(c,site,run,kind,f)=>{if(!await authenticateAlreadyPrunedKind(c,site,run,kind,stores,f))await stores.remaining.completePublishedRunKind(c,site,run,kind,f);}},siteId,row.id,fence,stores.headers);
   await verifyPublishedFactBodies(client,siteId,row.id,stores);runs++;
  }}}finally{await client.query(`CLOSE ${cursor}`);}
