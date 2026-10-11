@@ -1,5 +1,8 @@
 # Installation, upgrades and migration runbook
 
+> Current project status: [STATUS](../STATUS.md). Validation tables below are historical and bound to their named SHA; they do not describe the latest checkout.
+
+
 ## Current validation entry (local ce42c9f / d67 application)
 
 | Source/stage | Actual evidence |

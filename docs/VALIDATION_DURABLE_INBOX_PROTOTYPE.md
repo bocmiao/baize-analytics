@@ -2,7 +2,11 @@
 
 范围：`scripts/prototypes/durable-inbox.ts` 与独立 PG 专项；**不接入正式采集、不改变正式 202、不部署**。见 [ADR 060](ADR_060_INGEST_RECEIPTS.md)。本文只报告本次原型，不重分类已交付产品功能。
 
-## 实际结果
+## 最新隔离专项（字节预算）
+
+在两文件冻结摘要上实际运行14项真实PG，EXIT0、0fail/skip；新增每站pending字节上限、整批回滚、重试不重复计费、删除/重放释放与metadata不一致拒绝。原始JSON及文件SHA256见 [字节预算专项](performance/producer-canonical/inbox-byte-cap-pg-pass/)。publisher仍模拟；未运行新正式应用全轮。
+
+## 历史8项实际结果
 
 `/tmp/baize-inbox-prototype-pg-r1.json` 与同名 `.log`：1 文件、8 tests PASS、0 FAIL、0 skip，实际 EXIT0。`/tmp/baize-inbox-prototype-demo-r1.json`：`received=1`、`publishedEvents=1`、`publisher=simulated_transport`、`productionIntegrated=false`。PG 为真实数据库，publisher 为注入模拟传输，不能称实际 CH 验收。
 
@@ -23,7 +27,7 @@
 
 - 尚无真实 CH 写入/完整读回、HMAC 与 PG 提交白名单闭环、正文物理删除 ACK；模拟 ACK 不提供 CH exactly-once 或外部擦除证明。
 - 只保存 ts 与给定删除区间，未验证真实 identify 映射、迟到重分段、上游 day-HMAC、跨午夜/DST；不能冒充完整 collector 身份语义。
-- 单行 16 KiB、批次最多 100、pending 条数受限；全队列字节/年龄/全局站点公平/总历史存储限制未实现。
+- 单行 16 KiB、批次最多 100、pending 条数受限；每站pending字节上限已专项验收；队列年龄/全局站点公平/总历史存储限制未实现。
 - 同 schema PG journal 不是独立 fsync 最新删除日志或签名 pending 包的跨数据库恢复。进程终止、真实双 transport 故障、独立目标恢复与源不变仍需专项。
 - 不配合 AbortSignal 的 callback 可无限阻塞 privacy gate。安全 fail closed 已测，整体有界延迟没有保证。
 - 本次没有 B 性能、5000 容量或聚合 SLO 结论。A72 原 5000 FAIL（4700 accepted、6 未发送）及其他历史失败保留；短 HTTP 约 19–21% 改善不足以证明容量闭环。
