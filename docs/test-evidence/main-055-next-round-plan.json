@@ -1,0 +1,12 @@
+{
+  "imageHarness": {
+    "file": "docs/test-evidence/main-055-image-harness.safe.sh",
+    "sha256": "3d941137463321edb9c238c4fb0596f9e4dad1718c5f8e29140b1f4fd4656559",
+    "candidateExecution": "not-run; next round only after full result/resource gate"
+  },
+  "originalFixedLoadRunner": {
+    "file": "docs/test-evidence/main-d67bb8a-fixed-load-runner.safe.sh",
+    "sha256": "a97ceadcdc17ce5e56a39644f1a515a1661c083da06751e4f36418c23be18c04",
+    "candidateExecution": "not-run; next round only after full result/resource gate"
+  }
+}

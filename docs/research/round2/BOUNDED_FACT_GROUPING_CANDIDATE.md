@@ -1,8 +1,12 @@
-# 有界事实合批读取候选：只读评估
+# 有界事实合批读取：历史设计与候选验收
 
 ## 当前候选实施状态（2026-10-11 UTC）
 
-本地候选已保存 `10082b6`：055 signed bounded JSONEachRow读取分组、显式v1/v2备份投影及history scope055已实作。真实PG/CH三文件11专项PASS/0skip；首次10PASS/1fixtureFAIL原记录保留，修正不降低断言。全229单元PASS，lint/type EXIT0。正式空库10082b6全轮实际EXIT1：229单元PASS，160集成文件158PASS/2FAIL，439检查437PASS/2FAIL/0skip，E2E未跑；main-10082b6-full-failed-*原失败已归档。两失败为旧3请求fixture使用新hint及跨日fixture UTC00实际同日，A仅修fixture、产品不改，修复验证待；新镜像与性能收益未知，不能把专项/静态通过写成完整交付或SLO。已验功能645/30/image仍绑定既有d67应用源，不外推候选。remote e441仍push blocked，无托管；资源观察不证明隔离SLO。
+本地候选已保存 `10082b6`：055 signed bounded JSONEachRow读取分组、显式v1/v2备份投影及history scope055已实作。真实PG/CH三文件11专项PASS/0skip；首次10PASS/1fixtureFAIL原记录保留，修正不降低断言。全229单元PASS，lint/type EXIT0。正式空库10082b6全轮实际EXIT1：229单元PASS，160集成文件158PASS/2FAIL，439检查437PASS/2FAIL/0skip，E2E未跑；main-10082b6-full-failed-*原失败已归档。两失败为旧3请求fixture使用新hint及跨日fixture UTC00实际同日，A仅修fixture、产品不改，7项专项通过；后续整轮断言全通过但出现新未处理错误，见下；新镜像与性能收益未知，不能把专项/静态通过写成完整交付或SLO。已验功能645/30/image仍绑定既有d67应用源，不外推候选。remote e441仍push blocked，无托管；资源观察不证明隔离SLO。
+
+### 本轮最后整轮结果及续接
+
+`d881ce2523878e022f98fb62783fdf51909f4a09`（应用源码与10082相同）空库回归自然结束、清理完成，实际EXIT1：229unit及439integration断言全部通过/0skip，但有1个未处理PG57P01，报告关联strict-identity-restore测试。不能以JSON reporter success:true称整轮通过；独立应用迁移/compiled entry/E2E未运行。lint/type/build/SDK/journal已过。错误根因待下一轮核实，证据main-d881ce2-full-failed-*；新055镜像、性能对照均未执行。用户要求本轮检查点后安全续接，视觉方向暂停待四套方案选择，托管不触发。详见[轮次交接](../../SESSION_HANDOFF_2026-10-11.md)。
 
 ## 历史d67设计起点（保留原结论）
 
