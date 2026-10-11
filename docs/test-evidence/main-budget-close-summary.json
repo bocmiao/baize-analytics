@@ -1,0 +1,31 @@
+{
+  "sourceBase": "76e70744d42aa6b02b75fc1018a8dfec7c81974a",
+  "productChange": "Wait actual checked-out client end plus nextTick boundary before owner release; retain error listener until completion",
+  "oldSourceRegression": {
+    "source": "7ed61601ef81216d54414112a79a30945d5fb906",
+    "exit": 1,
+    "failed": 1,
+    "intentionallyUnselected": 10,
+    "failure": "actualEnded false before pool release"
+  },
+  "realPGCH": {
+    "exit": 0,
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0
+  },
+  "unitFixtureFirst": {
+    "exit": 1,
+    "passed": 9,
+    "failed": 1,
+    "reason": "old mock waited rejection before resolving client.end; fixture revised to complete end first"
+  },
+  "unitRecheck": {
+    "exit": 0,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fullAcceptance": "not yet rerun; prior 7ed full EXIT1 retained",
+  "hostedCI": "forbidden; not triggered"
+}
