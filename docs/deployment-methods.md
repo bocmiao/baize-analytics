@@ -16,7 +16,7 @@
 
 安装器会提示本地私有 `.baize/install-nonce.json`，不会打印凭证。浏览器填写该文件的 `nonce` 字段；完成后删除本地副本。应用数据库里的终态是凭证失效的依据，复制旧文件或恢复空用户备份不能重新创建管理员。已有账户直接登录。
 
-镜像 save 只含应用及 Node 基底，不含 PG/Redis/CH，不能当完整离线安装器或数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。下面以已验交付 tag 为例；新交付必须使用 `docker load` 输出及交付清单中的准确 tag，不能保留 Compose 默认的 `baize-analytics:local`。
+镜像 save 只含应用及 Node 基底，不含 PG/Redis/CH，不能当完整离线安装器或数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。加载后，从 `docker load` 输出的 `Loaded image: ...` 记录本次交付的精确 tag，并与交付清单核对。下面提示输入该 tag；校验只确认 profile 和 tag 形式，不替代交付 SHA256 校验。不要填旧交付的 tag 或保留 Compose 默认的 `baize-analytics:local`。
 
 标准版（仅初装空实例；现有 `.env`、密钥、卷不得覆盖）：
 
@@ -24,7 +24,8 @@
 umask 077
 test ! -e .env && test ! -e .baize/master.key || exit 1
 docker load -i /private/delivery/baize-standard-image-save.tar.gz
-app_image=baize-validation:standard-2cf5c11
+read -r -p '输入本次 Loaded image 的标准版精确 tag: ' app_image
+[[ "$app_image" =~ ^baize-validation:standard-[a-f0-9]{7,40}$ ]] || { echo '标准版交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" postgres:17-bookworm redis:7-bookworm >/dev/null
 mkdir -p .baize
 chmod 700 .baize
@@ -48,7 +49,8 @@ Lite 不需要数据库服务镜像或标准版主密钥 secret：
 umask 077
 test ! -e .env || exit 1
 docker load -i /private/delivery/baize-lite-image-save.tar.gz
-app_image=baize-validation:lite-2cf5c11
+read -r -p '输入本次 Loaded image 的 Lite 精确 tag: ' app_image
+[[ "$app_image" =~ ^baize-validation:lite-[a-f0-9]{7,40}$ ]] || { echo 'Lite 交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" >/dev/null
 mkdir -p .baize
 chmod 700 .baize

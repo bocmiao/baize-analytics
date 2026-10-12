@@ -16,7 +16,8 @@
 
 ## 界面
 
-<!-- Release gate: add actual latest-UI screenshots with safe synthetic data at these paths before delivery. -->
+以下截图来自真实运行的桌面和手机界面，展示的是安全示例数据。
+
 ![白泽桌面端界面](docs/images/baize-desktop.png)
 
 <details>
