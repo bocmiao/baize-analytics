@@ -141,11 +141,12 @@ function View({ site, tab, query, refresh, canWrite, canAdmin,instanceAdmin,geog
     const endpoint = ['overview', 'pages', 'sources', 'audience', 'events', 'retention', 'paths', 'vitals'].includes(tab) ? 'stats' : ['downloads','notFound','eventTrend'].includes(tab)?'content':tab === 'privacy' ? 'usage' : tab === 'settings' ? 'usage' : tab === 'userpaths' ? 'identities' : tab;
     const requestPath = ['seo', 'ai', 'gsc', 'ga4', 'serp', 'suggestions', 'seo-conversions'].includes(tab) ? `/api/sites/${site.id}/${tab === 'seo' ? 'seo/scans' : tab === 'ai' ? 'ai/usage' : tab === 'seo-conversions' ? 'seo/conversions' : tab}${['gsc', 'ga4', 'seo-conversions'].includes(tab) ? `?start=${civilDate(new URLSearchParams(query).get('from')!, site.timezone)}&end=${inclusiveEnd(new URLSearchParams(query).get('to')!, site.timezone)}` : ''}` : `${base}/${endpoint}?${query}${endpoint==='identities'?`&registrationEvent=${encodeURIComponent(registrationEvent)}`:''}`;
     useEffect(() => {
+        if(tab==='realtime')return;
         const controller = new AbortController(); let active = true;
         setLoading(true); setError(''); setData({});
         void api<Row>(requestPath, undefined, 'GET', controller.signal).then(result => { if (active) setData(result); }).catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setLoading(false); });
         return () => { active = false; controller.abort(); };
-    }, [requestPath, refresh, version]);
+    }, [requestPath, refresh, version,tab]);
     const pendingExports = tab === 'exports' && !error && rows(data).some(row=>['pending','running'].includes(String(row.status)));
     const pendingAggregation = endpoint === 'stats' && data.coverage !== undefined && Number(data.coverage) < 1 && !['partial_unavailable','future_only'].includes(String(data.rangeStatus));
     useEffect(() => {
@@ -180,19 +181,44 @@ function View({ site, tab, query, refresh, canWrite, canAdmin,instanceAdmin,geog
     }, [base, tab, query, version, refresh, site.timezone, data.coverage]);
     useEffect(() => {
         if (tab !== 'realtime') return;
-        const controller = new AbortController(); let active = true;
-        let onlineTimer: ReturnType<typeof setTimeout> | undefined;
-        const refreshLive = () => void api<Row>(`${base}/realtime`, undefined, 'GET', controller.signal).then(result => { if (active) setData(result); }).catch(e => { if (active) setError(e.message); });
-        const stream = new EventSource(`${base}/realtime/stream`);
-        stream.onmessage = message => {
-            if (!active) return;
-            const event = JSON.parse(message.data) as Row;
-            if (!onlineTimer) onlineTimer = setTimeout(() => { onlineTimer = undefined; refreshLive(); }, 500);
-            setData(current => ({ ...current, events: [event, ...rows(current.events).filter(e => e.event_id !== event.event_id)].slice(0, 200) }));
+        let active=true,generation=0,busy=false,queued=false;
+        let controller:AbortController|undefined,stream:EventSource|undefined;
+        let timer:ReturnType<typeof setInterval>|undefined,onlineTimer:ReturnType<typeof setTimeout>|undefined;
+        setData({});setError('');setLoading(true);
+        const visible=()=>active&&document.visibilityState!=='hidden';
+        const refreshLive=()=>{
+            if(!visible())return;
+            if(busy){queued=true;return;}
+            busy=true;queued=false;const scope=generation;const request=new AbortController();controller=request;
+            void api<Row>(`${base}/realtime`,undefined,'GET',request.signal).then(result=>{
+                if(active&&scope===generation&&!request.signal.aborted){setData(result);setError('');}
+            }).catch(error=>{if(active&&scope===generation&&!request.signal.aborted)setError(error.message);}).finally(()=>{
+                if(scope!==generation)return;
+                busy=false;controller=undefined;if(active)setLoading(false);
+                if(queued&&visible())refreshLive();
+            });
         };
-        const timer = setInterval(refreshLive, 30000);
-        return () => { active = false; controller.abort(); stream.close(); clearInterval(timer); clearTimeout(onlineTimer); };
-    }, [base, tab]);
+        const pause=()=>{
+            generation++;controller?.abort();controller=undefined;busy=false;queued=false;
+            stream?.close();stream=undefined;clearInterval(timer);timer=undefined;clearTimeout(onlineTimer);onlineTimer=undefined;
+        };
+        const resume=()=>{
+            if(!visible()||stream)return;
+            stream=new EventSource(`${base}/realtime/stream`);
+            stream.onmessage=message=>{
+                if(!visible())return;
+                let event:Row;try{event=JSON.parse(message.data) as Row;}catch{return;}
+                if(!onlineTimer)onlineTimer=setTimeout(()=>{onlineTimer=undefined;refreshLive();},500);
+                // A snapshot already in flight predates this event; read again after it settles.
+                if(busy)queued=true;
+                setData(current=>({...current,events:[event,...rows(current.events).filter(e=>e.event_id!==event.event_id)].slice(0,200)}));
+            };
+            refreshLive();timer=setInterval(refreshLive,30000);
+        };
+        const changed=()=>{if(document.visibilityState==='hidden')pause();else resume();};
+        document.addEventListener('visibilitychange',changed);resume();
+        return()=>{active=false;pause();document.removeEventListener('visibilitychange',changed);};
+    }, [base, tab,refresh,version]);
     if (['downloads','notFound','eventTrend'].includes(tab)) return <ContentAnalysis siteId={site.id} query={query} kind={tab as 'downloads'|'notFound'|'eventTrend'}/>;
     if (tab === 'settings')
         return <section className="panel"><h2>{t("追踪代码与站点信息")}</h2><SiteMetadata site={site} onSaved={()=>setVersion(n=>n+1)}/><Snippet site={site}/><p>{t("标识模式：")}{site.privacy_mode === 'daily_salt' ? t('每日盐隐私模式') : t('标准模式')}{t("· 时区：")}{site.timezone}</p><Action title="更新保留策略" scopeLabel={`${site.name} (${site.domain})`} currentRetention={site.retention_days} endpoint={`${base}/retention`} method="PATCH" fields={[['days', '明细保留天数', 'number']]} onSaved={() => setVersion(n => n + 1)}/><PrivacyFeatures key={JSON.stringify(site.config)} siteId={site.id} initial={site.config} onSaved={() => setVersion(n => n + 1)}/><SourceSettings siteId={site.id} initial={site.config} onSaved={() => setVersion(n=>n+1)}/>{instanceAdmin&&<GeoIpSettings/>}<SelfHostDiagnostics siteId={site.id} refresh={refresh+version}/>{instanceAdmin&&<details><summary>{language()==='en'?'Instance-wide enterprise SSO settings':'实例级企业 SSO 设置'}</summary><Action title="实例企业微信 SSO（仅实例管理员）" endpoint="/api/admin/sso/wecom" method="PUT" fields={[["corpId", "企业 ID"], ["agentId", "应用 ID"], ["secret", "应用密钥", "password"], ["enabled", "启用 true/false", "json"], ["mappings", "已授权外部成员与本地用户映射 JSON", "json"]]} onSaved={() => setVersion(n => n + 1)}/></details>}</section>;

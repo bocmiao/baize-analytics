@@ -56,6 +56,11 @@ import {EventStore,installEventStore} from './event-store.js';
 import {ExternalError} from './external-errors.js';
 import {resolveApiError} from '../shared/error-codes.js';
 export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport;performanceSink?:PerformanceSink }
+/** Independent serial maintenance cadence. Failed tasks cannot starve other tasks or retry every worker tick. */
+export function createMaintenanceRunner(tasks:(()=>Promise<unknown>)[],clock=Date.now){
+ const states=tasks.map(()=>({next:0,failures:0}));let running=false;
+ return async()=>{if(running)return;running=true;try{for(const [index,task] of tasks.entries()){const state=states[index]!;if(clock()<state.next)continue;try{await task();state.failures=0;}catch{state.failures=Math.min(state.failures+1,5);}finally{state.next=clock()+Math.min(900000,60000*2**Math.max(0,state.failures-1));}}}finally{running=false;}};
+}
 export async function createApp(options:AppOptions={}){
   const factManifestFlag=process.env.BAIZE_FACT_VALIDATION_MANIFEST_REUSE??'0';if(!['0','1'].includes(factManifestFlag))throw Error('FACT_VALIDATION_MANIFEST_REUSE_INVALID');
   const remainingReuseFlag=process.env.BAIZE_REMAINING_CANONICAL_REUSE??'0';if(!['0','1'].includes(remainingReuseFlag))throw Error('REMAINING_CANONICAL_REUSE_INVALID');
@@ -133,8 +138,18 @@ export async function createApp(options:AppOptions={}){
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
   if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));}
   app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
-  let busy=false;let lastMaintenance=0;let timer:NodeJS.Timeout|undefined;
-  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await withPerformanceObservation('background_worker',options.performanceSink,async()=>{await runWorkerOnce(pool);await ctx.clickhouseMirror?.runOnce();if(Date.now()-lastMaintenance>60000){await runGovernance(ctx);await enforceRetention(pool);if(history){await expireHistorySnapshots(pool,history);await cleanupHistoryFailures(pool,history);}await cleanupHistoryBackupFiles(pool,dataDir);await dropEmptyHistoricalPartitions(pool);await external.runJobs();await cleanupSessionHeaderOrphans(pool);await cleanupFactStoreOrphans(pool);await cleanupRemainingFactStoreOrphans(pool);await cleanupCacheStoreOrphans(pool);lastMaintenance=Date.now();}});}catch{/* Durable work remains queued; no raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
+  const maintenance=createMaintenanceRunner([
+    ()=>runGovernance(ctx),()=>enforceRetention(pool),
+    ...(history?[()=>expireHistorySnapshots(pool,history),()=>cleanupHistoryFailures(pool,history)]:[]),
+    ()=>cleanupHistoryBackupFiles(pool,dataDir),()=>dropEmptyHistoricalPartitions(pool),()=>external.runJobs(),
+    ()=>cleanupSessionHeaderOrphans(pool),()=>cleanupFactStoreOrphans(pool),()=>cleanupRemainingFactStoreOrphans(pool),()=>cleanupCacheStoreOrphans(pool)
+  ]);
+  let busy=false;let timer:NodeJS.Timeout|undefined;
+  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await withPerformanceObservation('background_worker',options.performanceSink,async()=>{
+    try{await runWorkerOnce(pool);}catch{/* Durable work remains queued. */}
+    try{await ctx.clickhouseMirror?.runOnce();}catch{/* Mirror failure cannot starve maintenance. */}
+    await maintenance();
+  });}catch{/* No raw event/error logging. */}finally{busy=false;}},1000);timer.unref();}
   app.addHook('onClose',async()=>{if(timer)clearInterval(timer);while(busy)await new Promise(r=>setTimeout(r,20));if(!options.pool)await pool.end();if(options.redis===undefined)await redis?.quit();});
   return {app,ctx};
 }

@@ -1,0 +1,7 @@
+import {it,expect,vi} from 'vitest';
+import type {Pool} from 'pg';
+import {dropEmptyHistoricalPartitions} from '../../src/server/partitions.js';
+function fixture(prefilter:boolean,lockedNonempty:boolean){const locked=vi.fn(async(sql:string)=>({rows:sql.includes('to_regclass')?[{relation:'exists'}]:[],rowCount:sql==='SELECT 1 FROM events_2020_01 LIMIT 1'&&lockedNonempty?1:0}));const connect=vi.fn(async()=>({query:locked,release:vi.fn()}));const query=vi.fn(async(sql:string)=>sql.includes('pg_partition_tree')?{rows:[{relname:'events_2020_01'}],rowCount:1}:{rows:[],rowCount:prefilter?1:0});return{pool:{query,connect} as unknown as Pool,query,connect,locked};}
+it('nonempty old partitions avoid exclusive gate and relation locks',async()=>{const f=fixture(true,true);expect(await dropEmptyHistoricalPartitions(f.pool)).toEqual({dropped:0});expect(f.connect).not.toHaveBeenCalled();});
+it('a concurrent insert after empty prefilter is rechecked under exclusive locks and preserved',async()=>{const f=fixture(false,true);expect(await dropEmptyHistoricalPartitions(f.pool)).toEqual({dropped:0});const sql=f.locked.mock.calls.map(x=>x[0]);expect(sql).toContain('LOCK TABLE events,event_data IN ACCESS EXCLUSIVE MODE');expect(sql.some(x=>x.startsWith('DROP TABLE'))).toBe(false);});
+it('confirmed empty partitions still drop only under existing exclusive gate',async()=>{const f=fixture(false,false);expect(await dropEmptyHistoricalPartitions(f.pool)).toEqual({dropped:1});expect(f.locked.mock.calls.map(x=>x[0])).toContain('DROP TABLE events_2020_01');});
