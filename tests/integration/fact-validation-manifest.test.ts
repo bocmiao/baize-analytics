@@ -1,4 +1,4 @@
-import {createHash,randomUUID} from 'node:crypto';
+import {createHash,createHmac,randomUUID} from 'node:crypto';
 import {Pool,type PoolClient} from 'pg';
 import {afterEach,beforeEach,describe,expect,it} from 'vitest';
 import {migrate,lockSite} from '../../src/server/db.js';
@@ -6,7 +6,7 @@ import {canonical} from '../../src/server/security.js';
 import {readObservedClickHouseBody} from '../../src/server/clickhouse-observed-body.js';
 import {parseClickHouseSelectJson} from '../../src/server/clickhouse-select-budget.js';
 import {consumeClickHouseCommand} from '../../src/server/clickhouse-command-response.js';
-import {ClickHouseFactStore,type FactStoreRecord,type SealedFactStoreRecord} from '../../src/server/fact-store.js';
+import {ClickHouseFactStore,type FactStoreRecord,type FactEffectRow,type SealedFactStoreRecord} from '../../src/server/fact-store.js';
 import {verifyFactValidationManifest,type FactValidationBatch,type FactValidationMember} from '../../src/server/fact-validation-manifest.js';
 import {isolatedTestConnectionString} from '../support/database-url.js';
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
@@ -36,5 +36,40 @@ describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL
  it('bad signatures cannot downgrade into the full reader when reuse is disabled',async()=>{await transaction(async c=>{
  await c.query("UPDATE analytics_fact_store_batches SET validation_seal=repeat('0',64)");calls=0;await expect(read(c,old)).rejects.toThrow('FACT_STORE_VALIDATION_MANIFEST_INVALID');await expect(read(c,fast)).rejects.toThrow('FACT_STORE_VALIDATION_MANIFEST_INVALID');expect(calls).toBe(0);
  });});
+
+ it.each(['after_insert','after_readback','after_sign'] as const)('%s rollback leaves an orphan attempt unselectable and same-event retry publishes exactly once',async fault=>{
+ const target=randomUUID(),entry:FactStoreRecord={...records[0]!,row:{...records[0]!.row,run_id:target,event_id:randomUUID()}},provenance={aggregationEpoch:epoch,canonicalEpoch:null,deletionEpoch:null};
+ const expectedSeal=createHmac('sha256',secret).update(canonical(['derived-fact-store-v1',site,'effects',entry,provenance])).digest('hex'),expectedBody=canonical({...entry,kind:'effects',source:provenance,bodySeal:expectedSeal});
+ const e=entry.row as FactEffectRow,expectedKey=hash(canonical([target,e.event_id,e.session_id,e.metric,e.key,e.member]));
+ let insertComplete=false,readbackComplete=false,signObserved=false,injected=false,orphanAttempt:string|undefined;
+ const publisher=new ClickHouseFactStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only',validationManifestReuse:true,fetch:async(input,init)=>{
+  const url=new URL(String(input)),sql=url.searchParams.get('query')??'',response=await fetch(input,init);expect(response.ok).toBe(true);
+  if(sql.startsWith('INSERT INTO baize_derived_facts_v1')){
+   const sent=JSON.parse(String(init?.body));expect(sent.run_id).toBe(target);expect(sent.site_id).toBe(site);expect(sent.body).toBe(expectedBody);expect(sent.body_hash).toBe(hash(expectedBody));expect(sent.row_key).toBe(expectedKey);orphanAttempt=sent.attempt_id;
+   await consumeClickHouseCommand(response,'fixture_insert_eof');insertComplete=true;if(fault==='after_insert'){injected=true;throw Error('controlled-after_insert');}return new Response('',{status:200});
+  }
+  if(sql.startsWith('SELECT row_key,body,body_hash')&&url.searchParams.get('param_run')===target){
+   const text=await readObservedClickHouseBody(async()=>response,16*1024*1024,'fixture_readback','fixture_readback_limit'),data=parseClickHouseSelectJson(text).data as {row_key:string;body:string;body_hash:string}[];
+   expect(data).toHaveLength(1);expect(data[0]).toEqual({row_key:expectedKey,body:expectedBody,body_hash:hash(expectedBody)});expect(hash(data[0]!.body)).toBe(data[0]!.body_hash);readbackComplete=true;
+   if(fault==='after_readback'){injected=true;throw Error('controlled-after_readback');}return new Response(text,{status:200});
+  }
+  return response;
+ }});
+ const c=await pool.connect();try{
+  const originalQuery=c.query.bind(c),receiptQuery=(async(sql:string,args?:unknown[])=>{if(sql.startsWith('INSERT INTO analytics_fact_store_batches')){expect(fault).toBe('after_sign');expect(args?.[13]).toBe(1);expect(args?.[14]).toMatch(/^[0-9a-f]{64}$/);const receipt:FactValidationBatch={id:String(args![0]),site_id:String(args![1]),run_id:String(args![2]),kind:'effects',attempt_id:String(args![4]),source_aggregation_epoch:String(args![6]),canonical_epoch:args![7] as string|null,deletion_epoch:args![8]===null?null:String(args![8]),row_count:Number(args![9]),checksum:String(args![10]),validation_schema_version:Number(args![13]),validation_seal:String(args![14])};expect(verifyFactValidationManifest(secret,receipt,[{run_id:target,kind:'effects',row_key:expectedKey,batch_id:receipt.id,body_hash:hash(expectedBody),visitor_id:entry.visitorId,event_ts:entry.row.event_ts,session_id:session,event_id:entry.row.event_id}])).toBe(true);signObserved=true;injected=true;throw Error('controlled-after_sign');}return originalQuery(sql,args);}) as PoolClient['query'];
+  const held=fault==='after_sign'?new Proxy(c,{get(client,key,receiver){return key==='query'?receiptQuery:Reflect.get(client,key,receiver);}}):c;
+  const begin=async()=>{await c.query('BEGIN');await lockSite(c,site);await c.query("INSERT INTO analytics_fact_runs(id,site_id,epoch,generation,outbox_high_watermark,status) VALUES($1,$2,$3,2,0,'staging')",[target,site,epoch]);};
+  const fence={expectedAggregationEpoch:epoch,verifyLiveFence:async()=>{expect((await c.query('SELECT r.epoch,a.epoch current_epoch,r.status FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.id=$1 AND r.site_id=$2',[target,site])).rows[0]).toMatchObject({epoch,current_epoch:epoch,status:'staging'});}};
+  await begin();await expect(publisher.stageRecords(held,site,target,'effects',[entry],fence)).rejects.toThrow('controlled-'+fault);await c.query('ROLLBACK');
+  expect(injected).toBe(true);expect(insertComplete).toBe(true);expect(readbackComplete).toBe(fault!=='after_insert');expect(signObserved).toBe(fault==='after_sign');expect(orphanAttempt).toMatch(/^[0-9a-f-]{36}$/);
+  expect(Number((await c.query('SELECT count(*) n FROM analytics_fact_store_batches WHERE run_id=$1',[target])).rows[0].n)).toBe(0);expect(Number((await c.query('SELECT count(*) n FROM analytics_fact_store_members WHERE run_id=$1',[target])).rows[0].n)).toBe(0);
+  const physical=async()=>{const url=new URL(process.env.CLICKHOUSE_TEST_URL!);url.searchParams.set('param_site',site);url.searchParams.set('param_run',target);url.searchParams.set('query','SELECT count() n,uniqExact(attempt_id) attempts FROM baize_derived_facts_v1 WHERE site_id={site:String} AND run_id={run:UUID} FORMAT JSON');const text=await readObservedClickHouseBody(async()=>{const response=await fetch(url,{method:'POST',headers:{'X-ClickHouse-User':'baize','X-ClickHouse-Key':'local-test-only'}});expect(response.ok).toBe(true);return response;},65536,'fixture_physical_count','fixture_physical_limit');const row=(parseClickHouseSelectJson(text).data as {n:string|number;attempts:string|number}[])[0]!;return {n:Number(row.n),attempts:Number(row.attempts)};};
+  expect(await physical()).toEqual({n:1,attempts:1});await c.query('BEGIN');await lockSite(c,site);await expect(read(c,fast,target)).rejects.toThrow('FACT_STORE_SOURCE_FENCE');await c.query('ROLLBACK');
+  await begin();await fast.stageRecords(c,site,target,'effects',[entry],fence);await fast.completeRunKind(c,site,target,'effects',fence);await fast.completeRunKind(c,site,target,'vitals',fence);await c.query("UPDATE analytics_fact_runs SET status='published' WHERE id=$1",[target]);await c.query('COMMIT');
+  const committed=(await c.query('SELECT attempt_id,validation_schema_version FROM analytics_fact_store_batches WHERE run_id=$1',[target])).rows;expect(committed).toHaveLength(1);expect(committed[0]!.attempt_id).not.toBe(orphanAttempt);expect(committed[0]!.validation_schema_version).toBe(1);expect(await physical()).toEqual({n:2,attempts:2});
+  const selectedAttempts:string[]=[];const audited=new ClickHouseFactStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only',validationManifestReuse:true,fetch:async(input,init)=>{const url=new URL(String(input));for(const [key,value]of url.searchParams)if(key.startsWith('param_attempt'))selectedAttempts.push(value);return fetch(input,init);}});
+  await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ');await lockSite(c,site);const visible=await read(c,audited,target);expect(visible).toHaveLength(1);expect(visible[0]!.row.event_id).toBe(entry.row.event_id);expect(visible[0]!.row.value).toBe(1);expect(new Set(selectedAttempts)).toEqual(new Set([committed[0]!.attempt_id]));expect(selectedAttempts).not.toContain(orphanAttempt);await manifests(c);await c.query('COMMIT');expect(pool.waitingCount).toBe(0);
+ }finally{await c.query('ROLLBACK');c.release();}
+ });
 
 });
