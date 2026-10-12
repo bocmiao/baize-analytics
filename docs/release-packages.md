@@ -3,12 +3,15 @@
 > 本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。
 
 The small documentation whitelist includes the supervisor example, deployment and
-maintenance guides, Lite guides, API/migration reference and README. Files are
+maintenance guides, Lite guides, API/migration reference, both `README.md` and `README.en.md`, and the two
+explicit screenshot paths `docs/images/baize-desktop.png` and
+`docs/images/baize-mobile.png`. The PNG Git blobs remain byte for byte identical;
+README image links to them stay local and work offline. Files are
 exported with `git show FULL_SHA:path` from the same frozen revision as the image.
 The supervisor example and primary operating guides stay byte for byte identical.
 README/API/migration references keep local links to included guides; missing source
 or historical link targets point to the private repository at that exact SHA.
-Only link targets change in the original body; README also receives the explicit
+Only link targets change in the original body; each README also receives its own Chinese or English explicit
 offline/network-access notice shown above. Their manifest provenance records the source Git blob,
 source SHA-256, derived document SHA-256 and each rewrite. Historical evidence,
 screenshots, private configuration and secrets are not recursively packaged.

@@ -16,7 +16,52 @@
 
 安装器会提示本地私有 `.baize/install-nonce.json`，不会打印凭证。浏览器填写该文件的 `nonce` 字段；完成后删除本地副本。应用数据库里的终态是凭证失效的依据，复制旧文件或恢复空用户备份不能重新创建管理员。已有账户直接登录。
 
-若使用应用镜像 save 包，先核对交付 SHA256，再 `docker load -i 包文件`，用对应 profile 的镜像和 Compose 配置运行，执行 `bash scripts/init-empty-volumes.sh`（Lite 加 `-f docker-compose.lite.yml`）初始化空卷。浏览器凭证可以用 Compose `cp` 从 `/app/keys/install-nonce.json` 复制到本机私有文件，并设为 0600。save 包只含应用及 Node 基底，不是包含 PG/Redis/CH 的完整离线安装器，也不是数据备份。
+镜像 save 只含应用及 Node 基底，不含 PG/Redis/CH，不能当完整离线安装器或数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。下面以已验交付 tag 为例；新交付必须使用 `docker load` 输出及交付清单中的准确 tag，不能保留 Compose 默认的 `baize-analytics:local`。
+
+标准版（仅初装空实例；现有 `.env`、密钥、卷不得覆盖）：
+
+```bash
+umask 077
+test ! -e .env && test ! -e .baize/master.key || exit 1
+docker load -i /private/delivery/baize-standard-image-save.tar.gz
+app_image=baize-validation:standard-2cf5c11
+docker image inspect "$app_image" postgres:17-bookworm redis:7-bookworm >/dev/null
+mkdir -p .baize
+chmod 700 .baize
+docker run --rm --pull=never --entrypoint node "$app_image" -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))' > .baize/master.key
+password="$(docker run --rm --pull=never --entrypoint node "$app_image" -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"
+printf 'BAIZE_IMAGE=%s\nPOSTGRES_PASSWORD=%s\nPUBLIC_URL=http://localhost:3000\nBAIZE_PORT=3000\nBAIZE_UID=%s\nBAIZE_GID=%s\n' "$app_image" "$password" "$(id -u)" "$(id -g)" > .env
+unset password
+chmod 600 .env .baize/master.key
+docker compose --env-file .env config --quiet
+bash scripts/init-empty-volumes.sh
+docker compose --env-file .env up -d --no-build --pull never --wait --wait-timeout 120
+docker compose cp app:/app/keys/install-nonce.json .baize/install-nonce.json >/dev/null
+chmod 600 .baize/install-nonce.json
+```
+
+`docker image inspect` 会在缺依赖镜像时停止，不自动下载。联网部署者可先自行准备 PG/Redis 镜像；隔离离线机器须另行取得和校验这两个官方依赖 save，再 `docker load`。不能用应用 save 宣称依赖已交付。
+
+Lite 不需要数据库服务镜像或标准版主密钥 secret：
+
+```bash
+umask 077
+test ! -e .env || exit 1
+docker load -i /private/delivery/baize-lite-image-save.tar.gz
+app_image=baize-validation:lite-2cf5c11
+docker image inspect "$app_image" >/dev/null
+mkdir -p .baize
+chmod 700 .baize
+printf 'BAIZE_LITE_IMAGE=%s\nPUBLIC_URL=http://localhost:3000\nBAIZE_LITE_PORT=3000\nBAIZE_UID=%s\nBAIZE_GID=%s\n' "$app_image" "$(id -u)" "$(id -g)" > .env
+chmod 600 .env
+docker compose --env-file .env -f docker-compose.lite.yml config --quiet
+bash scripts/init-empty-volumes.sh -f docker-compose.lite.yml
+docker compose --env-file .env -f docker-compose.lite.yml up -d --no-build --pull never --wait --wait-timeout 120
+docker compose -f docker-compose.lite.yml cp app:/app/keys/install-nonce.json .baize/install-nonce.json >/dev/null
+chmod 600 .baize/install-nonce.json
+```
+
+卷初始化 helper 只运行上面已经明确加载并 inspect 的应用 tag；两条启动命令均禁止构建和拉取。浏览器填写本机 0600 文件中的一次性 nonce，完成后删除本地副本，不在终端或日志打印凭证。已有账户/恢复目标不用这套初装命令。
 
 ## 上传 Node 项目包或附带 Node 包
 

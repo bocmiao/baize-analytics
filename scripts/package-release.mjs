@@ -12,8 +12,9 @@ export function runtimeLicensePackages(needed) {
  const providers={'libdl.so.2':'libc6','libm.so.6':'libc6','libpthread.so.0':'libc6','libc.so.6':'libc6','ld-linux-x86-64.so.2':'libc6','libstdc++.so.6':'libstdc++6','libgcc_s.so.1':'libgcc-s1','libatomic.so.1':'libatomic1'};
  return [...new Set(needed.map(name=>{if(!Object.hasOwn(providers,name))throw Error('RELEASE_LIBRARY_LICENSE_UNKNOWN:'+name);return providers[name];}))].sort();
 }
-export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md']);
+export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','README.en.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md','docs/images/baize-desktop.png','docs/images/baize-mobile.png']);
 export const releaseReadmeNotice='> 运行包说明：本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。\n\n';
+export const releaseEnglishReadmeNotice='> Runtime package: the primary operation and maintenance guides are available offline. Fixed-revision links to source code and historical material require network access and permission to the private repository.\n\n';
 export function rewriteDocumentationLinks(text,sourcePath,revision,included=documentationWhitelist){
  const available=new Set(included),rewritten=[];
  const content=text.replace(/(\]\()([^\s)]+)([^)]*\))/g,(match,prefix,target,suffix)=>{
@@ -33,10 +34,11 @@ export function exportReleaseDocumentation(sourceRoot,revision,output){
   const bytes=command('git',['show',`${revision}:${path}`],{cwd:sourceRoot,encoding:null});
   const gitBlobId=command('git',['rev-parse',`${revision}:${path}`],{cwd:sourceRoot}).trim();
   if(createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex')!==gitBlobId)throw Error('RELEASE_DOCUMENTATION_BLOB_MISMATCH');
-  const derived=['README.md','docs/api.md','docs/migration.md'].includes(path)?rewriteDocumentationLinks(bytes.toString('utf8'),path,revision):{content:bytes,rewritten:[]};
-  const readmeNoticeAdded=path==='README.md';
-  const releaseBytes=Buffer.from(readmeNoticeAdded?releaseReadmeNotice+derived.content:derived.content),destination=join(output,path);mkdirSync(dirname(destination),{recursive:true});writeFileSync(destination,releaseBytes);
-  return {path,revision,gitBlobId,sourceSha256:sha256(bytes),sourceBytes:bytes.length,derivedDocSha256:sha256(releaseBytes),bytes:releaseBytes.length,derivedLinksOnly:derived.rewritten.length>0,readmeNoticeAdded,rewrittenLinks:derived.rewritten};
+  const derived=['README.md','README.en.md','docs/api.md','docs/migration.md'].includes(path)?rewriteDocumentationLinks(bytes.toString('utf8'),path,revision):{content:bytes,rewritten:[]};
+  const readmeNotice=path==='README.md'?releaseReadmeNotice:path==='README.en.md'?releaseEnglishReadmeNotice:'';
+  const readmeNoticeAdded=Boolean(readmeNotice);
+  const releaseBytes=Buffer.from(readmeNoticeAdded?readmeNotice+derived.content:derived.content),destination=join(output,path);mkdirSync(dirname(destination),{recursive:true});writeFileSync(destination,releaseBytes);
+  return {path,revision,gitBlobId,sourceSha256:sha256(bytes),sourceBytes:bytes.length,derivedDocSha256:sha256(releaseBytes),bytes:releaseBytes.length,derivedLinksOnly:derived.rewritten.length>0,readmeNoticeAdded,readmeNotice,rewrittenLinks:derived.rewritten};
  });
 }
 export function deriveRuntimePackage(root){

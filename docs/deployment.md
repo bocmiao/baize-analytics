@@ -2,7 +2,7 @@
 
 ## 安装方式与实际依赖
 
-推荐 Linux Docker Engine + Compose v2，从私有 checkout 本地构建；当前未发布白泽 registry 镜像或 Release 安装包。
+推荐 Linux Docker Engine + Compose v2，从私有 checkout 本地构建。私有交付现提供已验的应用镜像 save、Node-ready 与 bundled-node 运行包；没有公开 registry/Release 发布。三个入口及首次使用见 [部署方式](deployment-methods.md)。
 
 ```bash
 ./install.sh
@@ -13,7 +13,7 @@
 
 初装只需 Docker/Compose 与 Bash 常规工具；**备份、恢复、升级还需宿主 Node 24+、sha256sum、支持 `sort -z` 的 GNU 工具、find/xargs/tar/cut**，升级还需 fallocate、GNU sed、mktemp。脚本在创建备份或停止应用前检查依赖；缺失时给出指引，不自动安装工具。推荐 Linux 运维；Windows `run.bat` 未实测。
 
-Node 24 源码方式需要独立 PostgreSQL 17、Redis 7，以及 `DATABASE_URL`、`REDIS_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。没有随附的 Kubernetes/Helm/systemd/PaaS 部署成品。
+Node 24 源码方式需要独立 PostgreSQL 17、Redis 7，以及 `DATABASE_URL`、`REDIS_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。原生运行包提供经完整性校验的 compiled 启动器、Node 面板入口和运营者审阅的 [systemd 示例](../deploy/baize.service.example)，已实测独立 supervisor 自动重启；未提供 Kubernetes/Helm 成品，也未替用户安装 systemd 或验收真实宝塔实例。源码 npm start 与运行包派生 npm start 不同，后者调用 compiled panel-start，无需 tsx。
 
 Compose 默认连接内置 postgres/redis；只在 `.env` 写同名 `DATABASE_URL/REDIS_URL` 不会切换外部服务，需明确的 Compose override。默认 loopback 端口只供本机；`PUBLIC_URL` 不会配置 TLS 或开放公网。持久卷为 `app_data/app_keys/postgres_data/redis_data`，可选 CH 增加 `clickhouse_data`；不要删除业务卷或遗失密钥。
 

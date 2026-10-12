@@ -11,6 +11,7 @@ import {Readable} from 'node:stream';
 import {registerLiteInsights} from './optional-insights.js';
 import {registerDeploymentDiagnostics} from '../shared/deployment-diagnostics.js';
 import {createLiteStore} from './store.js';
+import {liteHealthStatus} from './health.js';
 import {computeLiteStats,liteGoalSchema} from './analytics.js';
 import {durableWrite} from './ops-domain.js';
 import {liteCapabilities,type LiteAppOptions} from './http-types.js';
@@ -61,7 +62,7 @@ export async function createLiteApp(options:LiteAppOptions={}){
   return {...record,isCancelled:()=>record.cancelled,finish};
  }
  const siteId=(r:FastifyRequest)=>(r.params as {siteId:string}).siteId;
- app.get('/healthz',async(_req,reply)=>{try{await store.read('metadata');return {ok:true,database:'ready',storage:'sqlite',cache:'disabled',geoip:'unavailable',schemaVersion:1,...await store.runtime};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
+ app.get('/healthz',async(_req,reply)=>{try{return await liteHealthStatus(store);}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
  app.get('/api/capabilities',async()=>liteCapabilities);
  async function installationStatus(){const status=await store.read<{required:boolean;credentialRequired:boolean;state:string;blocked?:boolean}>('bootstrap_status');const states=['pending','claimed','legacy','restored_blocked'];const state=states.includes(status.state)?status.state:'blocked';return {required:status.required===true,credentialRequired:status.credentialRequired===true,state,...(status.blocked||state==='blocked'?{blocked:true}:{})};}
  app.get('/api/setup',installationStatus);

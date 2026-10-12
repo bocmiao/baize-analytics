@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {chmodSync,mkdirSync,mkdtempSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {deriveRuntimePackage,documentationWhitelist,exportReleaseDocumentation,releaseFiles,runtimeLicensePackages,releaseReadmeNotice,rewriteDocumentationLinks,verifyRelease} from './package-release.mjs';
+import {deriveRuntimePackage,documentationWhitelist,exportReleaseDocumentation,releaseFiles,runtimeLicensePackages,releaseReadmeNotice,releaseEnglishReadmeNotice,rewriteDocumentationLinks,verifyRelease} from './package-release.mjs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
@@ -36,7 +36,7 @@ test('documentation whitelist comes from exact real Git blobs, excludes history 
  const root=fixture(),checkout=fileURLToPath(new URL('..',import.meta.url));try{
   const revision=execFileSync('git',['rev-parse','HEAD'],{cwd:checkout,encoding:'utf8'}).trim();
   const witness=exportReleaseDocumentation(checkout,revision,root);assert.equal(witness.length,documentationWhitelist.length);
-  for(const item of witness){const original=execFileSync('git',['show',`${revision}:${item.path}`],{cwd:checkout});const copied=readFileSync(join(root,item.path));assert.equal(item.sourceSha256,createHash('sha256').update(original).digest('hex'));assert.equal(item.derivedDocSha256,createHash('sha256').update(copied).digest('hex'));if(!['README.md','docs/api.md','docs/migration.md'].includes(item.path))assert.deepEqual(copied,original);else{let restored=copied.toString('utf8');if(item.readmeNoticeAdded){assert.ok(restored.startsWith(releaseReadmeNotice));restored=restored.slice(releaseReadmeNotice.length);}for(const link of item.rewrittenLinks)restored=restored.replace(link.to,link.from);assert.equal(restored,original.toString('utf8'));}assert.equal(item.revision,revision);assert.match(item.gitBlobId,/^[a-f0-9]{40}$/);}
+  for(const item of witness){const original=execFileSync('git',['show',`${revision}:${item.path}`],{cwd:checkout});const copied=readFileSync(join(root,item.path));assert.equal(item.sourceSha256,createHash('sha256').update(original).digest('hex'));assert.equal(item.derivedDocSha256,createHash('sha256').update(copied).digest('hex'));if(!['README.md','README.en.md','docs/api.md','docs/migration.md'].includes(item.path))assert.deepEqual(copied,original);else{let restored=copied.toString('utf8');if(item.readmeNoticeAdded){const notice=item.path==='README.en.md'?releaseEnglishReadmeNotice:releaseReadmeNotice;assert.equal(item.readmeNotice,notice);assert.ok(restored.startsWith(notice));restored=restored.slice(notice.length);}for(const link of item.rewrittenLinks)restored=restored.replace(link.to,link.from);assert.equal(restored,original.toString('utf8'));}assert.equal(item.revision,revision);assert.match(item.gitBlobId,/^[a-f0-9]{40}$/);}
   assert.ok(witness.some(item=>item.path==='deploy/baize.service.example'));assert.ok(!witness.some(item=>/test-evidence|screenshots|validation|\.env|\.key/.test(item.path)));
   assert.throws(()=>exportReleaseDocumentation(checkout,'wrong',root),/RELEASE_DOCUMENTATION_REVISION_INVALID/);
  }finally{cleanup(root);}
@@ -74,4 +74,33 @@ test('actual Node library providers require real notices and unknown providers r
  assert.deepEqual(runtimeLicensePackages([...actual,'libatomic.so.1']),['libatomic1','libc6','libgcc-s1','libstdc++6']);
  assert.throws(()=>runtimeLicensePackages([...actual,'libunknown.so.9']),/RELEASE_LIBRARY_LICENSE_UNKNOWN/);
  for(const name of ['constructor','toString','__proto__'])assert.throws(()=>runtimeLicensePackages([...actual,name]),/RELEASE_LIBRARY_LICENSE_UNKNOWN/);
+});
+
+test('explicit screenshot Git blobs pass through as binary and README keeps offline image links',()=>{
+ const checkout=mkdtempSync(join(tmpdir(),'baize-release-doc-git-')),output=mkdtempSync(join(tmpdir(),'baize-release-doc-output-'));
+ try{
+  const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aYpUAAAAASUVORK5CYII=','base64');
+  for(const path of documentationWhitelist){
+   const destination=join(checkout,path);mkdirSync(join(destination,'..'),{recursive:true});
+   writeFileSync(destination,path.endsWith('.png')?image:['README.md','README.en.md'].includes(path)?'![桌面](docs/images/baize-desktop.png)\n![手机](docs/images/baize-mobile.png)\n[历史](docs/private-history.md)\n':'Fixture guide\n');
+  }
+  mkdirSync(join(checkout,'docs','images','historical'),{recursive:true});writeFileSync(join(checkout,'docs','images','historical','old.png'),image);
+  writeFileSync(join(checkout,'.env'),'fixture-private-state');
+  execFileSync('git',['init','--quiet'],{cwd:checkout});execFileSync('git',['add','.'],{cwd:checkout});
+  execFileSync('git',['-c','user.name=Release Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Synthetic binary documentation fixture'],{cwd:checkout});
+  const revision=execFileSync('git',['rev-parse','HEAD'],{cwd:checkout,encoding:'utf8'}).trim();
+  const witness=exportReleaseDocumentation(checkout,revision,output);
+  for(const path of ['docs/images/baize-desktop.png','docs/images/baize-mobile.png']){
+   assert.deepEqual(readFileSync(join(output,path)),image);
+   const item=witness.find(item=>item.path===path);assert.equal(item.sourceBytes,image.length);assert.equal(item.sourceSha256,item.derivedDocSha256);assert.equal(item.derivedLinksOnly,false);assert.equal(item.readmeNoticeAdded,false);assert.deepEqual(item.rewrittenLinks,[]);
+  }
+  const readme=readFileSync(join(output,'README.md'),'utf8');
+  const english=readFileSync(join(output,'README.en.md'),'utf8');
+  assert.ok(english.startsWith(releaseEnglishReadmeNotice));assert.ok(!english.startsWith(releaseReadmeNotice));
+  assert.ok(english.includes('![桌面](docs/images/baize-desktop.png)'));assert.ok(english.includes('![手机](docs/images/baize-mobile.png)'));
+  const englishWitness=witness.find(item=>item.path==='README.en.md');let restored=english.slice(englishWitness.readmeNotice.length);for(const link of englishWitness.rewrittenLinks)restored=restored.replace(link.to,link.from);assert.equal(restored,readFileSync(join(checkout,'README.en.md'),'utf8'));
+  assert.ok(readme.includes('![桌面](docs/images/baize-desktop.png)'));assert.ok(readme.includes('![手机](docs/images/baize-mobile.png)'));
+  assert.ok(!witness.some(item=>item.path.includes('historical')||item.path==='.env'));
+  assert.deepEqual(documentationWhitelist.filter(path=>path.endsWith('.png')),['docs/images/baize-desktop.png','docs/images/baize-mobile.png']);
+ }finally{rmSync(checkout,{recursive:true,force:true});rmSync(output,{recursive:true,force:true});}
 });
