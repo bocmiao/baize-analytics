@@ -27,7 +27,8 @@ export -f docker
 no_success(){ ! rg '"restored":true|"reaggregated":true|^Restored ' "$1"; [ ! -e ".baize/restores/$2.json" ]; }
 no_helper(){ [ -z "$(command docker ps -aq --filter "label=com.docker.compose.project=$COMPOSE_PROJECT_NAME" --filter name=baize_restore_source_)" ]; }
 ready(){ for attempt in $(seq 1 120); do if command docker exec "$source_id" node -e "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))" >/dev/null 2>&1; then return 0; fi; sleep 1; done; return 1; }
-negative(){ mode=$1; db="baize_restore_maintenance_${mode}_${RANDOM}"; targets+=("$db"); export OPS_FAULT=$mode; set +e; bash scripts/restore.sh "$backup" "$db" > "$work/$mode.log" 2>&1; status=$?; set -e; cat "$work/$mode.log"; [ "$status" != 0 ]; no_success "$work/$mode.log" "$db"; no_helper; if [ "$mode" = restart ]; then [ "$(command docker inspect "$source_id" --format '{{.State.Running}}')" = false ]; [ "$(command docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$db'")" = 1 ]; command docker start "$source_id" >/dev/null; else [ "$(command docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$db'")" = 0 ]; fi; export OPS_FAULT=''; ready; echo "Actual isolated maintenance $mode failure: exit$status, no success output/marker, owned helper cleaned, original standard source healthy."; }
+fresh_target(){ node --input-type=module -e 'const u=new URL(process.argv[1]);u.searchParams.set("database",process.argv[2]+"_ch");console.log(u.href)' "$target_url" "$1"; }
+negative(){ mode=$1; db="baize_restore_maintenance_${mode}_${RANDOM}"; targets+=("$db"); export OPS_FAULT=$mode; export BAIZE_RESTORE_CLICKHOUSE_URL=$(fresh_target "$db"); set +e; bash scripts/restore.sh "$backup" "$db" > "$work/$mode.log" 2>&1; status=$?; set -e; cat "$work/$mode.log"; [ "$status" != 0 ]; no_success "$work/$mode.log" "$db"; no_helper; if [ "$mode" = restart ]; then ! rg 'CANONICAL_TARGET_CH_DATABASE_ALREADY_EXISTS' "$work/$mode.log"; rg -q '"restored":true' .baize/restore-failure-${db}.*/check/target-rebuild.log; [ "$(command docker inspect "$source_id" --format '{{.State.Running}}')" = false ]; [ "$(command docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$db'")" = 1 ]; command docker start "$source_id" >/dev/null; else [ "$(command docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$db'")" = 0 ]; fi; export OPS_FAULT=''; ready; echo "Actual isolated maintenance $mode failure: exit$status, no success output/marker, owned helper cleaned, original standard source healthy."; }
 negative create
 negative term
 # A second invocation must not remove another operation's atomic reservation.
@@ -57,6 +58,7 @@ negative restart
 command docker stop "$source_id" >/dev/null
 export OPS_FAULT=''
 db="baize_restore_initially_stopped_${RANDOM}"; targets+=("$db")
+export BAIZE_RESTORE_CLICKHOUSE_URL=$(fresh_target "$db")
 bash scripts/restore.sh "$backup" "$db" > "$work/stopped.log" 2>&1
 [ "$(command docker inspect "$source_id" --format '{{.State.Running}}')" = false ]; no_helper
 [ -f ".baize/restores/$db.json" ]
