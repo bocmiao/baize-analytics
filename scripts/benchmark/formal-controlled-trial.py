@@ -45,7 +45,7 @@ def main():
     if since_hour < 120 or 3600 - since_hour < 600:
         raise SystemExit('Do not start within two minutes after / ten minutes before a UTC hour boundary')
     spaces = {}
-    for label, path in [('source', root), ('temporary', output.parent)]:
+    for label, path in [('repository', repo), ('source', root), ('temporary', output.parent)]:
         stat = os.statvfs(path)
         free = stat.f_bavail * stat.f_frsize
         spaces[label] = free

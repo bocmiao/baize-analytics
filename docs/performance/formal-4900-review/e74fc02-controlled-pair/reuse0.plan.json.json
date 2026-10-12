@@ -1,0 +1,30 @@
+{
+  "sourceSha": "e74fc02662701bb7bf51eb921c46f8e6d70159bc",
+  "startedAtUtc": "2026-10-12T00:08:09.483447+00:00",
+  "events": 5000,
+  "batchEvents": 50,
+  "intervalMs": 1000,
+  "queryIntervalMs": 10000,
+  "maxQueued": 8,
+  "maxConcurrent": 2,
+  "drainLimitMs": 120000,
+  "durationLimitMs": 220000,
+  "coverageReuse": 1,
+  "pagePathBatch": 1,
+  "publicationConcurrency": 2,
+  "remainingReadDefault": 3,
+  "remainingCanonicalReuse": 0,
+  "timeline": true,
+  "spacesBefore": {
+    "source": 6297137152,
+    "temporary": 6297137152
+  },
+  "runtime": {
+    "node": "v24.19.0",
+    "cpuMax": "400000 100000",
+    "memoryMax": "34359738368"
+  },
+  "ack": "formal accepted after actual canonical publication and PG receipt commit",
+  "input": "unchanged original UUID/Date.now generator; same shape, not byte-identical wire data",
+  "schedulerContractChanged": false
+}
