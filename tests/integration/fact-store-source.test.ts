@@ -7,9 +7,9 @@ import {prepareFactReadSource,withFactReadSource} from '../../src/server/fact-st
 import {factReadSql,hasFactReadSource} from '../../src/server/fact-read-context.js';
 
 describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('bounded transaction-local fact source with actual PG CH',()=>{
- it('unions CH effects and zero-kind receipts with legacy owned PG rows, filters identities and restores nested read context',async()=>{
+ it.each([false,true])('manifest reuse=%s unions CH effects and zero-kind receipts, filters identities and enforces current source',async validationManifestReuse=>{
   const schema='fact_source_'+randomUUID().replaceAll('-',''),site=randomUUID(),epoch=randomUUID(),run=randomUUID(),legacy=randomUUID(),session=randomUUID(),oldSession=randomUUID();
-  const admin=new Pool({connectionString:process.env.TEST_DATABASE_URL}),pool=new Pool({connectionString:process.env.TEST_DATABASE_URL,max:1,options:`-c search_path=${schema}`}),store=new ClickHouseFactStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'});
+  const admin=new Pool({connectionString:process.env.TEST_DATABASE_URL}),pool=new Pool({connectionString:process.env.TEST_DATABASE_URL,max:1,options:`-c search_path=${schema}`}),store=new ClickHouseFactStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only',validationManifestReuse});
   await admin.query(`CREATE SCHEMA ${schema}`);
   try{
    await migrate(pool);await store.initialize();installFactStore(pool,store);

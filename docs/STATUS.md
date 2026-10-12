@@ -1,10 +1,10 @@
 # 白泽当前状态
 
-核查日期：2026-10-11 UTC。**这是唯一当前状态入口**；规格、逐项清单及其他验收文件中的“当前/最新”属于其 SHA 的历史时点。历史失败不删除、不改写、不累加计数。
+核查日期：2026-10-12 UTC。**这是唯一当前状态入口**；规格、逐项清单及其他验收文件中的“当前/最新”属于其 SHA 的历史时点。历史失败不删除、不改写、不累加计数。
 
 ## 源码与同步
 
-- 实时本地HEAD以 `git rev-parse HEAD` 定位；本页记录的最新隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
+- 实时本地HEAD以 `git rev-parse HEAD` 定位；本页历史B隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`；最新已保存对照证据提交为 `e0797f702c1fcd70b8a61a7cce1cd58b21ebb33c`，本次060认证候选以本页提交及下述源码指纹定位，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
 - 最后由父与本地引用确认的远端 main：`ee996754595d25f13aadac507dc4a2a6dc6b06b0`。这是已确认基线，不声称刚完成网络检查。后续本地提交**未确认同步**。
 - 最新完整正式应用验收绑定不可变源码：`72ea9291b69c30cba5369a63f44c0b2842bcbcd3`。后续隔离原型不属于该全量结果。
 - Git 当前失败为 `could not read Username`，无 HTTP 状态；未找到可靠原预配代理 URL 或自动刷新步骤。当前 origin 是 HTTPS/github.com/bocmiao/baize-analytics.git，无 helper/rewrite；父协调同环境正常授权路线，不新增凭据、不借 CNB 绕过。原 bundle 保留，损坏编码段废弃。
@@ -43,7 +43,13 @@
 
 新镜像：`sha256:daafc23c1fc444c1bd176207b26917c32b141f14753a5eafa2a2d92e0602b660`；426文件manifest与72冻结源码一致。恢复在同宿主独立目标CH实例验证，不冒称跨机器灾备。
 
-## 当前候选与下一闸
+## 当前认证候选与下一闸
+
+原正式合同100×50、每秒1批、并发2、队列8、每10秒查询、120秒排空保持不变。e74fc02同源码/同UTC小时对照：旧路径4750接收/5未发，047规范化复用候选4900接收/2未发；两组完整性与排空通过，整体均FAIL，后者墙钟更长，未证明整体收益。原始数据见 [对照](performance/formal-4900-review/e74fc02-controlled-pair/)。
+
+060候选默认关闭（`BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`）：发布时完整旧验证后签全成员清单，读取仍要求当前PG选集/来源fence和同次CH正文SHA/成员/键，坏签不得降级，删除先验旧集合后签合法子集，恢复完整旧行验证后目标新签。见 [设计边界](ADR_FACT_VALIDATION_MANIFEST.md)。本批46单元及32真实PG/CH专项PASS、0fail/skip；独立目标恢复/最新journal删A保B、旧v1升级及v2/v3读取在内。这是专项，不是新HEAD整轮/新镜像或性能验收；[原始结果与源码指纹](performance/fact-validation-manifest/correctness/)。下一闸为相同已发布数据的真实HTTP小对照，有收益才受控正式5000。
+
+## 历史B隔离原型（未进入正式入口）
 
 B为**隔离PG durable inbox研究原型**，区分received/validated/published，未替换正式collect或202语义。最新9689ae0已48专项PASS/0skip（14原PG+8 admission+8 combined PG+18真实CH），同SHA300 separate/combined两组完整性PASS；不是新整产品全轮。
 
@@ -53,9 +59,9 @@ B为**隔离PG durable inbox研究原型**，区分received/validated/published�
 |---|---:|---|---:|---|
 | b7f0362 共用站点入队门 | 4850 | 1×429（未记具体码）/2未发 | 25.486秒 | 历史FAIL |
 | 4d1affa 独立短入队门 | 4100 | 18×pending_backpressure/0未发 | 15.601秒 | 历史FAIL |
-| 9689ae0 独立入队+合并消费 | 4350 | 13×pending_backpressure/0未发 | 23.406秒 | 当前FAIL |
+| 9689ae0 独立入队+合并消费 | 4350 | 13×pending_backpressure/0未发 | 23.406秒 | 历史FAIL |
 
-三轮已收到部分排空/完整性通过，不代表5000容量通过，更不能称原正式accepted通过。最新合并门穿越482→227但累计等待仍约184秒，不能继续凭缩短事务次数、加队列或改drain追绿。详见[独立门验收](VALIDATION_INBOX_INDEPENDENT_ADMISSION.md)、[最新合并候选](VALIDATION_INBOX_COMBINED_PUBLICATION.md)。下一路径须有可证明的新读取/认证协议，当前只有限评估，不默改生产。
+三轮已收到部分排空/完整性通过，不代表5000容量通过，更不能称原正式accepted通过。最新合并门穿越482→227但累计等待仍约184秒，不能继续凭缩短事务次数、加队列或改drain追绿。详见[独立门验收](VALIDATION_INBOX_INDEPENDENT_ADMISSION.md)、[最新合并候选](VALIDATION_INBOX_COMBINED_PUBLICATION.md)。该阶段评估之后，当前060认证候选见上节；不默改正式采集或ACK语义。
 
 既有标准prepared真实CH写/读回/白名单、孤儿不可见、精准物理删A保B、缺正文重试拒绝已有验证。生产独立fsync日志未接762与prototype清理；原wire/HMAC身份来源、真实identify/revenue副作用、签名pending备份/恢复、全局公平/队列年龄仍未交付。PG prototype journal不是独立文件日志，不称正式集成。
 
