@@ -12,34 +12,73 @@ key_package="${BAIZE_KEY_RESTORE_DIR:-$(cat "$backup_dir/key-package.ref")}"
 restore_dir="$(mktemp -d "$PWD/.baize/restore-check.XXXXXX")"
 target_created=0
 proof_stage=""
-restore_exit(){ status=$?; if [ -n "$proof_stage" ]; then docker compose exec -T app node -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$proof_stage" >/dev/null 2>&1 || true; fi; rm -rf "$restore_dir"; if [ "$status" -ne 0 ] && [ "$target_created" = 1 ]; then printf 'Restore failed; target database %s and isolated volumes retained for diagnosis. No traffic switched; no success marker written.\n' "$new_db" >&2; fi; }
-trap restore_exit EXIT
-# Fail before creating ANY target if independent latest deletion state is absent,
-# truncated, reset, corrupted, or older than the database snapshot journal.
-docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/tombstones.jsonl"
-docker compose cp app:/app/data/tombstones.watermark.json "$restore_dir/tombstones.watermark.json"
-node scripts/ops-validate-journal.mjs "$restore_dir/tombstones.jsonl" "$restore_dir/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
-source_replica="$(docker compose exec -T app printenv CLICKHOUSE_URL)"
+source_helper=""
+source_stopped=0
+source_image=""
+marker_written=0
 canonical_restore=0
 if [ -f "$backup_dir/canonical/index.json" ]; then canonical_restore=1; fi
+source_exec(){ if [ -n "$source_helper" ]; then docker exec -i "$source_helper" "$@"; else docker compose exec -T app "$@"; fi; }
+source_exec_root(){ if [ -n "$source_helper" ]; then docker exec -i --user 0 "$source_helper" "$@"; else docker compose exec -T --user 0 app "$@"; fi; }
+source_copy_out(){ if [ -n "$source_helper" ]; then docker cp "$source_helper:$1" "$2"; else docker compose cp "app:$1" "$2"; fi; }
+source_copy_in(){ if [ -n "$source_helper" ]; then docker cp "$1" "$source_helper:$2"; else docker compose cp "$1" "app:$2"; fi; }
+release_source(){
+  if [ -n "$source_helper" ]; then docker rm -f "$source_helper" >/dev/null || return 1; source_helper=""; fi
+  if [ "$source_stopped" = 1 ]; then BAIZE_IMAGE="$source_image" docker compose up -d --wait --wait-timeout 120 app || return 1; source_stopped=0; fi
+}
+restore_exit(){
+  status=$?
+  if [ -n "$proof_stage" ]; then source_exec node -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$proof_stage" >/dev/null 2>&1 || true; fi
+  rm -rf "$restore_dir"
+  if ! release_source; then echo 'Source restart failed; no restore success accepted. Retain source/target for diagnosis.' >&2; status=1; fi
+  if [ "$status" -ne 0 ]; then
+    if [ "$marker_written" = 1 ]; then rm -f ".baize/restores/$new_db.json"; fi
+    if [ "$target_created" = 1 ]; then printf 'Restore failed; target database %s and isolated volumes retained for diagnosis. No traffic switched; no success marker written.\n' "$new_db" >&2; fi
+  fi
+  trap - EXIT
+  exit "$status"
+}
+trap restore_exit EXIT
+if [ "$canonical_restore" = 1 ]; then
+  [ "${BAIZE_RESTORE_SOURCE_MAINTENANCE:-0}" = 1 ] || { echo 'Canonical restore requires BAIZE_RESTORE_SOURCE_MAINTENANCE=1 and an exclusive source maintenance window; source left unchanged.' >&2; exit 1; }
+  source_container="$(docker compose ps --all -q app)"
+  [ -n "$source_container" ] || { echo 'Source app container required for immutable image binding.' >&2; exit 1; }
+  source_image="$(docker inspect "$source_container" --format '{{.Image}}')"
+  [[ "$source_image" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'Invalid source image identity.' >&2; exit 1; }
+  if [ "$(docker inspect "$source_container" --format '{{.State.Running}}')" = true ]; then
+    source_stopped=1
+    docker compose stop app
+  fi
+  # Same Compose configuration, existing secrets/volumes and immutable image;
+  # idle Node runs no web application, background worker or retention scheduler.
+  source_helper="baize_restore_source_${RANDOM}_${RANDOM}"
+  if [ -n "$(docker ps -aq --filter "name=^/$source_helper$")" ]; then source_helper=""; echo 'Source maintenance container name already exists; refusing reuse.' >&2; exit 1; fi
+  BAIZE_IMAGE="$source_image" docker compose run --rm --no-deps -d --name "$source_helper" --entrypoint node app -e 'setInterval(()=>{},60000)' >/dev/null
+fi
+# Fail before creating ANY target if independent latest deletion state is absent,
+# truncated, reset, corrupted, or older than the database snapshot journal.
+source_copy_out /app/data/tombstones.jsonl "$restore_dir/tombstones.jsonl"
+source_copy_out /app/data/tombstones.watermark.json "$restore_dir/tombstones.watermark.json"
+node scripts/ops-validate-journal.mjs "$restore_dir/tombstones.jsonl" "$restore_dir/tombstones.watermark.json" "$backup_dir/tombstones.jsonl"
+source_replica="$(source_exec printenv CLICKHOUSE_URL)"
 target_replica="${BAIZE_RESTORE_CLICKHOUSE_URL:-}"
 SOURCE_REPLICA="$source_replica" TARGET_REPLICA="$target_replica" CANONICAL_RESTORE="$canonical_restore" node --input-type=module -e '
 if(process.env.CANONICAL_RESTORE==="1"&&!process.env.TARGET_REPLICA)throw Error("Canonical restore requires explicit independent target CH database");
 if(process.env.TARGET_REPLICA){const t=new URL(process.env.TARGET_REPLICA),s=process.env.SOURCE_REPLICA?new URL(process.env.SOURCE_REPLICA):null;if(process.env.CANONICAL_RESTORE!=="1"&&s&&t.origin===s.origin&&t.pathname.replace(/\/+$/,"")===s.pathname.replace(/\/+$/,""))throw Error("Restore target cannot share source ClickHouse endpoint");}'
 if [ "$canonical_restore" = 1 ]; then
   proof_stage="/tmp/baize-retention-check-${RANDOM}-${RANDOM}"
-  docker compose exec -T app node -e 'require("node:fs").mkdirSync(process.argv[1]+"/history",{recursive:true,mode:0o700})' "$proof_stage"
-  docker compose exec -T app node --import tsx scripts/replay-retention-proof-runtime.ts capture > "$restore_dir/replay-retention-proof.json"
+  source_exec node -e 'require("node:fs").mkdirSync(process.argv[1]+"/history",{recursive:true,mode:0o700})' "$proof_stage"
+  source_exec node --import tsx scripts/replay-retention-proof-runtime.ts capture > "$restore_dir/replay-retention-proof.json"
   node -e 'const fs=require("node:fs"),f=fs.openSync(process.argv[1],"r");try{fs.fsyncSync(f)}finally{fs.closeSync(f)}' "$restore_dir/replay-retention-proof.json"
-  docker compose cp "$backup_dir/canonical/index.json" "app:$proof_stage/index.json"
-  docker compose cp "$backup_dir/canonical/history/manifest.json" "app:$proof_stage/history/manifest.json"
-  docker compose cp "$restore_dir/replay-retention-proof.json" "app:$proof_stage/replay-retention-proof.json"
+  source_copy_in "$backup_dir/canonical/index.json" "$proof_stage/index.json"
+  source_copy_in "$backup_dir/canonical/history/manifest.json" "$proof_stage/history/manifest.json"
+  source_copy_in "$restore_dir/replay-retention-proof.json" "$proof_stage/replay-retention-proof.json"
   # docker compose cp preserves host ownership. Use the running app identity,
   # and descriptor-bound regular files rather than following copied symlinks.
-  proof_identity="$(docker compose exec -T app node -e 'console.log(process.getuid()+":"+process.getgid())')"
+  proof_identity="$(source_exec node -e 'console.log(process.getuid()+":"+process.getgid())')"
   [[ "$proof_identity" =~ ^[0-9]+:[0-9]+$ ]] || { echo 'Invalid proof application identity' >&2; exit 1; }
-  docker compose exec -T --user 0 app node scripts/ops-restore-proof-files.mjs "$proof_stage" "${proof_identity%:*}" "${proof_identity#*:}"
-  docker compose exec -T app node --import tsx scripts/replay-retention-proof-runtime.ts validate "$proof_stage"
+  source_exec_root node scripts/ops-restore-proof-files.mjs "$proof_stage" "${proof_identity%:*}" "${proof_identity#*:}"
+  source_exec node --import tsx scripts/replay-retention-proof-runtime.ts validate "$proof_stage"
 fi
 exists="$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$new_db'")"
 [ "$exists" = 0 ] || { echo 'Target already exists; refusing overwrite.' >&2; exit 1; }
@@ -92,11 +131,14 @@ docker compose run --rm --no-deps --entrypoint node \
 # A concurrent source deletion after the copied journal invalidates this attempt.
 # Preserve the isolated target for diagnosis; retry from a fresh verified journal.
 mkdir "$restore_dir/latest-journal"
-docker compose cp app:/app/data/tombstones.jsonl "$restore_dir/latest-journal/tombstones.jsonl"
-docker compose cp app:/app/data/tombstones.watermark.json "$restore_dir/latest-journal/tombstones.watermark.json"
+source_copy_out /app/data/tombstones.jsonl "$restore_dir/latest-journal/tombstones.jsonl"
+source_copy_out /app/data/tombstones.watermark.json "$restore_dir/latest-journal/tombstones.watermark.json"
 node scripts/ops-validate-journal.mjs "$restore_dir/latest-journal/tombstones.jsonl" "$restore_dir/latest-journal/tombstones.watermark.json" "$restore_dir/tombstones.jsonl"
 cmp -s "$restore_dir/latest-journal/tombstones.jsonl" "$restore_dir/tombstones.jsonl" || { echo 'Source deletion journal changed during restore; target retained, no success marker.' >&2; exit 1; }
-if [ "$canonical_restore" = 1 ]; then docker compose exec -T app node --import tsx scripts/replay-retention-proof-runtime.ts still-current "$proof_stage"; fi
+if [ "$canonical_restore" = 1 ]; then source_exec node --import tsx scripts/replay-retention-proof-runtime.ts still-current "$proof_stage"; fi
 mkdir -p .baize/restores
 printf '{"database":"%s","dataVolume":"%s","keysVolume":"%s","trafficSwitched":false}\n' "$new_db" "$volume" "$keys_volume" > ".baize/restores/$new_db.json"
+marker_written=1
+if [ -n "$proof_stage" ]; then source_exec node -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$proof_stage"; proof_stage=""; fi
+release_source
 printf 'Restored %s with independent target data/key volumes; deletion journal verified and replayed. No production traffic switched.\n' "$new_db"

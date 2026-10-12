@@ -84,6 +84,11 @@ server {
 
 已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结实际EXIT1（632应用通过，浏览器29/30），下一测试夹具复验待，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。
 
+严格 canonical/历史正文恢复必须显式设置 `BAIZE_RESTORE_SOURCE_MAINTENANCE=1`，并事先取得独占源维护窗口、暂停独立 worker/cron/其他写入者。`restore.sh` 暂停原 app，通过同一不可变镜像、原 Compose 配置及既有卷/secret 的临时 idle Node 容器读取源 journal、采集当前保留期证明和作最终复核；该容器不启动 HTTP 或后台维护。成功标记在源仍静止时写入；临时证明/容器移除后恢复原运行 app，重启失败则撤销本次成功标记。原 app 本来已停止时，结束后保持停止。没有 opt-in 的 canonical 恢复在目标建库前拒绝；PG-only 恢复路径保持原行为。此流程是停机维护，不是零停机或自动切流量。单独 producer seal 不冻结每分钟推进的保留期 cutoff；任何外部写入导致 journal/cutoff 变化仍拒绝。证明有效期仍为10分钟，不降低校验；超时/源变化的目标保留诊断，未获成功标记不得开放。
+
+若源存在历史 namespace，使用官方可选 CH profile 时在 `.env` 设置 `HISTORY_STORE_ENABLED=1`；profile 将该非秘密配置传入 app。不能关闭历史 store 后重启需要历史删除重放的实例。真实跨机服务器、域名和 HTTPS 仍需独立部署验收。
+
+
 当前c890冻结已结束，完整入口EXIT1、cleanup完成：55文件211单元+155文件421真实集成全部PASS/0skip=632应用通过；30浏览器检查29PASS/1FAIL（27真实Chromium+2日期通过），operations Chromium因固定x58画布点击点未命中失败，UI证明不完整。原FAIL保留，不能称全轮通过。root仅测试夹具1c1cb65按实际趋势/canvas几何窄修，焦点、PV、时区断言未降低；下一步同应用源码定向浏览器复验，不重复已过后端。新1c（含Compose预算配置前向传递）的镜像及性能仍待，不将632加旧源计数，托管不触发。
 
 ## 历史c890/1c分阶段记录（当前结果见顶栏）
