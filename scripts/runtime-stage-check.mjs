@@ -1,7 +1,7 @@
 // Verify the staged dependency closure without database connections or credentials.
 import assert from 'node:assert/strict';
-import {existsSync, readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {existsSync, readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync} from 'node:fs';
+import {resolve, relative} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {createHmac} from 'node:crypto';
@@ -20,9 +20,31 @@ assert.ok(existsSync(resolve(directory, 'dist/server/src/server/main.js')));
 assert.ok(existsSync(resolve(directory, 'dist/web/index.html')));
 assert.ok(existsSync(resolve(directory, 'db/migrations')));
 const manifest = JSON.parse(readFileSync(resolve(directory, 'package.json'), 'utf8'));
-assert.ok(manifest.dependencies.tsx, 'TS maintenance runtime must be a production dependency');
+const witness = resolve(directory, 'runtime-dependencies');
+const runtimeManifest = JSON.parse(readFileSync(resolve(witness, 'package.json'), 'utf8'));
+const runtimeLock = JSON.parse(readFileSync(resolve(witness, 'package-lock.json'), 'utf8'));
+assert.deepEqual(runtimeManifest.dependencies, {...manifest.dependencies, tsx: manifest.dependencies.tsx ?? manifest.devDependencies.tsx});
+assert.deepEqual(runtimeLock.packages[''].dependencies, runtimeManifest.dependencies);
+const sourceLock = JSON.parse(readFileSync(resolve(directory, 'package-lock.json'), 'utf8'));
+let installedPackages = 0;
+function verifyInstalled(directoryPath) {
+  for (const entry of readdirSync(directoryPath, {withFileTypes: true})) {
+    if (entry.name.startsWith('.')) continue;
+    const path = resolve(directoryPath, entry.name);
+    if (entry.name.startsWith('@')) { verifyInstalled(path); continue; }
+    if (!entry.isDirectory()) continue;
+    const metadata = JSON.parse(readFileSync(resolve(path, 'package.json'), 'utf8'));
+    const lockPath = relative(directory, path);
+    assert.equal(metadata.version, runtimeLock.packages[lockPath]?.version, `${lockPath}: runtime version witness mismatch`);
+    assert.equal(metadata.version, sourceLock.packages[lockPath]?.version, `${lockPath}: source lock version mismatch`);
+    installedPackages++;
+    if (existsSync(resolve(path, 'node_modules'))) verifyInstalled(resolve(path, 'node_modules'));
+  }
+}
+verifyInstalled(resolve(directory, 'node_modules'));
+assert.ok(installedPackages > 0);
 const dependencies = spawnSync('npm', ['ls', '--omit=dev', '--all', '--json'], {
-  cwd: directory, encoding: 'utf8', env: {...process.env, npm_config_update_notifier: 'false'},
+  cwd: witness, encoding: 'utf8', env: {...process.env, npm_config_update_notifier: 'false'},
 });
 assert.equal(dependencies.status, 0, dependencies.stderr || dependencies.stdout);
 const imports = run(['--import', 'tsx', '--input-type=module', '-e',

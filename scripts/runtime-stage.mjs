@@ -1,5 +1,5 @@
 // Build-time only: preserve the TS maintenance interface while removing build/test tools.
-import {cpSync, existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync} from 'node:fs';
 import {resolve, relative} from 'node:path';
 import {execFileSync} from 'node:child_process';
 
@@ -14,7 +14,7 @@ mkdirSync(target, {recursive: true});
 // remain in the complete source distribution, not the application image.
 const entries = ['dist', 'public', 'src', 'scripts', 'sdk', 'packages', 'plugins',
   'db', 'LICENSE', 'package.json', 'package-lock.json', 'tsconfig.json',
-  'tsconfig.server.json', 'node_modules'];
+  'tsconfig.server.json', 'vite.config.ts', 'node_modules'];
 for (const entry of entries) cpSync(resolve(source, entry), resolve(target, entry), {recursive: true});
 const manifestPath = resolve(target, 'package.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
@@ -28,6 +28,15 @@ writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 execFileSync('npm', ['prune', '--omit=dev', '--offline', '--ignore-scripts', '--no-audit', '--no-fund'], {
   cwd: target, stdio: 'inherit', env: {...process.env, npm_config_update_notifier: 'false'},
 });
+// Preserve source identities used by the backup/restore/upgrade acceptance guard.
+// The separate witness describes the intentionally smaller installed runtime graph.
+const witness = resolve(target, 'runtime-dependencies');
+mkdirSync(witness);
+for (const entry of ['package.json', 'package-lock.json']) {
+  cpSync(resolve(target, entry), resolve(witness, entry));
+  cpSync(resolve(source, entry), resolve(target, entry));
+}
+symlinkSync('../node_modules', resolve(witness, 'node_modules'), 'dir');
 execFileSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e',
   "await import('pg'); await import('ioredis'); await import('./src/server/db.ts'); await import('./scripts/restore-rebuild.ts');"],
 {cwd: target, stdio: 'inherit'});
