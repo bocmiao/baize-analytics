@@ -1,0 +1,5 @@
+{"file": "latest-pg-lifecycle.log", "sha256": "c7dc0db7fc853794c4cf27730779e376e9bd75582a93b6ff27398263c6a0b883", "bytes": 30129}
+{"file": "default-06-verified/ch-shell-lifecycle.log", "sha256": "bb28fc800d9f3f1613fa74e82231830d86fa39cc53192baf5713c3c876d43d5b", "bytes": 11215}
+{"file": "custom-e30-verified-native-role-fail/ch-custom-user-rollback.log", "sha256": "f1d1c67d76234114ebcb3691694c5812e933043e771ff6b945f2a856487687eb", "bytes": 11805}
+{"file": "default-06-verified/ch-native-signed-entry.log", "sha256": "a1c8eb9662372763fe2dee4aef13941dd75fdc65838ad49f60bf004162aecb7f", "bytes": 4700}
+{"file": "installer.log", "sha256": "5a1634adb806793666cda3e3ba428c851887c581fd9d104f9d3dfecc248ebfcb", "bytes": 3591}

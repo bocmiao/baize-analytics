@@ -1,0 +1,35 @@
+{
+  "scope": "read-only review of final source and independent isolated/runtime fault processes; no second-agent assertion",
+  "sourceSHA": "06eb079ca256d5de48b790ec197ae18d39956334",
+  "proofFileChecks": [
+    "Only script-created numeric staging paths accepted; /tmp/base/history opened with O_DIRECTORY|O_NOFOLLOW",
+    "Child lookups anchored to open directory descriptors; regular single-link proof inputs all validated before mutation",
+    "Actual runtime numeric UID/GID, matching directory ownership/mode0700, and final proof mode0600 enforced",
+    "FDs closed on every exit; symlinks/hardlinks/nonregular/missing inputs rejected without outside mutation"
+  ],
+  "maintenanceChecks": [
+    "Explicit maintenance and single-instance/exclusive-writer acknowledgement required",
+    "Exactly one original non-oneoff app; trusted image/User/project labels and matching mount metadata",
+    "Atomic project-named reservation; failed creation cleanup removes only matching owner label; existing reservation never removed",
+    "Other connected source PG clients rejected after app stop; disconnected/external writers require operator exclusion",
+    "Original container ID restarted with original CMD/config; initially stopped app remains stopped",
+    "INT/TERM/HUP route through EXIT; restart failure bounded and not retried blindly",
+    "Proof/journal still-current checks unchanged; success marker set while source remains held",
+    "Intermediate target output private until successful release; source restart failure removes marker and retains private diagnostics"
+  ],
+  "evidence": [
+    "proof-security-regression.log: 9 pass",
+    "custom-e30-verified-native-role-fail/ch-shell-lifecycle.exit: 0",
+    "custom-e30-verified-native-role-fail/ch-custom-user-rollback.exit: 0",
+    "default-06-verified/ch-shell-lifecycle.exit: 0",
+    "default-06-verified/ch-native-signed-entry.exit: 0",
+    "default-06-verified/ch-shell-lifecycle.exit: 0",
+    "default-06-verified/ch-native-signed-entry.exit: 0",
+    "latest-pg-lifecycle.exit: 0",
+    "installer.exit: 0"
+  ],
+  "limitations": [
+    "Single Compose instance/exclusive window, not a cross-host or arbitrary replica lock",
+    "Catchable signals only; SIGKILL/host crash may require manual removal/recovery of owned reservation and original service"
+  ]
+}

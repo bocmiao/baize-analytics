@@ -1,0 +1,32 @@
+{
+  "/workspace": {
+    "sampleIntervalSeconds": 2,
+    "samples": 1311,
+    "initialAvailableBytes": 31952187392,
+    "minimumSampledAvailableBytes": 7141675008,
+    "maximumSampledUsedBytes": 24893755392,
+    "maximumSampledGrowthBytes": 24810512384,
+    "finalAvailableBytes": 12449411072,
+    "absolutePeakKnown": false
+  },
+  "/var/lib/docker": {
+    "sampleIntervalSeconds": 2,
+    "samples": 1311,
+    "initialAvailableBytes": 31952187392,
+    "minimumSampledAvailableBytes": 7141675008,
+    "maximumSampledUsedBytes": 24893755392,
+    "maximumSampledGrowthBytes": 24810512384,
+    "finalAvailableBytes": 12449411072,
+    "absolutePeakKnown": false
+  },
+  "/tmp": {
+    "sampleIntervalSeconds": 2,
+    "samples": 1311,
+    "initialAvailableBytes": 9441312768,
+    "minimumSampledAvailableBytes": 9425641472,
+    "maximumSampledUsedBytes": 15708160,
+    "maximumSampledGrowthBytes": 15671296,
+    "finalAvailableBytes": 9426186240,
+    "absolutePeakKnown": false
+  }
+}

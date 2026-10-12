@@ -1,0 +1,91 @@
+{
+  "completedUTC": "2026-10-12T05:04:50.177879+00:00",
+  "repository": "bocmiao/baize-analytics",
+  "repositoryRemainsPrivate": true,
+  "executedVersions": [
+    {
+      "sourceSHA": "7f461657f62cb24bb3ba4bc99c0be20bd0027254",
+      "imageId": "sha256:4ac9f3e73c83584b6acdb2f9a7e8d3e9fd91e82339da0092a7e48295ad119267",
+      "buildExit": 0,
+      "healthHTTP": 200,
+      "migrationCount": 61,
+      "scope": "initial minimal image health/migration and original PG-only lifecycle",
+      "lifecycleExit": 0
+    },
+    {
+      "sourceSHA": "e30f058657dc2919075fc679c6f24c776f78a2d4",
+      "imageId": "sha256:7fd4306b1078aefa89fb6430752d318e05bd7723c175fbfb86f5313cfa8771b4",
+      "buildExit": 0,
+      "uid": 1001,
+      "canonicalShellLifecycleExit": 0,
+      "customUidSchema503RollbackExit": 0,
+      "nativeEntryExit": 1,
+      "nativeEntryFailure": "pg_dump hard-coded baize_dev role absent in new fixture; no role/permission created"
+    },
+    {
+      "sourceSHA": "06eb079ca256d5de48b790ec197ae18d39956334",
+      "imageId": "sha256:bcf3c821b8a75be6eaeff60a9a48b11f00721b9d708fb2ccbfb2add26bb4e666",
+      "buildExit": 0,
+      "uid": 1000,
+      "canonicalShellLifecycleExit": 0,
+      "independentNativeEntryExit": 0,
+      "pgOnlyLifecycleExit": 0,
+      "installerExit": 0,
+      "healthHTTP": 200,
+      "migrationCount": 61,
+      "applicationManifestFiles": 437,
+      "gitTrackedFilesVerified": 2135
+    }
+  ],
+  "e30To06Change": "Only scripts/ops-canonical-entry-test.ts: derive pg_dump/pg_restore -U from configured URL username; production restore/rollback code unchanged. No old-image result attributed to new SHA.",
+  "commands": [
+    "docker build standard unchanged Dockerfile with temporary DOCKER_CONFIG, standard proxy build-arg names, current host-resolved proxy host mapping, existing public CA BuildKit secret; strict TLS",
+    "BAIZE_OPS_SKIP_BUILD=1 bash scripts/ops-lifecycle-test.sh",
+    "OPS_ISOLATED_STACK=1 bash scripts/ops-canonical-lifecycle-test.sh",
+    "BAIZE_OPS_ISOLATED_STACK=1 bash scripts/ops-upgrade-custom-user-test.sh",
+    "FROZEN_SOURCE_SHA=<exact executed SHA> node --import tsx scripts/ops-canonical-entry-test.ts",
+    "bash install.sh via temporary client proxy adapter; existing synthetic .env/key; exact image ID unchanged"
+  ],
+  "securityRegression": {
+    "nodeTestsPass": 9,
+    "fail": 0,
+    "targetedLintExit": 0,
+    "typeScriptBuildExit": 0,
+    "cases": [
+      "UID1000/GID1000",
+      "UID1001/GID1002",
+      "file/directory/stage symlink rejection",
+      "hardlink/nonregular/missing input rejection",
+      "no outside mutation and FD cleanup",
+      "missing maintenance opt-in rejects before DB creation",
+      "same immutable image/user/mount metadata",
+      "creation failure leaves source running",
+      "TERM exits143 and restores source",
+      "concurrent reservation preserved",
+      "connected independent PG client rejected",
+      "completed target rebuild then injected source restart failure: no success output/marker, private diagnostics retained",
+      "initially stopped source remains stopped"
+    ]
+  },
+  "maintenance": {
+    "usage": "BAIZE_RESTORE_SOURCE_MAINTENANCE=1 BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE=1 BAIZE_RESTORE_CLICKHOUSE_URL=<independent target namespace> scripts/restore.sh BACKUP_DIR baize_restore_NAME",
+    "downtime": true,
+    "topology": "one Compose app, known services and exclusive writer acknowledgement; reject other connected PG clients; no arbitrary replicas or cross-host global fence",
+    "history": "HISTORY_STORE_ENABLED=1 through optional CH profile when published history exists",
+    "signals": "INT/TERM/HUP cleanup; SIGKILL/host crash may leave reservation/original service stopped and require manual recovery",
+    "guard": "retention/journal still-current and proof expiry unchanged; failure retains target/diagnostics and no final success",
+    "standardCMD": "node dist/server/src/server/main.js; no test-only background-off CMD used in successful standard matrices"
+  },
+  "workflowRead": "in_progress/queued/waiting/pending/requested all0 via authorized GitHub connector; current .github/workflows absent; CNB manual-only configuration; no CI invoked",
+  "workflowDefinitionStateReadBoundary": "gh workflow definition API Forbidden; connector definition URL unlisted. No permissions/auth changes requested; no claim about historical portal definitions.",
+  "boundaries": [
+    "synthetic local services; no real domain/HTTPS deployment",
+    "independent CH container+volume on same host, not cross-host DR/HA",
+    "no hosted Actions/CNB, no image publication, no 5000 repetition",
+    "historical strict5000 failure not superseded",
+    "npm inherited audit/chunk warnings retained, no dependency refactor"
+  ],
+  "runtimeDataExcludedFromGit": true,
+  "rawEvidenceLocal": "/workspace/baize-validation-evidence-7f461657",
+  "sourceImageMetadataReportOnlyCommit": "Any later commit of these reports is not the source SHA used to build the application image; application manifest remains unchanged."
+}
