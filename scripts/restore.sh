@@ -15,6 +15,8 @@ proof_stage=""
 source_helper=""
 source_stopped=0
 source_image=""
+source_container=""
+source_restart_failed=0
 marker_written=0
 canonical_restore=0
 if [ -f "$backup_dir/canonical/index.json" ]; then canonical_restore=1; fi
@@ -23,37 +25,77 @@ source_exec_root(){ if [ -n "$source_helper" ]; then docker exec -i --user 0 "$s
 source_copy_out(){ if [ -n "$source_helper" ]; then docker cp "$source_helper:$1" "$2"; else docker compose cp "app:$1" "$2"; fi; }
 source_copy_in(){ if [ -n "$source_helper" ]; then docker cp "$1" "$source_helper:$2"; else docker compose cp "$1" "app:$2"; fi; }
 release_source(){
-  if [ -n "$source_helper" ]; then docker rm -f "$source_helper" >/dev/null || return 1; source_helper=""; fi
-  if [ "$source_stopped" = 1 ]; then BAIZE_IMAGE="$source_image" docker compose up -d --wait --wait-timeout 120 app || return 1; source_stopped=0; fi
+  local release_status=0 source_ready state attempt
+  if [ "$source_stopped" = 1 ] && [ "$source_restart_failed" = 0 ]; then
+    if docker start "$source_container" >/dev/null; then
+      source_ready=0
+      for attempt in $(seq 1 120); do
+        state="$(docker inspect "$source_container" --format '{{.State.Running}} {{if .State.Health}}{{.State.Health.Status}}{{end}}')"
+        if [ "$state" = 'true healthy' ]; then source_ready=1; break; fi
+        if [[ "$state" = false* ]] || [[ "$state" = *unhealthy ]]; then break; fi
+        sleep 1
+      done
+      if [ "$source_ready" = 1 ]; then source_stopped=0; else source_restart_failed=1; release_status=1; docker stop "$source_container" >/dev/null 2>&1 || true; fi
+    else source_restart_failed=1; release_status=1; fi
+  elif [ "$source_restart_failed" = 1 ]; then release_status=1; fi
+  if [ -n "$source_helper" ]; then docker rm -f "$source_helper" >/dev/null || release_status=1; source_helper=""; fi
+  return "$release_status"
 }
 restore_exit(){
   status=$?
   if [ -n "$proof_stage" ]; then source_exec node -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$proof_stage" >/dev/null 2>&1 || true; fi
-  rm -rf "$restore_dir"
   if ! release_source; then echo 'Source restart failed; no restore success accepted. Retain source/target for diagnosis.' >&2; status=1; fi
   if [ "$status" -ne 0 ]; then
     if [ "$marker_written" = 1 ]; then rm -f ".baize/restores/$new_db.json"; fi
     if [ "$target_created" = 1 ]; then printf 'Restore failed; target database %s and isolated volumes retained for diagnosis. No traffic switched; no success marker written.\n' "$new_db" >&2; fi
   fi
+  if [ "$status" -ne 0 ] && [ "$target_created" = 1 ]; then
+    diagnostics="$(mktemp -d "$PWD/.baize/restore-failure-${new_db}.XXXXXX")"
+    mv "$restore_dir" "$diagnostics/check"
+    printf 'Private restore diagnostics retained at %s; intermediate output is not acceptance.\n' "$diagnostics" >&2
+  else rm -rf "$restore_dir"; fi
   trap - EXIT
   exit "$status"
 }
 trap restore_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
 if [ "$canonical_restore" = 1 ]; then
   [ "${BAIZE_RESTORE_SOURCE_MAINTENANCE:-0}" = 1 ] || { echo 'Canonical restore requires BAIZE_RESTORE_SOURCE_MAINTENANCE=1 and an exclusive source maintenance window; source left unchanged.' >&2; exit 1; }
-  source_container="$(docker compose ps --all -q app)"
-  [ -n "$source_container" ] || { echo 'Source app container required for immutable image binding.' >&2; exit 1; }
+  [ "${BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE:-0}" = 1 ] || { echo 'Explicit single-instance/exclusive-writer acknowledgement required; source left unchanged.' >&2; exit 1; }
+  source_apps=()
+  while IFS= read -r candidate; do
+    [ -n "$candidate" ] || continue
+    if [ "$(docker inspect "$candidate" --format '{{index .Config.Labels "com.docker.compose.oneoff"}}')" != True ]; then source_apps+=("$candidate"); fi
+  done < <(docker compose ps --all -q app)
+  [ "${#source_apps[@]}" = 1 ] || { echo 'Exactly one original source app container required; replicas unsupported.' >&2; exit 1; }
+  source_container="${source_apps[0]}"
+  while IFS= read -r service; do case "$service" in app|postgres|redis|clickhouse|target-clickhouse|'') ;; *) echo 'Unrecognized running source service; stop independent writers before restore.' >&2; exit 1;; esac; done < <(docker compose ps --services --status running)
   source_image="$(docker inspect "$source_container" --format '{{.Image}}')"
-  [[ "$source_image" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'Invalid source image identity.' >&2; exit 1; }
-  if [ "$(docker inspect "$source_container" --format '{{.State.Running}}')" = true ]; then
-    source_stopped=1
-    docker compose stop app
+  source_user="$(docker inspect "$source_container" --format '{{.Config.User}}')"
+  source_project="$(docker inspect "$source_container" --format '{{index .Config.Labels "com.docker.compose.project"}}')"
+  [[ "$source_image" =~ ^sha256:[a-f0-9]{64}$ && "$source_user" =~ ^[0-9]+:[0-9]+$ && "$source_project" =~ ^[a-z0-9_-]+$ ]] || { echo 'Untrusted source image/user/project metadata.' >&2; exit 1; }
+  candidate="baize_restore_source_$source_project"
+  [ -z "$(docker ps -aq --filter "name=^/$candidate$")" ] || { echo 'Concurrent source restore/maintenance rejected; source left unchanged.' >&2; exit 1; }
+  # Atomic Docker name reservation protects this single Compose source across
+  # checkouts. Label ownership lets cleanup distinguish failed starts from races.
+  owner="$$-${RANDOM}-${RANDOM}"
+  if BAIZE_IMAGE="$source_image" docker compose run --rm --no-deps -d --name "$candidate" --label "baize.restore.owner=$owner" --entrypoint node app -e 'setInterval(()=>{},60000)' >/dev/null; then source_helper="$candidate";
+  else
+    if [ "$(docker inspect "$candidate" --format '{{index .Config.Labels "baize.restore.owner"}}' 2>/dev/null || true)" = "$owner" ]; then source_helper="$candidate"; fi
+    echo 'Source maintenance container failed; original app was not stopped.' >&2; exit 1
   fi
-  # Same Compose configuration, existing secrets/volumes and immutable image;
-  # idle Node runs no web application, background worker or retention scheduler.
-  source_helper="baize_restore_source_${RANDOM}_${RANDOM}"
-  if [ -n "$(docker ps -aq --filter "name=^/$source_helper$")" ]; then source_helper=""; echo 'Source maintenance container name already exists; refusing reuse.' >&2; exit 1; fi
-  BAIZE_IMAGE="$source_image" docker compose run --rm --no-deps -d --name "$source_helper" --entrypoint node app -e 'setInterval(()=>{},60000)' >/dev/null
+  [ "$(docker inspect "$source_helper" --format '{{.Image}} {{.Config.User}}')" = "$source_image $source_user" ] || { echo 'Source maintenance image/user mismatch.' >&2; exit 1; }
+  # Compare mount metadata only, never inspect credential/environment values.
+  source_mounts="$(docker inspect "$source_container" --format '{{json .Mounts}}')"
+  helper_mounts="$(docker inspect "$source_helper" --format '{{json .Mounts}}')"
+  SOURCE_MOUNTS="$source_mounts" HELPER_MOUNTS="$helper_mounts" node -e 'const assert=require("node:assert/strict"),normalize=v=>JSON.parse(v).map(m=>[m.Type,m.Source,m.Destination,m.RW]).sort((a,b)=>a[2].localeCompare(b[2]));assert.deepEqual(normalize(process.env.SOURCE_MOUNTS),normalize(process.env.HELPER_MOUNTS),"Source maintenance mount mismatch")'
+  if [ "$(docker inspect "$source_container" --format '{{.State.Running}}')" = true ]; then source_stopped=1; docker stop "$source_container" >/dev/null; fi
+  # The acknowledgement covers external/disconnected writers we cannot enumerate.
+  # Reject other connected PG clients (including idle workers) after stopping app.
+  source_exec node --input-type=module -e 'import pg from "pg";const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:1,connectionTimeoutMillis:5000,statement_timeout:5000});try{const r=await pool.query("SELECT count(*)::int n FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND backend_type=\x27client backend\x27");if(r.rows[0].n!==0)throw Error("SOURCE_OTHER_DATABASE_CLIENTS_CONNECTED");console.log("Single source database client verified after app stop.")}finally{await pool.end()}'
+
 fi
 # Fail before creating ANY target if independent latest deletion state is absent,
 # truncated, reset, corrupted, or older than the database snapshot journal.
@@ -119,7 +161,7 @@ if [ "$canonical_restore" = 1 ]; then
     --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data --env KEYS_DIR=/restore-keys \
     --env "CLICKHOUSE_URL=$target_replica" --env "CLICKHOUSE_USER=${BAIZE_RESTORE_CLICKHOUSE_USER:-default}" \
     --env "CLICKHOUSE_PASSWORD=${BAIZE_RESTORE_CLICKHOUSE_PASSWORD:-}" \
-    --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/canonical-ops-runtime.ts restore /restore-data/restore-canonical
+    --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/canonical-ops-runtime.ts restore /restore-data/restore-canonical > "$restore_dir/canonical-target.log"
 fi
 docker compose run --rm --no-deps --entrypoint node \
   --env "RESTORE_DATABASE=$new_db" --env DATA_DIR=/restore-data --env KEYS_DIR=/restore-keys \
@@ -127,7 +169,7 @@ docker compose run --rm --no-deps --entrypoint node \
   --env "CLICKHOUSE_URL=$target_replica" --env "CLICKHOUSE_USER=${BAIZE_RESTORE_CLICKHOUSE_USER:-default}" \
   --env "CLICKHOUSE_PASSWORD=${BAIZE_RESTORE_CLICKHOUSE_PASSWORD:-}" --env RESTORE_CLICKHOUSE_EXPLICIT=1 \
   --env "RESTORE_SOURCE_CLICKHOUSE_URL=$source_replica" \
-  --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/restore-runtime.ts
+  --volume "$volume:/restore-data" --volume "$keys_volume:/restore-keys" app --import tsx scripts/restore-runtime.ts > "$restore_dir/target-rebuild.log"
 # A concurrent source deletion after the copied journal invalidates this attempt.
 # Preserve the isolated target for diagnosis; retry from a fresh verified journal.
 mkdir "$restore_dir/latest-journal"
@@ -141,4 +183,6 @@ printf '{"database":"%s","dataVolume":"%s","keysVolume":"%s","trafficSwitched":f
 marker_written=1
 if [ -n "$proof_stage" ]; then source_exec node -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$proof_stage"; proof_stage=""; fi
 release_source
+if [ -f "$restore_dir/canonical-target.log" ]; then cat "$restore_dir/canonical-target.log"; fi
+cat "$restore_dir/target-rebuild.log"
 printf 'Restored %s with independent target data/key volumes; deletion journal verified and replayed. No production traffic switched.\n' "$new_db"

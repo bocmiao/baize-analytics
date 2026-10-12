@@ -84,7 +84,7 @@ server {
 
 已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结实际EXIT1（632应用通过，浏览器29/30），下一测试夹具复验待，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。
 
-严格 canonical/历史正文恢复必须显式设置 `BAIZE_RESTORE_SOURCE_MAINTENANCE=1`，并事先取得独占源维护窗口、暂停独立 worker/cron/其他写入者。`restore.sh` 暂停原 app，通过同一不可变镜像、原 Compose 配置及既有卷/secret 的临时 idle Node 容器读取源 journal、采集当前保留期证明和作最终复核；该容器不启动 HTTP 或后台维护。成功标记在源仍静止时写入；临时证明/容器移除后恢复原运行 app，重启失败则撤销本次成功标记。原 app 本来已停止时，结束后保持停止。没有 opt-in 的 canonical 恢复在目标建库前拒绝；PG-only 恢复路径保持原行为。此流程是停机维护，不是零停机或自动切流量。单独 producer seal 不冻结每分钟推进的保留期 cutoff；任何外部写入导致 journal/cutoff 变化仍拒绝。证明有效期仍为10分钟，不降低校验；超时/源变化的目标保留诊断，未获成功标记不得开放。
+严格 canonical/历史正文恢复必须显式设置 `BAIZE_RESTORE_SOURCE_MAINTENANCE=1`，并设置 `BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE=1` 确认独占源维护窗口、无其他副本及外部写入者，事先暂停独立 worker/cron。脚本检查唯一原 app、已知运行服务、同镜像/数字 UID 和相同 mount 元数据；使用按 Compose project 唯一命名的临时容器原子拒绝并发恢复，停 app 后拒绝任何其他已连接 PG client（包括 idle worker）。无法枚举断开的外部写入者，确认标志不是跨机全局锁，不支持任意多副本编排。原 app 以原容器 ID 和标准 CMD 重启，不重新应用/扩容 Compose；成功、失败及可捕捉 INT/TERM/HUP 均执行清理，重启失败不重复硬跑并撤销本次成功标记。`restore.sh` 暂停原 app，通过同一不可变镜像、原 Compose 配置及既有卷/secret 的临时 idle Node 容器读取源 journal、采集当前保留期证明和作最终复核；该容器不启动 HTTP 或后台维护。成功标记在源仍静止时写入；临时证明/容器移除后恢复原运行 app，重启失败则撤销本次成功标记。原 app 本来已停止时，结束后保持停止。没有 opt-in 的 canonical 恢复在目标建库前拒绝；PG-only 恢复路径保持原行为。此流程是停机维护，不是零停机或自动切流量。单独 producer seal 不冻结每分钟推进的保留期 cutoff；任何外部写入导致 journal/cutoff 变化仍拒绝。证明有效期仍为10分钟，不降低校验；超时/源变化的目标保留诊断，未获成功标记不得开放。
 
 若源存在历史 namespace，使用官方可选 CH profile 时在 `.env` 设置 `HISTORY_STORE_ENABLED=1`；profile 将该非秘密配置传入 app。不能关闭历史 store 后重启需要历史删除重放的实例。真实跨机服务器、域名和 HTTPS 仍需独立部署验收。
 
