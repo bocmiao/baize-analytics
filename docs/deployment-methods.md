@@ -18,49 +18,88 @@
 
 镜像 save 只含应用及 Node 基底，不含 PG/Redis/CH，不能当完整离线安装器或数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。加载后，从 `docker load` 输出的 `Loaded image: ...` 记录本次交付的精确 tag，并与交付清单核对。下面提示输入该 tag；校验只确认 profile 和 tag 形式，不替代交付 SHA256 校验。不要填旧交付的 tag 或保留 Compose 默认的 `baize-analytics:local`。
 
-标准版（仅初装空实例；现有 `.env`、密钥、卷不得覆盖）：
+标准版（仅初装空实例；`.env` 与整个 `.baize` 目录必须全新且不是链接，已有配置、密钥或卷不用此示例）：
 
 ```bash
+(
+set -euo pipefail
 umask 077
-test ! -e .env && test ! -e .baize/master.key || exit 1
+test ! -e .env && test ! -L .env && test ! -e .baize && test ! -L .baize || exit 1
+new_private_dir=1
+created_env=0
+created_key=0
+prep_done=0
+cleanup_preparation() {
+  status=$?
+  if (( status != 0 && prep_done == 0 )); then
+    (( created_env == 0 )) || rm -f -- .env
+    (( created_key == 0 )) || rm -f -- .baize/master.key
+    (( new_private_dir == 0 )) || rmdir -- .baize 2>/dev/null || true
+  fi
+  exit "$status"
+}
+trap cleanup_preparation EXIT
 docker load -i /private/delivery/baize-standard-image-save.tar.gz
 read -r -p '输入本次 Loaded image 的标准版精确 tag: ' app_image
 [[ "$app_image" =~ ^baize-validation:standard-[a-f0-9]{7,40}$ ]] || { echo '标准版交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" postgres:17-bookworm redis:7-bookworm >/dev/null
-mkdir -p .baize
-chmod 700 .baize
+mkdir -m 700 .baize
+created_key=1
 docker run --rm --pull=never --entrypoint node "$app_image" -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))' > .baize/master.key
 password="$(docker run --rm --pull=never --entrypoint node "$app_image" -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"
+created_env=1
 printf 'BAIZE_IMAGE=%s\nPOSTGRES_PASSWORD=%s\nPUBLIC_URL=http://localhost:3000\nBAIZE_PORT=3000\nBAIZE_UID=%s\nBAIZE_GID=%s\n' "$app_image" "$password" "$(id -u)" "$(id -g)" > .env
 unset password
 chmod 600 .env .baize/master.key
 docker compose --env-file .env config --quiet
 bash scripts/init-empty-volumes.sh
+prep_done=1
+trap - EXIT
 docker compose --env-file .env up -d --no-build --pull never --wait --wait-timeout 120
 docker compose cp app:/app/keys/install-nonce.json .baize/install-nonce.json >/dev/null
 chmod 600 .baize/install-nonce.json
+)
 ```
 
-`docker image inspect` 会在缺依赖镜像时停止，不自动下载。联网部署者可先自行准备 PG/Redis 镜像；隔离离线机器须另行取得和校验这两个官方依赖 save，再 `docker load`。不能用应用 save 宣称依赖已交付。
+两段命令分别在启用 `set -euo pipefail` 的 Bash 子 shell 中执行；加载、镜像检查、配置校验或卷初始化 helper 失败就退出，不继续启动。准备阶段失败仅清理本示例新建的 `.env`、主密钥和空私有目录，不删除已有配置或数据卷。卷初始化成功后若启动失败，保留配置用于诊断。`docker image inspect` 缺依赖时因此停止，不自动下载。联网部署者可先自行准备 PG/Redis 镜像；隔离离线机器须另行取得和校验这两个官方依赖 save，再 `docker load`。不能用应用 save 宣称依赖已交付。
 
-Lite 不需要数据库服务镜像或标准版主密钥 secret：
+Lite 不需要数据库服务镜像或标准版主密钥 secret；同样只用于 `.env` 与整个 `.baize` 均不存在且不是链接的初装空实例：
 
 ```bash
+(
+set -euo pipefail
 umask 077
-test ! -e .env || exit 1
+test ! -e .env && test ! -L .env && test ! -e .baize && test ! -L .baize || exit 1
+new_private_dir=1
+created_env=0
+created_key=0
+prep_done=0
+cleanup_preparation() {
+  status=$?
+  if (( status != 0 && prep_done == 0 )); then
+    (( created_env == 0 )) || rm -f -- .env
+    (( created_key == 0 )) || rm -f -- .baize/master.key
+    (( new_private_dir == 0 )) || rmdir -- .baize 2>/dev/null || true
+  fi
+  exit "$status"
+}
+trap cleanup_preparation EXIT
 docker load -i /private/delivery/baize-lite-image-save.tar.gz
 read -r -p '输入本次 Loaded image 的 Lite 精确 tag: ' app_image
 [[ "$app_image" =~ ^baize-validation:lite-[a-f0-9]{7,40}$ ]] || { echo 'Lite 交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" >/dev/null
-mkdir -p .baize
-chmod 700 .baize
+mkdir -m 700 .baize
+created_env=1
 printf 'BAIZE_LITE_IMAGE=%s\nPUBLIC_URL=http://localhost:3000\nBAIZE_LITE_PORT=3000\nBAIZE_UID=%s\nBAIZE_GID=%s\n' "$app_image" "$(id -u)" "$(id -g)" > .env
 chmod 600 .env
 docker compose --env-file .env -f docker-compose.lite.yml config --quiet
 bash scripts/init-empty-volumes.sh -f docker-compose.lite.yml
+prep_done=1
+trap - EXIT
 docker compose --env-file .env -f docker-compose.lite.yml up -d --no-build --pull never --wait --wait-timeout 120
 docker compose -f docker-compose.lite.yml cp app:/app/keys/install-nonce.json .baize/install-nonce.json >/dev/null
 chmod 600 .baize/install-nonce.json
+)
 ```
 
 卷初始化 helper 只运行上面已经明确加载并 inspect 的应用 tag；两条启动命令均禁止构建和拉取。浏览器填写本机 0600 文件中的一次性 nonce，完成后删除本地副本，不在终端或日志打印凭证。已有账户/恢复目标不用这套初装命令。
@@ -80,7 +119,7 @@ KEYS_DIR=/var/lib/baize/keys
 ```
 
 4. 从发布目录运行 `bash scripts/release-start.sh --env-file /etc/baize/baize.env`。初始化凭证由服务器写入私有密钥目录里的 `install-nonce.json`，只在本机查看；切勿上传到公开网站。浏览器打开本机网址，填写凭证，按页面创建管理员、站点、复制 tracker、核对采集状态。初始化后凭证消费与管理员/首个会话同事务提交。
-5. 临时终端启动只用于检查。长期运行使用随包附带的 systemd 示例，或既有面板的进程管理器，让服务独立于浏览器、SSH 和 Codex 会话。示例不会自动安装或启用服务。先确认重启后健康检查及登录仍可用，再开放反向代理。
+5. 临时终端启动只用于检查。长期运行使用随包附带的 systemd 示例，或既有面板的进程管理器，让服务独立于浏览器和 SSH 会话。示例不会自动安装或启用服务。先确认重启后健康检查及登录仍可用，再开放反向代理。
 
 ### 宝塔等 Node 项目托管
 
@@ -94,6 +133,6 @@ KEYS_DIR=/var/lib/baize/keys
 
 创建管理员请求若响应中断，页面先核对 `/api/setup` 和会话状态。事务未提交可以重试；已提交后使用刚填写的账号密码登录，不会重新消费凭证或创建第二位管理员。建站响应中断先核对站点列表。恢复目标没有管理员时会明确阻止公开初始化，需由本机操作员选择含账户的有效恢复点，不会引导登录不存在的账户。
 
-对外使用前配置 HTTPS 反向代理、正确的 `PUBLIC_URL` 与受信代理。不要把数据、密钥、备份或配置目录设置为静态根目录。网页检查的 HTTPS 配置提示不代表证书已验证；域名/证书和代理须由部署者实际检查，本轮不执行真实上线。
+对外使用前配置 HTTPS 反向代理、正确的 `PUBLIC_URL` 与受信代理。不要把数据、密钥、备份或配置目录设置为静态根目录。网页检查的 HTTPS 配置提示不代表证书已验证；对外开放前须实际检查域名、证书和代理。
 
 升级保留旧发布、配置和独立密钥；先停止源写入并获取验证过的备份，在新的数据库/目录中验证候选版本，再由操作员明确切换服务。失败保留源数据及恢复点。回滚恢复到兼容旧版本的新目标，同时回放最新独立删除日志；不能直接让旧程序读取新版数据库。恢复会撤销旧登录会话及临时授权，用户用原密码重新登录。标准版非 Docker PG-only 工具不支持严格 ClickHouse 历史权威模式，会提前拒绝。详细命令见 [原生维护](release-native-ops.md)、[Lite 部署](lite-deployment.md)及 [发布包清单](release-packages.md)。

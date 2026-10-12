@@ -42,8 +42,11 @@ node scripts/package-release.mjs --verify /path/to/new-release
 The publisher checks the image's actual Linux/amd64 platform, exact revision,
 immutable image ID and compiled profile entrypoint. Older images missing compiled
 release preflight/maintenance modules or the shell interfaces are rejected.
-Only `dist`, `public`, `db`, `node_modules`, package metadata, license, and the two
-release shell interfaces enter the package. Live data, keys, credentials, Git and
+The runtime payload includes `dist`, `public`, `db`, `node_modules`, package
+metadata, licenses and the two release shell interfaces. The documentation
+whitelist additionally includes both READMEs, deployment/maintenance guides,
+the supervisor example and desktop/mobile screenshots; bundled-node also
+includes the verified runtime binary and its license notices. Live data, keys, credentials, Git and
 caches are excluded. Relative internal dependency links are preserved; links
 escaping the release directory and nonregular files are refused.
 
@@ -66,7 +69,9 @@ intentional derivation; the Docker image's original package files remain unchang
 Run the supplied `scripts/release-start.sh` and `scripts/release-ops.sh` with an
 absolute external environment file. `DATA_DIR` and `KEYS_DIR` must be external to
 the release. Standard native mode uses `BAIZE_NATIVE_RUNTIME=1` and separately
-provided PostgreSQL/Redis; optional ClickHouse remains separately configured for
+provided PostgreSQL. Redis is optional: without it, bounded single-instance
+fallback does not guarantee shared limits or cache across instances. Optional
+ClickHouse remains separately configured for
 application operation. The current standard native maintenance tools support
 PG-only data and refuse ClickHouse configuration or authority before backup or
 restore; they do not produce a complete ClickHouse backup. Restore, upgrade and

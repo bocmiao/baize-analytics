@@ -13,15 +13,15 @@
 
 初装只需 Docker/Compose 与 Bash 常规工具；**备份、恢复、升级还需宿主 Node 24+、sha256sum、支持 `sort -z` 的 GNU 工具、find/xargs/tar/cut**，升级还需 fallocate、GNU sed、mktemp。脚本在创建备份或停止应用前检查依赖；缺失时给出指引，不自动安装工具。推荐 Linux 运维；Windows `run.bat` 未实测。
 
-Node 24 源码方式需要独立 PostgreSQL 17、Redis 7，以及 `DATABASE_URL`、`REDIS_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。原生运行包提供经完整性校验的 compiled 启动器、Node 面板入口和运营者审阅的 [systemd 示例](../deploy/baize.service.example)，已实测独立 supervisor 自动重启；未提供 Kubernetes/Helm 成品，也未替用户安装 systemd 或验收真实宝塔实例。源码 npm start 与运行包派生 npm start 不同，后者调用 compiled panel-start，无需 tsx。
+Node 24 源码方式需要独立 PostgreSQL 17，以及 `DATABASE_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录；Redis 7 和 `REDIS_URL` 可选，未配置时采用有界单机降级，不保证跨实例共享限流或缓存：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。原生运行包提供经完整性校验的 compiled 启动器、Node 面板入口和运营者审阅的 [systemd 示例](../deploy/baize.service.example)，已实测独立 supervisor 自动重启；未提供 Kubernetes/Helm 成品，也未替用户安装 systemd 或验收真实宝塔实例。源码 npm start 与运行包派生 npm start 不同，后者调用 compiled panel-start，无需 tsx。
 
 Compose 默认连接内置 postgres/redis；只在 `.env` 写同名 `DATABASE_URL/REDIS_URL` 不会切换外部服务，需明确的 Compose override。默认 loopback 端口只供本机；`PUBLIC_URL` 不会配置 TLS 或开放公网。持久卷为 `app_data/app_keys/postgres_data/redis_data`，可选 CH 增加 `clickhouse_data`；不要删除业务卷或遗失密钥。
 
-[历史阶段记录](deployment-history.md) 保留原始失败和性能欠项；[上一轮运维证据](test-evidence/2026-10-12-ops-maintenance/summary.json) 不外推本轮新版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。未实测真实域名、HTTPS、Windows 或跨机上线。
+[历史阶段记录](deployment-history.md) 保留原始失败和性能欠项；[运维验收记录](test-evidence/2026-10-12-ops-maintenance/summary.json) 标注各自对应版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。真实域名、HTTPS、Windows 与跨机上线需按目标环境另行验收。
 
-需 Docker Engine 与 Compose v2。当前发行从私有源码本地构建，不拉取或发布白泽镜像。运行 `./install.sh`：保持现有 .env、密钥和卷，随机生成数据库密码与 32 字节主密钥（0600），构建后等待健康检查。首次访问创建管理员，不提供固定初始密码。默认仅 `127.0.0.1:3000` 可访问。
+需 Docker Engine 与 Compose v2。源码安装器在本地构建应用；使用镜像 save 时按 [部署方式](deployment-methods.md) 加载交付镜像。运行 `./install.sh`：保持现有 .env、密钥和卷，随机生成数据库密码与 32 字节主密钥（0600），构建后等待健康检查。首次访问创建管理员，不提供固定初始密码。默认仅 `127.0.0.1:3000` 可访问。
 
-Compose 中 PostgreSQL、Redis 不发布端口。密钥在 `.baize/master.key`，独立于数据库；密钥备份必须独立于数据库备份保护。版本化密钥位于独立 app_keys 卷（KEYS_DIR=/app/keys），不进入 app_data 卷归档。主密钥不可丢失，否则无法解密已有连接器密钥。云环境代理 CA 使用 BuildKit secret 挂载，保留 TLS 验证，不写入镜像。若在受代理管理的云环境测试真实外部连接器，使用 `docker compose -f docker-compose.yml -f docker-compose.cloud.yml` 使运行容器挂载当前 CODEX_PROXY_CERT 并设置 NODE_EXTRA_CA_CERTS；保留 Docker 注入的代理，不绕过网络策略。用户反向代理可自行配置 HTTPS；登记 TRUSTED_PROXIES 后才信任相应 IP 转发头。任何外网开放或部署需部署者明确操作，本开发任务不做。
+Compose 中 PostgreSQL、Redis 不发布端口。密钥在 `.baize/master.key`，独立于数据库；密钥备份必须独立于数据库备份保护。版本化密钥位于独立 app_keys 卷（KEYS_DIR=/app/keys），不进入 app_data 卷归档。主密钥不可丢失，否则无法解密已有连接器密钥。云环境代理 CA 使用 BuildKit secret 挂载，保留 TLS 验证，不写入镜像。若在受代理管理的云环境测试真实外部连接器，使用 `docker compose -f docker-compose.yml -f docker-compose.cloud.yml` 使运行容器挂载当前 CODEX_PROXY_CERT 并设置 NODE_EXTRA_CA_CERTS；保留 Docker 注入的代理，不绕过网络策略。用户反向代理可自行配置 HTTPS；登记 TRUSTED_PROXIES 后才信任相应 IP 转发头。对外部署需配置反向代理、证书和访问控制。
 
 `./scripts/backup.sh` 生成新目录，保存自定义格式 pg_dump、独立删除日志、脱离密钥的应用卷归档、应用镜像 ID 与校验和。密钥另存 `BAIZE_KEY_BACKUP_DIR`（默认 `.baize/key-backups`）内的0700目录；数据库备份只含密钥指纹与独立恢复包位置，不含明文密钥。可通过操作系统定时器每日运行；备份应另存离机受限存储。没有删除日志时失败关闭。删除日志必须长期独立保留，不能随数据库备份过期一起丢弃。
 
@@ -35,7 +35,7 @@ GeoIP 无离线库时降级未知；真实 MaxMind/GSC/SERP/AI 账号均由部�
 
 ## 反向代理与HTTPS示例（由部署者自行配置）
 
-应用继续绑定loopback，代理独立终止TLS。将 PUBLIC_URL 设为实际 HTTPS 地址，TRUSTED_PROXIES 只填写真实代理的CIDR，不能信任任意互联网客户端。下面证书路径是运营者已有证书位置；此开发任务不签发证书、不开放外网。
+应用继续绑定loopback，代理独立终止TLS。将 PUBLIC_URL 设为实际 HTTPS 地址，TRUSTED_PROXIES 只填写真实代理的CIDR，不能信任任意互联网客户端。下面证书路径是运营者已有证书位置；请替换成你已有的证书路径，并在开放访问前核实证书。
 
 ```nginx
 server {
@@ -53,7 +53,7 @@ server {
 }
 ```
 
-只在授权开放网络后部署者启用该配置。代理必须限制请求体大小并匹配应用采集批量限制，保留真实协议/站点的CORS要求；不要把数据库或Redis端口公开。
+检查域名、证书和防火墙后再启用该配置。代理必须限制请求体大小并匹配应用采集批量限制，保留真实协议/站点的CORS要求；不要把数据库或Redis端口公开。
 
 恢复必须保留独立当前 `tombstones.jsonl` 与 fsync 水位 `tombstones.watermark.json`，并验证当前日志完整延伸备份日志；缺失、截断、重置、水位不符会在创建目标数据库前拒绝。`scripts/restore.sh` 将 `app-data.tar.gz` 与独立密钥恢复到全新具名卷，记录 `.baize/restores/<database>.json`，不切换现有流量。恢复撤销旧导出、实际清理恢复卷内文件、取消旧通知/外部任务、暂停定时报表、旋转聚合 epoch 并重算及按站点失效缓存。操作员复核后才能启用目标应用与调度。
 
@@ -67,4 +67,4 @@ server {
 
 严格 canonical/历史正文恢复必须显式设置 `BAIZE_RESTORE_SOURCE_MAINTENANCE=1`，并设置 `BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE=1` 确认独占源维护窗口、无其他副本及外部写入者，事先暂停独立 worker/cron。脚本检查唯一原 app、已知运行服务、同镜像/数字 UID 和相同 mount 元数据；使用按 Compose project 唯一命名的临时容器原子拒绝并发恢复，停 app 后拒绝任何其他已连接 PG client（包括 idle worker）。无法枚举断开的外部写入者，确认标志不是跨机全局锁，不支持任意多副本编排。原 app 以原容器 ID 和标准 CMD 重启，不重新应用/扩容 Compose；成功、失败及可捕捉 INT/TERM/HUP 均执行清理，重启失败不重复硬跑并撤销本次成功标记。`restore.sh` 暂停原 app，通过同一不可变镜像、原 Compose 配置及既有卷/secret 的临时 idle Node 容器读取源 journal、采集当前保留期证明和作最终复核；该容器不启动 HTTP 或后台维护。成功标记在源仍静止时写入；临时证明/容器移除后恢复原运行 app，重启失败则撤销本次成功标记。原 app 本来已停止时，结束后保持停止。没有 opt-in 的 canonical 恢复在目标建库前拒绝；PG-only 恢复路径保持原行为。此流程是停机维护，不是零停机或自动切流量。单独 producer seal 不冻结每分钟推进的保留期 cutoff；任何外部写入导致 journal/cutoff 变化仍拒绝。证明有效期仍为10分钟，不降低校验；超时/源变化的目标保留诊断，未获成功标记不得开放。
 
-若源存在历史 namespace，使用官方可选 CH profile 时在 `.env` 设置 `HISTORY_STORE_ENABLED=1`；profile 将该非秘密配置传入 app。不能关闭历史 store 后重启需要历史删除重放的实例。真实跨机服务器、域名和 HTTPS 仍需独立部署验收。
+若源存在历史 namespace，使用官方可选 CH profile 时在 `.env` 设置 `HISTORY_STORE_ENABLED=1`；profile 将该非秘密配置传入 app。不能关闭历史 store 后重启需要历史删除重放的实例。在跨机服务器或真实域名上使用前，需验收目标环境的恢复与 HTTPS。

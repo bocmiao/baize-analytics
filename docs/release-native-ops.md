@@ -2,7 +2,7 @@
 
 Node-ready 包需要运营者安装受支持的 Node 24；bundled-node 包附经官方来源及 SHA256 校验的 Node Linux x64。两者都不包含 PostgreSQL 服务、PG client 工具、Redis、反向代理或服务管理器。数据、密钥和0600私有环境文件均在不可变 release 目录之外。包内文件完整校验后才启动。仅 Linux x64，不能外推 Windows/ARM/其他发行版。
 
-`./scripts/release-start.sh --env-file /etc/baize/runtime.env` 根据 manifest profile 启动 standard 或 Lite。不执行环境文件中的 shell，不依赖 Codex 会话。示例 systemd unit 由运营者审阅路径/用户后安装，本任务不会执行 enable/start。应用只默认 loopback:3000；PUBLIC_URL 不签发证书或开放公网，HTTPS由运营者配置。
+`./scripts/release-start.sh --env-file /etc/baize/runtime.env` 根据 manifest profile 启动 standard 或 Lite。不执行环境文件中的 shell，不依赖 SSH 或交互终端。示例 systemd unit 由运营者审阅路径/用户后安装，安装和启用服务由运营者完成。应用只默认 loopback:3000；PUBLIC_URL 不签发证书或开放公网，HTTPS由运营者配置。
 
 标准版必须配置外部 PostgreSQL `DATABASE_URL`。Redis 为可选 `REDIS_URL`：未提供时使用已有有界本地限速、无共享缓存；不能声称多副本/分布式额度一致。DATA_DIR/KEYS_DIR 独立私有目录，MASTER_KEY_FILE 指向受限密钥文件。
 
@@ -30,7 +30,7 @@ Node-ready 包需要运营者安装受支持的 Node 24；bundled-node 包附经
 
 这是停机候选升级：先保全源，再在新 DB/目录迁移恢复，用新 release 的真实 main 独立子进程启动并验健康及实际前端 HTML（内部 BAIZE_NATIVE_VALIDATE_ONLY=1 禁止候选后台任务与 GeoIP 自动下载，避免验证期间外发），验证后停止子进程。返回 `trafficSwitched:false`；运营者审阅对账后明确更新服务 release/config 指向并启动。工具不修改用户服务或当前 release 指针。失败源 DB/release 保持，保留恢复点和失败记录。回滚使用匹配旧 release 的恢复点和**最新**删除日志，恢复到另一新目标并验证旧程序健康；不直接用旧程序打开新 schema，不声称自动原地升级/零停机。
 
-SIGINT/TERM、丢锁、超时需停止并等待所有子进程实际退出，不能留下 pg_restore 或应用继续运行后报告成功。SIGKILL/宿主故障仍需人工确认锁、部分目标和恢复点；没有完成标记不得开放查询。真实外网、跨机灾备及实际 systemd 用户部署不在本次本地矩阵验收内。
+SIGINT/TERM、丢锁、超时需停止并等待所有子进程实际退出，不能留下 pg_restore 或应用继续运行后报告成功。SIGKILL/宿主故障仍需人工确认锁、部分目标和恢复点；没有完成标记不得开放查询。对外访问、跨机灾备和 systemd 服务用户部署需在各自目标环境中验证。
 
 ## Lite
 

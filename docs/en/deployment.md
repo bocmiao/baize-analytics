@@ -6,7 +6,7 @@ Recommended: Linux Docker Engine, Compose v2 and Bash, `./install.sh`, then crea
 
 Backup, restore and upgrade additionally require **host Node 24+, sha256sum, GNU-compatible sort -z, find/xargs/tar/cut**. Upgrade also requires fallocate, GNU sed and mktemp. Read-only preflight checks run before creating backup output or stopping the app; scripts do not install tools. Windows operations have not been validated.
 
-Source production: supply independent PostgreSQL 17 and Redis 7, DATABASE_URL, REDIS_URL, persistent DATA_DIR/KEYS_DIR and MASTER_KEY_FILE (0600); run `npm ci`, `npm run db:migrate`, `npm run build`, then `node dist/server/src/server/main.js`. `npm start` and maintenance tools still use tsx, so pruning development dependencies can break operations. Native runtime packages supply compiled launch/maintenance interfaces, a Node-panel entrypoint and an operator-reviewed [systemd example](../../deploy/baize.service.example). Independent supervisor restart has been tested; actual systemd installation, panel instances and Kubernetes/Helm deployments remain separate. Unlike source npm start, the derived runtime-package npm start calls compiled panel-start without tsx.
+Source production: supply independent PostgreSQL 17, DATABASE_URL, persistent DATA_DIR/KEYS_DIR and MASTER_KEY_FILE (0600). Redis 7 and REDIS_URL are optional; without Redis, bounded single-instance fallback does not guarantee shared limits or cache across instances. Run `npm ci`, `npm run db:migrate`, `npm run build`, then `node dist/server/src/server/main.js`. `npm start` and maintenance tools still use tsx, so pruning development dependencies can break operations. Native runtime packages supply compiled launch/maintenance interfaces, a Node-panel entrypoint and an operator-reviewed [systemd example](../../deploy/baize.service.example). Independent supervisor restart has been tested; actual systemd installation, panel instances and Kubernetes/Helm deployments remain separate. Unlike source npm start, the derived runtime-package npm start calls compiled panel-start without tsx.
 
 Compose connects its internal postgres/redis services; setting DATABASE_URL/REDIS_URL in `.env` alone does not override them. PUBLIC_URL does not enable TLS or public access. Data uses app_data, app_keys, postgres_data and redis_data volumes, with optional clickhouse_data. Recovery still needs the current source Compose environment and latest journal/proof; it is not an independently validated cross-host disaster-recovery package. See [historical evidence](../deployment-history.md); performance failures remain recorded.
 
@@ -26,7 +26,7 @@ A legacy nonempty deletion journal without a watermark requires an explicit migr
 
 Run `bash scripts/ops-lifecycle-test.sh` only on a disposable test copy. It creates an isolated named stack and removes that stack's volumes after validating installation, backups, fresh-volume recovery and upgrade failures. Actual results are recorded in [operations validation](../validation-ops.md).
 
-GeoIP falls back to unknown without an offline database. MaxMind, GSC, SERP and AI credentials are supplied by the operator; the application does not buy services or generate production accounts. `run.bat` is available for Windows after setting `DATABASE_URL`, `REDIS_URL` and `MASTER_KEY_FILE`; Windows execution has not been validated in this Linux environment.
+GeoIP falls back to unknown without an offline database. MaxMind, GSC, SERP and AI credentials are supplied by the operator; the application does not buy services or generate production accounts. `run.bat` is available for Windows after setting `DATABASE_URL`, `REDIS_URL` and `MASTER_KEY_FILE`; Windows execution requires validation on a Windows host.
 
 ## Operator-managed HTTPS reverse proxy
 
@@ -48,7 +48,7 @@ server {
 }
 ```
 
-Apply an appropriate request-body limit and retain the collector's site/CORS restrictions. Do not expose database or Redis ports. This development task does not enable external access, issue certificates, publish images or deploy a public service.
+Apply an appropriate request-body limit and retain the collector's site/CORS restrictions. Do not expose database or Redis ports. Verify your domain, certificate, proxy and firewall before enabling external access.
 
 Before stopping the working application, upgrades require at least 2GiB free workspace space (`BAIZE_UPGRADE_MIN_FREE_BYTES` can raise the threshold) and allocate a 128MiB emergency rollback reserve, released before rollback. This is not a guarantee against concurrent Docker pulls exhausting storage. Pause unrelated builds/pulls during upgrades and monitor the Docker data filesystem. Keep the recovery point if rollback fails, free space and complete manual recovery; a previous image or partial rollback is not success.
 
