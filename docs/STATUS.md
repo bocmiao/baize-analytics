@@ -4,7 +4,7 @@
 
 ## 源码与同步
 
-- 实时本地HEAD以 `git rev-parse HEAD` 定位；本页历史B隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`；最新已保存对照证据提交为 `e0797f702c1fcd70b8a61a7cce1cd58b21ebb33c`，本次060认证候选以本页提交及下述源码指纹定位，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
+- 实时本地HEAD以 `git rev-parse HEAD` 定位；本页历史B隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`；最新完整5000对照证据提交为 `9ab800efebdeef94b85cb12ba523ce646fee3e4c`（应用代码与已测42d1b8e相同），本次060认证候选以本页提交及下述源码指纹定位，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
 - 最后由父与本地引用确认的远端 main：`ee996754595d25f13aadac507dc4a2a6dc6b06b0`。这是已确认基线，不声称刚完成网络检查。后续本地提交**未确认同步**。
 - 最新完整正式应用验收绑定不可变源码：`72ea9291b69c30cba5369a63f44c0b2842bcbcd3`。后续隔离原型不属于该全量结果。
 - Git 当前失败为 `could not read Username`，无 HTTP 状态；未找到可靠原预配代理 URL 或自动刷新步骤。当前 origin 是 HTTPS/github.com/bocmiao/baize-analytics.git，无 helper/rewrite；父协调同环境正常授权路线，不新增凭据、不借 CNB 绕过。原 bundle 保留，损坏编码段废弃。
@@ -47,7 +47,7 @@
 
 原正式合同100×50、每秒1批、并发2、队列8、每10秒查询、120秒排空保持不变。e74fc02同源码/同UTC小时对照：旧路径4750接收/5未发，047规范化复用候选4900接收/2未发；两组完整性与排空通过，整体均FAIL，后者墙钟更长，未证明整体收益。原始数据见 [对照](performance/formal-4900-review/e74fc02-controlled-pair/)。
 
-060候选默认关闭（`BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`）：发布时完整旧验证后签全成员清单，读取仍要求当前PG选集/来源fence和同次CH正文SHA/成员/键，坏签不得降级，删除先验旧集合后签合法子集，恢复完整旧行验证后目标新签。见 [设计边界](ADR_FACT_VALIDATION_MANIFEST.md)。本批46单元及35个独立真实PG/CH专项PASS、0fail/skip；独立目标恢复/最新journal删A保B、旧v1升级及v2/v3读取在内。这是专项，不是新HEAD整轮/新镜像或性能验收；[原始结果与源码指纹](performance/fact-validation-manifest/correctness/)。68fd912相同已发布数据真实HTTP100交替对照结果一致、receipt/源码未变、清理通过；观察到中位耗时1634.84→1400.95ms，详见 [结果](performance/fact-validation-manifest/http100/)。小样本不是持续容量。三个精确发布阶段回滚已补验，完整16项PASS；首次计数JSON类型夹具FAIL保留。42d1b8e同源码原5000：关闭4950/1未发FAIL；开启5000/0未发PASS，完整性/排空/源码/清理全通过。唯一配置差异是清单复用0→1；总墙钟候选仍略长、实际采集118秒，不能外推生产容量。详见 [原始plan/result/哈希/UTC窗口](performance/fact-validation-manifest/formal5000/)。下一闸为冻结新源码整轮与新镜像恢复，尚未完成。
+060候选默认关闭（`BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`）：发布时完整旧验证后签全成员清单，读取仍要求当前PG选集/来源fence和同次CH正文SHA/成员/键，坏签不得降级，删除先验旧集合后签合法子集，恢复完整旧行验证后目标新签。见 [设计边界](ADR_FACT_VALIDATION_MANIFEST.md)。本批46单元及35个独立真实PG/CH专项PASS、0fail/skip；独立目标恢复/最新journal删A保B、旧v1升级及v2/v3读取在内。这是专项，不是新HEAD整轮/新镜像或性能验收；[原始结果与源码指纹](performance/fact-validation-manifest/correctness/)。68fd912相同已发布数据真实HTTP100交替对照结果一致、receipt/源码未变、清理通过；观察到中位耗时1634.84→1400.95ms，详见 [结果](performance/fact-validation-manifest/http100/)。小样本不是持续容量。三个精确发布阶段回滚已补验，完整16项PASS；首次计数JSON类型夹具FAIL保留。42d1b8e同源码原5000：关闭4950/1未发FAIL；开启5000/0未发PASS，完整性/排空/源码/清理全通过。唯一配置差异是清单复用0→1；总墙钟候选仍略长、实际采集118秒，不能外推生产容量。详见 [原始plan/result/哈希/UTC窗口](performance/fact-validation-manifest/formal5000/)。新9ab800e空库全轮首轮EXIT1：lint/type通过，433单元通过/1旧诊断字段断言失败，数据库和浏览器未运行；修正测试计时契约后继续冻结重验。新镜像5GiB预留仍不足，未运行，不借旧镜像声称通过。
 
 ## 历史B隔离原型（未进入正式入口）
 

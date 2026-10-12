@@ -1,0 +1,10 @@
+{
+  "database": "baize_final_manifest_9ab800e_20261012",
+  "publicTablesBefore": 0,
+  "postgresVersion": "PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "redisDB": 1,
+  "redisKeysBefore": 0,
+  "services": "existing test-owned PG/CH/Redis containers; new logical PG database and empty Redis namespace, no new credentials",
+  "sourceSha": "9ab800e",
+  "factValidationManifestReuse": 1
+}
