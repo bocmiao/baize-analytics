@@ -12,7 +12,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('actual HTTP serves the referenced ful
   await admin.query(`CREATE SCHEMA ${schema}`);
   runtime=await createApp({pool,redis:null,background:false,clickhouse:null,history:null,dataDir:directory,keyDir:join(directory,'keys'),masterKey:randomBytes(32)});
   const address=await runtime.app.listen({host:'127.0.0.1',port:0});
-  const fullLicense=(await readFile('packages/tracker/LICENSE','utf8')).trim();
+  const fullLicense=(await readFile('packages/tracker/LICENSE','utf8')).trim().replace(/\s+/g,' ');
   const script=await fetch(address+'/tracker.js',{headers:{'accept-encoding':'identity'}});expect(script.status).toBe(200);expect(script.headers.get('content-type')).toContain('application/javascript');const text=await script.text();expect(text).toContain(fullLicense);expect(script.headers.get('content-encoding')).toBeNull();
   const compressed=await fetch(address+'/tracker.js',{headers:{'accept-encoding':'gzip'}});expect(compressed.headers.get('content-encoding')).toBe('gzip');expect(compressed.headers.get('content-type')).toContain('application/javascript');expect(compressed.headers.get('vary')).toContain('Accept-Encoding');expect(Number(compressed.headers.get('content-length'))).toBe((await readFile('public/tracker.js.gz')).length);expect(Number(compressed.headers.get('content-length'))).toBeLessThanOrEqual(5120);expect(await compressed.text()).toBe(text);
   const refused=await fetch(address+'/tracker.js',{headers:{'accept-encoding':'gzip;q=0'}});expect(refused.headers.get('content-encoding')).toBeNull();expect(await refused.text()).toBe(text);
