@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {chmodSync,mkdirSync,mkdtempSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {deriveRuntimePackage,documentationWhitelist,exportReleaseDocumentation,releaseFiles,releaseReadmeNotice,rewriteDocumentationLinks,verifyRelease} from './package-release.mjs';
+import {deriveRuntimePackage,documentationWhitelist,exportReleaseDocumentation,releaseFiles,runtimeLicensePackages,releaseReadmeNotice,rewriteDocumentationLinks,verifyRelease} from './package-release.mjs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
@@ -66,4 +66,12 @@ test('real tar extraction preserves sealed inventory under umask 077',()=>{
   try{chmodSync(unpack,0o700);chmodSync(join(unpack,'scripts'),0o700);}catch{}
   rmSync(scratch,{recursive:true,force:true});
  }
+});
+
+test('actual Node library providers require real notices and unknown providers reject',()=>{
+ const actual=['libdl.so.2','libstdc++.so.6','libm.so.6','libgcc_s.so.1','libpthread.so.0','libc.so.6','ld-linux-x86-64.so.2'];
+ assert.deepEqual(runtimeLicensePackages(actual),['libc6','libgcc-s1','libstdc++6']);
+ assert.deepEqual(runtimeLicensePackages([...actual,'libatomic.so.1']),['libatomic1','libc6','libgcc-s1','libstdc++6']);
+ assert.throws(()=>runtimeLicensePackages([...actual,'libunknown.so.9']),/RELEASE_LIBRARY_LICENSE_UNKNOWN/);
+ for(const name of ['constructor','toString','__proto__'])assert.throws(()=>runtimeLicensePackages([...actual,name]),/RELEASE_LIBRARY_LICENSE_UNKNOWN/);
 });

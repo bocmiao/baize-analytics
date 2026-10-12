@@ -8,6 +8,10 @@ import {fileURLToPath} from 'node:url';
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 const inside=(root,path)=>path===root||path.startsWith(root+sep);
 function command(file,args,options={}){return execFileSync(file,args,{encoding:'utf8',maxBuffer:16*1024*1024,...options});}
+export function runtimeLicensePackages(needed) {
+ const providers={'libdl.so.2':'libc6','libm.so.6':'libc6','libpthread.so.0':'libc6','libc.so.6':'libc6','ld-linux-x86-64.so.2':'libc6','libstdc++.so.6':'libstdc++6','libgcc_s.so.1':'libgcc-s1','libatomic.so.1':'libatomic1'};
+ return [...new Set(needed.map(name=>{if(!Object.hasOwn(providers,name))throw Error('RELEASE_LIBRARY_LICENSE_UNKNOWN:'+name);return providers[name];}))].sort();
+}
 export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md']);
 export const releaseReadmeNotice='> 运行包说明：本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。\n\n';
 export function rewriteDocumentationLinks(text,sourcePath,revision,included=documentationWhitelist){
@@ -121,7 +125,7 @@ export function packageRelease({image,revision,profile,variant,output,sourceRoot
   if(variant==='bundled-node'){
    mkdirSync(join(output,'runtime','bin'),{recursive:true});command('docker',['cp',`${container}:/usr/local/bin/node`,join(output,'runtime','bin','node')]);
    mkdirSync(join(output,'runtime','licenses'),{recursive:true});command('docker',['cp',`${container}:/usr/local/LICENSE`,join(output,'runtime','licenses','NODE-LICENSE')]);
-   for(const name of ['libc6','libstdc++6','libgcc-s1','libatomic1']){
+   for(const name of runtimeLicensePackages(needed)){
     try{command('docker',['cp',`${container}:/usr/share/doc/${name}/copyright`,join(output,'runtime','licenses',name+'-copyright')]);}catch{throw Error('RELEASE_BASE_LICENSE_MISSING:'+name);}
    }
   }
@@ -130,7 +134,7 @@ export function packageRelease({image,revision,profile,variant,output,sourceRoot
   const provenance=deriveRuntimePackage(output);
   provenance.documentation=exportReleaseDocumentation(sourceRoot,revision,output);
   const requiredHostCommands=['bash','flock','sh','cat',...(profile==='standard'?['pg_dump','pg_restore','createdb','psql']:[])];
-  const manifest={version:1,profile,variant,revision,imageId:metadata.id,platform:{os:'linux',architecture:'amd64'},provenance,runtime:{...runtime,nodeBinarySha256:nodeSha256,bundled:variant==='bundled-node',glibcMinimum:glibc.at(-1),requiredSharedLibraries:needed,requiredSymbolVersions,requiredHostCommands},...releaseFiles(output,{seal:true})};
+  const manifest={version:1,profile,variant,revision,imageId:metadata.id,platform:{os:'linux',architecture:'amd64'},provenance,runtime:{...runtime,nodeBinarySha256:nodeSha256,bundled:variant==='bundled-node',glibcMinimum:glibc.at(-1),requiredSharedLibraries:needed,requiredSymbolVersions,requiredHostCommands,licensePackages:variant==='bundled-node'?runtimeLicensePackages(needed):[]},...releaseFiles(output,{seal:true})};
   writeFileSync(join(output,'release-manifest.json'),JSON.stringify(manifest,null,2)+'\n',{mode:0o444});chmodSync(join(output,'release-manifest.json'),0o444);chmodSync(output,0o555);verifyRelease(output);
   mkdirSync(dirname(output),{recursive:true});const archive=output+'.tar.gz';
   command('tar',['--sort=name','--mtime=@0','--owner=0','--group=0','--numeric-owner','-czf',archive,'-C',dirname(output),basename(output)]);
