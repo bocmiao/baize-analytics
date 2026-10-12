@@ -47,3 +47,23 @@ test('documentation derivation changes only missing link targets and preserves l
  assert.equal(result.rewritten.length,3);assert.ok(result.content.includes('(lite-deployment.md#部署)'));assert.ok(result.content.includes('/tree/'+revision+'/sdk/'));
  let restored=result.content;for(const link of result.rewritten)restored=restored.replace(link.to,link.from);assert.equal(restored,source);
 });
+
+test('real tar extraction preserves sealed inventory under umask 077',()=>{
+ const root=fixture(),scratch=mkdtempSync(join(tmpdir(),'baize-release-tar-'));
+ try{
+  const value=manifest(root);writeFileSync(join(root,'release-manifest.json'),JSON.stringify(value),{mode:0o444});chmodSync(join(root,'release-manifest.json'),0o444);
+  const archive=join(scratch,'release.tar.gz');
+  execFileSync('tar',['-czf',archive,'-C',root,'.']);
+  const originalMask=process.umask(0o077);
+  try{
+   const unpack=join(scratch,'unpack');mkdirSync(unpack);
+   execFileSync('tar',['--same-permissions','-xzf',archive,'-C',unpack]);
+   assert.deepEqual(verifyRelease(unpack),value);
+  }finally{process.umask(originalMask);}
+ }finally{
+  cleanup(root);
+  const unpack=join(scratch,'unpack');
+  try{chmodSync(unpack,0o700);chmodSync(join(unpack,'scripts'),0o700);}catch{}
+  rmSync(scratch,{recursive:true,force:true});
+ }
+});

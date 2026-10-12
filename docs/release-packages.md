@@ -80,3 +80,16 @@ from the Node version.
 Current scope is Linux x64 with glibc. Other CPU architectures, musl/Alpine,
 Windows and macOS packages are not produced or claimed tested. Runtime and data
 capacity figures require their own actual deployment measurements.
+
+Extract a runtime archive as the account that will own and run the release:
+
+```sh
+tar --same-permissions -xzf baize-PROFILE-VARIANT-linux-x64-REVISION.tar.gz
+```
+
+`--same-permissions` preserves the manifest's sealed file and directory modes
+under a restrictive umask such as `077`. Keep the extracted release owned by
+that account; keep writable data, keys and private environment files outside
+it. Do not recursively change release modes: strict inventory verification
+checks modes as well as content. The archive's numeric owner is packaging
+metadata; a normal non-root extraction is owned by the extracting account.

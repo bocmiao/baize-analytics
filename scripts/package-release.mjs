@@ -135,7 +135,7 @@ export function packageRelease({image,revision,profile,variant,output,sourceRoot
   mkdirSync(dirname(output),{recursive:true});const archive=output+'.tar.gz';
   command('tar',['--sort=name','--mtime=@0','--owner=0','--group=0','--numeric-owner','-czf',archive,'-C',dirname(output),basename(output)]);
   command('gzip',['-t',archive]);
-  const check=join(scratch,'unpack');mkdirSync(check);command('tar',['-xzf',archive,'-C',check]);verifyRelease(join(check,basename(output)));
+  const check=join(scratch,'unpack');mkdirSync(check);command('tar',['--same-permissions','-xzf',archive,'-C',check]);verifyRelease(join(check,basename(output)));
   return {manifest,archive,archiveBytes:lstatSync(archive).size,archiveSha256:sha256(readFileSync(archive)),expandedRegularFileBytes:manifest.files.filter(f=>f.type==='file').reduce((sum,f)=>sum+f.bytes,0)};
  }finally{
   if(container)command('docker',['rm','--volumes',container]);
