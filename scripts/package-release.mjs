@@ -1,13 +1,40 @@
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {chmodSync,existsSync,lstatSync,mkdirSync,mkdtempSync,readFileSync,readdirSync,readlinkSync,realpathSync,rmSync,writeFileSync} from 'node:fs';
-import {basename,dirname,isAbsolute,join,relative,resolve,sep} from 'node:path';
+import {basename,dirname,isAbsolute,join,normalize,relative,resolve,sep} from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
 
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 const inside=(root,path)=>path===root||path.startsWith(root+sep);
 function command(file,args,options={}){return execFileSync(file,args,{encoding:'utf8',maxBuffer:16*1024*1024,...options});}
+export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md']);
+export const releaseReadmeNotice='> 运行包说明：本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。\n\n';
+export function rewriteDocumentationLinks(text,sourcePath,revision,included=documentationWhitelist){
+ const available=new Set(included),rewritten=[];
+ const content=text.replace(/(\]\()([^\s)]+)([^)]*\))/g,(match,prefix,target,suffix)=>{
+  if(target.startsWith('#')||/^[a-z][a-z\d+.-]*:/i.test(target)||target.startsWith('//'))return match;
+  const parts=target.match(/^([^?#]*)(.*)$/),pathname=parts[1];if(!pathname)return match;
+  const path=normalize(join(dirname(sourcePath),pathname)).split(sep).join('/');
+  if(path.startsWith('../')||isAbsolute(path))throw Error('RELEASE_DOCUMENTATION_LINK_ESCAPE');
+  if(available.has(path))return match;
+  const url=`https://github.com/bocmiao/baize-analytics/${pathname.endsWith('/')?'tree':'blob'}/${revision}/${path.split('/').map(encodeURIComponent).join('/')}${parts[2]}`;
+  rewritten.push({from:target,to:url});return prefix+url+suffix;
+ });
+ return {content,rewritten};
+}
+export function exportReleaseDocumentation(sourceRoot,revision,output){
+ if(!/^[a-f0-9]{40}$/.test(revision))throw Error('RELEASE_DOCUMENTATION_REVISION_INVALID');
+ return documentationWhitelist.map(path=>{
+  const bytes=command('git',['show',`${revision}:${path}`],{cwd:sourceRoot,encoding:null});
+  const gitBlobId=command('git',['rev-parse',`${revision}:${path}`],{cwd:sourceRoot}).trim();
+  if(createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex')!==gitBlobId)throw Error('RELEASE_DOCUMENTATION_BLOB_MISMATCH');
+  const derived=['README.md','docs/api.md','docs/migration.md'].includes(path)?rewriteDocumentationLinks(bytes.toString('utf8'),path,revision):{content:bytes,rewritten:[]};
+  const readmeNoticeAdded=path==='README.md';
+  const releaseBytes=Buffer.from(readmeNoticeAdded?releaseReadmeNotice+derived.content:derived.content),destination=join(output,path);mkdirSync(dirname(destination),{recursive:true});writeFileSync(destination,releaseBytes);
+  return {path,revision,gitBlobId,sourceSha256:sha256(bytes),sourceBytes:bytes.length,derivedDocSha256:sha256(releaseBytes),bytes:releaseBytes.length,derivedLinksOnly:derived.rewritten.length>0,readmeNoticeAdded,rewrittenLinks:derived.rewritten};
+ });
+}
 export function deriveRuntimePackage(root){
  const source=readFileSync(join(root,'package.json')),original=JSON.parse(source),lock=JSON.parse(readFileSync(join(root,'package-lock.json'),'utf8'));
  if(!original.scripts||lock.name!==original.name||lock.version!==original.version||JSON.stringify(lock.packages?.['']?.dependencies)!==JSON.stringify(original.dependencies))throw Error('RELEASE_PACKAGE_LOCK_IDENTITY_MISMATCH');
@@ -101,6 +128,7 @@ export function packageRelease({image,revision,profile,variant,output,sourceRoot
   const originalPackage=JSON.parse(readFileSync(join(output,'package.json'),'utf8'));
   if(originalPackage.type!=='module'||!existsSync(join(output,main)))throw Error('RELEASE_RUNTIME_INCOMPLETE');
   const provenance=deriveRuntimePackage(output);
+  provenance.documentation=exportReleaseDocumentation(sourceRoot,revision,output);
   const requiredHostCommands=['bash','flock','sh','cat',...(profile==='standard'?['pg_dump','pg_restore','createdb','psql']:[])];
   const manifest={version:1,profile,variant,revision,imageId:metadata.id,platform:{os:'linux',architecture:'amd64'},provenance,runtime:{...runtime,nodeBinarySha256:nodeSha256,bundled:variant==='bundled-node',glibcMinimum:glibc.at(-1),requiredSharedLibraries:needed,requiredSymbolVersions,requiredHostCommands},...releaseFiles(output,{seal:true})};
   writeFileSync(join(output,'release-manifest.json'),JSON.stringify(manifest,null,2)+'\n',{mode:0o444});chmodSync(join(output,'release-manifest.json'),0o444);chmodSync(output,0o555);verifyRelease(output);

@@ -1,5 +1,18 @@
 # Linux x64 precompiled release packages
 
+> 本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。
+
+The small documentation whitelist includes the supervisor example, deployment and
+maintenance guides, Lite guides, API/migration reference and README. Files are
+exported with `git show FULL_SHA:path` from the same frozen revision as the image.
+The supervisor example and primary operating guides stay byte for byte identical.
+README/API/migration references keep local links to included guides; missing source
+or historical link targets point to the private repository at that exact SHA.
+Only link targets change in the original body; README also receives the explicit
+offline/network-access notice shown above. Their manifest provenance records the source Git blob,
+source SHA-256, derived document SHA-256 and each rewrite. Historical evidence,
+screenshots, private configuration and secrets are not recursively packaged.
+
 `scripts/package-release.mjs` is a publisher tool. It takes an existing, frozen
 local application image and a clean checkout at the same full Git revision. It
 does not clone, install dependencies, build on the receiving host, download Node,
@@ -50,7 +63,12 @@ intentional derivation; the Docker image's original package files remain unchang
 Run the supplied `scripts/release-start.sh` and `scripts/release-ops.sh` with an
 absolute external environment file. `DATA_DIR` and `KEYS_DIR` must be external to
 the release. Standard native mode uses `BAIZE_NATIVE_RUNTIME=1` and separately
-provided PostgreSQL/Redis; optional ClickHouse remains separately configured.
+provided PostgreSQL/Redis; optional ClickHouse remains separately configured for
+application operation. The current standard native maintenance tools support
+PG-only data and refuse ClickHouse configuration or authority before backup or
+restore; they do not produce a complete ClickHouse backup. Restore, upgrade and
+rollback create a new database, so the maintenance database role needs database
+creation and target-object restoration privileges, not only source read access.
 The shell entrypoints require Bash. Lite uses one local SQLite writer and requires
 host `flock`, `sh` and `cat`. Standard maintenance also needs matching PostgreSQL
 client programs (`pg_dump`, `pg_restore`, `createdb`, `psql`).

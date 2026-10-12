@@ -65,3 +65,15 @@ button.overview-insight-toggle{display:inline-flex;align-items:center;justify-co
 @media(prefers-reduced-motion:reduce){.approved-overview *,.overview-insight-dialog *{animation-duration:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}}
 
 @media(max-width:650px){.approved-overview .overview-detail-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Independent content columns keep compact breakdowns at their natural height. */
+.overview-density-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.overview-density-main,.overview-density-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.approved-overview .overview-density-layout .panel{margin:0;align-self:stretch}
+.approved-overview .overview-density-layout .panel-heading h2,.overview-scope-note h2{display:flex;align-items:center;gap:8px;min-width:0}
+.overview-density-layout .overview-content-panel{width:auto;grid-column:auto}
+.overview-density-layout table th:first-child{overflow-wrap:anywhere;white-space:normal}
+.overview-preview-note,.overview-scope-notes,.overview-scope-note{font-size:12px;line-height:1.7;color:var(--overview-muted)}
+.overview-preview-note{margin:8px 0 0}.overview-scope-note h2{font-size:14px;margin:0}.overview-scope-note p,.overview-scope-notes p{margin:6px 0}.overview-scope-note a{color:var(--overview-blue)}
+.approved-overview .overview-empty-trend{padding:12px 0;margin:0}
+@container overview-primary (min-width:820px){.overview-density-layout{grid-template-columns:minmax(0,2fr) minmax(270px,1fr)}}

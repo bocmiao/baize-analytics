@@ -1,5 +1,6 @@
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
 import {createApp as createProductionApp,type AppOptions} from '../../src/server/app.js';
 
 /** Known synthetic credential belongs only to isolated test directories/databases. */
@@ -14,6 +15,6 @@ export async function createApp(options:AppOptions={}){
  await prepareInstallationFixture(keyDir);
  // These fixtures deliberately omit unrelated historical migrations. Bootstrap
  // remains a real prerequisite and is never suppressed by skipMigrate.
- if(options.skipMigrate&&options.pool){const exists=await options.pool.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relname='install_bootstrap' AND n.nspname=current_schema()");if(!exists.rowCount)await options.pool.query(await readFile(resolve('db/migrations/061_install_bootstrap.sql'),'utf8'));}
+ if(options.skipMigrate&&options.pool){const client=await options.pool.connect();try{await client.query('BEGIN');const exists=await client.query("SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relname='install_bootstrap' AND n.nspname=current_schema()");if(!exists.rowCount){const sql=await readFile(resolve('db/migrations/061_install_bootstrap.sql'),'utf8');await client.query(sql);await client.query('INSERT INTO schema_migrations(version,checksum) VALUES($1,$2)',['061_install_bootstrap.sql',createHash('sha256').update(sql).digest('hex')]);}await client.query('COMMIT');}catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}}
  return createProductionApp({...options,dataDir,keyDir});
 }

@@ -31,7 +31,8 @@ import {restoreReplicaConfig,invalidateRestoredReplica} from './restore-replica.
 const url=new URL(process.env.DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev');if(process.env.RESTORE_DATABASE){if(!/^baize_restore_[a-zA-Z0-9_]+$/.test(process.env.RESTORE_DATABASE))throw new Error('Unsafe restore database');url.pathname='/'+process.env.RESTORE_DATABASE;}
 const dir=resolve(process.env.DATA_DIR??'data');
 // Mark this restore target before any DB/adaptor work; interruption must not reopen pre-owner setup.
-writeRestoreBootstrapBlock(resolve(process.env.KEYS_DIR??dir+'-keys'));
+const configuredKeys=process.env.KEYS_DIR?.trim();
+writeRestoreBootstrapBlock(configuredKeys?resolve(configuredKeys):dir+'-keys');
 // Validate the independently retained journal before any migration or query access.
 await initializeJournal(dir,true);process.env.REQUIRE_DELETION_JOURNAL='1';
 const extra=resolve(dir,'restore-backup-tombstones.jsonl');await access(extra);

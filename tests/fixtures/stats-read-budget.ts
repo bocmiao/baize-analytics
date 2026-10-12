@@ -2,7 +2,7 @@ import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {Pool} from 'pg';
 import {expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {runWorkerOnce} from '../../src/server/worker.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
 import {ClickHouseSessionHeaderStore,installSessionHeaderStore} from '../../src/server/session-header-store.js';

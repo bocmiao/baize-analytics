@@ -8,7 +8,7 @@ Node-ready 包需要运营者安装受支持的 Node 24；bundled-node 包附经
 
 ## 标准版 PG-only native 运维
 
-需宿主官方 PostgreSQL 客户端 `pg_dump/pg_restore/createdb/psql`，建议同服务器主要版本17；可用 `BAIZE_PG_BIN` 指定已有受信目录，不自动安装。连接凭据通过私有环境传递，不放 argv 或日志。
+需宿主官方 PostgreSQL 客户端 `pg_dump/pg_restore/createdb/psql`，建议同服务器主要版本17；可用 `BAIZE_PG_BIN` 指定已有受信目录，不自动安装。连接凭据通过私有环境传递，不放 argv 或日志。恢复、升级和回滚会创建新的目标数据库；维护用数据库角色必须具有创建数据库及恢复目标对象的权限，不能只授予源数据库只读权限。
 
 维护前由运营者停止服务、所有 worker/其他写入者，显式设置 `BAIZE_NATIVE_SOURCE_STOPPED=1`、`BAIZE_NATIVE_SINGLE_INSTANCE=1`；工具还获取同 DATA_DIR/native-runtime.lock，拒绝源 DB 其他连接。只支持 public schema 的 PG-only 数据；严格 CH 权威、CH mirror/历史正文/相关外部 sidecar 前置拒绝，不能把 pg_dump 当完整 CH 包。PG-only replay/heatmap 正文在 PG dump 中保留。
 
