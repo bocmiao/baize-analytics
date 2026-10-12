@@ -1,42 +1,23 @@
 # 本地自托管安装与恢复
 
-## 当前验收入口（本地ce42c9f / d67应用源）
+## 安装方式与实际依赖
 
-| 源/阶段 | 实际证据 |
-|---|---|
-| d67后端 |217单元+428真实集成=645PASS，实际后端执行|
-| ce42c9f浏览器 |30检查（28真实Chromium+2日期）PASS、EXIT0；与d67 src/db/packages/sdk/scripts EMPTYdiff，不称后端重跑|
-| d67镜像 |实际EXIT0：55DDL/391manifest/严格独立恢复；瞬时可用盘低62MiB风险已归档，不隐去|
-| d67固定1000/5000 |实际EXIT1结束：1000PASS4.537660079秒；5000整体FAIL4700accepted/6unsent/38delayed/queryfail0，但draintrue、六final断言PASS，finalHTTP23.714184648秒；Node峰714698752B不含DB。性能仍欠，不称5000/SLO通过|
-| Git/托管 |remotee441已核、push blocked，不再认证尝试；最新local检查点以/workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json为准，仅Git对象/已跟踪source不含runtime keys；87e六commit为历史verified记录。不称收工，不触发CI|
+推荐 Linux Docker Engine + Compose v2，从私有 checkout 本地构建；当前未发布白泽 registry 镜像或 Release 安装包。
 
-原661ENOSPC及d67首轮29/30整体EXIT1按原SHA证据保留在历史节。
+```bash
+./install.sh
+# 在本机浏览器访问 http://localhost:3000，创建首位管理员
+```
 
-1240 source文件前后不变、4项cleanup全true。当前无负载运行；末段可用盘观察1.5GiB→结束2.0GiB，不是minimum也不据此作因果解释。其后仅获批10个旧构建缓存精确ID清理，观测可用空间2485452800→9281884160B；完整清理证据另存，不触及最新镜像、共享依赖或卷。
+手工 Compose：先准备 `.env` 中的 `POSTGRES_PASSWORD`、`PUBLIC_URL`、数字 `BAIZE_UID/BAIZE_GID`，以及 `.baize/master.key`（32 字节随机密钥的64位十六进制文本、0600，属主与 app UID 一致）；然后 `docker compose build app`、`docker compose up -d --wait`。`.env` 中的 `BAIZE_IMAGE` 决定本地目标 tag，安装和升级保持同一解析方式，不执行 `.env` 内容。可选 `docker-compose.build-ca.yml` 只给构建注入环境已有 CA；普通安装不依赖管理云环境。
 
+初装只需 Docker/Compose 与 Bash 常规工具；**备份、恢复、升级还需宿主 Node 24+、sha256sum、支持 `sort -z` 的 GNU 工具、find/xargs/tar/cut**，升级还需 fallocate、GNU sed、mktemp。脚本在创建备份或停止应用前检查依赖；缺失时给出指引，不自动安装工具。推荐 Linux 运维；Windows `run.bat` 未实测。
 
-容量87e：短1000双PASS；长5000overallEXIT1，PG5000PASS（finalHTTP2.324900314秒，0未发送/延迟/查询失败）；strict5000FAIL（全部accepted、0未发送/查询失败、15delayed、120秒排空deadline、executed[]/assertfalse）。strict finalassertwindow28.497584549秒不是实测最终HTTP耗时，不声称最终完整性或数据丢失/SLO。功能645/浏览器30/镜像EXIT0独立；性能仍欠，停止追加heavy追绿、托管不触发。
+Node 24 源码方式需要独立 PostgreSQL 17、Redis 7，以及 `DATABASE_URL`、`REDIS_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。没有随附的 Kubernetes/Helm/systemd/PaaS 部署成品。
 
-## 历史SHA阶段记录与原契约
+Compose 默认连接内置 postgres/redis；只在 `.env` 写同名 `DATABASE_URL/REDIS_URL` 不会切换外部服务，需明确的 Compose override。默认 loopback 端口只供本机；`PUBLIC_URL` 不会配置 TLS 或开放公网。持久卷为 `app_data/app_keys/postgres_data/redis_data`，可选 CH 增加 `clickhouse_data`；不要删除业务卷或遗失密钥。
 
-**当前66150be测试窄修**：完整type/lint/215单元实际EXIT0，src/db/packages与0a相同；19真实precommit专项仍只证明此前摘要绑定源码，不是完整全轮。0a正式入口实际EXIT2（TS2749），unit/int/browser/image未运行；随后测试WIP首次213/215单元通过、2FAIL，类型与event-capable mock窄修后215PASS。先type后追加测试导致旧报告外推的失误已记录，不掩盖。661新full/image/load待；bd未捕获错误、0a类型FAIL、测试WIP2FAIL及1c负载FAIL原证据保留。
-
-当前更新a9b49e7：bd3f51f三批候选7单元/21真实专项PASS，但新完整入口实际EXIT1：213单元PASS，集成424检查中423PASS/1skip，并有uncaught PG25P04 error1；浏览器NOT RUN。旧1c30浏览器及镜像通过仅绑定旧source，不外推候选。skip来自runner漏env，已改用仓库validate-local-final.sh正式入口；C idlefatal修复已保存0a0c171：precommit WIP摘要绑定第四轮19真实专项PASS/0skip/0uncaught，10单元/type/lint通过；新0a全量/镜像/负载尚待。所有FAIL保留，托管不触发。
-
-### 历史bb6阶段状态表
-
-证据归档已随bb6a20c保存；下表按实际源码与执行阶段区分，不累加历史计数。
-
-| 源与阶段 | 当前实际结果 |
-|---|---|
-| c890后端 | 211单元+421真实集成=632 PASS/0skip，已实际执行 |
-| 1c1cb65浏览器 | 30检查=28真实Chromium+2日期全部PASS/0skip，92.6437秒，EXIT0/cleanup |
-| 两阶段源码关联 | src/db/packages与c890一致已核；不声称1c重跑后端 |
-| 1c1cb65新镜像 | 实际EXIT0；a5d495d6…，55DDL/054两个索引、391源码与镜像一致、运行budget probe、独立目标latest journal删A保B/源不变、故障拒绝及cleanup通过；证据main-1c1cb65-image-* |
-| 最终固定1000/5000负载 | 1000 PASS（最终HTTP5120ms）；5000 FAIL（4900accepted/2unsent/39delayed、120秒排空deadline、最终断言未执行），仍有本地性能欠项 |
-| 托管/外部边界 | 不触发托管；真实外部账号、设备及模型未测边界保留 |
-
-日期标记和累计SELECT次数/decoded bytes/deadline预算两项有限缺口已有本地证明；预算不保证scan/heap或性能改善。以下各SHA原文为历史时点，不作为另一个“当前/最新”入口；所有FAIL、执行时间与原证据保持。
+[历史阶段记录](deployment-history.md) 保留原始失败和性能欠项；[上一轮运维证据](test-evidence/2026-10-12-ops-maintenance/summary.json) 不外推本轮新版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。未实测真实域名、HTTPS、Windows 或跨机上线。
 
 需 Docker Engine 与 Compose v2。当前发行从私有源码本地构建，不拉取或发布白泽镜像。运行 `./install.sh`：保持现有 .env、密钥和卷，随机生成数据库密码与 32 字节主密钥（0600），构建后等待健康检查。首次访问创建管理员，不提供固定初始密码。默认仅 `127.0.0.1:3000` 可访问。
 
@@ -46,11 +27,11 @@ Compose 中 PostgreSQL、Redis 不发布端口。密钥在 `.baize/master.key`�
 
 `./scripts/restore.sh BACKUP_DIR baize_restore_NAME` 只创建新数据库，拒绝覆盖现有库。校验后恢复数据库，合并当前独立删除日志（覆盖备份后新增删除），重放 tombstone，递增 epoch/generation、废止旧任务、重建聚合、清站点缓存；不自动切换流量。原数据库及应用保持原有配置。恢复后先对账，再人工修改 DATABASE_URL 切流量。
 
-`./upgrade.sh LOCAL_IMAGE_TAG` 先备份，停止应用后迁移并启动新镜像，健康检查失败时还原数据库快照、应用卷及旧镜像（保留当前独立删除日志），并通过启动重放期间独立删除日志。当前为停机升级，不承诺零停机。版本兼容见 compatibility.md。升级镜像必须已经在本机，脚本不发布镜像。
+`./upgrade.sh LOCAL_IMAGE_TAG` 停止应用后创建恢复点，再迁移并启动新镜像，健康检查失败时还原数据库快照、应用卷及旧镜像（保留当前独立删除日志），并通过启动重放期间独立删除日志。当前为停机升级，不承诺零停机。版本兼容见 compatibility.md。升级镜像必须已经在本机，脚本不发布镜像。
 
 `bash scripts/ops-lifecycle-test.sh` 创建隔离命名栈验证安装、数据库备份、新库恢复、成功升级及失败回滚；结束删除这个测试栈的卷。只应对测试副本运行。相关结果见 validation-ops.md。
 
-GeoIP 无离线库时降级未知；真实 MaxMind/GSC/SERP/AI 账号均由部署者配置，不会自动购买或创建生产凭证。Windows 使用 run.bat，先提供 DATABASE_URL、REDIS_URL 和 MASTER_KEY_FILE；生产推荐 Linux。
+GeoIP 无离线库时降级未知；真实 MaxMind/GSC/SERP/AI 账号均由部署者配置，不会自动购买或创建生产凭证。Windows 有 run.bat 脚本，但未在本 Linux 环境实测；生产推荐 Linux。
 
 ## 反向代理与HTTPS示例（由部署者自行配置）
 
@@ -82,47 +63,8 @@ server {
 
 以下仅描述PG-authority的可选mirror副本恢复分支，不是当前全局存储契约；严格CH权威及044等正文迁出已交付并有19d同源应用/镜像证据。PG-authority副本分支的新数据库恢复默认禁用ClickHouse，清除目标数据库复制指针、上传/维护旧任务并将存储模式设回postgres，不读取、删除或清理源副本。需要新目标副本时显式设置 `BAIZE_RESTORE_CLICKHOUSE_URL`、`BAIZE_RESTORE_CLICKHOUSE_USER`、`BAIZE_RESTORE_CLICKHOUSE_PASSWORD`；目标须为不同endpoint（同endpoint仅改query/database不算独立目标）。当前副本表namespace固定，不能让新旧恢复实例共用。新目标恢复完成后由管理员明确启用mirror并重建，不直接信任备份中的snapshot。原库升级回滚仍使用原ClickHouse删除屏障，失败不会宣称恢复成功。
 
-已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。19d镜像证据不外推当前c890新源码；c890完整冻结实际EXIT1（632应用通过，浏览器29/30），下一测试夹具复验待，de原FAIL保持。标准Compose正在前向传递三个非秘密budget配置，默认值不变，后续新镜像需绑定实际源另验，不据配置变更宣称性能提升。
+已逐站切换的严格canonical CH权威恢复必须使用独立signed target分支，不能按上述mirror分支回空PG或信任备份自报authority。原producer seal/完成receipt/目标隔离、独立最新journal、当前retention proof及真实正文校验仍强制，失败关闭；实际参数与权限见 [迁移运行手册](migration.md)、[API手册](api.md)。
 
 严格 canonical/历史正文恢复必须显式设置 `BAIZE_RESTORE_SOURCE_MAINTENANCE=1`，并设置 `BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE=1` 确认独占源维护窗口、无其他副本及外部写入者，事先暂停独立 worker/cron。脚本检查唯一原 app、已知运行服务、同镜像/数字 UID 和相同 mount 元数据；使用按 Compose project 唯一命名的临时容器原子拒绝并发恢复，停 app 后拒绝任何其他已连接 PG client（包括 idle worker）。无法枚举断开的外部写入者，确认标志不是跨机全局锁，不支持任意多副本编排。原 app 以原容器 ID 和标准 CMD 重启，不重新应用/扩容 Compose；成功、失败及可捕捉 INT/TERM/HUP 均执行清理，重启失败不重复硬跑并撤销本次成功标记。`restore.sh` 暂停原 app，通过同一不可变镜像、原 Compose 配置及既有卷/secret 的临时 idle Node 容器读取源 journal、采集当前保留期证明和作最终复核；该容器不启动 HTTP 或后台维护。成功标记在源仍静止时写入；临时证明/容器移除后恢复原运行 app，重启失败则撤销本次成功标记。原 app 本来已停止时，结束后保持停止。没有 opt-in 的 canonical 恢复在目标建库前拒绝；PG-only 恢复路径保持原行为。此流程是停机维护，不是零停机或自动切流量。单独 producer seal 不冻结每分钟推进的保留期 cutoff；任何外部写入导致 journal/cutoff 变化仍拒绝。证明有效期仍为10分钟，不降低校验；超时/源变化的目标保留诊断，未获成功标记不得开放。
 
 若源存在历史 namespace，使用官方可选 CH profile 时在 `.env` 设置 `HISTORY_STORE_ENABLED=1`；profile 将该非秘密配置传入 app。不能关闭历史 store 后重启需要历史删除重放的实例。真实跨机服务器、域名和 HTTPS 仍需独立部署验收。
-
-
-当前c890冻结已结束，完整入口EXIT1、cleanup完成：55文件211单元+155文件421真实集成全部PASS/0skip=632应用通过；30浏览器检查29PASS/1FAIL（27真实Chromium+2日期通过），operations Chromium因固定x58画布点击点未命中失败，UI证明不完整。原FAIL保留，不能称全轮通过。root仅测试夹具1c1cb65按实际趋势/canvas几何窄修，焦点、PV、时区断言未降低；下一步同应用源码定向浏览器复验，不重复已过后端。新1c（含Compose预算配置前向传递）的镜像及性能仍待，不将632加旧源计数，托管不触发。
-
-## 历史c890/1c分阶段记录（当前结果见顶栏）
-
-| 源/阶段 | 实际结果 | 边界 |
-|---|---|---|
-| c890后端冻结 | 55文件211单元+155文件421真实集成=632 PASS/0skip | 已实际执行；不称1c重跑后端 |
-| c890首轮浏览器 | 30检查29PASS/1FAIL，整轮EXIT1/cleanup | 原画布固定点失败保留 |
-| 1c1cb65浏览器复验 | 30检查=28真实Chromium+2日期全部PASS/0skip，92.6437秒、EXIT0/cleanup | src/db/packages与c890应用源码一致已核；operations单项1PASS10.333秒是子集，不累计 |
-
-有限两项实现缺口已本地闭合：日期标记真实canvas/键盘/时区/权限及PV1断言通过；累计SELECT次数/decoded bytes/deadline预算已由13定向（9PGCH+4服务器/适配器）及同应用632后端证明。限制预算不保证scan/heap或性能SLO。de417中的2FAIL及c890首轮浏览器1FAIL原记录保留，不改写历史EXIT1。
-
-最新1c应用镜像（含cdbenvforward）与独立负载仍待，负责人下一步串行镜像验收；19镜像与ac负载证据不外推此源。托管不触发，真实外部未测边界保持。
-
-1c最终固定负载：1000 PASS、最终HTTP5120ms；5000总体FAIL：4900accepted、2unsent、39delayed、queryfail0，drainReached=false且120秒deadline，剩余积压1350/最大3250。最终查询25.389秒FAIL、assertionsExecuted=[]，不得声称六完整性断言已过。Node峰730509312字节不含数据库，source unchanged且4项cleanup全true；没有预算拒绝。已通过代码功能/浏览器/镜像不等于关闭此本地性能欠项，不据此称提速/SLO。归档证据为 docs/test-evidence/main-1c1cb65-independent-strict-5000.json 及配套record；原FAIL保留。
-
-0a0c171包含三批候选及idlefatal修复。第四轮实际19/19 PASS（11budget+4server+3triple+1strictrestore）、0skip/0uncaught，另10单元/type/lint通过；这是提交前源码摘要绑定定向证明，不是新全局计数。原前三轮FAIL及bd完整EXIT1全部保留。0a新完整空库、镜像和固定负载正在准备，不预写通过；旧c890632、1c30/image、1c1000PASS/5000FAIL各按原源码阶段保留，不外推0a。
-
-## 历史前次状态入口（原记录保留）
-
-## 当前验收入口（唯一当前表）
-
-最新本地主干d67bb8a已保存，正常Git push权限当前不可用，不创建token。只在同run effects/vitals均为complete CH时省identity TEMP写，混源保持原路径；type/lint、新2+旧18=20受影响真实集成及217单元PASS/0skip。20是部分集成，不与旧426累加；217首次215PASS/2旧mockFAIL保留，随后仅修形状不降断言。d67新whole/image/load等待串行验收，最新已过完整全轮仍是661641+30；不推断提速。原镜像ENOSPC FAIL及精确自有旧cache清理/targethealthy EXIT0仅诊断恢复，native未跑，不称镜像生命周期通过。
-d67整轮实际EXIT1/cleanup：645后端（217单元+428集成）ALL PASS；浏览器29PASS/1FAIL，protected share只读提示未找到、实际HTTP503“统计快照已改变请重试”，D正在诊断竞态，不称全passed。新完整镜像/负载待。父已核远端e441；local e441..d67 Gitbundle及tracked-source tar保存在/workspace/baize-checkpoints，bundleverify0且排runtime，不创建新凭据。
-
-| 源/阶段 | 实际证据与边界 |
-|---|---|
-| 66150be正式全轮 | actualEXIT0/cleanup：55文件215单元+156文件426真实集成=641PASS/0skip/0unhandled；30E2E（28真实Chromium+2日期）全部PASS，约1.5分钟；lint/type/SDK/journal/build/migrate/compiledentry全部PASS |
-| 66150be固定负载 | 1000PASS，finalHTTP5.047623651秒；5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/sourceCH，六完整性断言PASS，finalHTTP21.102973929秒；不是5000或SLO通过 |
-| 最新镜像/远端状态 | 新镜像尚未完成；本地HEAD e441存在，HTTPS认证失败导致push尚未确认，不操作Git或托管 |
-| 66150be独立静态/单元 | type/lint/215单元PASS，不代替正式全轮结果 |
-| 0a提交前摘要绑定专项 | 19真实定向PASS，仅对应precommit源码摘要，不是全局计数 |
-| c890后端（历史源） | 211单元+421真实集成=632PASS，未外推661 |
-| 1c1cb65浏览器/镜像（历史源） | 30检查=28Chromium+2日期PASS；镜像EXIT0，均绑定1c非661 |
-| 1c1cb65固定负载（历史源） | 1000PASS，5000FAIL，不称SLO达标或661结果 |
-
-托管不触发。以下更新段全部是明确SHA对应的历史阶段原文：其中“当前/最新”仅指各历史时点，不构成另一个当前入口。bd未捕错误、0a类型FAIL、测试WIP两FAIL、1c负载FAIL及所有原来源完整保留。

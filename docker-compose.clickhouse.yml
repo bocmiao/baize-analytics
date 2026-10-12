@@ -1,4 +1,4 @@
-# Explicit local replica profile. PostgreSQL remains the canonical event store.
+# Optional local ClickHouse services. Default PG, mirror and explicitly activated strict authority are distinct modes.
 services:
   app:
     environment:

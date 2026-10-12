@@ -19,7 +19,7 @@ chmod 600 .env .baize/master.key
 # Runtime uses the installing uid/gid; the secret stays mode 0600.
 # Build locally: private source and images are never published by this installer.
 if [ -n "${CODEX_PROXY_CERT:-}" ]; then
-  docker build --secret "id=proxy_ca,src=$CODEX_PROXY_CERT" -t "${BAIZE_IMAGE:-baize-analytics:local}" .
+  docker compose -f docker-compose.yml -f docker-compose.build-ca.yml build app
 else
   docker compose build app
 fi

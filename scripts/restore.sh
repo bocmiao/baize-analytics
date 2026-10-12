@@ -2,6 +2,8 @@
 set -euo pipefail
 umask 077
 cd "$(dirname "$0")/.."
+source scripts/ops-preflight.sh
+baize_ops_preflight restore
 backup_dir="${1:?Usage: scripts/restore.sh BACKUP_DIR NEW_DATABASE}"
 new_db="${2:?A new database name is mandatory; existing databases are never replaced.}"
 [[ "$new_db" =~ ^baize_restore_[a-zA-Z0-9_]+$ ]] || { echo 'Use a baize_restore_ prefixed database name.' >&2; exit 1; }

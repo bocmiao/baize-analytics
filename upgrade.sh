@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
+source scripts/ops-preflight.sh
+baize_ops_preflight upgrade
 new_image="${1:?Usage: ./upgrade.sh LOCAL_IMAGE_TAG}"
 [[ "$new_image" =~ ^[a-zA-Z0-9][a-zA-Z0-9._/:@-]*$ ]] || { echo "Invalid image reference" >&2; exit 1; }
 # Reject low-space upgrades before stopping the working application. Keep a

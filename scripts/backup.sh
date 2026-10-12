@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+source scripts/ops-preflight.sh
+baize_ops_preflight backup
 umask 077
 backup_dir="${1:-backups/$(date -u +%Y%m%dT%H%M%SZ)}"
 [ ! -e "$backup_dir" ] || { echo 'Backup destination must be new.' >&2; exit 1; }

@@ -1,0 +1,10 @@
+# Optional build-time CA trust for environments that supply CODEX_PROXY_CERT.
+# The CA is a BuildKit secret; image names still use Compose's .env resolution.
+services:
+  app:
+    build:
+      context: .
+      secrets: [proxy_ca]
+secrets:
+  proxy_ca:
+    file: ${CODEX_PROXY_CERT:?Set the existing environment CA file}
