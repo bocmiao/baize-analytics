@@ -6,7 +6,7 @@
 
 - 实时本地HEAD以 `git rev-parse HEAD` 定位；本页历史B隔离候选源码为 `9689ae027474a78ee2205a75f05475c928d0fd14`；最新完整5000对照证据提交为 `9ab800efebdeef94b85cb12ba523ce646fee3e4c`（应用代码与已测42d1b8e相同），本次060认证候选以本页提交及下述源码指纹定位，文档提交以 `git log -1 --format=%H -- docs/STATUS.md` 定位，不伪造自引用哈希。
 - 最后由父与本地引用确认的远端 main：`ee996754595d25f13aadac507dc4a2a6dc6b06b0`。这是已确认基线，不声称刚完成网络检查。后续本地提交**未确认同步**。
-- 最新完整正式应用验收绑定不可变源码：`72ea9291b69c30cba5369a63f44c0b2842bcbcd3`。后续隔离原型不属于该全量结果。
+- 最新源码全套绑定 `7634a16c4e75d1e53910f799624906b1da1158a0`：434单元、564真实PG/CH/Redis集成、31 E2E目录（29实际Chromium+2日期函数），0失败/跳过，EXIT0。清单复用显式1；默认0未改。新镜像尚未验。历史72ea929完整镜像结果不移用于新源码。见 [原始全套结果](performance/fact-validation-manifest/full-7634a16-pass/outcome.json)。
 - Git 当前失败为 `could not read Username`，无 HTTP 状态；未找到可靠原预配代理 URL 或自动刷新步骤。当前 origin 是 HTTPS/github.com/bocmiao/baize-analytics.git，无 helper/rewrite；父协调同环境正常授权路线，不新增凭据、不借 CNB 绕过。原 bundle 保留，损坏编码段废弃。
 - 私有 main、无 PR/force。GitHub Actions 禁止；CNB 同步/运行仅由父在本批收齐后统一批准。未公开仓库、发布镜像或外网部署。
 
@@ -14,7 +14,7 @@
 
 | 产品组 | 正式实现，已有本地验证 | 尚未完成或真实外部未验 |
 |---|---|---|
-| 统计分析 | PV/UV、事件时间会话、迟到乱序、多标签/SPA、时长、来源/内容/设备/地域、实时、比较、Vitals、Bot解释；PG/严格CH权威读取、认证贡献与增量闭包 | 正式默认strict仍未达；060候选固定5000一轮PASS，未完成新全量/新镜像、默认关闭；真实GeoIP准确性未验 |
+| 统计分析 | PV/UV、事件时间会话、迟到乱序、多标签/SPA、时长、来源/内容/设备/地域、实时、比较、Vitals、Bot解释；PG/严格CH权威读取、认证贡献与增量闭包 | 正式默认strict仍未达；060候选固定5000一轮PASS，源码新全量通过/新镜像未跑、默认关闭；真实GeoIP准确性未验 |
 | 事件转化 | 类型化事件、目标、漏斗、路径、留存、实验、回放/热图；分币种收入、订单去重、会话归因、身份分段 | 实际支付对账、复杂真实站点兼容未验 |
 | SEO | GSC/GA4连接器、SERP、受限扫描/定点复检、自定义搜索数据导入 | 真实Google/付费SERP未联调；百度公开搜索分析读取API未证实，官方读取连接器未实现 |
 | AI/API key | BYOK加密、受限问数及图表、证据/建议复检、日报异常分析；token/实例管理隔离、审计原子轮换 | 真实模型效果未测；Ollama下载被现有网络拒绝，不是缺账号 |
@@ -66,3 +66,7 @@ B为**隔离PG durable inbox研究原型**，区分received/validated/published�
 既有标准prepared真实CH写/读回/白名单、孤儿不可见、精准物理删A保B、缺正文重试拒绝已有验证。生产独立fsync日志未接762与prototype清理；原wire/HMAC身份来源、真实identify/revenue副作用、签名pending备份/恢复、全局公平/队列年龄仍未交付。PG prototype journal不是独立文件日志，不称正式集成。
 
 逐项F01–F66/P2见[清单](IMPLEMENTATION_CHECKLIST.md)；[README原阶段记录](README_VALIDATION_HISTORY.md)与各证据目录保留历史。当前同步仍阻塞；原bundle及单文件ZIP保留，两次任务文件查看器下载均实际失败，不再猜接口或手工编码，不称上传/推送成功。
+
+## 7634a16 冻结收尾
+
+434单元、564集成、31浏览器目录全部PASS、0skip，完整本地regular EXIT0。运行目录 `/tmp/baize-final-manifest-7634a16`，2117个Git blob校验；实际PG17/CH25.8/Redis，独立空逻辑库/Redis DB2。编译入口、SDK、删除journal及真实独立签名恢复均通过。此前两轮FAIL原样保留。新镜像/镜像独立恢复因5GiB预留不足未运行，不借旧镜像。后续结构审查先报告、只修可复现最小问题，改后证据重新绑定。

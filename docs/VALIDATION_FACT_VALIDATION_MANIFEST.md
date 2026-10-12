@@ -1,5 +1,7 @@
 # 060 默认关闭候选专项验收
 
+**最新冻结结果：7634a16 全套本地 EXIT0，434单元/564集成/31 E2E目录（29Chromium+2日期函数），0失败/跳过；清单复用显式1，新镜像仍资源阻塞未跑。见 [完整原始证据](performance/fact-validation-manifest/full-7634a16-pass/outcome.json)。下文早期“待/未运行”均为各阶段当时状态，保留失败和进展顺序，不代表最新结论。**
+
 日期：2026-10-12 UTC。源码指纹与原始JSON见 [证据目录](performance/fact-validation-manifest/correctness/)。本文件随候选源码提交，不伪造自引用SHA。
 
 - 46单元：清单域/成员篡改、未知版本、空批及新旧备份profile，PASS，0失败/跳过。

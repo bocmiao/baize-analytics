@@ -1,0 +1,12 @@
+{
+  "sourceSha": "7634a16c4e75d1e53910f799624906b1da1158a0",
+  "archiveDirectory": "/tmp/baize-final-manifest-7634a16",
+  "checkedEmptyNamespaceAtUtc": "2026-10-12T01:55:10.237Z",
+  "database": "baize_final_manifest_060_r3_20261012",
+  "publicTables": 0,
+  "redisDatabase": 2,
+  "redisKeys": 0,
+  "existingFixtureContainers": true,
+  "manifestReuse": 1,
+  "newImageStarted": false
+}
