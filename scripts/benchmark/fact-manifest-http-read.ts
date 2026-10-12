@@ -1,6 +1,7 @@
 /** Local benchmark: same published dataset, real HTTP/auth, alternating 044 certificate reuse.
  * Run only under the root's serial PG/CH resource gate. No workload starts on import. */
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {mkdtemp,rm,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {join,resolve} from 'node:path';
@@ -24,6 +25,8 @@ async function sourceDigest(){const paths=['src/server/app.ts','src/server/fact-
 async function main(){
  let phase:Phase='preflight';const setPhase=(next:Phase)=>{phase=next;process.stderr.write('FACT_MANIFEST_HTTP_PHASE '+next+'\n');};setPhase('preflight');let lastHttp:{route:string;status:number}|null=null;
  check(process.env.BAIZE_SERIAL_RESOURCE_GATE==='1');check((process.env.BAIZE_FACT_VALIDATION_MANIFEST_REUSE??'0')==='0'&&(process.env.BAIZE_REMAINING_CANONICAL_REUSE??'0')==='0');const sourceSha=process.env.FROZEN_SOURCE_SHA;check(sourceSha&&/^[a-f0-9]{40}$/.test(sourceSha));
+ const repository=process.env.SOURCE_REPOSITORY;check(repository);const verifiedSha=execFileSync('git',['-C',repository!,'rev-parse',sourceSha+'^{commit}'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();check(verifiedSha===sourceSha);
+ const tree=execFileSync('git',['-C',repository!,'ls-tree','-rz',sourceSha!],{encoding:'utf8',maxBuffer:8*1024*1024}).split('\0');for(const entry of tree){if(!entry)continue;const tab=entry.indexOf('\t'),[mode,type,expected]=entry.slice(0,tab).split(' ');if(type!=='blob')continue;check(mode==='100644'||mode==='100755');const bytes=await readFile(resolve(sourceRoot,entry.slice(tab+1))),actual=createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');check(actual===expected);}
  const count=Number(process.env.REMAINING_HTTP_EVENTS??1000);check(count===100||count===1000);const output=process.env.BENCHMARK_OUTPUT;check(output&&process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);
  // Remove URL search_path only; credentials are never printed.
  const pgUrl=new URL(process.env.TEST_DATABASE_URL!);pgUrl.searchParams.delete('options');
@@ -33,7 +36,7 @@ async function main(){
  const chCommand=async(sql:string)=>{const response=await fetch(chUrl,{method:'POST',headers:{'X-ClickHouse-User':user,'X-ClickHouse-Key':password},body:sql,signal:AbortSignal.timeout(30000)});await consumeClickHouseCommand(response,'BENCHMARK_CH_COMMAND_FAILED');};
  let runtime:Awaited<ReturnType<typeof createApp>>|undefined,observe=false,createdPG=false,createdCH=false;let phases=createServerPhaseMetrics(new Set(serverStages));
  const cleanup={applicationClosed:false,pgSchemaRemoved:false,chNamespaceRemoved:false,temporaryRemoved:false};
- const report:Record<string,unknown>={kind:'real_authenticated_HTTP_fact_manifest_read',sourceSha,sourceBinding:'SHA supplied by caller; source digest checked before/after, archive identity must be verified separately by runner',events:count,status:'failed',strictActivation:'local benchmark test-fixture dependency; actual signed backup/proof, not a product CLI',timing:'Each read wall is independent. Instrumented stage/adapter/CH times are cumulative and nested: never sum into wall.',cleanup};
+ const report:Record<string,unknown>={kind:'real_authenticated_HTTP_fact_manifest_read',sourceSha,sourceBinding:'Caller SHA resolves to an actual repository commit; every immutable archive Git blob checked before service creation; source digest checked before/after',events:count,status:'failed',strictActivation:'local benchmark test-fixture dependency; actual signed backup/proof, not a product CLI',timing:'Each read wall is independent. Instrumented stage/adapter/CH times are cumulative and nested: never sum into wall.',cleanup};
  try{
   setPhase('resources');report.sourceDigestBefore=await sourceDigest();await admin.query(`CREATE SCHEMA ${schema}`);createdPG=true;await chCommand(`CREATE DATABASE ${database}`);createdCH=true;const scoped=new URL(chUrl);scoped.searchParams.set('database',database);
   const canonicalConfig={url:scoped.toString(),username:user,password};const canonical=new CanonicalClickHouse(canonicalConfig);
