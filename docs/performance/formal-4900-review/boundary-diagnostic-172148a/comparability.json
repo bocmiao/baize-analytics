@@ -1,0 +1,9 @@
+{
+  "sourceSha": "172148aa0dc588be88cc0df403c25cec9a45fa8e",
+  "status": "failed",
+  "usableAsEqualBucketABBaseline": false,
+  "reason": "UTC-midnight crossing; seed23:57:29.455 previous-day, latest00:00:18.087 next-day, normal event-time contract untouched",
+  "diagnosticMeaning": "anonymous scope timing links prove reader-held and collector-exclusive wait overlap, not historical hardware equivalence",
+  "receivedMeaning": "formal accepted, not prototype received",
+  "rawOriginalUnchanged": true
+}

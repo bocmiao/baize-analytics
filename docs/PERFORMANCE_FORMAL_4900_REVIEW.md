@@ -19,3 +19,13 @@ wall.txt实际overall200.492930050秒/child峰710716KiB；原windows intake103.2
 历史raw未保存CPU/内存quota、确切Node/PG/CH版本，不能补用今天配置冒充历史环境等价。两轮已收集合不同；72默认047读取宽度3，239为1且canonical单记录复用等后来改变，不能把4700比4900称确定回退。B9689的4350为PG received先回执、有独立publisher，另有pending1000/16MiB，因此不直接排性能名次。
 
 下一步同当前安全源码、相同仪器与固定压力做baseline/candidate，而非运行旧239丢安全修复。首先补有限匿名请求/阶段时序，证明collect等待与stats共享门占用；不改发送器队列/调度/ACK，任何未来发送器改动单独披露。性能、安全正确性、ACK分开报告，旧失败不改写。
+
+## 新诊断与候选状态（2026-10-12 UTC）
+
+匿名仪器26检查（24unit+2实际PG）PASS，default应用不输出诊断scope/不信来访header；全type/lint PASS。172148a原formal5000诊断轮启动23:58:26 UTC、seed23:57:29.455，采集跨UTC午夜，accepted4400/12queue_full、已接收完整性/排空PASS。原始[边界诊断](performance/formal-4900-review/boundary-diagnostic-172148a/)保留，**不可作单日基线/候选等布局比较**。首次未记录精确HTTPfrom/to，不能事后编造；PG已提交成员只读采样恢复seed/latest并显著标明来源。
+
+当前候选仅047读取阶段复用一条最终Zod规范化record的canonical字节，默认false；不缓存wire/source/envelope，不跨row，不删任何schema/size/SHA/HMAC/key/source/CP检查，writer/restore默认canonical不变。47定向检查PASS/0skip（19unit+28实际PG/CH），包含store真实两模式12案例，typedEOF/缺正文、group/source、signed独立body恢复及stats快照/预算。不是新整产品全轮或吞吐通过。
+
+后续同源码flag0/1在离小时/日期边界超过2分钟且距下一边界至少10分钟时开跑，仍原100×50/每秒1/并发2/队列8/每10秒query/drain120。记录UTC起止、seed及全部查询窗口；固定原事件生成shape，不改Date.now合同或补发。当前runtime Node24.19.0、PG17.11、CH25.8.33.6、quota4CPU/32GiB，仅适用于当前，不补历史。依结果决定是否保留候选，不先默认新算法更快。
+
+旧镜像611d已可恢复归档206273792B至/tmp/baize-checkpoints-preserved-20261011/retired-image-611d-20261011/baize-image-611d2da964e3.docker-save.tar.gz，SHA256408b53486cb4a98706f9a614c2a8649b2140cd9765890e1aab3539b3f6c5945f。config哈希匹配原imageID且所有容器未用，保护现daaf镜像与全部卷；移除缓存引用前后实测可用空间仅增加2297856B，不把572MB逻辑镜像大小当释放量。docker load可恢复，manifest已入[证据](performance/formal-4900-review/retired-image-archive-manifest.json)。

@@ -57,6 +57,7 @@ import {ExternalError} from './external-errors.js';
 import {resolveApiError} from '../shared/error-codes.js';
 export interface AppOptions { pool?:Pool;redis?:Redis|null;dataDir?:string;keyDir?:string;publicUrl?:string;background?:boolean;masterKey?:Buffer;skipMigrate?:boolean;clickhouse?:ClickHouseStore|null;canonical?:CanonicalClickHouse|null;history?:HistoryStore|null;externalTransport?:Transport;performanceSink?:PerformanceSink }
 export async function createApp(options:AppOptions={}){
+  const remainingReuseFlag=process.env.BAIZE_REMAINING_CANONICAL_REUSE??'0';if(!['0','1'].includes(remainingReuseFlag))throw Error('REMAINING_CANONICAL_REUSE_INVALID');
   const pool=options.pool??createPool();const dataDir=resolve(options.dataDir??process.env.DATA_DIR??'data');
   const redis=options.redis!==undefined?options.redis:process.env.REDIS_URL?new Redis(process.env.REDIS_URL,{maxRetriesPerRequest:1}):null;
   redis?.on('error',()=>{/* Cache outage is observed via health; never log connection credentials. */});
@@ -70,7 +71,7 @@ export async function createApp(options:AppOptions={}){
   if(clickhouse)ctx.clickhouseMirror=new ClickHouseMirror(pool,clickhouse);
   installEventStore(pool,new EventStore(pool,clickhouse??undefined));
   const canonical=options.canonical!==undefined?options.canonical:options.clickhouse===null?null:process.env.CLICKHOUSE_URL?new CanonicalClickHouse({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
-  if(canonical){await canonical.initialize();const headerStore=await canonical.createSessionHeaderStore();await headerStore.initialize();installSessionHeaderStore(pool,headerStore);const factStore=await canonical.createFactStore();await factStore.initialize();installFactStore(pool,factStore);const remainingStore=await canonical.createRemainingFactStore();await remainingStore.initialize();installRemainingFactStore(pool,remainingStore);const cacheStore=await canonical.createCacheStore();await cacheStore.initialize();installCacheStore(pool,cacheStore);}else{installSessionHeaderStore(pool,null);installFactStore(pool,null);installRemainingFactStore(pool,null);installCacheStore(pool,null);}
+  if(canonical){await canonical.initialize();const headerStore=await canonical.createSessionHeaderStore();await headerStore.initialize();installSessionHeaderStore(pool,headerStore);const factStore=await canonical.createFactStore();await factStore.initialize();installFactStore(pool,factStore);const remainingStore=await canonical.createRemainingFactStore({canonicalValidationReuse:remainingReuseFlag==='1'});await remainingStore.initialize();installRemainingFactStore(pool,remainingStore);const cacheStore=await canonical.createCacheStore();await cacheStore.initialize();installCacheStore(pool,cacheStore);}else{installSessionHeaderStore(pool,null);installFactStore(pool,null);installRemainingFactStore(pool,null);installCacheStore(pool,null);}
   if(canonical!==undefined)installCanonicalStore(pool,canonical);
   const history=options.history!==undefined?options.history:process.env.HISTORY_STORE_ENABLED==='1'&&process.env.CLICKHOUSE_URL?new HistoryStore({url:process.env.CLICKHOUSE_URL,username:process.env.CLICKHOUSE_USER??'default',password:process.env.CLICKHOUSE_PASSWORD??''}):undefined;
   if(history)await history.initialize();
