@@ -1,3 +1,4 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {navigateWorkspace,openWorkspaceAccount} from './navigation';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
@@ -8,6 +9,7 @@ test('real administrator → site → durable collection → aggregate → Chine
     const { required } = await setup.json();
     if (required) {
         await page.goto('/setup');
+        await page.getByLabel('安装凭证', { exact: true }).fill(fixtureInstallationNonce);
         await page.getByLabel('姓名', { exact: true }).fill('验收管理员');
         await page.getByLabel('邮箱', { exact: true }).fill('acceptance@example.test');
         await page.getByLabel('密码', { exact: true }).fill('BaizeAcceptance2026!');
