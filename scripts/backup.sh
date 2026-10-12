@@ -67,7 +67,7 @@ docker compose cp app:/app/data/tombstones.jsonl "$backup_dir/tombstones.jsonl" 
 node scripts/ops-validate-journal.mjs "$backup_dir/tombstones.jsonl" "$backup_dir/tombstones.watermark.json" >&2
 mkdir -p "$backup_dir/app-data"
 # Never read an installer nonce into even the temporary data staging tree.
-docker compose exec -T app tar -C /app/data --exclude=./install-nonce.json --exclude='*/install-nonce.json' -cf - . | tar -C "$backup_dir/app-data" -xf -
+docker compose run --rm --no-deps -T --entrypoint tar app -C /app/data --exclude=./install-nonce.json --exclude='*/install-nonce.json' -cf - . | tar -C "$backup_dir/app-data" -xf -
 tar -C "$backup_dir" --exclude=app-data/master.key --exclude='app-data/keyring*' --exclude=app-data/keys --exclude='*.key' -czf "$backup_dir/app-data.tar.gz" app-data
 rm -rf "$backup_dir/app-data"
 key_dir="${BAIZE_KEY_BACKUP_DIR:-$PWD/.baize/key-backups}/$(basename "$backup_dir")"
@@ -77,7 +77,7 @@ chmod 700 "$key_dir"
 cp .baize/master.key "$key_dir/master.key"
 mkdir -p "$key_dir/keyring"
 # Exclude before archive reading; installer nonce is not a recovery key.
-docker compose exec -T app tar -C /app/keys --exclude=./install-nonce.json --exclude='*/install-nonce.json' -cf - . | tar -C "$key_dir/keyring" -xf -
+docker compose run --rm --no-deps -T --entrypoint tar app -C /app/keys --exclude=./install-nonce.json --exclude='*/install-nonce.json' -cf - . | tar -C "$key_dir/keyring" -xf -
 chmod -R go-rwx "$key_dir"
 (cd "$key_dir" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
 sha256sum .baize/master.key | cut -d' ' -f1 > "$backup_dir/master-key.sha256"
