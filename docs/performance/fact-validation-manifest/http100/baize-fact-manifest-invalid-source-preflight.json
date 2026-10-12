@@ -1,0 +1,6 @@
+{
+  "exit": 1,
+  "stdout": "",
+  "stderr": "FACT_MANIFEST_HTTP_PHASE preflight\nFACT_MANIFEST_HTTP_BENCHMARK_FAILED\n",
+  "expected": "reject nonexistent commit before any fixture service creation"
+}

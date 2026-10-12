@@ -47,7 +47,7 @@
 
 原正式合同100×50、每秒1批、并发2、队列8、每10秒查询、120秒排空保持不变。e74fc02同源码/同UTC小时对照：旧路径4750接收/5未发，047规范化复用候选4900接收/2未发；两组完整性与排空通过，整体均FAIL，后者墙钟更长，未证明整体收益。原始数据见 [对照](performance/formal-4900-review/e74fc02-controlled-pair/)。
 
-060候选默认关闭（`BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`）：发布时完整旧验证后签全成员清单，读取仍要求当前PG选集/来源fence和同次CH正文SHA/成员/键，坏签不得降级，删除先验旧集合后签合法子集，恢复完整旧行验证后目标新签。见 [设计边界](ADR_FACT_VALIDATION_MANIFEST.md)。本批46单元及32真实PG/CH专项PASS、0fail/skip；独立目标恢复/最新journal删A保B、旧v1升级及v2/v3读取在内。这是专项，不是新HEAD整轮/新镜像或性能验收；[原始结果与源码指纹](performance/fact-validation-manifest/correctness/)。下一闸为相同已发布数据的真实HTTP小对照，有收益才受控正式5000。
+060候选默认关闭（`BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`）：发布时完整旧验证后签全成员清单，读取仍要求当前PG选集/来源fence和同次CH正文SHA/成员/键，坏签不得降级，删除先验旧集合后签合法子集，恢复完整旧行验证后目标新签。见 [设计边界](ADR_FACT_VALIDATION_MANIFEST.md)。本批46单元及32真实PG/CH专项PASS、0fail/skip；独立目标恢复/最新journal删A保B、旧v1升级及v2/v3读取在内。这是专项，不是新HEAD整轮/新镜像或性能验收；[原始结果与源码指纹](performance/fact-validation-manifest/correctness/)。68fd912相同已发布数据真实HTTP100交替对照结果一致、receipt/源码未变、清理通过；观察到中位耗时1634.84→1400.95ms，详见 [结果](performance/fact-validation-manifest/http100/)。小样本不是持续容量。下一闸为精确发布阶段回滚与同源码原5000基线/候选，尚未完成。
 
 ## 历史B隔离原型（未进入正式入口）
 

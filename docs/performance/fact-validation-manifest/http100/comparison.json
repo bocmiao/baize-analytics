@@ -1,0 +1,51 @@
+{
+  "actualSourceSha": "68fd912a53a3b7c60215fa52473dd1066e65e726",
+  "rawSourceLabelCorrect": true,
+  "kind": "sequential same-dataset real HTTP, not formal continuous5000",
+  "flags": [
+    false,
+    true,
+    false,
+    true,
+    false,
+    true
+  ],
+  "events": 100,
+  "factMembers": 3500,
+  "queries": 6,
+  "allResultHashesEqual": true,
+  "receiptsUnchanged": true,
+  "sourceUnchanged": true,
+  "cleanup": {
+    "applicationClosed": true,
+    "pgSchemaRemoved": true,
+    "chNamespaceRemoved": true,
+    "temporaryRemoved": true
+  },
+  "range": {
+    "from": "2026-10-12T00:46:11.354Z",
+    "to": "2026-10-12T00:46:13.454Z",
+    "timezone": "UTC"
+  },
+  "arms": {
+    "False": {
+      "wallsMs": [
+        1634.8382279999787,
+        1676.8951280000038,
+        1451.7792219999828
+      ],
+      "medianWallMs": 1634.8382279999787,
+      "medianFactAuthenticationMs": 204.4821290000109
+    },
+    "True": {
+      "wallsMs": [
+        1400.9503670000122,
+        1441.9814590000024,
+        1302.9538969999994
+      ],
+      "medianWallMs": 1400.9503670000122,
+      "medianFactAuthenticationMs": 80.72652299996116
+    }
+  },
+  "medianWallReductionPercent": 14.306483479169628
+}
