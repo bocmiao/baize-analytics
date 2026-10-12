@@ -1,0 +1,271 @@
+{
+  "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+  "fullBatch": {
+    "numTotalTests": 1155,
+    "numPassedTests": 1151,
+    "numFailedTests": 3,
+    "numPendingTests": 1,
+    "success": false
+  },
+  "fullBatchFailures": [
+    {
+      "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) background daily generation retries with backoff and periodic GSC reimport is durable",
+      "failureMessages": [
+        "Error: STACK_TRACE_ERROR\n    at task (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1784:27)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1817:16)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1563:28)\n    at chain (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:599:14)\n    at /workspace/baize-analytics/tests/integration/external.test.ts:43:2\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:40\n    at runWithSuite (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:2258:8)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:10)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1893:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) concurrent AI calls cannot exceed reserved monthly budget",
+      "failureMessages": [
+        "Error: STACK_TRACE_ERROR\n    at task (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1784:27)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1817:16)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1563:28)\n    at chain (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:599:14)\n    at /workspace/baize-analytics/tests/integration/external.test.ts:44:2\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:40\n    at runWithSuite (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:2258:8)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:10)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1893:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "name": "external actual PostgreSQL + explicitly injected provider fixtures (no real accounts) lowercase real PG lcp creates performance suggestion; local SEO evidence recheck uses newer crawl",
+      "failureMessages": [
+        "Error: STACK_TRACE_ERROR\n    at task (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1784:27)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1817:16)\n    at Object.<anonymous> (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1563:28)\n    at chain (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:599:14)\n    at /workspace/baize-analytics/tests/integration/external.test.ts:45:2\n    at file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:40\n    at runWithSuite (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:2258:8)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:10)\n    at Object.collect (file:///workspace/baize-analytics/node_modules/@vitest/runner/dist/chunk-artifact.js:1893:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    }
+  ],
+  "fullBatchPending": [
+    "actual host PostgreSQL clients: backup/new-target restore/upgrade failure/rollback keep source and journal intact"
+  ],
+  "externalIsolatedRetest": {
+    "numTotalTests": 10,
+    "numPassedTests": 10,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "success": true
+  },
+  "nativeActualPostgresClients": {
+    "numTotalTests": 6,
+    "numPassedTests": 6,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "success": true
+  },
+  "licenseFixedActualHttp": {
+    "numTotalTests": 1,
+    "numPassedTests": 1,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "success": true
+  },
+  "allOriginalFailuresOrSkipsCoveredByPassingSupplement": true,
+  "singleRunAllGreen": false,
+  "browserDefaultBatch": {
+    "passed": 47,
+    "failed": 1,
+    "skipped": 0
+  },
+  "browserDefaultApprovedRetest": {
+    "passed": 0,
+    "failed": 1
+  },
+  "browserExtendedWaitDiagnostic": {
+    "passed": 1,
+    "failed": 0,
+    "expectTimeoutMs": 30000,
+    "doesNotOverrideDefaultBatchFailure": true
+  },
+  "liteBrowser": {
+    "passed": 5,
+    "failed": 0
+  },
+  "runtimeStageTests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "releasePackageTests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "nativePackages": [
+    {
+      "profile": "standard",
+      "variant": "node-ready",
+      "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "archive": "baize-standard-node-ready-linux-x64-7509481.tar.gz",
+      "imageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8",
+      "started": true,
+      "accepted": 1,
+      "duplicates": 1,
+      "pv": 1,
+      "schema": 61,
+      "restoredEvents": 1,
+      "sourceKeysUnchanged": true,
+      "dataInsideReleaseRejected": true,
+      "overlappingDataKeysRejected": true,
+      "restoredApplicationStarted": true,
+      "restoredPv": 1,
+      "sourceEventCountAfterRestore": 1,
+      "sourceRowsPreserved": true,
+      "actualNativeExecutionFingerprint": {
+        "nodeVersion": "v24.19.0",
+        "nodeArch": "x64",
+        "sqlite": {
+          "version": "3.53.3",
+          "sourceId": "2026-06-26 20:14:12 d4c0e51e4aeb96955b99185ab9cde75c339e2c29c3f3f12428d364a10d782c62"
+        }
+      },
+      "backupCompleted": true,
+      "restoreCompleted": true
+    },
+    {
+      "profile": "standard",
+      "variant": "bundled-node",
+      "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "archive": "baize-standard-bundled-node-linux-x64-7509481.tar.gz",
+      "imageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8",
+      "started": true,
+      "accepted": 1,
+      "duplicates": 1,
+      "pv": 1,
+      "schema": 61,
+      "restoredEvents": 1,
+      "sourceKeysUnchanged": true,
+      "dataInsideReleaseRejected": true,
+      "overlappingDataKeysRejected": true,
+      "restoredApplicationStarted": true,
+      "restoredPv": 1,
+      "sourceEventCountAfterRestore": 1,
+      "sourceRowsPreserved": true,
+      "actualNativeExecutionFingerprint": {
+        "nodeVersion": "v24.21.0",
+        "nodeArch": "x64",
+        "sqlite": {
+          "version": "3.53.4",
+          "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+        }
+      },
+      "backupCompleted": true,
+      "restoreCompleted": true
+    },
+    {
+      "profile": "lite",
+      "variant": "node-ready",
+      "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "archive": "baize-lite-node-ready-linux-x64-7509481.tar.gz",
+      "imageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248",
+      "started": true,
+      "accepted": 1,
+      "duplicates": 1,
+      "pv": 1,
+      "schema": 2,
+      "restoredEvents": 1,
+      "sourceKeysUnchanged": true,
+      "dataInsideReleaseRejected": true,
+      "overlappingDataKeysRejected": true,
+      "restoredApplicationStarted": true,
+      "restoredPv": 1,
+      "sourceEventCountAfterRestore": 1,
+      "sourceRowsPreserved": true,
+      "actualNativeExecutionFingerprint": {
+        "nodeVersion": "v24.19.0",
+        "nodeArch": "x64",
+        "sqlite": {
+          "version": "3.53.3",
+          "sourceId": "2026-06-26 20:14:12 d4c0e51e4aeb96955b99185ab9cde75c339e2c29c3f3f12428d364a10d782c62"
+        }
+      },
+      "backupCompleted": true,
+      "restoreCompleted": true
+    },
+    {
+      "profile": "lite",
+      "variant": "bundled-node",
+      "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "archive": "baize-lite-bundled-node-linux-x64-7509481.tar.gz",
+      "imageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248",
+      "started": true,
+      "accepted": 1,
+      "duplicates": 1,
+      "pv": 1,
+      "schema": 2,
+      "restoredEvents": 1,
+      "sourceKeysUnchanged": true,
+      "dataInsideReleaseRejected": true,
+      "overlappingDataKeysRejected": true,
+      "restoredApplicationStarted": true,
+      "restoredPv": 1,
+      "sourceEventCountAfterRestore": 1,
+      "sourceRowsPreserved": true,
+      "actualNativeExecutionFingerprint": {
+        "nodeVersion": "v24.21.0",
+        "nodeArch": "x64",
+        "sqlite": {
+          "version": "3.53.4",
+          "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+        }
+      },
+      "backupCompleted": true,
+      "restoreCompleted": true
+    }
+  ],
+  "capacityExperimentRerun": false,
+  "browserIsolatedFinal": {
+    "exitCode": 0,
+    "wallSeconds": 54.32457155700013,
+    "defaultExpectTimeoutMs": 5000,
+    "buildsPackagesAndFullRegressionFinished": true,
+    "samplingCgroup": "actual shared execution-environment cgroup; not a physical-host certification",
+    "cpuMax": "400000 100000",
+    "successfulStatsRequests": 10,
+    "statsRequestMsMin": 53.596,
+    "statsRequestMsMedian": 520.7140000000006,
+    "statsRequestMsMax": 845.0260000000001,
+    "statsHttpErrors": [],
+    "separateSqlQueryDurationMeasured": false,
+    "sourceAndComparisonTotals": [
+      0,
+      120,
+      511
+    ],
+    "allCompletedCoverageOne": true,
+    "mainStatsRequests": 7,
+    "mainStatsRequestMsMin": 375.61300000000006,
+    "mainStatsRequestMsMedian": 557.6560000000001,
+    "mainStatsRequestMsMax": 845.0260000000001,
+    "lastCompletedMainStats": [
+      {
+        "trace": "1-trace.network",
+        "startTime": 40809.066,
+        "query": "from=2026-09-12T00%3A00%3A00.000Z&to=2026-10-12T00%3A00%3A00.000Z&",
+        "status": 200,
+        "requestMs": 375.61300000000006,
+        "timings": {
+          "dns": -1,
+          "connect": -1,
+          "ssl": -1,
+          "send": 0,
+          "wait": 371.232,
+          "receive": 4.381
+        },
+        "coverage": 1,
+        "pv": 511,
+        "trendPoints": 30,
+        "error": null
+      },
+      {
+        "trace": "1-trace.network",
+        "startTime": 41307.626,
+        "query": "from=2026-08-13T00%3A00%3A00.000Z&to=2026-09-12T00%3A00%3A00.000Z",
+        "status": 200,
+        "requestMs": 833.946,
+        "timings": {
+          "dns": 0.004,
+          "connect": 0.309,
+          "ssl": 5.201,
+          "send": 0,
+          "wait": 825.009,
+          "receive": 3.423
+        },
+        "coverage": 1,
+        "pv": 120,
+        "trendPoints": 30,
+        "error": null
+      }
+    ],
+    "emptySiteResponsesSeparatelyExpected": true
+  }
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "profile": "standard",
+    "imageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8",
+    "schema": 61,
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "cache": "disabled",
+      "geoip": "unknown",
+      "schemaVersion": 1
+    },
+    "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "actualIndependentContainerStarted": true,
+    "nativePackageSubstituted": false
+  },
+  {
+    "profile": "lite",
+    "imageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248",
+    "schema": 2,
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "storage": "sqlite",
+      "cache": "disabled",
+      "geoip": "unavailable",
+      "schemaVersion": 2,
+      "sqliteVersion": "3.53.4",
+      "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    },
+    "revision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "actualIndependentContainerStarted": true,
+    "nativePackageSubstituted": false
+  }
+]

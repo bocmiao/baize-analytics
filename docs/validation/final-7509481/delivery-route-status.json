@@ -1,0 +1,12 @@
+{
+  "library": {"status": "failed_before_mutation", "error": "hosted apps tools/list request failed: network", "attempts": 2},
+  "githubRepository": {"private": true, "connectedPermission": {"admin": true, "push": true, "pull": true}, "existingReleases": []},
+  "githubCLI": {"readOnlyRepositoryApi": "Forbidden", "readOnlyWorkflowApi": "Forbidden", "releaseList": "Forbidden", "outsideSandboxReadOnlyRepositoryApi": "Forbidden"},
+  "githubConnectedTools": {"readRepositoryAndReleases": "succeeded", "workflowCollection": "endpoint_not_supported", "releaseCreateOrAssetUpload": "no_callable_tool"},
+  "workflowSource": {"githubWorkflowDirectory": "absent", "cnb": "manual_web_triggers_only"},
+  "releaseAttachments": {"status": "blocked", "created": false, "uploaded": false},
+  "newCredentialsCreated": false,
+  "tokensExtracted": false,
+  "securitySettingsChanged": false,
+  "actionsOrCnbTriggered": false
+}

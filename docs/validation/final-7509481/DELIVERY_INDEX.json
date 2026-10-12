@@ -1,0 +1,161 @@
+{
+  "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+  "frozenBaseRevision": "e5aff3b9411bb0eb4505bd2bd7d03060aab4bbfe",
+  "nativeVariants": 4,
+  "deliveryBlockers": [
+    "Library upload helper tools/list network failure",
+    "GitHub CLI API Forbidden; no connected Release create/upload tool"
+  ],
+  "files": [
+    {
+      "filename": "baize-lite-bundled-node-linux-x64-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-lite-bundled-node-linux-x64-7509481.tar.gz",
+      "bytes": 74723992,
+      "MiB": 71.262352,
+      "sha256": "12ad4f1af8f366742a665018e00095afb8c96f14e890b030175edeb8eb42cef9",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet"
+    },
+    {
+      "filename": "baize-lite-docker-install-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-lite-docker-install-7509481.zip",
+      "bytes": 30453719,
+      "MiB": 29.04293,
+      "sha256": "0ef391a75d8ac9cf44e01ecf6530b2cabb34dace5000914858582aca3b33ae17",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 2247,
+      "nestedHistoricalArchives": []
+    },
+    {
+      "filename": "baize-lite-docker-offline-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-lite-docker-offline-7509481.tar.gz",
+      "bytes": 125436728,
+      "MiB": 119.625786,
+      "sha256": "b4c082e3c179b2d7c3234aa0bfb4031310b624cab689d9f617b81ac4d436976d",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "dockerImages": [
+        {
+          "config": "blobs/sha256/7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248",
+          "repoTags": [
+            "baize-accept:lite-7509481"
+          ]
+        }
+      ],
+      "dockerSaveArchiveValidated": true
+    },
+    {
+      "filename": "baize-lite-node-ready-linux-x64-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-lite-node-ready-linux-x64-7509481.tar.gz",
+      "bytes": 30032195,
+      "MiB": 28.640933,
+      "sha256": "ada8e8fa670d788d392a22ad2411a534f23a01a6532361891ab74beb74f290f3",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet"
+    },
+    {
+      "filename": "baize-source-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-source-7509481.zip",
+      "bytes": 30452694,
+      "MiB": 29.041952,
+      "sha256": "9ce5d0a264a484e98d1f49b55edcfd77884ff7aa0417e165b3c46e5918cdf70c",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 2245,
+      "nestedHistoricalArchives": []
+    },
+    {
+      "filename": "baize-standard-bundled-node-linux-x64-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-standard-bundled-node-linux-x64-7509481.tar.gz",
+      "bytes": 84330153,
+      "MiB": 80.423501,
+      "sha256": "f56ebff8376feec3145582e67a4f75f64cf2a449c0675a04f8fa9db0a6a2d718",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet"
+    },
+    {
+      "filename": "baize-standard-docker-install-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-standard-docker-install-7509481.zip",
+      "bytes": 30453723,
+      "MiB": 29.042933,
+      "sha256": "1bb60aaab4368c64865f26331b0cf9d63f5fa5624e94e26b87c0abca936f8ec3",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 2247,
+      "nestedHistoricalArchives": []
+    },
+    {
+      "filename": "baize-standard-docker-offline-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-standard-docker-offline-7509481.tar.gz",
+      "bytes": 297011351,
+      "MiB": 283.252097,
+      "sha256": "f73025dee09b94e83a66ef75dea8f93bc0cfbd7f3db4bd2f76c91805d3116cd3",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "dockerImages": [
+        {
+          "config": "blobs/sha256/c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8",
+          "repoTags": [
+            "baize-accept:standard-7509481"
+          ]
+        },
+        {
+          "config": "blobs/sha256/589f742565e4f6d22149176b032974f55f8201a8a37b71ed587ec5c6902e689f",
+          "repoTags": [
+            "postgres:17-bookworm"
+          ]
+        },
+        {
+          "config": "blobs/sha256/d24fb73aa9caa76060b48f711af3831f1e95286c745da622c00419ed864cd291",
+          "repoTags": [
+            "redis:7-bookworm"
+          ]
+        }
+      ],
+      "dockerSaveArchiveValidated": true
+    },
+    {
+      "filename": "baize-standard-node-ready-linux-x64-7509481.tar.gz",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-standard-node-ready-linux-x64-7509481.tar.gz",
+      "bytes": 39634061,
+      "MiB": 37.797986,
+      "sha256": "4e0f3afe60f42daa81ad76ec5e952d62a011bd5be0c5e4f761c75cf5847eea9d",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet"
+    },
+    {
+      "filename": "baize-tracker-browser-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-tracker-browser-7509481.zip",
+      "bytes": 81731,
+      "MiB": 0.077945,
+      "sha256": "e10950ff979bfa2bef3ad591d1e911054466e5403eb36d7acccf251430020987",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 8,
+      "nestedHistoricalArchives": []
+    },
+    {
+      "filename": "baize-tracker-source-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-tracker-source-7509481.zip",
+      "bytes": 22833,
+      "MiB": 0.021775,
+      "sha256": "c05b4d2bc9f81f719690d7bfa5efcbf48e1010def0eb6556d0776e07168eabf2",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 17,
+      "nestedHistoricalArchives": []
+    },
+    {
+      "filename": "baize-wordpress-7509481.zip",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-wordpress-7509481.zip",
+      "bytes": 14054,
+      "MiB": 0.013403,
+      "sha256": "1cd176c56235964e5d069d4513baee140bd4e393933f89e978523b3ce28fc926",
+      "sourceRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "deliveryStatus": "local_only_not_downloadable_yet",
+      "archiveEntries": 3,
+      "nestedHistoricalArchives": []
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "package": "baize-lite-bundled-node-linux-x64-7509481",
+    "compiledFiles": 584,
+    "mismatchesWithStandardImageAndIndependentHostBuild": [],
+    "publicBuildAssets": 14,
+    "combinedDistAndPublicCompiledFiles": 598
+  },
+  {
+    "package": "baize-lite-node-ready-linux-x64-7509481",
+    "compiledFiles": 584,
+    "mismatchesWithStandardImageAndIndependentHostBuild": [],
+    "publicBuildAssets": 14,
+    "combinedDistAndPublicCompiledFiles": 598
+  },
+  {
+    "package": "baize-standard-bundled-node-linux-x64-7509481",
+    "compiledFiles": 584,
+    "mismatchesWithStandardImageAndIndependentHostBuild": [],
+    "publicBuildAssets": 14,
+    "combinedDistAndPublicCompiledFiles": 598
+  },
+  {
+    "package": "baize-standard-node-ready-linux-x64-7509481",
+    "compiledFiles": 584,
+    "mismatchesWithStandardImageAndIndependentHostBuild": [],
+    "publicBuildAssets": 14,
+    "combinedDistAndPublicCompiledFiles": 598
+  }
+]

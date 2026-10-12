@@ -1,0 +1,60 @@
+{
+  "files": [
+    {
+      "file": "baize-safe-acceptance-evidence-7509481.zip",
+      "role": "safe-evidence-archive",
+      "localPath": "/workspace/baize-deliverables-7509481/baize-safe-acceptance-evidence-7509481.zip",
+      "bytes": 1467271,
+      "MiB": 1.399299,
+      "sha256": "9904951d61ba6474b92d2c85df4d8f2f0d78e0588c5c5ed639f120288fbb534e",
+      "status": "local-only-binary-upload-blocked"
+    },
+    {
+      "file": "FINAL_ACCEPTANCE_7509481.md",
+      "role": "report",
+      "localPath": "/workspace/baize-analytics/docs/FINAL_ACCEPTANCE_7509481.md",
+      "bytes": 11350,
+      "MiB": 0.010824,
+      "sha256": "db94652c256670c02f787912368504ddfa42615b8750d4e2113651b9354151d2",
+      "deliveryMethod": "private_repository_text_in_final_documentation_commit"
+    },
+    {
+      "file": "DELIVERY_INDEX.json",
+      "role": "product-index",
+      "localPath": "/workspace/baize-deliverables-7509481/DELIVERY_INDEX.json",
+      "bytes": 6863,
+      "MiB": 0.006545,
+      "sha256": "4673a458c5962a3b85290bb9802a7b770cfb5901582067f8aaad169a5c9fd01c",
+      "deliveryMethod": "private_repository_text_in_final_documentation_commit"
+    },
+    {
+      "file": "SHA256SUMS",
+      "role": "checksums",
+      "localPath": "/workspace/baize-deliverables-7509481/SHA256SUMS",
+      "bytes": 1278,
+      "MiB": 0.001219,
+      "sha256": "ae7d7cf757aeac126adf99c5d010eea42ad822caca0060cce825122383f22b94",
+      "deliveryMethod": "private_repository_text_in_final_documentation_commit"
+    },
+    {
+      "file": "baize-desktop.png",
+      "role": "readme-desktop-image",
+      "localPath": "/workspace/baize-analytics/docs/images/baize-desktop.png",
+      "bytes": 192816,
+      "MiB": 0.183884,
+      "sha256": "42bd2a13310d409129ef72c4793ba602bba9657666f0a9d1b3ed24731ad09298",
+      "status": "private-repository-existing-file"
+    },
+    {
+      "file": "baize-mobile.png",
+      "role": "readme-mobile-image",
+      "localPath": "/workspace/baize-analytics/docs/images/baize-mobile.png",
+      "bytes": 155111,
+      "MiB": 0.147925,
+      "sha256": "536de71b35fe66ed887ca95088c056d463769ebbf3774814afe9d4f23cb21916",
+      "status": "private-repository-existing-file"
+    }
+  ],
+  "safeZipFileCount": 63,
+  "privateRuntimeFilesIncluded": false
+}
