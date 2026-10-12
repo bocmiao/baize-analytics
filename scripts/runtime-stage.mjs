@@ -2,9 +2,17 @@
 import {cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync} from 'node:fs';
 import {resolve, relative} from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
 
-const source = resolve(process.argv[2] ?? '.');
-const target = resolve(process.argv[3] ?? '/runtime');
+export function copyRuntimeEntry(source, target) {
+  // fs.cp otherwise resolves relative links against the original build tree.
+  cpSync(source, target, {recursive: true, verbatimSymlinks: true});
+}
+
+export function stageRuntime(sourceArgument = '.', targetArgument = '/runtime') {
+
+const source = resolve(sourceArgument);
+const target = resolve(targetArgument);
 if (target === source || !relative(source, target).startsWith('..')) {
   throw new Error('Runtime staging must be outside the source directory');
 }
@@ -15,7 +23,7 @@ mkdirSync(target, {recursive: true});
 const entries = ['dist', 'public', 'src', 'scripts', 'sdk', 'packages', 'plugins',
   'db', 'LICENSE', 'package.json', 'package-lock.json', 'tsconfig.json',
   'tsconfig.server.json', 'vite.config.ts', 'node_modules'];
-for (const entry of entries) cpSync(resolve(source, entry), resolve(target, entry), {recursive: true});
+for (const entry of entries) copyRuntimeEntry(resolve(source, entry), resolve(target, entry));
 const manifestPath = resolve(target, 'package.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 const tsx = manifest.dependencies?.tsx ?? manifest.devDependencies?.tsx;
@@ -40,3 +48,8 @@ symlinkSync('../node_modules', resolve(witness, 'node_modules'), 'dir');
 execFileSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e',
   "await import('pg'); await import('ioredis'); await import('./src/server/db.ts'); await import('./scripts/restore-rebuild.ts');"],
 {cwd: target, stdio: 'inherit'});
+
+}
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  stageRuntime(process.argv[2], process.argv[3]);
+}
