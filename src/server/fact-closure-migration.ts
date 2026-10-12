@@ -1,3 +1,4 @@
+import {closePgCursor} from './pg-cursor-cleanup.js';
 import type {ClickHouseSessionHeaderStore} from './session-header-store.js';
 import {assertPublishedDailyFactProvenance} from './fact-migration-privacy.js';
 import {randomUUID} from 'node:crypto';
@@ -37,6 +38,7 @@ export async function migratePublishedFactClosure(client:PoolClient,siteId:strin
  await assertFactRunClosure(client,siteId);await fence.verifyLiveFence();
  const cursor=`fact_closure_${randomUUID().replaceAll('-','')}`;let runs=0;
  await client.query(`DECLARE ${cursor} NO SCROLL CURSOR FOR SELECT r.id FROM analytics_fact_runs r JOIN aggregation_state a ON a.site_id=r.site_id WHERE r.site_id=$1 AND ${selectedFactRunPredicate} ORDER BY r.id`,[siteId]);
+ let primaryFailed=false;
  try{while(true){const rows=(await client.query(`FETCH FORWARD 100 FROM ${cursor}`)).rows;if(!rows.length)break;for(const row of rows){
   await assertPublishedDailyFactProvenance(client,siteId,row.id,stores.headers);
   // Published backfill keeps per-row PG source authentication in its original
@@ -44,6 +46,6 @@ export async function migratePublishedFactClosure(client:PoolClient,siteId:strin
   await publishRunFactBodies(client,{stageRecords:(...args)=>stores.facts.migratePublishedRecords(...args),completeRunKind:async(c,site,run,kind,f)=>{if(!await authenticateAlreadyPrunedKind(c,site,run,kind,stores,f))await stores.facts.completePublishedRunKind(c,site,run,kind,f);}},siteId,row.id,fence,{concurrency:1});
   await publishRemainingFactBodies(client,{stageRecords:(...args)=>stores.remaining.migratePublishedRecords(...args),completeRunKind:async(c,site,run,kind,f)=>{if(!await authenticateAlreadyPrunedKind(c,site,run,kind,stores,f))await stores.remaining.completePublishedRunKind(c,site,run,kind,f);}},siteId,row.id,fence,stores.headers);
   await verifyPublishedFactBodies(client,siteId,row.id,stores);runs++;
- }}}finally{await client.query(`CLOSE ${cursor}`);}
+ }}}catch(error){primaryFailed=true;throw error;}finally{await closePgCursor(client,cursor,primaryFailed);}
  return {runs,pruned:false,strict:false};
 }

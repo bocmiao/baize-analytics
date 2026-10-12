@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-10-12T02:18:46.746618+00:00",
+  "sourceCommit": null,
+  "sourceBinding": "local WIP exact three-file fingerprints; no full-flow validation claim",
+  "files": {
+    "src/server/pg-cursor-cleanup.ts": "d99a2ce5b224b05886993a5a80f844dd4de0b2a66e1d03b18b49456c5d0b26c6",
+    "tests/unit/pg-cursor-cleanup.test.ts": "c0081473285f52da909a37a4fa12c587d75a08f44581f5f41e9973f14102ed94",
+    "tests/integration/pg-cursor-cleanup.test.ts": "3f3685158fb25722dcc3507008c8e098c4fcd54f062623d85e14d6d54313092f"
+  },
+  "reports": {
+    "unit": {
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "pending": 0,
+      "sha256": "973fe9cc19d1109ff1a87ec8345d41b81bd145bfa6f61f88120a7d9aca8c93b4",
+      "exitCode": 0
+    },
+    "integration": {
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "pending": 0,
+      "sha256": "a7329b7912b1abd845510e864da7ddd8afe20b60717a2f69122dc14e8fdec32c",
+      "exitCode": 0
+    }
+  },
+  "scope": [
+    "Original real PG aborted CLOSE replaces division error with 25P02",
+    "Helper preserves original 22012; outer ROLLBACK restores connection usability",
+    "No-primary unknown cursor 34000 remains fatal",
+    "Normal CLOSE and COMMIT succeed"
+  ],
+  "limits": [
+    "No business tables modified",
+    "No full publication/restore flow or image validation in this evidence",
+    "Integration uses one existing local PG connection; no new services"
+  ]
+}

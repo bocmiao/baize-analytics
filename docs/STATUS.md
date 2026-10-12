@@ -70,3 +70,7 @@ B为**隔离PG durable inbox研究原型**，区分received/validated/published�
 ## 7634a16 冻结收尾
 
 434单元、564集成、31浏览器目录全部PASS、0skip，完整本地regular EXIT0。运行目录 `/tmp/baize-final-manifest-7634a16`，2117个Git blob校验；实际PG17/CH25.8/Redis，独立空逻辑库/Redis DB2。编译入口、SDK、删除journal及真实独立签名恢复均通过。此前两轮FAIL原样保留。新镜像/镜像独立恢复因5GiB预留不足未运行，不借旧镜像。后续结构审查先报告、只修可复现最小问题，改后证据重新绑定。
+
+## 流程结构审查与追加窄修
+
+[实际流程/收益成本风险报告](FLOW_STRUCTURE_REVIEW_2026-10-12.md)已完成。只修真实PG首错被finally CLOSE遮蔽问题，未改认证/数据/ACK协议。追加源码完整444单元、27发布与恢复专项、1cursor真实PG专项通过，0skip，lint/type/build通过；其余长锁协议调整和未复现清理风险不擅自实施。最新整轮仍只绑定7634a16，新镜像未跑，远端同步阻塞。

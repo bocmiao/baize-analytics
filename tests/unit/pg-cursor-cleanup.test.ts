@@ -1,0 +1,9 @@
+import {it,expect,vi} from 'vitest';
+import type {PoolClient} from 'pg';
+import {closePgCursor} from '../../src/server/pg-cursor-cleanup.js';
+const client=(query:ReturnType<typeof vi.fn>)=>({query} as unknown as Pick<PoolClient,'query'>);
+it('closes a valid internal identifier exactly once',async()=>{const query=vi.fn(async()=>({rows:[]}));await closePgCursor(client(query),'fact_cursor_012abc',false);expect(query).toHaveBeenCalledExactlyOnceWith('CLOSE fact_cursor_012abc')});
+it('preserves the exact primary error object when secondary CLOSE fails',async()=>{const primary=Object.assign(Error('primary'),{code:'22012'}),secondary=Object.assign(Error('aborted'),{code:'25P02'}),query=vi.fn(async()=>{throw secondary});const operation=async()=>{let failed=false;try{throw primary;}catch(error){failed=true;throw error;}finally{await closePgCursor(client(query),'fact_cursor',failed)}};await expect(operation()).rejects.toBe(primary);expect(query).toHaveBeenCalledOnce()});
+it('throws the exact CLOSE error without an earlier failure',async()=>{const secondary=Object.assign(Error('missing cursor'),{code:'34000'}),query=vi.fn(async()=>{throw secondary});await expect(closePgCursor(client(query),'missing_cursor',false)).rejects.toBe(secondary)});
+it('successful CLOSE does not replace a primary error',async()=>{const primary=Error('primary'),query=vi.fn(async()=>({rows:[]}));const operation=async()=>{try{throw primary}finally{await closePgCursor(client(query),'fact_cursor',true)}};await expect(operation()).rejects.toBe(primary)});
+it.each(['','bad; SELECT 1','quoted"cursor','space cursor','a'.repeat(64),'a\n'])('rejects unsafe identifier %j before query',async cursor=>{const query=vi.fn();await expect(closePgCursor(client(query),cursor,true)).rejects.toThrow('PG_CURSOR_CLEANUP_IDENTIFIER_INVALID');expect(query).not.toHaveBeenCalled()});
