@@ -1,0 +1,17 @@
+{
+  "source": "/workspace/baize-dev-tools/npm-cache/_cacache",
+  "files": 1442,
+  "logicalBytes": 488828810,
+  "allocatedBytesBefore": 500948992,
+  "archive": "/tmp/baize-checkpoints-preserved-20261011/npm-download-cache-20261012/npm-_cacache.tar.gz",
+  "archiveBytes": 194576674,
+  "archiveSha256": "079584ce0d82dc13ee45a67ed2f9b6d6d13ca62c7548667e6de08d41e8b8dac9",
+  "archiveVerified": true,
+  "sourceReverified": true,
+  "method": "verified private recoverable archive, then remove only original rebuildable npm download cache",
+  "restore": "mkdir -p /workspace/baize-dev-tools/npm-cache; tar -xzf /tmp/baize-checkpoints-preserved-20261011/npm-download-cache-20261012/npm-_cacache.tar.gz -C /workspace/baize-dev-tools/npm-cache",
+  "workspaceFreeBefore": 2630488064,
+  "workspaceFreeAfter": 2869243904,
+  "measuredFreeDelta": 238755840,
+  "sourceRemoved": true
+}

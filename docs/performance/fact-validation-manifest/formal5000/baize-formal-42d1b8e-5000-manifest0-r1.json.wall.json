@@ -1,0 +1,7 @@
+{
+  "exit": 1,
+  "overallWallSeconds": 237.88381156299147,
+  "finishedAtUtc": "2026-10-12T01:06:54.781739+00:00",
+  "processPeakKiB": 712512,
+  "scope": "Node app+harness child peak; excludes PG/CH/Redis"
+}

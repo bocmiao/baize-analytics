@@ -26,3 +26,17 @@
 三个真实阶段：INSERT正常EOF后、独立读回正文/key/SHA验证后、清单签名完成但receipt INSERT前。各自回滚后PG batch/member零、CH存在孤儿；同事件新attempt重试提交后物理两attempt，但实际读取恰一行、查询参数仅包含新已提交attempt。产品源码未改。
 
 首次定向3项失败/13未选中：夹具硬要求CH UInt64 JSON计数字符串，实际为数字，失败在物理count=1断言。改为有界计数数值解析，仍严格断言1/2行及1/2attempt，没有放宽计数。完整16项随后PASS、0失败/跳过；两份原JSON保留。当前独立数据库用例累计35项（16+4+14+1），不重复累加旧13执行次数。这不替代新HEAD应用全轮。
+
+## 原合同5000：42d1b8e不可变对照
+
+[两组plan/result/wall、完整UTC窗口与文件哈希](performance/fact-validation-manifest/formal5000/comparison.json)。配置唯一差异 `factValidationManifestReuse=0/1`：100×50、1秒/批、并发2、等待队列8、10秒查询、120秒排空、原220秒压力deadline、coverage复用1、pagePath批处理1、publication并发2、047读取宽度3/规范化复用0均相同。Node24.19.0、4CPU/32GiB cgroup；绝对时间、UUID数据、初始空闲空间及实际样本数不同，不能说逐字相同数据或完全无噪声实验。
+
+关闭：4950 accepted、99发送/202、index81 queue_full_unsent；开启：5000 accepted、100发送/202、0未发。两组均0拒收/请求失败/查询失败，原限制内排空、最终coverage1/精确PV、九PG正文零、outbox全部done、canonical含bootstrap正确、来源水位完整、源码和清理全通过。整体验收关闭FAIL、开启PASS。
+
+UTC两组seed/查询窗口都在2026-10-12 01时，不跨小时/日。两组sourceDigest前后均 `dd93b44d0e8e1d6bcb2deab05861ba50725cf59eeaae82dd98744f603d73e13a`，2097个Git blob验证。起止及精确窗口完整保留在摘要，不事后替换原文件。
+
+最终HTTP 27.903→14.299秒；整体墙钟237.884→243.407秒，候选并未整体更快。候选实际采集至118.076秒、排空97.998秒，原目标调度不变但排队请求可迟发；不能宣称持续50events/s或生产SLO。认证阶段现有hook仅覆盖wire/record；新清单HMAC验证在该hook之外，未观测部分不能说为零。
+
+此结果未默认启用。产品默认 `BAIZE_FACT_VALIDATION_MANIFEST_REUSE=0`，显式1才启用，须已执行060；新候选全应用/浏览器/镜像恢复尚未完成。父暂未直接读取未推原JSON，只能独立审查目前收到的结果记录。旧239/72及B全部FAIL仍保留，不重复压测追绿。
+
+资源：只将本项目下载缓存1442文件可恢复私有归档，archive194576674B，SHA256 `079584ce0d82dc13ee45a67ed2f9b6d6d13ca62c7548667e6de08d41e8b8dac9`，逐文件校验后移除原cache。测量可用空间增加238755840B，不声称500948992B全部释放；完整原路径/归档/恢复命令见资源摘要。有效镜像、node_modules、三服务卷及所有源码证据保留。
