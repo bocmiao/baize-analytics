@@ -16,7 +16,7 @@
 
 安装器会提示本地私有 `.baize/install-nonce.json`，不会打印凭证。浏览器填写该文件的 `nonce` 字段；完成后删除本地副本。应用数据库里的终态是凭证失效的依据，复制旧文件或恢复空用户备份不能重新创建管理员。已有账户直接登录。
 
-镜像 save 只含应用及 Node 基底，不含 PG/Redis/CH，不能当完整离线安装器或数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。加载后，从 `docker load` 输出的 `Loaded image: ...` 记录本次交付的精确 tag，并与交付清单核对。下面提示输入该 tag；校验只确认 profile 和 tag 形式，不替代交付 SHA256 校验。不要填旧交付的 tag 或保留 Compose 默认的 `baize-analytics:local`。
+本次 `baize-standard-docker-offline-7509481.tar.gz` 含标准应用、Node 基底、PostgreSQL 17 和 Redis 7；`baize-lite-docker-offline-7509481.tar.gz` 仅含 Lite 应用和 Node 基底。两者均不含可选 ClickHouse、运行配置、密钥或数据，不能当数据备份。核对交付 SHA256 后，在包含同版本 Compose 与 scripts 的私有源码目录中加载。加载后，从 `docker load` 输出的 `Loaded image: ...` 记录本次交付的精确 tag，并与交付清单核对。下面提示输入该 tag；以下命令只接受本次精确 tag，并核对已受测的不可变 image ID 和软件 revision；仍须先校验 save 文件 SHA256。其他交付版本应使用它自己的清单与说明，不能修改此处白名单来接受任意镜像。不要填旧交付的 tag 或保留 Compose 默认的 `baize-analytics:local`。
 
 标准版（仅初装空实例；`.env` 与整个 `.baize` 目录必须全新且不是链接，已有配置、密钥或卷不用此示例）：
 
@@ -39,10 +39,12 @@ cleanup_preparation() {
   exit "$status"
 }
 trap cleanup_preparation EXIT
-docker load -i /private/delivery/baize-standard-image-save.tar.gz
+docker load -i /private/delivery/baize-standard-docker-offline-7509481.tar.gz
 read -r -p '输入本次 Loaded image 的标准版精确 tag: ' app_image
-[[ "$app_image" =~ ^baize-validation:standard-[a-f0-9]{7,40}$ ]] || { echo '标准版交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
+[[ "$app_image" == baize-accept:standard-7509481 ]] || { echo '标准版交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" postgres:17-bookworm redis:7-bookworm >/dev/null
+[[ "$(docker image inspect "$app_image" --format '{{.Id}}')" == sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8 ]] || { echo '镜像内容 ID 与本次交付清单不符。' >&2; exit 1; }
+[[ "$(docker image inspect "$app_image" --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}')" == 7509481a366b9ec1d0c3dc42ab31dc08d0792986 ]] || { echo '镜像软件 revision 不符。' >&2; exit 1; }
 mkdir -m 700 .baize
 created_key=1
 docker run --rm --pull=never --entrypoint node "$app_image" -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))' > .baize/master.key
@@ -61,7 +63,9 @@ chmod 600 .baize/install-nonce.json
 )
 ```
 
-两段命令分别在启用 `set -euo pipefail` 的 Bash 子 shell 中执行；加载、镜像检查、配置校验或卷初始化 helper 失败就退出，不继续启动。准备阶段失败仅清理本示例新建的 `.env`、主密钥和空私有目录，不删除已有配置或数据卷。卷初始化成功后若启动失败，保留配置用于诊断。`docker image inspect` 缺依赖时因此停止，不自动下载。联网部署者可先自行准备 PG/Redis 镜像；隔离离线机器须另行取得和校验这两个官方依赖 save，再 `docker load`。不能用应用 save 宣称依赖已交付。
+本说明的软件 revision 固定为 `7509481a366b9ec1d0c3dc42ab31dc08d0792986`；纠正文档随发行包附带 `DOCUMENTATION_OVERLAY.json`，单独记录文档 Git revision 和原/新文件哈希。镜像内容 ID 不变。
+
+两段命令分别在启用 `set -euo pipefail` 的 Bash 子 shell 中执行；加载、镜像检查、配置校验或卷初始化 helper 失败就退出，不继续启动。准备阶段失败仅清理本示例新建的 `.env`、主密钥和空私有目录，不删除已有配置或数据卷。卷初始化成功后若启动失败，保留配置用于诊断。`docker image inspect` 缺依赖时因此停止，不自动下载。本次标准版 save 已含清单列出的 PG/Redis，load 后仍 inspect 确认；其他仅含应用的历史 save 必须另行取得并校验依赖镜像。没有附带可选 CH，不能将此 PG-only 离线初装宣称为严格 CH 迁移或恢复。
 
 Lite 不需要数据库服务镜像或标准版主密钥 secret；同样只用于 `.env` 与整个 `.baize` 均不存在且不是链接的初装空实例：
 
@@ -84,10 +88,12 @@ cleanup_preparation() {
   exit "$status"
 }
 trap cleanup_preparation EXIT
-docker load -i /private/delivery/baize-lite-image-save.tar.gz
+docker load -i /private/delivery/baize-lite-docker-offline-7509481.tar.gz
 read -r -p '输入本次 Loaded image 的 Lite 精确 tag: ' app_image
-[[ "$app_image" =~ ^baize-validation:lite-[a-f0-9]{7,40}$ ]] || { echo 'Lite 交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
+[[ "$app_image" == baize-accept:lite-7509481 ]] || { echo 'Lite 交付 tag 格式不符；请核对 Loaded image 与清单。' >&2; exit 1; }
 docker image inspect "$app_image" >/dev/null
+[[ "$(docker image inspect "$app_image" --format '{{.Id}}')" == sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248 ]] || { echo '镜像内容 ID 与本次交付清单不符。' >&2; exit 1; }
+[[ "$(docker image inspect "$app_image" --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}')" == 7509481a366b9ec1d0c3dc42ab31dc08d0792986 ]] || { echo '镜像软件 revision 不符。' >&2; exit 1; }
 mkdir -m 700 .baize
 created_env=1
 printf 'BAIZE_LITE_IMAGE=%s\nPUBLIC_URL=http://localhost:3000\nBAIZE_LITE_PORT=3000\nBAIZE_UID=%s\nBAIZE_GID=%s\n' "$app_image" "$(id -u)" "$(id -g)" > .env
