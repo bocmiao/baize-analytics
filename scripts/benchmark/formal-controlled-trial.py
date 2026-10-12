@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--repository', required=True)
     parser.add_argument('--sha', required=True)
     parser.add_argument('--reuse', choices=['0', '1'], required=True)
+    parser.add_argument('--fact-manifest-reuse', choices=['0', '1'], default='0')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     root, repo, output = Path(args.source_root).resolve(), Path(args.repository).resolve(), Path(args.output).resolve()
@@ -60,7 +61,8 @@ def main():
             'maxQueued': 8, 'maxConcurrent': 2, 'drainLimitMs': 120000,
             'durationLimitMs': 220000, 'coverageReuse': 1, 'pagePathBatch': 1,
             'publicationConcurrency': 2, 'remainingReadDefault': 3,
-            'remainingCanonicalReuse': int(args.reuse), 'timeline': True,
+            'remainingCanonicalReuse': int(args.reuse),
+            'factValidationManifestReuse': int(args.fact_manifest_reuse), 'timeline': True,
             'spacesBefore': spaces, 'runtime': {'node': subprocess.check_output(['node', '--version'], text=True).strip(),
             'cpuMax': read_limit('/sys/fs/cgroup/cpu.max'), 'memoryMax': read_limit('/sys/fs/cgroup/memory.max')},
             'ack': 'formal accepted after actual canonical publication and PG receipt commit',
@@ -73,6 +75,7 @@ def main():
                 'BAIZE_SESSION_PAGE_PATH_BATCH': '1', 'BAIZE_FACT_PUBLICATION_CONCURRENCY': '2',
                 'BAIZE_SERIAL_RESOURCE_GATE': '1', 'BAIZE_BENCHMARK_TIMELINE': '1',
                 'BAIZE_REMAINING_CANONICAL_REUSE': args.reuse, 'BENCHMARK_STORAGE': 'strict-clickhouse',
+                'BAIZE_FACT_VALIDATION_MANIFEST_REUSE': args.fact_manifest_reuse,
                 'BENCHMARK_BATCHES': '100', 'BENCHMARK_SITES': '1', 'BENCHMARK_OUTPUT': str(output)})
     began = time.monotonic()
     with Path(str(output) + '.log').open('x') as log:
