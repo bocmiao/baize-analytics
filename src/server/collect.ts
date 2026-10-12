@@ -97,7 +97,9 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
             await client.query('INSERT INTO event_keys(site_id,event_id,hash,ts,visitor_id) VALUES($1,$2,$3,$4,$5)',[site.id,wire.event_id,hash,new Date(wire.ts),visitor]);duplicates++;accepted++;continue;
           }
         }
-        if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=await checkIdentity(client,site.id,visitor,wire.ts,userId??null);if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
+        // The site transaction gate keeps this event's identity stable; only identify changes it.
+        // Recheck after that transition, and never cache identity across envelope events.
+        if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=wire.type==='identify'?await checkIdentity(client,site.id,visitor,wire.ts,userId??null):identity;if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
         let clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
         if(site.privacy_mode==='daily_salt')clean.page_id=dayScopedPageId(site.salt_secret,day,wire.page_id);
         let metadata={...dimensions(ua,wire,geo,site.config,ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};

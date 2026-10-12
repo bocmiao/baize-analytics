@@ -30,5 +30,21 @@ it('event-time A -> B -> delete A preserves B, old A retries and restored A cann
   const replay=await replayDeletionJournal(pool,dir);expect(replay.records).toBeGreaterThan(0);expect(Number((await pool.query('SELECT count(*) FROM events WHERE payload->>\'user_id\'=$1',[userA])).rows[0].count)).toBe(0);expect(Number((await pool.query('SELECT count(*) FROM events WHERE payload->>\'user_id\'=$1',[userB])).rows[0].count)).toBe(3);expect((await collect([lateA])).json().rejected[0].reason).toBe('deleted_visitor');
   // Adding a later identity cannot extend an earlier owner's closed period across the deleted A gap.
   expect((await collect([event('identify',4000,{user_id:'account-C'})])).json().accepted).toBe(1);expect((await pool.query('SELECT started_at FROM identity_bindings WHERE user_id=$1',[userB])).rows.map(r=>+r.started_at)).toEqual([base+2000]);expect((await collect([event('identify',800,{user_id:'account-D'})])).json().accepted).toBe(1);const userD=visitorHash(secret,'identity','account-D','');expect(+(await pool.query('SELECT ended_at FROM identity_bindings WHERE user_id=$1',[userD])).rows[0].ended_at).toBe(base+1000);
+  // Identity reuse is local to one event: the next event observes a preceding identify.
+  const freshVisitor=randomUUID();
+  const freshAnonymous=event('pageview',5000,{visitor_id:freshVisitor});
+  const freshIdentify=event('identify',5100,{visitor_id:freshVisitor,user_id:'account-fresh'});
+  const freshClaimed=event('pageview',5200,{visitor_id:freshVisitor,user_id:'account-fresh'});
+  const freshMismatch=event('pageview',5300,{visitor_id:freshVisitor,user_id:'another-account'});
+  const freshAttributed=event('pageview',5400,{visitor_id:freshVisitor});
+  const localIdentity=await collect([freshAnonymous,freshIdentify,freshClaimed,freshMismatch,freshAttributed]);
+  expect(localIdentity.statusCode).toBe(202);
+  expect(localIdentity.json()).toMatchObject({accepted:4,duplicates:0,rejected:[{index:3,event_id:freshMismatch.event_id,reason:'identity_mismatch'}]});
+  const freshHash=visitorHash(secret,'identity','account-fresh','');
+  expect((await pool.query('SELECT payload FROM events WHERE event_id=$1',[freshAnonymous.event_id])).rows[0].payload.user_id).toBeUndefined();
+  for(const accepted of [freshClaimed,freshAttributed])expect((await pool.query('SELECT payload FROM events WHERE event_id=$1',[accepted.event_id])).rows[0].payload.user_id).toBe(freshHash);
+  const unboundClaim=event('pageview',5500,{visitor_id:randomUUID(),user_id:'account-fresh'});
+  expect((await collect([unboundClaim])).json()).toMatchObject({accepted:0,rejected:[{index:0,event_id:unboundClaim.event_id,reason:'identity_mismatch'}]});
+  for(const table of ['events','event_keys','outbox'])expect(Number((await pool.query(`SELECT count(*) FROM ${table} WHERE event_id=ANY($1::uuid[])`,[[freshMismatch.event_id,unboundClaim.event_id]])).rows[0].count)).toBe(0);
  }finally{await app?.app.close();await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}
 },40000);
