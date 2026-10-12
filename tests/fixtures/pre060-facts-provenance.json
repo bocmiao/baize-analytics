@@ -1,0 +1,23 @@
+{
+  "scope": "historical <=057 integration fixture only; not a production compatibility fallback",
+  "modules": [
+    {
+      "file": "tests/fixtures/pre060-fact-store.ts",
+      "sourcePath": "src/server/fact-store.ts",
+      "sourceCommit": "e0797f702c1fcd70b8a61a7cce1cd58b21ebb33c",
+      "sourceGitBlob": "6e96bc78fcce73038bfb479014bf23fd782dc2b8",
+      "originalSha256": "209e6fa08d074548453700334992111f9c26e440d7bc602eb68b5ea3031d22d8",
+      "fixtureSha256": "6710ac1e7043f8e3e6d54e4e250912fab3ee9e8145532dc93ea5e941bf79782a",
+      "changes": "provenance comment and relative import relocation only"
+    },
+    {
+      "file": "tests/fixtures/pre060-fact-body-backup.ts",
+      "sourcePath": "src/server/fact-body-backup.ts",
+      "sourceCommit": "e0797f702c1fcd70b8a61a7cce1cd58b21ebb33c",
+      "sourceGitBlob": "d3657ca2705d96d78dec8dff7683d3ff61dfd8e7",
+      "originalSha256": "09555c40468a47bbd7c7531f58c7c37121a0db6a423dae3cbe172a9e5dbfffab",
+      "fixtureSha256": "c8ac895e46a6aeec2eaf59efad0669d2a318131935e437ffb66898e9710e9f8f",
+      "changes": "provenance comment and relative import relocation only"
+    }
+  ]
+}
