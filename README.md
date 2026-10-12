@@ -14,6 +14,8 @@
 
 安装 Docker 与 Compose v2，在已有私有 checkout 执行 `./install.sh`。默认监听 http://localhost:3000，首次访问创建管理员、站点并获取 tracker。密钥自动生成；重复安装保留本地数据和配置。当前镜像本地构建，不发布注册表。
 
+Lite 使用同一仓库、许可证、品牌和 tracker，以单容器 SQLite 本地卷运行：见 [Lite 部署](docs/lite-deployment.md)、[能力与持久性边界](docs/lite-implementation.md)、[离线迁移](docs/lite-migration.md)和[手动 SEO/BYOK](docs/lite-optional-insights.md)。标准版继续使用 PostgreSQL/Redis；两个 profile 的数据不能通过更换镜像自动互换。
+
 用户接口与权限/范围/错误见 [API 手册](docs/api.md)，前向迁移、独立最新删除日志、备份文件/密钥和恢复升级见 [迁移运行手册](docs/migration.md)。开发与验证见 [development](docs/development.md)，部署与反代见 [deployment](docs/deployment.md)，兼容性见 [compatibility](docs/compatibility.md)，完整英文用户入口见 [docs/en](docs/en/README.md)。规格 [PROJECT_SPEC](docs/PROJECT_SPEC.md) 是目标，当前完成/在制/外部未实测以 [项目状态](docs/STATUS.md) 为准。
 
 ## 数据流与开发验收

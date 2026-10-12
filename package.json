@@ -10,6 +10,10 @@
   "scripts": {
     "dev": "tsx watch src/server/main.ts",
     "start": "tsx src/server/main.ts",
+    "dev:lite": "tsx watch src/lite/main.ts",
+    "start:lite": "node dist/server/src/lite/main.js",
+    "lite:ops": "node dist/server/scripts/lite-ops.js",
+    "lite:migrate": "node dist/server/scripts/lite-migrate.js",
     "db:migrate": "tsx scripts/migrate.ts",
     "worker": "tsx src/server/worker-main.ts",
     "build": "npm run build:tracker && vite build && tsc -p tsconfig.server.json",

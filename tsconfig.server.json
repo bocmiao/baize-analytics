@@ -1,1 +1,1 @@
-{"extends":"./tsconfig.json","compilerOptions":{"noEmit":false,"outDir":"dist/server","rootDir":".","declaration":true},"include":["src/server","packages/contracts","scripts"],"exclude":["tests"]}
+{"extends":"./tsconfig.json","compilerOptions":{"noEmit":false,"outDir":"dist/server","rootDir":".","declaration":true},"include":["src/server","packages/contracts","scripts","src/lite"],"exclude":["tests"]}

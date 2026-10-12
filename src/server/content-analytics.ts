@@ -1,3 +1,5 @@
+export {contentFilterSchema,eventMatchesFilters,type ContentFilters} from './analytics-core.js';
+import {contentFilterSchema,eventMatchesFilters,type ContentFilters} from './analytics-core.js';
 import type { AnalyticsEvent, FunnelDefinition, GoalDefinition, Session } from './analytics.js';
 import { dictionary, funnelVisitors, goalCompletion, goalMatches, lastClick } from './analytics.js';
 
@@ -79,10 +81,7 @@ import type { FastifyInstance } from 'fastify';
 import type { AppContext } from './context.js';
 import { z } from 'zod';
 import { dayOf, sessionize, sessionTimeoutMs } from './analytics.js';
-export const contentFilterSchema = z.object({path: z.string().max(2048).optional(), channel: z.string().max(64).optional(), utm_source: z.string().max(500).optional(), utm_medium: z.string().max(500).optional(), utm_campaign: z.string().max(500).optional(), utm_term: z.string().max(500).optional(), utm_content: z.string().max(500).optional()});
-export type ContentFilters = z.infer<typeof contentFilterSchema>;
 const contentRange = contentFilterSchema.extend({from: z.iso.datetime(), to: z.iso.datetime()});
-export function eventMatchesFilters(event: AnalyticsEvent, filters: ContentFilters): boolean {return Object.entries(filters).every(([key, value]) => value === undefined || (key === 'path' ? event.path : event.dimensions[key]) === value);}
 export async function queryContentFeatures(ctx: AppContext, siteId: string, from: string, to: string, filters: ContentFilters = {}) {
  if (+new Date(to) <= +new Date(from) || +new Date(to) - +new Date(from) > 90 * 86400000) throw Object.assign(new Error('内容与行为明细查询限制为90天'), {statusCode: 400});
  const site = (await ctx.pool.query('SELECT timezone,privacy_mode,retention_days,config FROM sites WHERE id=$1', [siteId])).rows[0];

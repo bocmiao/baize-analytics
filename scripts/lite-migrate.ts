@@ -1,0 +1,7 @@
+import {existsSync,lstatSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import {createLiteStore} from '../src/lite/store.js';
+import {migrateLiteToStandard} from '../src/lite/migration.js';
+const [backupDir,targetSchema,targetDataDir,targetKeyDir]=process.argv.slice(2);
+if(!backupDir||!targetSchema||!targetDataDir||!targetKeyDir||!process.env.LITE_DATA_DIR||!process.env.LITE_KEYS_DIR||!process.env.LITE_MIGRATION_TARGET_URL)throw Error('Usage: LITE_DATA_DIR=... LITE_KEYS_DIR=... LITE_MIGRATION_TARGET_URL=... node dist/server/scripts/lite-migrate.js BACKUP baize_lite_import_NAME NEW_DATA NEW_KEYS');
+const sourceDataDir=resolve(process.env.LITE_DATA_DIR),sourceKeyDir=resolve(process.env.LITE_KEYS_DIR),store=(()=>{for(const path of [join(sourceDataDir,'lite.sqlite'),join(sourceKeyDir,'master.v1.key')])if(!existsSync(path)||lstatSync(path).isSymbolicLink())throw Error('LITE_MIGRATION_SOURCE_MISSING');return createLiteStore({dataDir:sourceDataDir,keyDir:sourceKeyDir});})();try{await store.runtime;console.log(JSON.stringify(await migrateLiteToStandard({sourceStore:store,sourceDataDir,sourceKeyDir,backupDir:resolve(backupDir),targetUrl:process.env.LITE_MIGRATION_TARGET_URL,targetSchema,targetDataDir:resolve(targetDataDir),targetKeyDir:resolve(targetKeyDir)})));}catch(error){console.error(/^LITE_[A-Z_]+$/.test((error as Error).message)?(error as Error).message:'LITE_MIGRATION_TARGET_OPERATION_FAILED');process.exitCode=1;}finally{await store.close();}

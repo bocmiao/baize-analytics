@@ -1,6 +1,7 @@
 # English documentation
 
 - [Installation, backups, recovery and HTTPS](deployment.md)
+- [Lite: one local SQLite container, backup and restore](../lite-deployment.md)
 - [Development and tests](development.md)
 - [API and collection protocol](api.md)
 - [Privacy behavior](privacy.md)

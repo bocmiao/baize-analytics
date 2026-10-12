@@ -1,0 +1,21 @@
+services:
+  app:
+    image: ${BAIZE_LITE_IMAGE:-baize-analytics:lite-local}
+    build:
+      context: .
+      dockerfile: Dockerfile.lite
+    restart: unless-stopped
+    user: "${BAIZE_UID:-1000}:${BAIZE_GID:-1000}"
+    ports: ["127.0.0.1:${BAIZE_LITE_PORT:-3000}:3000"]
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+      DATA_DIR: /app/data
+      KEYS_DIR: /app/keys
+    volumes:
+      - lite_data:/app/data
+      - lite_keys:/app/keys
+volumes:
+  lite_data:
+  lite_keys:
