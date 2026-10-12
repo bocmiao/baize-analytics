@@ -109,7 +109,11 @@
         }
       },
       "backupCompleted": true,
-      "restoreCompleted": true
+      "restoreCompleted": true,
+      "runtimeBehaviorProofArchiveBeforeDocumentationOverlaySha256": "4e0f3afe60f42daa81ad76ec5e952d62a011bd5be0c5e4f761c75cf5847eea9d",
+      "currentArchiveSha256": "097c36a8bba658b6c779cabd60400969237690cb0464691a7d5b8b1118f71013",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocumentationOverlay": "passed"
     },
     {
       "profile": "standard",
@@ -139,7 +143,11 @@
         }
       },
       "backupCompleted": true,
-      "restoreCompleted": true
+      "restoreCompleted": true,
+      "runtimeBehaviorProofArchiveBeforeDocumentationOverlaySha256": "f56ebff8376feec3145582e67a4f75f64cf2a449c0675a04f8fa9db0a6a2d718",
+      "currentArchiveSha256": "7bdd3fb4f400d6b5c36c18166ba9861f4e7c0a54820bff131dd9adc22a514492",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocumentationOverlay": "passed"
     },
     {
       "profile": "lite",
@@ -169,7 +177,11 @@
         }
       },
       "backupCompleted": true,
-      "restoreCompleted": true
+      "restoreCompleted": true,
+      "runtimeBehaviorProofArchiveBeforeDocumentationOverlaySha256": "ada8e8fa670d788d392a22ad2411a534f23a01a6532361891ab74beb74f290f3",
+      "currentArchiveSha256": "8871fe373a9b2ef766e42e80bf69f2a4dba0c1cc0d3f1d3b412bff029465e7c8",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocumentationOverlay": "passed"
     },
     {
       "profile": "lite",
@@ -199,7 +211,11 @@
         }
       },
       "backupCompleted": true,
-      "restoreCompleted": true
+      "restoreCompleted": true,
+      "runtimeBehaviorProofArchiveBeforeDocumentationOverlaySha256": "12ad4f1af8f366742a665018e00095afb8c96f14e890b030175edeb8eb42cef9",
+      "currentArchiveSha256": "2dfc0ba55959f9492ddc7ccd106f6cdc7726cbc2eea02e630ea06770ada898fb",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocumentationOverlay": "passed"
     }
   ],
   "capacityExperimentRerun": false,
@@ -267,5 +283,122 @@
       }
     ],
     "emptySiteResponsesSeparatelyExpected": true
-  }
+  },
+  "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+  "documentedOfflineInstallation": [
+    {
+      "profile": "standard",
+      "archive": "baize-standard-docker-offline-7509481.tar.gz",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "actualTag": "baize-accept:standard-7509481",
+      "actualImageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8",
+      "schema": 61,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "cache": "ready",
+        "geoip": "unknown",
+        "schemaVersion": 1
+      },
+      "realCommandsFromPackagedDocument": true,
+      "testOnlySubstitutions": [
+        "private delivery parent path",
+        "isolated Compose project name",
+        "localhost listening port"
+      ],
+      "noBuildOrPull": true,
+      "nonceCopiedPrivatelyAndMatches": true,
+      "rejectedWrongTags": [
+        "baize-validation:standard-7509481",
+        "baize-accept:lite-7509481",
+        "baize-accept:standard-deadbeef"
+      ],
+      "packagedDocumentSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "copiedNonceActuallyCreatesOwner": true,
+      "actualSiteAndCollectorAccepted": 1,
+      "actualDuplicateCount": 1,
+      "actualStatisticsPv": 1
+    },
+    {
+      "profile": "lite",
+      "archive": "baize-lite-docker-offline-7509481.tar.gz",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "actualTag": "baize-accept:lite-7509481",
+      "actualImageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248",
+      "schema": 2,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "storage": "sqlite",
+        "cache": "disabled",
+        "geoip": "unavailable",
+        "schemaVersion": 2,
+        "sqliteVersion": "3.53.4",
+        "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+      },
+      "realCommandsFromPackagedDocument": true,
+      "testOnlySubstitutions": [
+        "private delivery parent path",
+        "isolated Compose project name",
+        "localhost listening port"
+      ],
+      "noBuildOrPull": true,
+      "nonceCopiedPrivatelyAndMatches": true,
+      "rejectedWrongTags": [
+        "baize-validation:lite-7509481",
+        "baize-accept:standard-7509481",
+        "baize-accept:lite-deadbeef"
+      ],
+      "packagedDocumentSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "copiedNonceActuallyCreatesOwner": true,
+      "actualSiteAndCollectorAccepted": 1,
+      "actualDuplicateCount": 1,
+      "actualStatisticsPv": 1
+    }
+  ],
+  "documentationOnlyRepackChecks": [
+    {
+      "profile": "standard",
+      "variant": "node-ready",
+      "strictManifestVerification": "passed",
+      "compiledAndPublic598FilesMatchTestedImage": true,
+      "correctedOfflineDocSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocOverlay": "passed"
+    },
+    {
+      "profile": "standard",
+      "variant": "bundled-node",
+      "strictManifestVerification": "passed",
+      "compiledAndPublic598FilesMatchTestedImage": true,
+      "correctedOfflineDocSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocOverlay": "passed"
+    },
+    {
+      "profile": "lite",
+      "variant": "node-ready",
+      "strictManifestVerification": "passed",
+      "compiledAndPublic598FilesMatchTestedImage": true,
+      "correctedOfflineDocSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocOverlay": "passed"
+    },
+    {
+      "profile": "lite",
+      "variant": "bundled-node",
+      "strictManifestVerification": "passed",
+      "compiledAndPublic598FilesMatchTestedImage": true,
+      "correctedOfflineDocSha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+      "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+      "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+      "compiledProductionPreflightAfterDocOverlay": "passed"
+    }
+  ],
+  "softwareTestsRerunForDocumentationOverlay": false
 }

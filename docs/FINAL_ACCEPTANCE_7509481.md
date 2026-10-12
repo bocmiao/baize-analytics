@@ -1,6 +1,6 @@
 # 白泽固定源码最终验收记录
 
-软件源码为 `7509481a366b9ec1d0c3dc42ab31dc08d0792986`，基于用户指定的 `e5aff3b9411bb0eb4505bd2bd7d03060aab4bbfe`。仅修正 ZIP/HTTP 许可证断言，使其逐字验证构建器已经采用的空白归一化完整 MIT 声明；独立 LICENSE 文件仍按原始字节验证。业务源码未改变。软件修正已正常 fast-forward 推 main，推前 fetch，未 force、未 PR、未触发 Actions/CNB、未操作生产服务器。后续验收文档提交不是软件镜像重新构建声明。
+软件源码为 `7509481a366b9ec1d0c3dc42ab31dc08d0792986`，基于用户指定的 `e5aff3b9411bb0eb4505bd2bd7d03060aab4bbfe`。仅修正 ZIP/HTTP 许可证断言，使其逐字验证构建器已经采用的空白归一化完整 MIT 声明；独立 LICENSE 文件仍按原始字节验证。业务源码未改变。发行包的软件/镜像revision仍为上述750；离线安装文档纠正revision为 `a683944148d0d6bbd5607c7eb8962e6374789e8e`，见各包内 `DOCUMENTATION_OVERLAY.json`。软件修正已正常 fast-forward 推 main，推前 fetch，未 force、未 PR、未触发 Actions/CNB、未操作生产服务器。后续验收文档提交不是软件镜像重新构建声明。
 
 ## 实际测试与边界
 
@@ -12,7 +12,7 @@ lint、全仓类型检查、本地生产编译通过；修正文件再次 ESLint
 
 ## 镜像和原生包
 
-两版完整 Dockerfile 都在新环境执行 `npm ci --strict-ssl=true`、完整 build 和正式 runtime stage 成功；没有以旧镜像 overlay 冒充。Docker 内代理 hostname 起初 DNS `EAI_AGAIN`；给构建加入当前环境实际代理地址映射后，npm ping 实测成功并重建。没有关闭 TLS 校验或写入凭据。Docker 使用 vfs，最后保留约8GiB余量；未 prune、未永久删除旧数据。
+两版完整 Dockerfile 都在新环境执行 `npm ci --strict-ssl=true`、完整 build 和正式 runtime stage 成功；没有以旧镜像 overlay 冒充。Docker 内代理 hostname 起初 DNS `EAI_AGAIN`；给构建加入当前环境实际代理地址映射后，npm ping 实测成功并重建。没有关闭 TLS 校验或写入凭据。Docker 使用vfs。原验收收尾约8GiB余量；本次重新封包和按文档实装的临时增长曾降至约3GiB，随后暂停写入，把838,038,218B校验解压副本和1,158,104,939B旧版保全产物逐文件核对哈希、模式、链接后迁至独立`/tmp/baize-acceptance-preserved`，保留完整可恢复副本，工作区恢复约5GiB余量。未prune、未丢失旧数据。完整迁移文件清单本地保留，路径和哈希见[迁移记录](validation/final-7509481/recoverable-relocation-summary.json)。
 
 - 标准本地内容 image ID：`sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8`。
 - Lite 本地内容 image ID：`sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248`。
@@ -22,11 +22,11 @@ lint、全仓类型检查、本地生产编译通过；修正文件再次 ESLint
 
 新构建 `dist` 文件584个，加独立 `public` 构建资产14个，合计598件物理交付文件；这两个路径集合在标准镜像、独立本地 build 和四个包逐文件同字节；标准镜像保留的 src/scripts344个文件（含264个.ts、37个.tsx）全部与冻结Git一致。旧环境598文件没有复用或冒认同源；旧交接下载阻塞，无法在本机比对旧完整目录。当前采集器源码SHA256=`987f121cf75cbbb5a8c9d7523a705170f88a72a26e263ff398a9a4f165cab41f`、实际编译模块SHA256=`bc31aea4fc43bbd72320f03904ed09360eb7dd9600008809e928691d57a6664f`，与资源报告候选记录逐字相同。完整列表见 [image-source-witness-standard.json](validation/final-7509481/image-source-witness-standard.json)。
 
-两个 Docker save 文件已 gzip/manifest校验并在本测试 daemon 成功重新 load，随后各镜像独立容器启动。标准离线文件含 app+PG17+Redis7，不含可选ClickHouse；Lite只含应用镜像。没有宣称新的物理离线机器验收。两版 Docker 安装 ZIP包含完整冻结源码和 install入口；原安装器会构建镜像，离线save需要独立加载并按部署文档启动已加载镜像，不是新增跳过build安装功能。
+两个 Docker save 文件已 gzip/manifest校验并在本测试 daemon 成功重新 load，随后各镜像独立容器启动。标准离线文件含app+PG17+Redis7，不含可选ClickHouse；Lite只含应用镜像。最后审查曾发现旧方法指南只接受`baize-validation:*`而本次实际tag为`baize-accept:*`，已修为精确tag、不可变image ID及软件SHA三重核对，没有扩大成任意镜像白名单。没有宣称新的物理离线机器验收。两版 Docker 安装 ZIP包含完整冻结源码和 install入口；原安装器会构建镜像，离线save需要独立加载并按部署文档启动已加载镜像，不是新增跳过build安装功能。源码ZIP、两安装ZIP及四原生包均已重新封入纠正文档，7件bytes/SHA更新、旧版保全；两个save和三个分发ZIP未改变。两版从实际随包脚本（只替换交付目录、隔离project名和本机端口）完整load→私有配置/空卷初始化→no-build/pull-never启动→复制nonce→实际创建管理员/站点→采集1事件/重投去重/统计PV1通过，确认schema61/2；旧tag、错profile、其他版本tag均拒绝。详见[实际安装证据](validation/final-7509481/documented-offline-install-results.json)和[包覆盖层核对](validation/final-7509481/documentation-overlay-package-checks.json)。软件功能测试未重跑；四包未变的598编译/公共资产字节与既测镜像相同，当前四包严格清单与原compiled生产preflight均通过。
 
 ## 普通用户文档和截图
 
-四包README/说明来自同一固定Git revision，包内桌面1440×1447和手机390×2346 PNG与Git原始字节相同。运行文档31个本地链接均存在；24个固定源码链接对应的Git对象均存在，在线访问仍需私有仓库权限。源码/安装ZIP的截图均已在压缩包内实际核对。所有新源码、安装及分发ZIP均不包含历史压缩包；排除旧`docs/ui-prototypes/v2/baize-ui-prototypes-v2.zip`，没有递归打包工作区、数据库、私有运行环境文件、密钥或备份。
+四包README和原有其余说明维持软件750的Git身份；离线安装方法指南以显式文档覆盖层来自a683944，原/新SHA与软件SHA分别记录，不伪称整包都未派生。包内桌面1440×1447和手机390×2346 PNG与Git原始字节相同。运行文档31个本地链接均存在；24个固定源码链接对应的Git对象均存在，在线访问仍需私有仓库权限。源码/安装ZIP的截图均已在压缩包内实际核对。所有新源码、安装及分发ZIP均不包含历史压缩包；排除旧`docs/ui-prototypes/v2/baize-ui-prototypes-v2.zip`，没有递归打包工作区、数据库、私有运行环境文件、密钥或备份。
 
 ## 资源结论继承
 
@@ -44,19 +44,19 @@ lint、全仓类型检查、本地生产编译通过；修正文件再次 ESLint
 
 | 文件 | bytes | MiB（2²⁰ B） | SHA256 |
 | --- | ---: | ---: | --- |
-| `baize-lite-bundled-node-linux-x64-7509481.tar.gz` | 74,723,992 | 71.262352 | `12ad4f1af8f366742a665018e00095afb8c96f14e890b030175edeb8eb42cef9` |
-| `baize-lite-docker-install-7509481.zip` | 30,453,719 | 29.042930 | `0ef391a75d8ac9cf44e01ecf6530b2cabb34dace5000914858582aca3b33ae17` |
+| `baize-lite-bundled-node-linux-x64-7509481.tar.gz` | 74,717,627 | 71.256282 | `2dfc0ba55959f9492ddc7ccd106f6cdc7726cbc2eea02e630ea06770ada898fb` |
+| `baize-lite-docker-install-7509481.zip` | 30,455,084 | 29.044231 | `e613e85124a379602c207e6793232f15ad4a8a1eb458e7ebabe2097ea6685f7e` |
 | `baize-lite-docker-offline-7509481.tar.gz` | 125,436,728 | 119.625786 | `b4c082e3c179b2d7c3234aa0bfb4031310b624cab689d9f617b81ac4d436976d` |
-| `baize-lite-node-ready-linux-x64-7509481.tar.gz` | 30,032,195 | 28.640933 | `ada8e8fa670d788d392a22ad2411a534f23a01a6532361891ab74beb74f290f3` |
-| `baize-source-7509481.zip` | 30,452,694 | 29.041952 | `9ce5d0a264a484e98d1f49b55edcfd77884ff7aa0417e165b3c46e5918cdf70c` |
-| `baize-standard-bundled-node-linux-x64-7509481.tar.gz` | 84,330,153 | 80.423501 | `f56ebff8376feec3145582e67a4f75f64cf2a449c0675a04f8fa9db0a6a2d718` |
-| `baize-standard-docker-install-7509481.zip` | 30,453,723 | 29.042933 | `1bb60aaab4368c64865f26331b0cf9d63f5fa5624e94e26b87c0abca936f8ec3` |
+| `baize-lite-node-ready-linux-x64-7509481.tar.gz` | 30,036,242 | 28.644793 | `8871fe373a9b2ef766e42e80bf69f2a4dba0c1cc0d3f1d3b412bff029465e7c8` |
+| `baize-source-7509481.zip` | 30,454,013 | 29.043210 | `58472cfaba35224bca53c4ee9fdd90c9fcf11704bff8bce1509d0fb5da42ddd3` |
+| `baize-standard-bundled-node-linux-x64-7509481.tar.gz` | 84,321,660 | 80.415401 | `7bdd3fb4f400d6b5c36c18166ba9861f4e7c0a54820bff131dd9adc22a514492` |
+| `baize-standard-docker-install-7509481.zip` | 30,455,085 | 29.044232 | `f96efb0e3aee529f98558884fdbb3c481036d7711fe590034648a3b89c37cbf6` |
 | `baize-standard-docker-offline-7509481.tar.gz` | 297,011,351 | 283.252097 | `f73025dee09b94e83a66ef75dea8f93bc0cfbd7f3db4bd2f76c91805d3116cd3` |
-| `baize-standard-node-ready-linux-x64-7509481.tar.gz` | 39,634,061 | 37.797986 | `4e0f3afe60f42daa81ad76ec5e952d62a011bd5be0c5e4f761c75cf5847eea9d` |
+| `baize-standard-node-ready-linux-x64-7509481.tar.gz` | 39,639,282 | 37.802965 | `097c36a8bba658b6c779cabd60400969237690cb0464691a7d5b8b1118f71013` |
 | `baize-tracker-browser-7509481.zip` | 81,731 | 0.077945 | `e10950ff979bfa2bef3ad591d1e911054466e5403eb36d7acccf251430020987` |
 | `baize-tracker-source-7509481.zip` | 22,833 | 0.021775 | `c05b4d2bc9f81f719690d7bfa5efcbf48e1010def0eb6556d0776e07168eabf2` |
 | `baize-wordpress-7509481.zip` | 14,054 | 0.013403 | `1cd176c56235964e5d069d4513baee140bd4e393933f89e978523b3ce28fc926` |
 
-Library上传支持流程失败于工具目录网络；准备旧交接的控制动作成功，但三件输入的受支持消费端下载及一次明确本地目标重试全部失败，没有可读本地字节，旧ZIP哈希仅是发送方提供而非本机核验。没有猜URL或使用旧环境路径。GitHub已只读确认私有连接有admin/push权限、现有Release为空；CLI的API/Release访问Forbidden，连接工具没有Release创建/附件上传能力。没有创建Release、上传附件、新建凭据、抽取token或修改安全设置。源码和本页索引可通过私有仓库取用；大包等待可用投递通道，未写入main历史。详细阻塞见 [delivery-route-status.json](validation/final-7509481/delivery-route-status.json) 和 [old-handoff-materialization-status.json](validation/final-7509481/old-handoff-materialization-status.json)。
+本次只读Library连接检查成功，但按要求仅一次14件顺序保存的现有prepared helper仍失败于`hosted apps tools/list request failed: network`；prepare/finalize未开始，输出0B，没有新ID/版本/xattrs或未决写入，不盲重试。Library上传支持流程仍受工具目录网络阻塞；准备旧交接的控制动作成功，但三件输入的受支持消费端下载及一次明确本地目标重试全部失败，没有可读本地字节，旧ZIP哈希仅是发送方提供而非本机核验。没有猜URL或使用旧环境路径。GitHub已只读确认私有连接有admin/push权限、现有Release为空；CLI的API/Release访问Forbidden，连接工具没有Release创建/附件上传能力。没有创建Release、上传附件、新建凭据、抽取token或修改安全设置。源码和本页索引可通过私有仓库取用；大包等待可用投递通道，未写入main历史。详细阻塞见 [delivery-route-status.json](validation/final-7509481/delivery-route-status.json) 和 [old-handoff-materialization-status.json](validation/final-7509481/old-handoff-materialization-status.json)。
 
 生产服务器、真实宝塔、Windows、macOS、ARM、Alpine、物理断电/磁盘故障，以及真实外部Google/SMTP/商业模型账号未验收，不宣称通过。暂无需要用户夜间操作的步骤；剩余需要决定的事项是恢复一个可用的二进制投递通道，并按已保留的并发加载等待和隔离通过证据评估目标部署的加载性能边界。

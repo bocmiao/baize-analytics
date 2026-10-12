@@ -1,0 +1,46 @@
+[
+  {
+    "name": "baize-standard-node-ready-linux-x64-7509481",
+    "oldBytes": 39634061,
+    "oldSha256": "4e0f3afe60f42daa81ad76ec5e952d62a011bd5be0c5e4f761c75cf5847eea9d",
+    "preservedArchive": "/tmp/baize-acceptance-preserved/previous-before-documentation-tag-fix/baize-standard-node-ready-linux-x64-7509481.tar.gz",
+    "newBytes": 39639282,
+    "newSha256": "097c36a8bba658b6c779cabd60400969237690cb0464691a7d5b8b1118f71013",
+    "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+    "imageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8"
+  },
+  {
+    "name": "baize-standard-bundled-node-linux-x64-7509481",
+    "oldBytes": 84330153,
+    "oldSha256": "f56ebff8376feec3145582e67a4f75f64cf2a449c0675a04f8fa9db0a6a2d718",
+    "preservedArchive": "/tmp/baize-acceptance-preserved/previous-before-documentation-tag-fix/baize-standard-bundled-node-linux-x64-7509481.tar.gz",
+    "newBytes": 84321660,
+    "newSha256": "7bdd3fb4f400d6b5c36c18166ba9861f4e7c0a54820bff131dd9adc22a514492",
+    "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+    "imageId": "sha256:c0abeeded626b5d9392e8a2ac2f71592b260d158e30a2ca653b6a63e31f01db8"
+  },
+  {
+    "name": "baize-lite-node-ready-linux-x64-7509481",
+    "oldBytes": 30032195,
+    "oldSha256": "ada8e8fa670d788d392a22ad2411a534f23a01a6532361891ab74beb74f290f3",
+    "preservedArchive": "/tmp/baize-acceptance-preserved/previous-before-documentation-tag-fix/baize-lite-node-ready-linux-x64-7509481.tar.gz",
+    "newBytes": 30036242,
+    "newSha256": "8871fe373a9b2ef766e42e80bf69f2a4dba0c1cc0d3f1d3b412bff029465e7c8",
+    "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+    "imageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248"
+  },
+  {
+    "name": "baize-lite-bundled-node-linux-x64-7509481",
+    "oldBytes": 74723992,
+    "oldSha256": "12ad4f1af8f366742a665018e00095afb8c96f14e890b030175edeb8eb42cef9",
+    "preservedArchive": "/tmp/baize-acceptance-preserved/previous-before-documentation-tag-fix/baize-lite-bundled-node-linux-x64-7509481.tar.gz",
+    "newBytes": 74717627,
+    "newSha256": "2dfc0ba55959f9492ddc7ccd106f6cdc7726cbc2eea02e630ea06770ada898fb",
+    "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+    "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+    "imageId": "sha256:7782b58652f20a06efd2c85826127445fc69223ea32b23fe55ac50150430e248"
+  }
+]
