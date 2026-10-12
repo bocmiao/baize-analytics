@@ -34,6 +34,11 @@ if [ "$canonical_restore" = 1 ]; then
   docker compose cp "$backup_dir/canonical/index.json" "app:$proof_stage/index.json"
   docker compose cp "$backup_dir/canonical/history/manifest.json" "app:$proof_stage/history/manifest.json"
   docker compose cp "$restore_dir/replay-retention-proof.json" "app:$proof_stage/replay-retention-proof.json"
+  # docker compose cp preserves host ownership. Use the running app identity,
+  # and descriptor-bound regular files rather than following copied symlinks.
+  proof_identity="$(docker compose exec -T app node -e 'console.log(process.getuid()+":"+process.getgid())')"
+  [[ "$proof_identity" =~ ^[0-9]+:[0-9]+$ ]] || { echo 'Invalid proof application identity' >&2; exit 1; }
+  docker compose exec -T --user 0 app node scripts/ops-restore-proof-files.mjs "$proof_stage" "${proof_identity%:*}" "${proof_identity#*:}"
   docker compose exec -T app node --import tsx scripts/replay-retention-proof-runtime.ts validate "$proof_stage"
 fi
 exists="$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$new_db'")"

@@ -10,7 +10,8 @@ SOURCE_CH_URL="$source_url" node --input-type=module -e 'if(new URL(process.env.
 fixture="/app/data/ops-canonical-fixture.json"
 target_db="baize_restore_canonical_${RANDOM}_${RANDOM}"
 backup="backups/${COMPOSE_PROJECT_NAME}-canonical-${RANDOM}"
-cleanup(){ docker compose exec -T postgres dropdb -U baize --if-exists "$target_db" >/dev/null 2>&1 || true; docker volume rm "${COMPOSE_PROJECT_NAME}_${target_db}_app_data" "${COMPOSE_PROJECT_NAME}_${target_db}_app_keys" >/dev/null 2>&1 || true; }
+proof_failure_dir=""
+cleanup(){ if [ -n "$proof_failure_dir" ]; then rm -rf "$proof_failure_dir"; fi; docker compose exec -T postgres dropdb -U baize --if-exists "$target_db" >/dev/null 2>&1 || true; docker volume rm "${COMPOSE_PROJECT_NAME}_${target_db}_app_data" "${COMPOSE_PROJECT_NAME}_${target_db}_app_keys" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 docker compose exec -T --env OPS_ISOLATED_STACK=1 app node --import tsx scripts/ops-canonical-stack.ts seed "$fixture"
 scripts/backup.sh "$backup"
@@ -21,6 +22,22 @@ docker compose exec -T --env OPS_ISOLATED_STACK=1 app node --import tsx scripts/
 # not an independent-machine disaster recovery assertion.
 target_url="$(SOURCE_CH_URL="$source_url" TARGET_CH_DB="${target_db}_ch" node --input-type=module -e 'const u=new URL(process.env.SOURCE_CH_URL);u.searchParams.set("database",process.env.TARGET_CH_DB);console.log(u.href)')"
 BAIZE_RESTORE_CLICKHOUSE_URL="$target_url" BAIZE_RESTORE_CLICKHOUSE_USER="${CLICKHOUSE_USER:-baize}" BAIZE_RESTORE_CLICKHOUSE_PASSWORD="${CLICKHOUSE_PASSWORD:?Local optional profile password required}" scripts/restore.sh "$backup" "$target_db"
+docker compose exec -T app node -e 'const fs=require("node:fs"),assert=require("node:assert/strict");assert.equal(fs.readdirSync("/tmp").filter(name=>name.startsWith("baize-retention-check-")).length,0);console.log("Successful restore cleaned temporary proof directories.")'
+# A copied symlink must fail before target creation and leave no success marker.
+proof_failure_dir="$(mktemp -d "$PWD/.baize/restore-proof-failure.XXXXXX")"
+cp -a "$backup" "$proof_failure_dir/backup"
+mv "$proof_failure_dir/backup/canonical/index.json" "$proof_failure_dir/backup/canonical/index.safe.json"
+ln -s index.safe.json "$proof_failure_dir/backup/canonical/index.json"
+proof_failure_db="${target_db}_unsafe"
+if BAIZE_RESTORE_CLICKHOUSE_URL="$target_url" BAIZE_RESTORE_CLICKHOUSE_USER="${CLICKHOUSE_USER:-baize}" BAIZE_RESTORE_CLICKHOUSE_PASSWORD="$CLICKHOUSE_PASSWORD" scripts/restore.sh "$proof_failure_dir/backup" "$proof_failure_db" > "$proof_failure_dir/rejection.log" 2>&1; then cat "$proof_failure_dir/rejection.log"; echo 'Symlink proof falsely accepted!' >&2; exit 1; fi
+cat "$proof_failure_dir/rejection.log"
+rg 'ELOOP|symbolic link' "$proof_failure_dir/rejection.log" >/dev/null
+if rg '"restored":true|"reaggregated":true|^Restored ' "$proof_failure_dir/rejection.log"; then echo 'Unsafe proof printed success!' >&2; exit 1; fi
+[ ! -e ".baize/restores/$proof_failure_db.json" ] || { echo 'Unsafe proof wrote success marker!' >&2; exit 1; }
+[ "$(docker compose exec -T postgres psql -U baize -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='$proof_failure_db'")" = 0 ] || { echo 'Unsafe proof created target database!' >&2; exit 1; }
+docker compose exec -T app node -e 'const fs=require("node:fs"),assert=require("node:assert/strict");assert.equal(fs.readdirSync("/tmp").filter(name=>name.startsWith("baize-retention-check-")).length,0);console.log("Unsafe proof rejected before database creation, without success marker/output; temporary proof directories cleaned.")'
+rm -rf "$proof_failure_dir"
+proof_failure_dir=''
 docker compose exec -T --env OPS_ISOLATED_STACK=1 app node --import tsx scripts/ops-canonical-stack.ts verify "$fixture" > "$backup/source-after-restore.json"
 cmp "$backup/source-after-deletion.json" "$backup/source-after-restore.json"
 source_database="$(docker compose exec -T app printenv DATABASE_URL)"
