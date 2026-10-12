@@ -136,8 +136,13 @@ if [ "$canonical_restore" = 1 ]; then cp -a "$backup_dir/canonical" "$restore_di
 cp "$backup_dir/tombstones.jsonl" "$restore_dir/restore-backup-tombstones.jsonl"
 docker volume create --label "baize.restore.database=$new_db" "$volume" >/dev/null
 docker volume create --label "baize.restore.database=$new_db" "$keys_volume" >/dev/null
-image="$(docker compose images -q app)"
-app_uid_gid="$(docker inspect "$(docker compose ps --all -q app)" --format '{{.Config.User}}')"
+if [ -n "$source_helper" ]; then
+  image="$source_image"
+  app_uid_gid="$source_user"
+else
+  image="$(docker compose images -q app)"
+  app_uid_gid="$(docker inspect "$(docker compose ps --all -q app)" --format '{{.Config.User}}')"
+fi
 [[ "$app_uid_gid" =~ ^[0-9]+:[0-9]+$ ]] || { echo "Cannot determine application volume ownership" >&2; exit 1; }
 docker run --rm --user 0 --entrypoint node \
   --mount "type=volume,src=$volume,dst=/target" \
