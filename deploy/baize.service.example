@@ -1,0 +1,19 @@
+# Operator-reviewed Linux example; never installed/enabled automatically.
+[Unit]
+Description=Baize Analytics self-hosted application
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=baize
+Group=baize
+WorkingDirectory=/opt/baize/current
+ExecStart=/opt/baize/current/scripts/release-start.sh --env-file /etc/baize/runtime.env
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

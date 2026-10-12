@@ -1,3 +1,4 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {it,expect} from 'vitest';
 import {build} from 'esbuild';
 import {chromium} from '@playwright/test';
@@ -5,7 +6,7 @@ import pg from 'pg';
 import {createServer} from 'node:http';
 import {randomBytes} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
-import {createApp} from '../../src/server/app';
+import {createApp} from '../helpers/install-fixture.js';
 import {runWorkerOnce} from '../../src/server/worker';
 
 it('real browser tracker -> Fastify persisted PG -> governance -> session/rollup -> query',async()=>{
@@ -22,7 +23,7 @@ it('real browser tracker -> Fastify persisted PG -> governance -> session/rollup
  const address=website.address() as {port:number};const websiteHost=`http://127.0.0.1:${address.port}`;
  try{
   api=await createApp({pool,dataDir,redis:null,background:false});apiHost=await api.app.listen({port:0,host:'127.0.0.1'});
-  const setup=await fetch(apiHost+'/api/setup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'tracker-test@example.test',password:'BaizeTrackerTest2026!',name:'浏览器管理员'})});expect(setup.status).toBe(200);
+  const setup=await fetch(apiHost+'/api/setup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({installationNonce:fixtureInstallationNonce,email:'tracker-test@example.test',password:'BaizeTrackerTest2026!',name:'浏览器管理员'})});expect(setup.status).toBe(200);
   const cookie=setup.headers.get('set-cookie')!.split(';')[0]!;
   const siteResponse=await fetch(apiHost+'/api/v1/sites',{method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({name:'真实浏览器链路',domain:new URL(websiteHost).host,timezone:'Asia/Shanghai',config:{consent_required:true,replay:true,heatmap:true,vitals:true}})});expect(siteResponse.status).toBe(201);siteId=(await siteResponse.json() as {site:{id:string}}).site.id;
   browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium'});

@@ -32,6 +32,7 @@ import { gunzipSync } from 'node:zlib';
 import { createPool,migrate,transaction,lockSite } from './db.js';
 import { masterKey,HttpError } from './security.js';
 import { authFunctions,registerAuth } from './auth.js';
+import {registerStandardDeploymentDiagnostics} from './deployment-diagnostics.js';
 import { registerRequestRateLimits } from './request-rate-limit.js';
 import { registerSites } from './sites.js';
 import { registerCollect } from './collect.js';
@@ -114,7 +115,7 @@ export async function createApp(options:AppOptions={}){
   if(configuredGeo?.enabled===false)geo.disable();
   const geoAccount=configuredGeo?configuredGeo.enabled?configuredGeo.accountId:undefined:process.env.MAXMIND_ACCOUNT_ID;
   const geoLicense=configuredGeo?configuredGeo.enabled?configuredGeo.licenseKey:undefined:process.env.MAXMIND_LICENSE_KEY;
-  if(geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
+  if(process.env.BAIZE_NATIVE_VALIDATE_ONLY!=='1'&&geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
   const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});
   await app.register(cookie);
   if(options.performanceSink)app.addHook('onRequest',(req,reply,done)=>{const path=req.url.split('?')[0]!;const route=path==='/api/collect'?'collect':/^\/api\/v1\/sites\/[^/]+\/stats$/.test(path)?'stats':'other';withPerformanceObservation('http_request',options.performanceSink,()=>{const scope=getPerformanceScopeId();if(scope)reply.header('X-Baize-Performance-Scope',scope);done();},route);});
@@ -130,7 +131,7 @@ export async function createApp(options:AppOptions={}){
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);if(body.error==='share_password_busy')reply.header('Retry-After','1');return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   registerRequestRateLimits(app,ctx);
-  await registerAuth(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
+  await registerAuth(app,ctx);registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});

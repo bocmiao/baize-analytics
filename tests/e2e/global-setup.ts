@@ -12,6 +12,7 @@ export default async function globalSetup(config: FullConfig) {
         expect(setup.ok()).toBeTruthy();
         if ((await setup.json()).required) {
             await page.goto('/setup');
+            await page.getByLabel('安装凭证', { exact: true }).fill('42'.repeat(32));
             await page.getByLabel('姓名', { exact: true }).fill('验收管理员');
             await page.getByLabel('邮箱', { exact: true }).fill('acceptance@example.test');
             await page.getByLabel('密码', { exact: true }).fill('BaizeAcceptance2026!');

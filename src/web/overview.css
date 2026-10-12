@@ -41,5 +41,27 @@ button.overview-insight-toggle{display:inline-flex;align-items:center;justify-co
 /* Long factual summaries get their own phone row; never squeeze chart titles vertically. */
 @media(max-width:650px){.approved-overview .overview-trend-header h2{white-space:nowrap}.approved-overview .overview-trend-control{grid-column:1 / -1;grid-row:2;justify-self:start;white-space:nowrap}.approved-overview .overview-trend-legend{grid-column:1 / -1;grid-row:3;justify-self:start;justify-content:flex-start}.approved-overview .overview-trend-legend small{text-align:left;width:auto}}
 
-/* Desktop collapsed cards retain their approved minimum across CJK font metrics. */
-@media(min-width:1200px){.approved-overview.insights-closed .overview-detail-grid>.panel:not(.overview-content-panel){min-block-size:230px}}
+
+/* The available primary content width, including the insight rail, controls the reading layout. */
+.approved-overview-primary{container-type:inline-size;container-name:overview-primary}
+.overview-trend-source-row{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+.approved-overview .overview-trend-source-row>.panel{margin-bottom:0;min-width:0}
+@container overview-primary (min-width:1040px){.overview-trend-source-row{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}
+.approved-overview .overview-content-panel{width:100%;grid-column:auto;margin-bottom:16px;min-width:0}
+.approved-overview .overview-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.approved-overview .overview-detail-grid>.panel{min-block-size:0}
+.approved-overview .overview-geography-compact{padding:14px;min-block-size:0}
+.overview-geography-compact h2{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}
+.overview-geography-compact p{font-size:12px;margin:0 0 8px;color:var(--overview-muted)}
+.approved-overview .overview-trend-header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center}
+.approved-overview .overview-trend-header h2{grid-column:1;grid-row:1;white-space:normal}
+.approved-overview .overview-trend-tools{display:contents}
+.approved-overview .overview-interpretation-toggle{grid-column:2;grid-row:1;justify-self:end}
+.approved-overview .overview-trend-control{grid-column:1/-1;grid-row:2;justify-self:start;max-width:100%;min-width:0;white-space:normal}
+.approved-overview .overview-trend-legend{grid-column:1/-1;grid-row:3;justify-self:start;justify-content:flex-start;gap:6px 12px;flex-wrap:wrap;max-width:100%}
+.approved-overview .overview-trend-legend small{text-align:left;width:auto}
+.overview-single-point-note{font-size:12px;color:var(--overview-muted);margin:6px 0;line-height:1.5}
+@container overview-primary (max-width:650px){.approved-overview .overview-detail-grid{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.approved-overview *,.overview-insight-dialog *{animation-duration:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}}
+
+@media(max-width:650px){.approved-overview .overview-detail-grid{grid-template-columns:minmax(0,1fr)}}

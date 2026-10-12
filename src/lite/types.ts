@@ -12,3 +12,5 @@ export interface LiteDomainRequest {kind:string;payload:Record<string,unknown>}
 export interface LiteStorePort {call<T>(kind:string,payload?:Record<string,unknown>):Promise<T>;read<T>(kind:string,payload?:Record<string,unknown>,timeoutMs?:number):Promise<T>;freeze():Promise<void>;frozenIdentity():Promise<{dataDir:string;keyDir:string}>;unfreeze():void;backupDatabase(destination:string):Promise<void>;close():Promise<void>;runtime:Promise<{sqliteVersion:string;sourceId:string}>}
 // Domain implementations run only inside the owner worker and must not await network I/O in a transaction.
 export type LiteDomainHandler=(context:LiteWriteContext,kind:string,payload:Record<string,unknown>)=>unknown;
+
+export type {BootstrapStatus} from './bootstrap-domain.js';

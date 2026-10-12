@@ -38,6 +38,7 @@ mkdir -m 700 "$DATA_DIR" "$KEYS_DIR"
 reports="${CI_TEST_REPORT_DIR:-$ci_dir/reports}"
 mkdir -p "$reports"
 node -e 'require("node:fs").writeFileSync(process.env.MASTER_KEY_FILE,require("node:crypto").randomBytes(32).toString("hex"),{mode:0o600})'
+node -e 'require("node:fs").writeFileSync(require("node:path").join(process.env.KEYS_DIR,"install-nonce.json"),JSON.stringify({version:1,nonce:"42".repeat(32)}),{flag:"wx",mode:0o600})'
 app_pid=''
 cleanup(){ if [ -n "$app_pid" ]; then kill "$app_pid" 2>/dev/null || true; wait "$app_pid" 2>/dev/null || true; fi; service_cleanup; }
 trap cleanup EXIT

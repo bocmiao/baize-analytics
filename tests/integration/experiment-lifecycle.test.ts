@@ -1,11 +1,12 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {beforeAll,afterAll,it,expect} from 'vitest';
 import pg from 'pg';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
-import {createApp} from '../../src/server/app';
+import {createApp} from '../helpers/install-fixture.js';
 import {runWorkerOnce} from '../../src/server/worker';
 const schema='experiment_lifecycle_'+randomBytes(5).toString('hex'),connectionString=process.env.DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev',admin=new pg.Pool({connectionString});let pool:pg.Pool,runtime:Awaited<ReturnType<typeof createApp>>,dir:string,cookie:string,site:string;
-beforeAll(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);pool=new pg.Pool({connectionString,options:`-c search_path=${schema},public`});dir=await mkdtemp('/tmp/baize-experiment-lifecycle-');runtime=await createApp({pool,redis:null,dataDir:dir,background:false});const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:'lifecycle@example.test',password:'ExperimentLifecycle2026!',name:'实验周期'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'实验周期',domain:'lifecycle.example.test',timezone:'UTC',config:{experiments:true}}});expect(created.statusCode).toBe(201);site=created.json().site.id;});
+beforeAll(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);pool=new pg.Pool({connectionString,options:`-c search_path=${schema},public`});dir=await mkdtemp('/tmp/baize-experiment-lifecycle-');runtime=await createApp({pool,redis:null,dataDir:dir,background:false});const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'lifecycle@example.test',password:'ExperimentLifecycle2026!',name:'实验周期'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'实验周期',domain:'lifecycle.example.test',timezone:'UTC',config:{experiments:true}}});expect(created.statusCode).toBe(201);site=created.json().site.id;});
 afterAll(async()=>{await runtime?.app.close();await pool?.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();if(dir)await rm(dir,{recursive:true,force:true});});
 const wire=(extra:Record<string,unknown>)=>({event_id:randomUUID(),visitor_id:randomUUID(),page_id:randomUUID(),ts:Date.now(),type:'event',event_name:'signup',url:'https://lifecycle.example.test/goal',path:'/goal',...extra});
 const collect=(events:Record<string,unknown>[])=>runtime.app.inject({method:'POST',url:'/api/collect',headers:{'user-agent':'Mozilla/5.0 Chrome/145.0.0.0'},payload:{protocol_version:1,site_id:site,sdk:'lifecycle-test',sent_at:Date.now(),events}});

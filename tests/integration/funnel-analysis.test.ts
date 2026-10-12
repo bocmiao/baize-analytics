@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomUUID,randomBytes} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {Pool} from 'pg';
 import {afterAll,beforeAll,describe,expect,it} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 describe.skipIf(!process.env.TEST_DATABASE_URL)('actual PG collector funnel loss analysis',()=>{
  const schema=`funnel_${randomUUID().replaceAll('-','')}`,admin=new Pool({connectionString:process.env.TEST_DATABASE_URL}),pool=new Pool({connectionString:process.env.TEST_DATABASE_URL,options:`-c search_path=${schema}`});
  const hour=Math.floor((Date.now()-86400000)/3600000)*3600000,visitors=Array.from({length:4},()=>randomUUID());
@@ -13,7 +14,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('actual PG collector funnel loss
  const request=(id=loose,query=range,headers:Record<string,string>={cookie})=>instance.app.inject({url:`/api/v1/sites/${site}/funnels/${id}/analysis?${query}`,headers});
  beforeAll(async()=>{
   await admin.query(`CREATE SCHEMA ${schema}`);temporary=await mkdtemp(join(tmpdir(),'baize-funnel-'));instance=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:join(temporary,'data'),keyDir:join(temporary,'keys'),masterKey:randomBytes(32)});
-  const setup=await instance.app.inject({method:'POST',url:'/api/setup',payload:{email:'funnel@example.invalid',password:'Actual-funnel-password-2026'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0];
+  const setup=await instance.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'funnel@example.invalid',password:'Actual-funnel-password-2026'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0];
   const createSite=async()=>{const response=await instance.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'funnel',domain:'funnel.example.invalid',timezone:'UTC'}});expect(response.statusCode).toBe(201);return response.json().site.id as string;};site=await createSite();other=await createSite();
   const createFunnel=async(isStrict:boolean)=>{const response=await instance.app.inject({method:'POST',url:`/api/v1/sites/${site}/funnels`,headers:{cookie},payload:{name:isStrict?'strict':'loose',strict:isStrict,steps:[{type:'page',value:'/a'},{type:'page',value:'/b'}]}});expect(response.statusCode).toBeLessThan(300);return response.json().id as string;};loose=await createFunnel(false);strict=await createFunnel(true);
   const events:Record<string,unknown>[]=[];

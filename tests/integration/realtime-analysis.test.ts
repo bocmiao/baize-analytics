@@ -1,13 +1,14 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {it,expect} from 'vitest';
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {queryRealtime} from '../../src/server/realtime-analysis.js';
 import {beginPartitionSnapshot} from '../../src/server/db.js';
 it('real collector/PG realtime Top uses all 30-minute PV beyond the 200 preview and excludes bots, deleted visitors and stale heartbeats',async()=>{
  const connectionString=process.env.TEST_DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev',schema='realtime_'+randomUUID().replaceAll('-',''),admin=new Pool({connectionString});await admin.query(`CREATE SCHEMA ${schema}`);const pool=new Pool({connectionString,options:`-c search_path=${schema},public`}),dataDir=await mkdtemp('/tmp/baize-realtime-');let runtime:Awaited<ReturnType<typeof createApp>>|undefined;
- try{runtime=await createApp({pool,redis:null,dataDir,background:false});const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:'realtime@example.test',password:'RealtimeActual2026!',name:'实时专项'}}),cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'实际实时Top',domain:'realtime.example.test',timezone:'UTC'}});expect(created.statusCode).toBe(201);const site=created.json().site.id,now=Date.now(),visitor=randomUUID(),deleted=randomUUID(),stale=randomUUID(),page=randomUUID();
+ try{runtime=await createApp({pool,redis:null,dataDir,background:false});const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'realtime@example.test',password:'RealtimeActual2026!',name:'实时专项'}}),cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'实际实时Top',domain:'realtime.example.test',timezone:'UTC'}});expect(created.statusCode).toBe(201);const site=created.json().site.id,now=Date.now(),visitor=randomUUID(),deleted=randomUUID(),stale=randomUUID(),page=randomUUID();
  const event=(path:string,ts:number,v=visitor,type='pageview')=>({event_id:randomUUID(),type,ts,visitor_id:v,page_id:page,url:'https://realtime.example.test'+path,path,referrer:'https://www.google.com/search',...(type==='heartbeat'?{visible_ms:1000,interval_start:ts-1000,interval_end:ts}:{})});
  const facts=[...Array.from({length:205},(_,i)=>event('/major',now-120000+i)),...Array.from({length:35},(_,i)=>event('/minor',now-60000+i)),event('/outside-30m',now-31*60000),event('/deleted',now-10000,deleted),event('/major',now-1000,visitor,'heartbeat'),event('/major',now-2000,visitor,'heartbeat'),event('/stale',now-6*60000,stale,'heartbeat')];
  for(let index=0;index<facts.length;index+=50){const accepted=await runtime.app.inject({method:'POST',url:'/api/collect',headers:{'user-agent':'Mozilla/5.0 Chrome/145'},payload:{protocol_version:1,site_id:site,sdk:'real-realtime',sent_at:Date.now(),events:facts.slice(index,index+50)}});expect(accepted.statusCode,accepted.body).toBe(202);expect(accepted.json().rejected).toEqual([]);}

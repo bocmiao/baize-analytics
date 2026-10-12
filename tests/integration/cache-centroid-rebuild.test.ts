@@ -1,9 +1,10 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
 import {TDigest} from 'tdigest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {claimSite,rebuildSite} from '../../src/server/worker.js';
 import {lockSite} from '../../src/server/db.js';
 import {CanonicalClickHouse} from '../../src/server/canonical-clickhouse.js';
@@ -24,7 +25,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('rea
  const config={url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'},canonical=new CanonicalClickHouse(config),headers=new ClickHouseSessionHeaderStore(config),facts=new ClickHouseFactStore(config),remaining=new ClickHouseRemainingFactStore(config),cache=new ClickHouseCacheStore(config);let runtime:Awaited<ReturnType<typeof createApp>>|undefined;
  try{
  await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,background:false,dataDir:dir,keyDir:dir,publicUrl:'http://localhost',canonical});const base=await runtime.app.listen({host:'127.0.0.1',port:0});
- const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:'centroid@example.invalid',password:'Local-only-centroid-1234!'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0]!;
+ const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'centroid@example.invalid',password:'Local-only-centroid-1234!'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0]!;
  const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'Centroid test',domain:'example.test',timezone:'UTC'}});expect(created.statusCode).toBe(201);const actualSite=created.json().site.id as string;
  // Keep the actual authorized site returned by the API; no fabricated owner.
  const selected=actualSite;

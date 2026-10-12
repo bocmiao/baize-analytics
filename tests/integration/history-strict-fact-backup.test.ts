@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {mkdtemp,rm,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createServer} from 'node:net';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {claimSite,rebuildSite} from '../../src/server/worker.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
 import {CANONICAL_ACTIVATION_READY} from '../../src/server/canonical-migration.js';
@@ -28,7 +29,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CAN
  try{
  await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,background:false,dataDir:dir,keyDir:join(dir,'keys'),publicUrl:'http://localhost'});const base=await runtime.app.listen({host:'127.0.0.1',port:0});let cookie='';
  const post=async(path:string,payload:unknown)=>{const response=await fetch(base+path,{method:'POST',headers:{cookie,origin:'http://localhost','content-type':'application/json'},body:JSON.stringify(payload)});const text=await response.text();return {response,text,json:()=>JSON.parse(text)};};
- const setup=await post('/api/setup',{email:'history-strict@example.invalid',password:'Private-history-2026-fixture!'});expect(setup.response.status,setup.text).toBe(200);cookie=setup.response.headers.get('set-cookie')!.split(';')[0]!;const created=await post('/api/v1/sites',{name:'strict selected history',domain:'example.test',timezone:'UTC',retention_days:2,config:{heatmap:true}});expect(created.response.status,created.text).toBe(201);site=created.json().site.id;
+ const setup=await post('/api/setup',{installationNonce:fixtureInstallationNonce,email:'history-strict@example.invalid',password:'Private-history-2026-fixture!'});expect(setup.response.status,setup.text).toBe(200);cookie=setup.response.headers.get('set-cookie')!.split(';')[0]!;const created=await post('/api/v1/sites',{name:'strict selected history',domain:'example.test',timezone:'UTC',retention_days:2,config:{heatmap:true}});expect(created.response.status,created.text).toBe(201);site=created.json().site.id;
  const events=[{type:'identify',ts:boundary-31*60000,path:'/A',user_id:'history-A'},{type:'pageview',ts:boundary-30*60000,path:'/A'},{type:'event',ts:boundary-29*60000,path:'/A',event_name:'click',props:{plan:'免费'}},{type:'heatmap',ts:boundary-28*60000,path:'/A',heatmap:{kind:'click',x:0.5,y:0.25,width:1200,height:800}},{type:'identify',ts:boundary-15*60000,path:'/B',user_id:'history-B'},{type:'pageview',ts:boundary-5*60000,path:'/B'},{type:'vitals',ts:boundary-4*60000,path:'/B',vitals:{lcp:900}},{type:'pageview',ts:boundary+60000,path:'/B-retained'},{type:'heatmap',ts:boundary+60001,path:'/B-retained',heatmap:{kind:'click',x:0.25,y:0.5,width:1200,height:800}}].map(e=>({event_id:randomUUID(),visitor_id:visitor,page_id:page,url:'https://example.test'+e.path,...e}));const collection=await fetch(base+'/api/collect',{method:'POST',headers:{origin:'https://example.test','user-agent':'Mozilla/5.0 Chrome/128.0 Safari/537.36','content-type':'application/json'},body:JSON.stringify({protocol_version:1,site_id:site,sdk:'strict-outer-history-native',sent_at:Date.now(),events})});expect(collection.status,await collection.clone().text()).toBe(202);
  await pool.query('UPDATE sites SET retention_days=1 WHERE id=$1',[site]);const run=async()=>{const claim=await claimSite(pool);expect(claim).toBeTruthy();expect(await rebuildSite(pool,claim!)).toBe(true);};await run();
  for(const store of [canonical,headers,facts,remaining,cache,history])await store.initialize();installCanonicalStore(pool,canonical);installSessionHeaderStore(pool,headers);installFactStore(pool,facts);installRemainingFactStore(pool,remaining);installCacheStore(pool,cache);installHistoryStore(pool,history);

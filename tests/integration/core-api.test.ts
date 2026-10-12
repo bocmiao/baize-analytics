@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import { beforeAll,afterAll,describe,it,expect } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import { mkdtemp,readFile,rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import pg from 'pg';
-import { createApp } from '../../src/server/app.js';
+import { createApp } from '../helpers/install-fixture.js';
 import { runWorkerOnce } from '../../src/server/worker.js';
 import { replayDeletionJournal } from '../../src/server/deletion.js';
 import { gunzipSync,gzipSync } from 'node:zlib';
@@ -19,7 +20,7 @@ describe.skipIf(!enabled)('real PostgreSQL application API acceptance',()=>{
   afterAll(async()=>{await runtime?.app.close();await pool?.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();if(dir)await rm(dir,{recursive:true,force:true});});
   it('initializes exactly one admin atomically and protects authenticated management',async()=>{
     expect((await runtime.app.inject('/api/setup')).json().required).toBe(true);
-    const attempts=await Promise.all([1,2].map(i=>runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:`owner${i}@example.test`,password:'Acceptance-password-123!',name:'管理员'}})));
+    const attempts=await Promise.all([1,2].map(i=>runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:`owner${i}@example.test`,password:'Acceptance-password-123!',name:'管理员'}})));
     expect(attempts.map(x=>x.statusCode).sort()).toEqual([200,409]);cookie=attempts.find(x=>x.statusCode===200)!.headers['set-cookie']!.toString().split(';')[0]!;
     expect((await runtime.app.inject('/api/me')).statusCode).toBe(401);
     const create=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'真实站点',domain:'example.test',timezone:'UTC'}});expect(create.statusCode).toBe(201);site=create.json().site.id;

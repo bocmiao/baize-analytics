@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {Pool} from 'pg';
 import {afterAll,beforeAll,describe,expect,it} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {migrate} from '../../src/server/db.js';
 import {claimSite,rebuildSite} from '../../src/server/worker.js';
 import {runGovernance} from '../../src/server/governance-worker.js';
@@ -36,7 +37,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('real max1 error-path client reu
  it('actual max1 invite register and accept persist audit with membership, and audit failure rolls all writes back',async()=>{
   const instance=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:join(directory,'app-data'),keyDir:join(directory,'keys'),masterKey:randomBytes(32)});
   try{
-   const setup=await instance.app.inject({method:'POST',url:'/api/setup',payload:{email:'invite-owner@example.invalid',password:'Actual-invite-password'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0];
+   const setup=await instance.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'invite-owner@example.invalid',password:'Actual-invite-password'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0];
    const owner=setup.json().user.id;await pool.query("INSERT INTO site_members(site_id,user_id,role) VALUES($1,$2,'owner')",[site,owner]);
    const invite=async(email:string)=>{const response=await instance.app.inject({method:'POST',url:`/api/v1/sites/${site}/invites`,headers:{cookie},payload:{email,role:'viewer'}});expect(response.statusCode).toBe(200);return response.json();};
    const registration=await invite('invite-new@example.invalid');const registered=await guarded(()=>instance.app.inject({method:'POST',url:`/api/v1/invites/${registration.token}/register`,payload:{name:'New member',password:'Actual-member-password'}}));expect(registered.statusCode).toBe(200);

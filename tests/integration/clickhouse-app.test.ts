@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {describe,it,expect} from 'vitest';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {Pool} from 'pg';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {ClickHouseStore,type SnapshotIdentity} from '../../src/server/clickhouse-store.js';
 import {EventStore} from '../../src/server/event-store.js';
 
@@ -19,7 +20,7 @@ describe.skipIf(!configured)('full application ClickHouse startup and upgraded p
   let runtime:Awaited<ReturnType<typeof createApp>>|undefined;
   try{
    runtime=await createApp(options);
-   const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:'ch-app@example.test',password:'CH-App-actual-2026!',name:'CH集成管理员'}});
+   const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'ch-app@example.test',password:'CH-App-actual-2026!',name:'CH集成管理员'}});
    expect(setup.statusCode,setup.body).toBe(200);
    await run({pool,store,dataDir,options,runtime,cookie:String(setup.headers['set-cookie']).split(';')[0]!});
   }finally{

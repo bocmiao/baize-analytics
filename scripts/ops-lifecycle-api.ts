@@ -5,7 +5,7 @@ const base=process.env.PUBLIC_URL;if(!base||!new URL(base).hostname.match(/^(loc
 interface State{cookie:string;siteId:string;visitor:string;exportId?:string}
 async function request(path:string,body:unknown,cookie=''){const response=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(body)});assert.ok(response.ok,`${path}: HTTP${response.status}`);return response;}
 if(mode==='seed') {
- const response=await request('/api/setup',{email:'ops@example.invalid',password:crypto.randomUUID()+'Baize1!',name:'运维真实验收'});
+ const response=await request('/api/setup',{installationNonce:'42'.repeat(32),email:'ops@example.invalid',password:crypto.randomUUID()+'Baize1!',name:'运维真实验收'});
  const cookie=response.headers.get('set-cookie')?.split(';')[0];assert.ok(cookie);
  const created=await(await request('/api/v1/sites',{name:'运维测试站点',domain:'example.invalid',privacy_mode:'standard'},cookie)).json() as {site:{id:string}};
  const visitor=crypto.randomUUID();

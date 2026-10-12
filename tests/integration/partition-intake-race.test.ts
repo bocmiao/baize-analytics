@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {Pool} from 'pg';
 import {beforeAll,afterAll,describe,it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {lockPartitionWrites,lockSite,beginPartitionSnapshot} from '../../src/server/db.js';
 import {dropEmptyHistoricalPartitions} from '../../src/server/partitions.js';
 /** Real waiting advisory locks coordinate races; no sleep-based assumption of ordering. */
@@ -15,7 +16,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('schema partition gate actual HT
  beforeAll(async()=>{
   await admin.query(`CREATE SCHEMA ${schema}`);temporary=await mkdtemp(join(tmpdir(),'baize-partition-gate-'));
   instance=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:join(temporary,'data'),keyDir:join(temporary,'keys'),masterKey:randomBytes(32)});address=await instance.app.listen({host:'127.0.0.1',port:0});
-  const setup=await fetch(`${address}/api/setup`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:'partition-gate@example.invalid',password:'Actual-partition-gate-password'})});expect(setup.status).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0];
+  const setup=await fetch(`${address}/api/setup`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({installationNonce:fixtureInstallationNonce,email:'partition-gate@example.invalid',password:'Actual-partition-gate-password'})});expect(setup.status).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0];
   const response=await fetch(`${address}/api/v1/sites`,{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({name:'Gate test',domain:'gate.example.invalid',timezone:'UTC'})});expect(response.status).toBe(201);site=(await response.json() as {site:{id:string}}).site.id;
  },30000);
  afterAll(async()=>{await instance?.app.close();await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();if(temporary)await rm(temporary,{recursive:true,force:true});});

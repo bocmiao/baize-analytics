@@ -1,8 +1,9 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {it,expect} from 'vitest';
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm,readdir} from 'node:fs/promises';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {isolatedTestConnectionString} from '../support/database-url.js';
 
 it.skipIf(!process.env.TEST_DATABASE_URL)('real admin browser sessions exclusively authorize key rotation, SSO and GeoIP (no permission stubs)',async()=>{
@@ -10,7 +11,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('real admin browser sessions exclusive
  const pool=new Pool({connectionString:isolatedTestConnectionString(),options:`-c search_path=${schema},public`,max:1});let runtime:Awaited<ReturnType<typeof createApp>>|undefined;
  try{
   await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:dir,keyDir:dir+'/keys',publicUrl:'http://localhost'});const app=runtime.app;
-  const setup=await app.inject({method:'POST',url:'/api/setup',payload:{email:'guard-owner@example.test',password:'GuardOwner2026Strong!',name:'Owner'}});expect(setup.statusCode,setup.body).toBe(200);const ownerCookie=String(setup.headers['set-cookie']).split(';')[0]!;
+  const setup=await app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'guard-owner@example.test',password:'GuardOwner2026Strong!',name:'Owner'}});expect(setup.statusCode,setup.body).toBe(200);const ownerCookie=String(setup.headers['set-cookie']).split(';')[0]!;
   const siteResponse=await app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie:ownerCookie},payload:{name:'Guard test',domain:'guard.example.test'}});expect(siteResponse.statusCode,siteResponse.body).toBe(201);const site=siteResponse.json().site.id;
   const tokens:string[]=[];for(const scopes of [['read'],['admin']]){const token=await app.inject({method:'POST',url:`/api/v1/sites/${site}/tokens`,headers:{cookie:ownerCookie},payload:{scopes}});expect(token.statusCode,token.body).toBe(200);tokens.push(token.json().token);}
   const invitation=await app.inject({method:'POST',url:`/api/v1/sites/${site}/invites`,headers:{cookie:ownerCookie},payload:{email:'guard-member@example.test',role:'admin'}});expect(invitation.statusCode,invitation.body).toBe(200);

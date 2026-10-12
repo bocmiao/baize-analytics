@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {it,expect} from 'vitest';
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import type {PerformanceObservation} from '../../src/server/performance-observation.js';
 
 it.skipIf(!process.env.TEST_DATABASE_URL)('actual Fastify concurrent collector scopes preserve safe PG timing isolation on max-one pool',async()=>{
@@ -18,7 +19,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('actual Fastify concurrent collector s
   await admin.query(`CREATE SCHEMA ${schema}`);
   runtime=await createApp({pool,redis:null,clickhouse:null,canonical:null,history:null,dataDir:dir,keyDir:join(dir,'keys'),masterKey:Buffer.alloc(32,9),background:false,performanceSink:value=>{if(observations.length<1000)observations.push(value);}});
   const app=runtime.app;
-  const setup=await app.inject({method:'POST',url:'/api/setup',payload:{email:'perf-owner@example.test',password:'PerformanceScopeAcceptance2026!'}});
+  const setup=await app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'perf-owner@example.test',password:'PerformanceScopeAcceptance2026!'}});
   expect(setup.statusCode).toBe(200);
   const cookie=setup.cookies.map(c=>`${c.name}=${c.value}`).join('; ');
   const created=await app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'Actual performance scope',domain:'performance.example.test',timezone:'UTC'}});

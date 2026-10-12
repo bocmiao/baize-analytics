@@ -2,6 +2,7 @@ import {parentPort,workerData} from 'node:worker_threads';
 import {backup} from 'node:sqlite';
 import {randomUUID} from 'node:crypto';
 import {openDatabase,transaction} from './database.js';
+import {prepareBootstrap,claimBootstrap,validateBootstrap} from './bootstrap-domain.js';
 import {handleTask} from './task-domain.js';
 import type {LiteWriteContext} from './types.js';
 const db=openDatabase(workerData.path);
@@ -17,6 +18,9 @@ async function dispatch(kind:string,p:Record<string,unknown>):Promise<unknown>{
  if(kind==='__close'){db.close();return true;}
  if(kind==='wal_status'){const result=db.prepare('PRAGMA wal_checkpoint(PASSIVE)').get()!;const pageSize=Number(db.prepare('PRAGMA page_size').get()!.page_size);return {...result,pageSize,dirtyBytes:Math.max(0,Number(result.log)-Number(result.checkpointed))*pageSize};}
  if(kind==='checkpoint'){if(p.truncate){db.exec('PRAGMA busy_timeout=0');try{return db.prepare('PRAGMA wal_checkpoint(TRUNCATE)').get();}finally{db.exec('PRAGMA busy_timeout=1000');}}return db.prepare('PRAGMA wal_checkpoint(PASSIVE)').get();}
+ if(kind==='bootstrap_prepare')return prepareBootstrap(c);
+ if(kind==='bootstrap_validate')return validateBootstrap(c,p);
+ if(kind==='accounts_setup')return claimBootstrap(c,p);
  if(kind.startsWith('insights_')){const m=await import('./insights-domain.js');return m.handleInsights(c,kind,p);}
  if(kind.startsWith('task_'))return handleTask(c,kind,p);
  if(kind==='intake'){const wal=db.prepare('PRAGMA wal_checkpoint(PASSIVE)').get()!;const pageSize=Number(db.prepare('PRAGMA page_size').get()!.page_size);const dirtyBytes=Math.max(0,Number(wal.log)-Number(wal.checkpointed))*pageSize;if(dirtyBytes+Buffer.byteLength(JSON.stringify(p))>(workerData.maxWalBytes??128*1024*1024))throw new Error('LITE_WAL_BACKPRESSURE');const m=await import('./intake-domain.js');return m.handleIntake(c,kind,p as never);}
@@ -24,7 +28,7 @@ async function dispatch(kind:string,p:Record<string,unknown>):Promise<unknown>{
  return transaction(db,()=>{
  const authorize=(siteId:string)=>{if(p.actorId){const actor=db.prepare('SELECT is_admin FROM users WHERE id=?').get(String(p.actorId));const member=db.prepare('SELECT role FROM site_members WHERE site_id=? AND user_id=?').get(siteId,String(p.actorId));if(!actor||!actor.is_admin&&(!member||member.role==='viewer'||(['site_update','export_create'].includes(kind)&&!['owner','admin'].includes(String(member.role)))))throw new Error('LITE_SITE_FORBIDDEN');}};
  const bump=(siteId:string)=>{db.prepare('UPDATE sites SET generation=generation+1 WHERE id=?').run(siteId);const row=db.prepare('SELECT epoch,generation FROM sites WHERE id=?').get(siteId)!;db.prepare("INSERT INTO jobs(id,site_id,kind,dedupe_key,status,payload,next_at,epoch,generation) VALUES(?,?,'aggregate',?,'pending','{}',?,?,?)").run(randomUUID(),siteId,String(row.generation),c.now,row.epoch,row.generation);};
- if(kind==='accounts_setup'){if(db.prepare('SELECT id FROM users LIMIT 1').get())throw new Error('LITE_SETUP_COMPLETE');const id=randomUUID();db.prepare('INSERT INTO users VALUES(?,?,?,?,1,?)').run(id,String(p.email).toLowerCase(),String(p.name),String(p.passwordHash),c.now);return {id,email:String(p.email).toLowerCase(),name:p.name,is_admin:true};}
+
  if(kind==='session_create'){db.prepare('INSERT INTO auth_sessions VALUES(?,?,?)').run(String(p.tokenHash),String(p.userId),Number(p.expiresAt));return true;}
  if(kind==='session_delete'){db.prepare('DELETE FROM auth_sessions WHERE token_hash=?').run(String(p.tokenHash));return true;}
  if(kind==='sites_create'){const id=String(p.id??randomUUID());const epoch=randomUUID();db.prepare('INSERT INTO sites(id,name,domain,timezone,privacy_mode,retention_days,salt_secret,config,owner_id,epoch) VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,String(p.name),String(p.domain),String(p.timezone??'UTC'),String(p.privacy_mode??'standard'),Number(p.retention_days??365),String(p.salt_secret??randomUUID()),JSON.stringify(p.config??{}),String(p.owner_id??p.ownerId),epoch);db.prepare("INSERT INTO site_members VALUES(?,?,'owner')").run(id,String(p.owner_id??p.ownerId));return {id,epoch};}

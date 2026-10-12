@@ -1,3 +1,4 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {spawn,execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {createReadStream,createWriteStream} from 'node:fs';
@@ -8,7 +9,7 @@ import {mkdtemp,mkdir,rm,writeFile,readFile,copyFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {claimSite,rebuildSite} from '../../src/server/worker.js';
 import {lockSite} from '../../src/server/db.js';
 import {CanonicalClickHouse} from '../../src/server/canonical-clickhouse.js';
@@ -46,7 +47,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CAN
  const config={url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'},canonical=new CanonicalClickHouse(config),headers=new ClickHouseSessionHeaderStore(config),facts=new ClickHouseFactStore(config),remaining=new ClickHouseRemainingFactStore(config),cache=new ClickHouseCacheStore(config),key=randomBytes(32),now=Date.now()-60000;
  await admin.query(`CREATE DATABASE ${sourceDB}`);await mkdir(sourceData);await mkdir(targetData);await writeFile(keyFile,key,{mode:0o600});
  try{
-  runtime=await createApp({pool,redis:null,background:false,dataDir:sourceData,keyDir:join(dir,'keys'),masterKey:key,publicUrl:'http://localhost',canonical});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{email:'strict-identities@example.invalid',password:'Local-private-123456789!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;await pool.query("INSERT INTO sites(id,name,domain,salt_secret,timezone) VALUES($1,'strict','example.test','strict-test-secret','UTC')",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);await pool.query('INSERT INTO site_members(site_id,user_id,role) SELECT $1,id,\'admin\' FROM users',[site]);
+  runtime=await createApp({pool,redis:null,background:false,dataDir:sourceData,keyDir:join(dir,'keys'),masterKey:key,publicUrl:'http://localhost',canonical});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{installationNonce:fixtureInstallationNonce,email:'strict-identities@example.invalid',password:'Local-private-123456789!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;await pool.query("INSERT INTO sites(id,name,domain,salt_secret,timezone) VALUES($1,'strict','example.test','strict-test-secret','UTC')",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);await pool.query('INSERT INTO site_members(site_id,user_id,role) SELECT $1,id,\'admin\' FROM users',[site]);
   const range={from:new Date(now-1000).toISOString(),to:new Date().toISOString()};const identities=await publishNativeIdentityHistory({baseUrl:base,cookie,siteId:site,origin:'https://example.test',at:now,...range});sourceVisitor=identities.visitorId;
   const run=async()=>{const claim=await claimSite(pool);expect(claim).not.toBeNull();expect(await rebuildSite(pool,claim!)).toBe(true);};await run();
   for(const store of [canonical,headers,facts,remaining,cache])await store.initialize();installCanonicalEventStore(pool,canonical);installSessionHeaderStore(pool,headers);installFactStore(pool,facts);installRemainingFactStore(pool,remaining);installCacheStore(pool,cache);

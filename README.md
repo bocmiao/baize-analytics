@@ -12,7 +12,9 @@
 
 ## 本地运行
 
-安装 Docker 与 Compose v2，在已有私有 checkout 执行 `./install.sh`。默认监听 http://localhost:3000，首次访问创建管理员、站点并获取 tracker。密钥自动生成；重复安装保留本地数据和配置。当前镜像本地构建，不发布注册表。
+安装 Docker 与 Compose v2，在已有私有 checkout 执行 `./install.sh`；Lite 执行 `./install-lite.sh`。默认仅监听本机。首次访问需输入安装器提示的私有文件里的**一次性安装凭证**，再创建管理员、站点并获取 tracker；凭证不写入网址。重复安装保留账户和数据，已有安装不会重新开放初始化。镜像在本地构建，不发布注册表。
+
+也可上传并解压**包含依赖的预编译 Node 项目包**，或使用**附带 Node 的 Linux x64 包**，无需在部署机 clone、安装 npm 依赖或编译。三个部署入口、面板配置、浏览器初始化、HTTPS、独立进程托管和备份升级步骤见 [部署方式与新手操作](docs/deployment-methods.md)。源码包、dist 包和应用镜像 save 包用途不同，不能当成这两种运行包。
 
 Lite 使用同一仓库、许可证、品牌和 tracker，以单容器 SQLite 本地卷运行：见 [Lite 部署](docs/lite-deployment.md)、[能力与持久性边界](docs/lite-implementation.md)、[离线迁移](docs/lite-migration.md)和[手动 SEO/BYOK](docs/lite-optional-insights.md)。标准版继续使用 PostgreSQL/Redis；两个 profile 的数据不能通过更换镜像自动互换。
 

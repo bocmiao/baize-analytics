@@ -1,8 +1,9 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {runWorkerOnce} from '../../src/server/worker.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
 import {ClickHouseSessionHeaderStore,installSessionHeaderStore} from '../../src/server/session-header-store.js';
@@ -28,7 +29,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('com
   expect(shared.dirty).toBe(false);expect(shared.value.current.totals).toEqual(oracleCurrent.totals);expect(shared.value.previous.totals).toEqual(oraclePrevious.totals);
   expect(shared.value.current.watermark).toEqual(oracleCurrent.watermark);expect(shared.value.previous.coverage).toEqual(oraclePrevious.coverage);expect(pool.waitingCount).toBe(0);
   const credentials={email:'comparison@example.test',password:'Comparison-acceptance-2026!',name:'管理员'};
-  const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:credentials});expect(setup.statusCode,setup.body).toBe(200);
+  const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{...credentials,installationNonce:fixtureInstallationNonce}});expect(setup.statusCode,setup.body).toBe(200);
   const login=await runtime.app.inject({method:'POST',url:'/api/login',payload:{email:credentials.email,password:credentials.password}});expect(login.statusCode,login.body).toBe(200);
   const cookie=String(login.headers['set-cookie']).split(';')[0]!;
   const params=new URLSearchParams({from:mid,to,path:filters.path,compare:'previous'});

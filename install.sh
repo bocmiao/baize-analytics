@@ -23,5 +23,12 @@ if [ -n "${CODEX_PROXY_CERT:-}" ]; then
 else
   docker compose build app
 fi
+bash scripts/init-empty-volumes.sh
 docker compose up -d --wait --wait-timeout 120
-printf 'Baize is listening locally. Open your configured PUBLIC_URL and create the administrator.\n'
+if docker compose exec -T app node -e 'process.exit(require("node:fs").existsSync("/app/keys/install-nonce.json")?0:1)'; then
+  docker compose cp app:/app/keys/install-nonce.json .baize/install-nonce.json >/dev/null
+  chmod 600 .baize/install-nonce.json
+  printf 'Baize is listening locally. The one-time installation credential is in the private file .baize/install-nonce.json. Enter its nonce field on the setup page, then remove this local copy after setup.\n'
+else
+  printf 'Baize is listening locally. Initialization is already closed; sign in with the existing account.\n'
+fi

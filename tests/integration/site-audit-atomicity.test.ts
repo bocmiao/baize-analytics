@@ -1,15 +1,16 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {Pool} from 'pg';
 import {randomUUID,createHmac} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {beforeAll,afterAll,it,expect,describe} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {hashToken,canonical} from '../../src/server/security.js';
 describe.skipIf(!process.env.TEST_DATABASE_URL)('real PG site mutations and audit commit atomically',()=>{
  const database=process.env.TEST_DATABASE_URL,schema='site_audit_'+randomUUID().replaceAll('-','');
  const admin=new Pool({connectionString:database}),pool=new Pool({connectionString:database,max:1,options:`-c search_path=${schema},public`});let runtime:Awaited<ReturnType<typeof createApp>>,dir:string,cookie:string,site:string;
- beforeAll(async()=>{dir=await mkdtemp(join(tmpdir(),'site-audit-'));await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,dataDir:dir,keyDir:join(dir,'keys'),background:false,canonical:null,clickhouse:null});await runtime.app.ready();const setup=await runtime.app.inject({url:'/api/setup',method:'POST',payload:{email:'audit@example.test',password:'Acceptance-password-123!',name:'Owner'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({url:'/api/v1/sites',method:'POST',headers:{cookie},payload:{name:'Audit','domain':'example.test',timezone:'UTC'}});expect(created.statusCode,created.body).toBe(201);site=created.json().site.id;
+ beforeAll(async()=>{dir=await mkdtemp(join(tmpdir(),'site-audit-'));await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,dataDir:dir,keyDir:join(dir,'keys'),background:false,canonical:null,clickhouse:null});await runtime.app.ready();const setup=await runtime.app.inject({url:'/api/setup',method:'POST',payload:{installationNonce:fixtureInstallationNonce,email:'audit@example.test',password:'Acceptance-password-123!',name:'Owner'}});expect(setup.statusCode).toBe(200);cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await runtime.app.inject({url:'/api/v1/sites',method:'POST',headers:{cookie},payload:{name:'Audit','domain':'example.test',timezone:'UTC'}});expect(created.statusCode,created.body).toBe(201);site=created.json().site.id;
  await pool.query('CREATE TABLE audit_failure_injection(action text PRIMARY KEY)');await pool.query("CREATE FUNCTION reject_injected_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF EXISTS(SELECT 1 FROM audit_failure_injection WHERE action=NEW.action) THEN RAISE EXCEPTION 'injected audit failure'; END IF; RETURN NEW; END $$");await pool.query('CREATE TRIGGER audit_failure BEFORE INSERT ON audit_logs FOR EACH ROW EXECUTE FUNCTION reject_injected_audit()');});
  afterAll(async()=>{if(runtime)await runtime.app.close();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();if(dir)await rm(dir,{recursive:true,force:true});});
  const injectFailure=async(action:string|null)=>{await pool.query('DELETE FROM audit_failure_injection');if(action)await pool.query('INSERT INTO audit_failure_injection VALUES($1)',[action]);};

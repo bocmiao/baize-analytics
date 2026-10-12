@@ -1,3 +1,4 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {queryStats} from '../../src/server/analytics.js';
 import {sanitizeDailyValue} from '../../src/server/daily-privacy-policy.js';
 import {canonical as stableJson} from '../../src/server/security.js';
@@ -6,7 +7,7 @@ import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {claimSite,rebuildSite,enforceRetention} from '../../src/server/worker.js';
 import {lockSite} from '../../src/server/db.js';
 import {CanonicalClickHouse} from '../../src/server/canonical-clickhouse.js';
@@ -35,7 +36,7 @@ async function scenario(kind:'pageless'|'daily'|'missing'|'cutoff'){
  const config={url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'},canonical=new CanonicalClickHouse(config),headers=new ClickHouseSessionHeaderStore(config),facts=new ClickHouseFactStore(config),remaining=new ClickHouseRemainingFactStore(config),cache=new ClickHouseCacheStore(config),key=randomBytes(32),now=Date.now()-60000;
  await admin.query(`CREATE SCHEMA ${schema}`);
  try{
-  runtime=await createApp({pool,redis:null,background:false,dataDir:dir,keyDir:dir,publicUrl:'http://localhost',canonical});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{email:'strict-identities@example.invalid',password:'Local-private-123456789!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;await pool.query("INSERT INTO sites(id,name,domain,salt_secret,timezone) VALUES($1,'strict','example.test','strict-test-secret','UTC')",[site]);await pool.query("UPDATE sites SET config='{\"vitals\":true}'::jsonb WHERE id=$1",[site]);if(kind==='daily')await pool.query("UPDATE sites SET timezone='America/New_York',privacy_mode='daily_salt',retention_days=365 WHERE id=$1",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);await pool.query('INSERT INTO site_members(site_id,user_id,role) SELECT $1,id,\'admin\' FROM users',[site]);
+  runtime=await createApp({pool,redis:null,background:false,dataDir:dir,keyDir:dir,publicUrl:'http://localhost',canonical});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{installationNonce:fixtureInstallationNonce,email:'strict-identities@example.invalid',password:'Local-private-123456789!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;await pool.query("INSERT INTO sites(id,name,domain,salt_secret,timezone) VALUES($1,'strict','example.test','strict-test-secret','UTC')",[site]);await pool.query("UPDATE sites SET config='{\"vitals\":true}'::jsonb WHERE id=$1",[site]);if(kind==='daily')await pool.query("UPDATE sites SET timezone='America/New_York',privacy_mode='daily_salt',retention_days=365 WHERE id=$1",[site]);await pool.query('INSERT INTO aggregation_state(site_id) VALUES($1)',[site]);await pool.query('INSERT INTO site_members(site_id,user_id,role) SELECT $1,id,\'admin\' FROM users',[site]);
   let eventSequence=0;
   const collect=async(path:string,type='pageview',extra:Record<string,unknown>={})=>{const r=await fetch(base+'/api/collect',{method:'POST',headers:{origin:'https://example.test','user-agent':'Mozilla/5.0 Chrome/120.0','content-type':'application/json'},body:JSON.stringify({protocol_version:1,site_id:site,sdk:'strict-native',sent_at:Date.now(),events:[{event_id:randomUUID(),visitor_id:visitor,page_id:page,ts:now+eventSequence++,type,url:'https://example.test'+path,path,...extra}]})});expect(r.status,await r.text()).toBe(202);};
   const run=async()=>{const claim=await claimSite(pool);expect(claim).not.toBeNull();expect(await rebuildSite(pool,claim!)).toBe(true);};

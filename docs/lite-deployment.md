@@ -7,17 +7,22 @@ filesystem and enough storage for the database, WAL, exports and verified backup
 Network filesystems and multiple writers are rejected. Windows is not validated.
 
 ```sh
-docker compose -f docker-compose.lite.yml build
-docker compose -f docker-compose.lite.yml up -d --wait
+bash install-lite.sh
 curl --fail http://127.0.0.1:3000/healthz
 ```
 
-Open the local URL and create the first administrator. The published port is
+Open the local URL, enter the one-time installation nonce from the private file
+reported by the installer, then create the first administrator. Never put it in
+the URL; remove the private local copy after setup. The published port is
 loopback only. The server creates a private master key in the separate key volume;
 retain that volume separately from data backups. No external API key is required
 for basic analytics. Changing the image does not move Lite data into standard
 PostgreSQL. Use the explicit offline migration procedure and its compatibility
 checks before any manual traffic switch.
+
+For precompiled Node project hosting or a package containing Node, see
+[deployment methods](deployment-methods.md). These packages include runtime
+dependencies; a source archive or dist-only archive cannot replace them.
 
 For a prebuilt application image, use `docker load -i application-image.tar.gz`,
 set `BAIZE_LITE_IMAGE` to the loaded tag and run the same Compose command without

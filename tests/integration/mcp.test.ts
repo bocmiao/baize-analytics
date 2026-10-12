@@ -1,3 +1,4 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -5,7 +6,7 @@ import {Pool} from 'pg';
 import {beforeAll,afterAll,describe,it,expect} from 'vitest';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StreamableHTTPClientTransport} from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {registerMcp} from '../../src/server/mcp.js';
 import {runWorkerOnce} from '../../src/server/worker.js';
 describe.skipIf(!process.env.TEST_DATABASE_URL)('standard MCP SDK over actual HTTP and PostgreSQL',()=>{
@@ -17,7 +18,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('standard MCP SDK over actual HT
  beforeAll(async()=>{
   await admin.query(`CREATE SCHEMA ${schema}`);directory=await mkdtemp('/tmp/baize-mcp-');instance=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:join(directory,'data'),keyDir:join(directory,'keys'),masterKey:randomBytes(32)});
   if(!instance.app.hasRoute({method:'POST',url:'/api/sites/:siteId/mcp'}))await registerMcp(instance.app,instance.ctx);
-  address=await instance.app.listen({host:'127.0.0.1',port:0});const setup=await fetch(address+'/api/setup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:'mcp@example.invalid',password:'Actual-standard-mcp-password'})});expect(setup.status).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0];
+  address=await instance.app.listen({host:'127.0.0.1',port:0});const setup=await fetch(address+'/api/setup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({installationNonce:fixtureInstallationNonce,email:'mcp@example.invalid',password:'Actual-standard-mcp-password'})});expect(setup.status).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0];
   const create=async()=>{const r=await fetch(address+'/api/v1/sites',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({name:'MCP fixture',domain:'mcp-fixture.example.invalid',timezone:'UTC'})});expect(r.status).toBe(201);return (await r.json() as {site:{id:string}}).site.id;};site=await create();other=await create();
   const ts=Date.now()-60000;const receipt=await fetch(address+'/api/collect',{method:'POST',headers:{origin:'https://mcp-fixture.example.invalid','user-agent':'Mozilla/5.0 Chrome/145.0.0.0','content-type':'application/json'},body:JSON.stringify({protocol_version:1,site_id:site,sdk:'mcp-test',sent_at:Date.now(),events:[{event_id:randomUUID(),visitor_id:randomUUID(),page_id:randomUUID(),ts,type:'pageview',url:'https://mcp-fixture.example.invalid/pricing',path:'/pricing'}]})});expect(receipt.status).toBe(202);expect(await runWorkerOnce(pool)).toBe(true);
   const r=await fetch(`${address}/api/v1/sites/${site}/tokens`,{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({scopes:['read']})});expect(r.status).toBe(200);token=(await r.json() as {token:string}).token;

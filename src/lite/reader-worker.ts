@@ -1,4 +1,6 @@
 import {parentPort,workerData} from 'node:worker_threads';
+import {readBootstrapStatus} from './bootstrap-domain.js';
+import {validateKnownSchema} from './schema.js';
 import {computeLiteStats} from './analytics.js';
 import type {LiteSnapshot} from './types.js';
 import {openDatabase} from './database.js';
@@ -14,7 +16,9 @@ function read(kind:string,p:Record<string,unknown>):unknown{
  if(kind==='sites_admin')return db.prepare('SELECT * FROM sites ORDER BY name,id').all().map(site);
  if(kind==='site_usage')return db.prepare('SELECT count(*) events,coalesce(sum(length(cast(payload AS BLOB))+length(cast(dimensions AS BLOB))),0) body_bytes,min(ts) first_ts,max(ts) last_ts FROM events WHERE site_id=?').get(String(p.siteId));
  if(kind==='task_depth')return db.prepare('SELECT status,count(*) count FROM jobs GROUP BY status').all();
- if(kind==='metadata')return {setup_required:!db.prepare('SELECT id FROM users LIMIT 1').get()};
+ if(kind==='bootstrap_status')return readBootstrapStatus(db);
+ if(kind==='deployment_status'){validateKnownSchema(db);return {schemaVersion:Number(db.prepare('PRAGMA user_version').get()!.user_version)};}
+ if(kind==='metadata')return {setup_required:readBootstrapStatus(db).required};
  if(kind==='accounts_login')return db.prepare('SELECT * FROM users WHERE email=?').get(String(p.email).toLowerCase())??null;
  if(kind==='user_get')return db.prepare('SELECT id,email,name,is_admin FROM users WHERE id=?').get(String(p.userId))??null;
  if(kind==='session_get')return db.prepare('SELECT u.id,u.email,u.name,u.is_admin FROM auth_sessions a JOIN users u ON u.id=a.user_id WHERE a.token_hash=? AND a.expires_at>?').get(String(p.tokenHash),Date.now())??null;

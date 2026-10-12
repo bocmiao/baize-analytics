@@ -8,7 +8,13 @@ export PUBLIC_URL="http://127.0.0.1:$BAIZE_PORT"
 export COMPOSE_PROJECT_NAME="baize_lifecycle_${RANDOM}"
 cleanup() { if [ -n "${restore_db:-}" ]; then docker volume rm "${COMPOSE_PROJECT_NAME}_${restore_db}_app_data" "${COMPOSE_PROJECT_NAME}_${restore_db}_app_keys" >/dev/null 2>&1 || true; fi; docker compose logs --no-color > "/tmp/$COMPOSE_PROJECT_NAME-app.log" 2>&1 || true; docker compose down -v --remove-orphans >/dev/null 2>&1 || true; }
 trap cleanup EXIT
-if [ "${BAIZE_OPS_SKIP_BUILD:-0}" = 1 ]; then docker compose up -d --wait --wait-timeout 120; else ./install.sh; fi
+[ -f .env ] && [ -f .baize/master.key ] || { echo 'Prepare private synthetic fixture configuration before this disposable lifecycle test.' >&2; exit 1; }
+if [ "${BAIZE_OPS_SKIP_BUILD:-0}" != 1 ]; then docker compose build app; fi
+bash scripts/init-empty-volumes.sh
+# This stack is disposable and has no owner yet. Provision a known synthetic
+# credential before first application startup; production validation stays on.
+docker compose run --rm --no-deps --entrypoint node app -e 'const fs=require("node:fs");fs.mkdirSync("/app/keys",{recursive:true,mode:0o700});fs.writeFileSync("/app/keys/install-nonce.json",JSON.stringify({version:1,nonce:"42".repeat(32)}),{flag:"wx",mode:0o600})'
+docker compose up -d --wait --wait-timeout 120
 # A cached old image cannot count as acceptance of current application/migrations.
 node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-source.sha256"
 docker compose exec -T app node scripts/ops-artifact-manifest.mjs > ".baize/$COMPOSE_PROJECT_NAME-image.sha256"

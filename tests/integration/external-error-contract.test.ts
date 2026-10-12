@@ -1,9 +1,10 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {API_ERRORS} from '../../src/shared/error-codes.js';
 import {it,expect} from 'vitest';
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {ExternalError} from '../../src/server/external-errors.js';
 
 it.skipIf(!process.env.TEST_DATABASE_URL)('actual app returns stable localized connector codes and hides untrusted provider errors',async()=>{
@@ -13,7 +14,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)('actual app returns stable localized c
   runtime=await createApp({pool,redis:null,dataDir:dir,background:false,clickhouse:null});
   runtime.app.get('/fixture/provider-fault',async()=>{throw new Error('provider raw credential not-for-public-2026');});
   runtime.app.get('/fixture/provider-timeout',async()=>{throw new ExternalError('external_timeout');});
-  const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{email:'error-contract@example.test',password:'ErrorContract2026!',name:'错误契约验收'}});
+  const setup=await runtime.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'error-contract@example.test',password:'ErrorContract2026!',name:'错误契约验收'}});
   expect(setup.statusCode,setup.body).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0]!;
   const created=await runtime.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'错误契约站点',domain:'error-contract.example.test'}});expect(created.statusCode).toBe(201);const site=created.json().site.id;
   const missing=await runtime.app.inject({method:'POST',url:`/api/sites/${site}/ai/test`,headers:{cookie}});

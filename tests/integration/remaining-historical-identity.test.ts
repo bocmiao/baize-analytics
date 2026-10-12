@@ -1,8 +1,9 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {Pool} from 'pg';
 import {it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
 import {ClickHouseSessionHeaderStore,installSessionHeaderStore} from '../../src/server/session-header-store.js';
 import {ClickHouseFactStore,installFactStore} from '../../src/server/fact-store.js';
@@ -29,7 +30,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CAN
  await collect([{type:'identify',ts:cutoff-4*3600000,path:'/historic-B',user_id:'old-B'},{type:'pageview',ts:cutoff-4*3600000+1000,path:'/historic-B'},{type:'event',ts:cutoff-4*3600000+2000,path:'/historic-B',event_name:'old-B-click',props:{plan:'历史B'}},{type:'vitals',ts:cutoff-4*3600000+3000,path:'/historic-B',vitals:{lcp:900}}]);
  await pool.query('UPDATE sites SET retention_days=1 WHERE id=$1',[site]);await run();const oldRun=(await pool.query('SELECT run_id FROM analytics_carry_heads WHERE site_id=$1 AND visitor_id=$2',[site,visitor])).rows[0].run_id;
  await canonical.initialize();await headers.initialize();await facts.initialize();await remaining.initialize();installCanonicalStore(pool,canonical);installSessionHeaderStore(pool,headers);installFactStore(pool,facts);installRemainingFactStore(pool,remaining);
- const setup=await fetch(base+'/api/setup',{method:'POST',headers:{'content-type':'application/json',origin:'http://localhost'},body:JSON.stringify({email:'historical@example.invalid',password:'Historical-private-fixture-2026!'})});expect(setup.status,await setup.clone().text()).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0]!;
+ const setup=await fetch(base+'/api/setup',{method:'POST',headers:{'content-type':'application/json',origin:'http://localhost'},body:JSON.stringify({installationNonce:fixtureInstallationNonce,email:'historical@example.invalid',password:'Historical-private-fixture-2026!'})});expect(setup.status,await setup.clone().text()).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0]!;
  const action=async(action:string)=>{const response=await fetch(base+`/api/v1/sites/${site}/canonical`,{method:'POST',headers:{cookie,origin:'http://localhost','content-type':'application/json'},body:JSON.stringify({action})});const text=await response.text();expect(response.status,text).toBe(200);return JSON.parse(text);};
  let shadowDone=false;for(let i=0;i<10;i++){if(!(await action('shadow')).remaining){shadowDone=true;break;}}expect(shadowDone).toBe(true);expect((await action('verify')).verified).toBe(4);
  const migration=await pool.connect();try{await migration.query('BEGIN');await lockSite(migration,site);const state=(await migration.query('SELECT a.epoch,c.epoch canonical,c.deletion_epoch::text deletion,a.generation::text generation FROM aggregation_state a JOIN canonical_event_authority c USING(site_id) WHERE a.site_id=$1',[site])).rows[0],fence={expectedAggregationEpoch:state.epoch,expectedCanonicalEpoch:state.canonical,expectedDeletionEpoch:state.deletion,expectedGeneration:state.generation,verifyLiveFence:async()=>{}};await migratePublishedHeaderClosure(migration,headers,site,fence);await migratePublishedFactClosure(migration,site,{facts,remaining},fence);await migration.query('COMMIT');}finally{await migration.query('ROLLBACK');migration.release();}

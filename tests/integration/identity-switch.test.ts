@@ -1,8 +1,9 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {it,expect} from 'vitest';
 import pg from 'pg';
 import {randomUUID,randomBytes} from 'node:crypto';
 import {mkdtemp,rm,readFile} from 'node:fs/promises';
-import {createApp} from '../../src/server/app';
+import {createApp} from '../helpers/install-fixture.js';
 import {replayDeletionJournal} from '../../src/server/deletion';
 import {runWorkerOnce} from '../../src/server/worker';
 import {visitorHash} from '../../src/server/security';
@@ -10,7 +11,7 @@ import {visitorHash} from '../../src/server/security';
 it('event-time A -> B -> delete A preserves B, old A retries and restored A cannot revive',async()=>{
  const schema='identity_'+randomBytes(6).toString('hex'),connectionString=process.env.DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev';const admin=new pg.Pool({connectionString});await admin.query(`CREATE SCHEMA ${schema}`);const pool=new pg.Pool({connectionString,options:`-c search_path=${schema},public`});const dir=await mkdtemp('/tmp/baize-identity-');let app:Awaited<ReturnType<typeof createApp>>|undefined;
  try{
-  app=await createApp({pool,redis:null,dataDir:dir,background:false});const setup=await app.app.inject({method:'POST',url:'/api/setup',payload:{email:'identity@example.test',password:'IdentitySwitch2026!',name:'身份测试'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await app.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'身份时间段',domain:'identity.example.test',timezone:'UTC'}});expect(created.statusCode).toBe(201);const site=created.json().site.id as string;const visitor=randomUUID(),page=randomUUID(),base=Date.now()-120000;
+  app=await createApp({pool,redis:null,dataDir:dir,background:false});const setup=await app.app.inject({method:'POST',url:'/api/setup',payload:{installationNonce:fixtureInstallationNonce,email:'identity@example.test',password:'IdentitySwitch2026!',name:'身份测试'}});expect(setup.statusCode).toBe(200);const cookie=String(setup.headers['set-cookie']).split(';')[0]!;const created=await app.app.inject({method:'POST',url:'/api/v1/sites',headers:{cookie},payload:{name:'身份时间段',domain:'identity.example.test',timezone:'UTC'}});expect(created.statusCode).toBe(201);const site=created.json().site.id as string;const visitor=randomUUID(),page=randomUUID(),base=Date.now()-120000;
   function event(type:string,offset:number,extra:Record<string,unknown>={}){return {event_id:randomUUID(),visitor_id:visitor,page_id:page,type,ts:base+offset,url:'https://identity.example.test/'+type,path:'/'+type,...extra};}
   async function collect(events:Record<string,unknown>[]){return app!.app.inject({method:'POST',url:'/api/collect',headers:{'user-agent':'IdentityRealIntegration/1.0'},payload:{protocol_version:1,site_id:site,sdk:'identity-integration/1.0.0',sent_at:Date.now(),events}});}
   const anonymous=event('pageview',0),identifyZ=event('identify',500,{user_id:'account-Z'}),eventZ=event('event',750,{event_name:'before_A'}),identifyA=event('identify',1000,{user_id:'account-A'}),pvA=event('pageview',1500),identifyB=event('identify',2000,{user_id:'account-B'}),pvB=event('pageview',2500),lateA=event('event',1200,{event_name:'late_A'});

@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {pruneRawViaSignedCli} from '../support/canonical-raw-prune.js';
 import {Pool} from 'pg';
 import {createServer,type AddressInfo} from 'node:net';
 import {randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {describe,it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {CanonicalClickHouse,installCanonicalStore} from '../../src/server/canonical-clickhouse.js';
 import {CANONICAL_ACTIVATION_READY} from '../../src/server/canonical-migration.js';
 import {runWorkerOnce} from '../../src/server/worker.js';
@@ -20,7 +21,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL
   const wire=(offset:number,path:string,type='pageview',user_id?:string)=>({event_id:randomUUID(),visitor_id:visitor,page_id:randomUUID(),type,ts:start+offset,url:'https://canonical.example.invalid'+path,path,...(user_id?{user_id}:{})});
   async function collect(events:unknown[]){const response=await fetch(base+'/api/collect',{method:'POST',headers:{origin:'https://canonical.example.invalid','user-agent':'Mozilla/5.0 Chrome/128.0.0.0 Safari/537.36','content-type':'application/json'},body:JSON.stringify({protocol_version:1,site_id:site,sdk:'native-canonical-flow',sent_at:Date.now(),events})});return {status:response.status,json:await response.json()};}
   async function action(action:string){const result=await http(`/api/v1/sites/${site}/canonical`,{action});expect(result.status,result.text).toBe(200);return result.json();}
-  try{await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,background:false,clickhouse:null,canonical:store,history:null,dataDir:dir,keyDir:dir+'/keys',publicUrl:'http://localhost'});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{email:'canonical-flow@example.invalid',password:'Isolated-local-fixture-123456!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;const created=await http('/api/v1/sites',{name:'canonical real flow',domain:'canonical.example.invalid',timezone:'UTC'});expect(created.status,created.text).toBe(201);site=created.json().site.id;
+  try{await admin.query(`CREATE SCHEMA ${schema}`);runtime=await createApp({pool,redis:null,background:false,clickhouse:null,canonical:store,history:null,dataDir:dir,keyDir:dir+'/keys',publicUrl:'http://localhost'});base=await runtime.app.listen({host:'127.0.0.1',port:0});const setup=await http('/api/setup',{installationNonce:fixtureInstallationNonce,email:'canonical-flow@example.invalid',password:'Isolated-local-fixture-123456!'});expect(setup.status,setup.text).toBe(200);cookie=setup.headers.get('set-cookie')!.split(';')[0]!;const created=await http('/api/v1/sites',{name:'canonical real flow',domain:'canonical.example.invalid',timezone:'UTC'});expect(created.status,created.text).toBe(201);site=created.json().site.id;
    const initial={...wire(0,'/order','revenue'),order_id:'receipt-order',currency:'CNY',revenue:19.95};const pg=await collect([initial]);expect(pg.status).toBe(202);expect(pg.json.accepted).toBe(1);expect(await runWorkerOnce(pool)).toBe(true);expect((await pool.query('SELECT count(*) FROM events WHERE site_id=$1',[site])).rows[0].count).toBe('1');
    let copiedComplete=false;for(let i=0;i<10;i++){const copied=await action('shadow');if(!copied.remaining){copiedComplete=true;break;}}expect(copiedComplete).toBe(true);await action('verify');expect((await action('activate')).authority).toBe('clickhouse');expect(await runWorkerOnce(pool)).toBe(true);
    const denied=await http(`/api/v1/sites/${site}/canonical`,{action:'prune'});expect(denied.status).toBe(409);

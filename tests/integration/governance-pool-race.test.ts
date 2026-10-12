@@ -1,10 +1,11 @@
+import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {Pool} from 'pg';
 import {beforeAll,afterAll,describe,it,expect} from 'vitest';
-import {createApp} from '../../src/server/app.js';
+import {createApp} from '../helpers/install-fixture.js';
 import {runGovernance} from '../../src/server/governance-worker.js';
 import {dropEmptyHistoricalPartitions,ensureMonthPartition} from '../../src/server/partitions.js';
 import {runWorkerOnce} from '../../src/server/worker.js';
@@ -20,7 +21,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('actual max10 governance/DDL/eig
  const waitLocks=(mode:string,count:number)=>until(async()=>Number((await admin.query("SELECT count(*) FROM pg_locks l JOIN pg_stat_activity a USING(pid) WHERE a.application_name=$1 AND l.locktype='advisory' AND NOT l.granted AND l.mode=$2",[schema,mode])).rows[0].count)>=count,`Expected ${count} waiting ${mode} advisory locks`);
  beforeAll(async()=>{
   await admin.query(`CREATE SCHEMA ${schema}`);temporary=await mkdtemp(join(tmpdir(),'baize-pool-race-'));instance=await createApp({pool,redis:null,background:false,clickhouse:null,dataDir:join(temporary,'data'),keyDir:join(temporary,'keys'),masterKey:randomBytes(32)});address=await instance.app.listen({host:'127.0.0.1',port:0});
-  const setup=await fetch(`${address}/api/setup`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:'pool-race@example.invalid',password:'Actual-pool-race-password'})});expect(setup.status).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0];
+  const setup=await fetch(`${address}/api/setup`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({installationNonce:fixtureInstallationNonce,email:'pool-race@example.invalid',password:'Actual-pool-race-password'})});expect(setup.status).toBe(200);const cookie=setup.headers.get('set-cookie')!.split(';')[0];
   const response=await fetch(`${address}/api/v1/sites`,{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({name:'pool race',domain:'pool-race.example.invalid',timezone:'UTC'})});expect(response.status).toBe(201);site=(await response.json() as {site:{id:string}}).site.id;
   expect((await collect(true)).status).toBe(202);expect(await runWorkerOnce(pool)).toBe(true);
   const report=randomUUID(),channel=randomUUID();schedule=randomUUID();
