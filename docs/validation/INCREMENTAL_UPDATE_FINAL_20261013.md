@@ -4,11 +4,11 @@
 
 ## 结果与命令
 
-2026-10-13 21:45 UTC 完整回归：1188/1188 通过，0 失败、0 跳过。执行 `npm test -- --reporter=json --outputFile=/workspace/baize-transfer/final-full-regression.json`，连接本环境受控 PostgreSQL、ClickHouse、Redis，设置 TEST_DATABASE_URL、NATIVE_TEST_DATABASE_URL、CLICKHOUSE_TEST_URL、TEST_POSTGRES_CONTAINER、BAIZE_OPS_POSTGRES_CONTAINER、BAIZE_PG_BIN。原始报告见 [FINAL_REGRESSION.json](../test-evidence/incremental-update-final-20261013/FINAL_REGRESSION.json)。构建、类型检查、lint 成功日志及 28/28 所有权专项见同目录；后续提交只保存交付说明与证据。
+2026-10-13 21:45 UTC 完整回归：1188/1188 通过，0 失败、0 跳过。执行 `npm test -- --reporter=json --outputFile=/workspace/baize-transfer/final-full-regression.json`，连接本环境受控 PostgreSQL、ClickHouse、Redis，设置 TEST_DATABASE_URL、NATIVE_TEST_DATABASE_URL、CLICKHOUSE_TEST_URL、TEST_POSTGRES_CONTAINER、BAIZE_OPS_POSTGRES_CONTAINER、BAIZE_PG_BIN。原始报告见 [FINAL_REGRESSION.json](../test-evidence/incremental-update-final-20261013/FINAL_REGRESSION.json)。构建、类型检查、lint 成功日志及 20 个 ownership + 8 个 protocol 专项见同目录；后续提交只保存交付说明与证据。
 
 21:52–21:54 UTC 最终 Docker 镜像标准版 PostgreSQL、Lite SQLite：真实初始启动、签名源检查、镜像层严格增量、当前数据备份、新进程版本/清单/数据库健康、代码回滚、升级前后写入保留全部通过。两版复用 8 个旧层；标准版变化压缩层 212 字节，配置元数据 9797 字节；Lite 变化压缩层 210 字节，配置元数据 9779 字节。26 字节只是隔离 fixture 的变化文件，不代表正式发行包或真实业务数据库体积。没有从网络下载全量镜像；本地 docker save/组装仅用于复用旧层。
 
-21:55 UTC 最终分版原生运行时通过真实 PostgreSQL/SQLite 升级、备份、身份健康、回滚保留写入、显式删除、hash 失败、断网、并发拒绝、下载阶段强杀整个服务组恢复。执行已打包的独立执行器，不依赖开发会话。健康阶段强杀两版完整成功原始记录保留于 incremental-update-review-20261013/native-real-and-kill-recovery.json；最终原生运行时的首次健康窗口复跑因采样未捕获而失败，没有将该次计为成功；最终运行时复跑明确省略该窗口，未省略下载阶段强杀。对应最终原始报告 NATIVE_FINAL_RUNTIME_E2E.json；外部验收脚本源文作为 .ts.txt 保存在同一目录，省略健康强杀的代码可核对。
+21:55 UTC 最终分版原生运行时通过真实 PostgreSQL/SQLite 升级、备份、身份健康、回滚保留写入、显式删除、hash 失败、断网、并发拒绝、下载阶段强杀整个服务组恢复。执行已打包的独立执行器，不依赖开发会话。较早健康阶段强杀两版完整成功原始记录保留于 incremental-update-review-20261013/native-real-and-kill-recovery.json；最终原生运行时首次健康尝试实际在下载阶段因 UPDATE_SPACE_PROTECTION 失败（operation cd294c75-d19d-4bef-b29c-17abd49b707f），外层测试误报 missed deterministic target health window；尚未进入 health，没有执行健康强杀，没有将该次计为成功；该较早记录缺少执行器 hash/源码快照，不能证明与最终冻结代码相同，也不覆盖新失败。最终运行时复跑明确省略该窗口，未省略下载阶段强杀。对应最终原始报告 NATIVE_FINAL_RUNTIME_E2E.json；外部验收脚本源文作为 .ts.txt 保存在同一目录，省略健康强杀的代码可核对。
 
 外部真实 Docker flock 丢失专项确认：本执行器的主应用及备份 one-off 停止、维护栅栏保留、同项目不同 launch ID 的外部容器继续运行。确定性专项覆盖下载/备份/切换/健康、异步后副作用、新执行器拒绝尚存活旧执行器，以及原生回滚备份中锁丢失/关闭。运行容器与合并 Compose 均检查启动参数、非 root 用户、环境变量、挂载和特权选项。接收端 Docker schema 兼容仍信任受信发布方签署 fingerprint，不独立提取镜像内迁移内容。
 
