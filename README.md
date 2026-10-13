@@ -112,4 +112,6 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 
 [用户 API](docs/api.md) · [英文文档](docs/en/README.md) · [开发指南](docs/development.md) · [兼容性](docs/compatibility.md) · [项目状态与验收边界](docs/STATUS.md) · [逐项实现与历史证据](docs/IMPLEMENTATION_CHECKLIST.md)
 
+本轮性能优化及实际复验范围见 [性能复验记录](docs/PERFORMANCE_OPTIMIZATION_20261013.md)。历史运行包仍对应各自的固定版本；新源码不能替换旧包的版本标识。
+
 应用主体采用 **AGPL-3.0-only**；独立网站追踪脚本采用 **MIT**。嵌入 tracker 与修改、托管应用主体的许可责任不同，详见 [LICENSE](LICENSE) 与 [tracker LICENSE](packages/tracker/LICENSE)。

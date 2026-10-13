@@ -1,0 +1,14 @@
+{
+  "profile": "standard",
+  "stats": {
+    "startTime": "2026-10-13T06:51:40.068Z",
+    "duration": 400278.361,
+    "expected": 48,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "strictClickHouseFixtureEnabled": true,
+  "execution": "post-DDL-fix compiled standard listener plus independent production TS fixture servers serving final dist/web",
+  "note": "standard run had loaded legacy single-cwd owner filename before config scope patch; cookie remained stable after Lite scope isolation. Application source is final DDL variant."
+}

@@ -1,0 +1,33 @@
+{
+  "before": {
+    "current": {
+      "wallMedianMs": 57.18716999999998,
+      "cpuMedianUs": 57155.5,
+      "callsPerSample": 800
+    },
+    "oracle": {
+      "wallMedianMs": 53.88877550000001,
+      "cpuMedianUs": 54596.5,
+      "callsPerSample": 800
+    }
+  },
+  "after": {
+    "current": {
+      "wallMedianMs": 3.660019499999976,
+      "cpuMedianUs": 4859.0,
+      "callsPerSample": 800
+    },
+    "oracle": {
+      "wallMedianMs": 58.12107450000002,
+      "cpuMedianUs": 61412.5,
+      "callsPerSample": 800
+    }
+  },
+  "checks": "21 pure unit tests passed; owned lint passed; root real shared worker/HTTP results pending",
+  "sourceSHA256": {
+    "src/server/analytics-core.ts": "eaa4665b516ac57b5a747eb821de5b7f8425d504d66067116d97810a77751797",
+    "tests/unit/day-formatter.test.ts": "f1435321d305007044c5487f3617554f51a141d7f3a4a6e8abfb51f5de1a87ce",
+    "scripts/benchmark/day-formatter.ts": "d4d19db1e16c32c27ae24e35caa39ea9c173f00458823024b8d9363bbf0630f1"
+  },
+  "finalCorrectionNote": "shared real HTTP measurements finished in MEASUREMENTS.json. Benchmark oracle parameter annotation later widened string to Date|string for full tsc; algorithm and measured application source unchanged."
+}

@@ -1,0 +1,145 @@
+{
+  "root": "/workspace/baize-analytics",
+  "profile": "lite",
+  "mode": "burst",
+  "node": "v24.21.0",
+  "sources": {
+    "src/server/analytics-core.ts": "eaa4665b516ac57b5a747eb821de5b7f8425d504d66067116d97810a77751797",
+    "src/server/collect.ts": "9a808e9d830554a35bf595d616d694ac96cebc936662aa131a350051fe420e4e",
+    "src/server/dimensions.ts": "a84dc2a5a1a68fc38b5205826ab2e90517ec56d4aa3fa8416bc38e6cd0961268",
+    "src/server/relational-stats.ts": "bbf1eba1698681d95f03b72adf64e9f932eae3ff0b69818ac393c89978d7aad2",
+    "src/server/session-facts.ts": "bd084b4cdac160b8689ba2f702667dc96e731cfc04d7dc6a19cdb0ca3f716f25",
+    "src/lite/intake-domain.ts": "c0e0e744ed12b525eedd20f5078c40ead975cdc31502972eb51d379a4533d932"
+  },
+  "environmentOverrides": {
+    "BAIZE_SESSION_PAGE_PATH_BATCH": "source_default"
+  },
+  "storage": {
+    "path": "/workspace/baize-optimization-20261013/shared/lite-overlay-burst-after-1.json.private",
+    "filesystemType": 2035054128
+  },
+  "cgroup": {
+    "cpuMax": "100000 100000\n",
+    "memoryMax": "1799999488\n",
+    "memorySwapMax": "0\n",
+    "cpuBefore": {
+      "usage_usec": 31639706,
+      "user_usec": 22217563,
+      "system_usec": 9422142,
+      "nice_usec": 0,
+      "nr_periods": 344,
+      "nr_throttled": 295,
+      "throttled_usec": 28346311,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "cpuAfter": {
+      "usage_usec": 33293364,
+      "user_usec": 23747704,
+      "system_usec": 9545659,
+      "nice_usec": 0,
+      "nr_periods": 368,
+      "nr_throttled": 311,
+      "throttled_usec": 30486089,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "memoryCurrentSampleMaxBytes": 246300672,
+    "memoryPeakSinceGroupCreation": "379817984\n"
+  },
+  "load": {
+    "unique": 1500,
+    "retries": 100,
+    "batch": 50,
+    "offeredIntervalMs": null,
+    "burst": {
+      "waves": 3,
+      "batchesPerWave": 10,
+      "intervalMs": 1100
+    },
+    "dispatchElapsedMs": [
+      0.4678620000001956,
+      1.6010110000001987,
+      2.1670530000001236,
+      2.6208110000000033,
+      3.1656350000000657,
+      3.950529000000188,
+      4.730861000000004,
+      5.856734000000188,
+      6.409705000000031,
+      7.06115200000022,
+      1108.2251380000002,
+      1120.1969910000003,
+      1120.6395200000002,
+      1121.0682730000003,
+      1121.3638530000003,
+      1121.640969,
+      1121.903069,
+      1122.1726320000002,
+      1122.4834330000003,
+      1122.678398,
+      2199.2403670000003,
+      2199.9822200000003,
+      2200.3715370000004,
+      2200.688745,
+      2200.9576190000002,
+      2201.1406440000005,
+      2201.345508,
+      2201.52345,
+      2201.680677,
+      2201.926277
+    ],
+    "sender": "same Node process; scheduled dispatch measured, not independent throughput proof",
+    "background": true,
+    "redis": false,
+    "canonical": false
+  },
+  "observedIntake": {
+    "offeredUniqueEvents": 1500,
+    "offeredUniqueRequests": 30,
+    "httpStatusByCohort": {
+      "unique:202": 30,
+      "retry:202": 2
+    },
+    "filteredEvents": 0,
+    "durablyAcceptedUniqueEvents": 1500
+  },
+  "ack": {
+    "n": 30,
+    "p50": 154.98111700000027,
+    "p95": 1059.105325,
+    "max": 1075.7895209999997,
+    "durationMs": 2359.9947159999997,
+    "cohort": "HTTP202 only; excluded HTTP204 filter responses"
+  },
+  "cpuAppMicroseconds": {
+    "user": 1460545,
+    "system": 193114
+  },
+  "rssSampleMaxBytes": 288997376,
+  "eventLoopDelayMs": {
+    "p95": 35.258367,
+    "max": 79.429631
+  },
+  "accepted": 1600,
+  "duplicates": 100,
+  "rejected": 0,
+  "stats": {
+    "totals": {
+      "pv": 1500,
+      "uv": 150,
+      "sessions": 150,
+      "bounceRate": 0,
+      "averageDuration": 0.45000000000000123,
+      "visibleSeconds": 0,
+      "revenueCurrencyStatus": "supported",
+      "revenueCurrencyCoverage": "complete",
+      "revenue": 0,
+      "revenueByCurrency": {},
+      "conversions": 0
+    },
+    "coverage": 1,
+    "freshnessWaitMs": 270.6964969999999
+  },
+  "stages": {}
+}

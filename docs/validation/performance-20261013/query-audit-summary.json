@@ -1,0 +1,69 @@
+{
+  "baseRevision": "454ce2ddb34ec3f97ab6e599e7c283272fc259b1",
+  "sourceSHA256": {
+    "src/server/relational-stats.ts": "bbf1eba1698681d95f03b72adf64e9f932eae3ff0b69818ac393c89978d7aad2",
+    "src/server/collect.ts": "9a808e9d830554a35bf595d616d694ac96cebc936662aa131a350051fe420e4e",
+    "src/server/dimensions.ts": "a84dc2a5a1a68fc38b5205826ab2e90517ec56d4aa3fa8416bc38e6cd0961268",
+    "tests/integration/relational-numeric-reuse.test.ts": "0a9a19c4d8ac31e9ad01d4ab3b842b6f928b8ca64a00fcfb6798916e5754c306",
+    "tests/unit/batch-dimensions.test.ts": "5d10074aea9769d3e8257b7ad368904fc93d838a7f676c192f4b5648eb9bdae0",
+    "scripts/benchmark/batch-computation.ts": "b2ac9c0944cfe7523d36e9cc94d3fb64825a87568f1edd6dbeb239d92af4796a",
+    "tests/fixtures/remaining-fact-delete.ts": "21ac8a9d7ee807ee5709d7c6ab94b243d4df0e401ad6559f460ad6bfdb171564"
+  },
+  "numericReadResult": "real PG aligned 1->1; partial/filtered/filtered-partial 2->1 numeric cursor scans; SQL calls 58->51,48->41,48->41; exact PV/UV/coverage unchanged",
+  "timingLimit": "single query wall times mixed; CPU microbenchmark excludes database and provenance; neither is ACK throughput proof",
+  "checks": [
+    {
+      "test": "numeric reuse matrix",
+      "status": "passed"
+    },
+    {
+      "test": "relational-continuous",
+      "status": "passed"
+    },
+    {
+      "test": "stats-read-snapshot",
+      "status": "passed real CH"
+    },
+    {
+      "test": "stats-read-budget",
+      "status": "passed real CH"
+    },
+    {
+      "test": "remaining-fact-partial-deletion",
+      "status": "3 passed, emptyPrefix case failed before queryStats retained carry_keys expected0 got1; baseline pending"
+    },
+    {
+      "test": "batch-dimensions",
+      "status": "passed 150 varied event equivalence checks"
+    },
+    {
+      "test": "tsc --noEmit",
+      "status": "passed"
+    },
+    {
+      "test": "identity-switch + tracker-collector + canonical-provenance-collect",
+      "status": "all 4 tests passed with DATABASE_URL and TEST_DATABASE_URL both set to isolated fixture"
+    },
+    {
+      "test": "owned ESLint six files",
+      "status": "passed after replacing unsafe Function cast with explicit unknown argument/result signature"
+    }
+  ],
+  "initialFixtureErrors": [
+    "first numeric test used unavailable local5432 ECONNREFUSED; rerun authorized35432 passed",
+    "identity-switch/tracker-collector first run had only TEST_DATABASE_URL but tests use DATABASE_URL; 5432 refused; corrected both fixture envs, rerun all4 passed"
+  ],
+  "fixtureCorrection": {
+    "scope": "only emptyPrefix variant",
+    "identifyOffsetMs": 300000,
+    "pageviewOffsetMs": [
+      360000,
+      420000
+    ],
+    "assertions": "all physical deletion and checkpoint-zero assertions unchanged",
+    "reason": "setup elapsed time moves worker retention cutoff beyond original +1000ms B identify",
+    "baselineStatus": "root will run isolated baseline and corrected fixture; not run by this agent",
+    "guard": "Before return, retained B identify must exceed live 1-day cutoff by60s; otherwise close fixture and throw fixture_retention_boundary_drift"
+  },
+  "finalCorrectionNote": "Agent first-phase emptyPrefix failure was a carry checkpoint zero assertion; final fixture uses finite setup drift padding and guard. Corrected final four-case real PG/CH test passes; final full-batch record supersedes pending status. Original first-phase notes retained."
+}

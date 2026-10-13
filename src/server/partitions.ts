@@ -31,7 +31,13 @@ export async function dropEmptyHistoricalPartitions(pool:Pool,now=new Date()){
   for(const row of rows){const name=String(row.relname);const match=/^events_(\d{4}_\d{2})$/.exec(name);if(!match||match[1]!>=current)continue;
     // Optimistic prefilter only: a concurrent insert is still detected under the existing exclusive gate below.
     try{if((await pool.query(`SELECT 1 FROM ${name} LIMIT 1`)).rowCount)continue;}catch(error){if((error as {code?:string}).code==='42P01')continue;throw error;}
-    await transaction(pool,async client=>{await lockPartitionWrites(client,true);if(!(await client.query("SELECT to_regclass(current_schema()||'.'||$1) relation",[name])).rows[0].relation)return;await client.query('LOCK TABLE events,event_data IN ACCESS EXCLUSIVE MODE');if((await client.query(`SELECT 1 FROM ${name} LIMIT 1`)).rowCount)return;const props=`event_data_${match[1]}`;
+    await transaction(pool,async client=>{await lockPartitionWrites(client,true);
+      // Recheck the optimistic catalog name only after the parent relation locks.
+      // A competing drop can finish while this transaction waits for the gate;
+      // relation-lock acquisition must precede consuming its cached name.
+      await client.query('LOCK TABLE events,event_data IN ACCESS EXCLUSIVE MODE');
+      if(!(await client.query("SELECT to_regclass(current_schema()||'.'||$1) relation",[name])).rows[0].relation)return;
+      if((await client.query(`SELECT 1 FROM ${name} LIMIT 1`)).rowCount)return;const props=`event_data_${match[1]}`;
       if((await client.query("SELECT to_regclass(current_schema()||'.'||$1) relation",[props])).rows[0].relation){await client.query(`ALTER TABLE event_data DETACH PARTITION ${props}`);await client.query(`DROP TABLE ${props}`);}
       await client.query(`ALTER TABLE events DETACH PARTITION ${name}`);await client.query(`DROP TABLE ${name}`);dropped++;
     });

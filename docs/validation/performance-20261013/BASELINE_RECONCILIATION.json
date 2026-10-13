@@ -1,0 +1,24 @@
+{
+  "baselineRevision": "454ce2ddb34ec3f97ab6e599e7c283272fc259b1",
+  "original": {
+    "numTotalTests": 1155,
+    "numPassedTests": 1129,
+    "numFailedTests": 22,
+    "numPendingTests": 4,
+    "success": false
+  },
+  "targetedCorrectedRun": {
+    "numTotalTests": 45,
+    "numPassedTests": 44,
+    "numFailedTests": 0,
+    "numPendingTests": 1,
+    "success": true
+  },
+  "reconciledUniqueStatusCounts": {
+    "passed": 1154,
+    "skipped": 1
+  },
+  "uniqueCases": 1155,
+  "identityKey": "test source path + fullName + repeated-title ordinal",
+  "note": "Original batch not all-green; fixture reruns replace same case statuses, no duplicate counting; final candidate enables TEST_POSTGRES_CONTAINER for actual dump conditional."
+}

@@ -1,0 +1,94 @@
+{
+  "profile": "lite",
+  "execution": "independent node dist/server/src/lite/main.js with private SQLite data/keys and actual frontend build",
+  "stats": {
+    "startTime": "2026-10-13T06:21:53.410Z",
+    "duration": 19630.612,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "specs": [
+    {
+      "title": "Lite optional reports are manual and do not call standard endpoints or reveal keys",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 3034,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Lite hides unsupported navigation and rejects deep links before view requests",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1959,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "missing capability endpoint keeps standard navigation",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 955,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual Lite collection, event goals, export, retention boundary and mobile flow",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 6510,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "event coverage does not claim complete session metrics across retired prefixes",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1295,
+              "error": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

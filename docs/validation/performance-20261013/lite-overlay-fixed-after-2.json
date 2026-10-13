@@ -1,0 +1,141 @@
+{
+  "root": "/workspace/baize-analytics",
+  "profile": "lite",
+  "mode": "fixed",
+  "node": "v24.21.0",
+  "sources": {
+    "src/server/analytics-core.ts": "eaa4665b516ac57b5a747eb821de5b7f8425d504d66067116d97810a77751797",
+    "src/server/collect.ts": "9a808e9d830554a35bf595d616d694ac96cebc936662aa131a350051fe420e4e",
+    "src/server/dimensions.ts": "a84dc2a5a1a68fc38b5205826ab2e90517ec56d4aa3fa8416bc38e6cd0961268",
+    "src/server/relational-stats.ts": "bbf1eba1698681d95f03b72adf64e9f932eae3ff0b69818ac393c89978d7aad2",
+    "src/server/session-facts.ts": "bd084b4cdac160b8689ba2f702667dc96e731cfc04d7dc6a19cdb0ca3f716f25",
+    "src/lite/intake-domain.ts": "c0e0e744ed12b525eedd20f5078c40ead975cdc31502972eb51d379a4533d932"
+  },
+  "environmentOverrides": {
+    "BAIZE_SESSION_PAGE_PATH_BATCH": "source_default"
+  },
+  "storage": {
+    "path": "/workspace/baize-optimization-20261013/shared/lite-overlay-fixed-after-2.json.private",
+    "filesystemType": 2035054128
+  },
+  "cgroup": {
+    "cpuMax": "100000 100000\n",
+    "memoryMax": "1799999488\n",
+    "memorySwapMax": "0\n",
+    "cpuBefore": {
+      "usage_usec": 35642725,
+      "user_usec": 25812288,
+      "system_usec": 9830436,
+      "nice_usec": 0,
+      "nr_periods": 392,
+      "nr_throttled": 334,
+      "throttled_usec": 31377271,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "cpuAfter": {
+      "usage_usec": 37826485,
+      "user_usec": 27744717,
+      "system_usec": 10081768,
+      "nice_usec": 0,
+      "nr_periods": 421,
+      "nr_throttled": 354,
+      "throttled_usec": 33918175,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "memoryCurrentSampleMaxBytes": 247377920,
+    "memoryPeakSinceGroupCreation": "379817984\n"
+  },
+  "load": {
+    "unique": 1500,
+    "retries": 100,
+    "batch": 50,
+    "offeredIntervalMs": 100,
+    "burst": null,
+    "dispatchElapsedMs": [
+      1.6732630000001336,
+      100.47587599999997,
+      236.43627199999992,
+      336.47804399999995,
+      399.4791930000001,
+      500.0860550000002,
+      600.5092880000002,
+      700.3649679999999,
+      800.8567929999999,
+      979.1467860000002,
+      1036.4387070000002,
+      1140.816107,
+      1237.4955089999999,
+      1336.6372190000002,
+      1451.21641,
+      1538.5952590000002,
+      1636.70743,
+      1736.586723,
+      1799.473981,
+      1899.12126,
+      1999.427267,
+      2100.698643,
+      2198.968967,
+      2299.6830680000003,
+      2446.010024,
+      2536.987204,
+      2600.398881,
+      2699.3822179999997,
+      2800.4202530000002,
+      2900.569979
+    ],
+    "sender": "same Node process; scheduled dispatch measured, not independent throughput proof",
+    "background": true,
+    "redis": false,
+    "canonical": false
+  },
+  "observedIntake": {
+    "offeredUniqueEvents": 1500,
+    "offeredUniqueRequests": 30,
+    "httpStatusByCohort": {
+      "unique:202": 30,
+      "retry:202": 2
+    },
+    "filteredEvents": 0,
+    "durablyAcceptedUniqueEvents": 1500
+  },
+  "ack": {
+    "n": 30,
+    "p50": 44.41548200000034,
+    "p95": 363.147148,
+    "max": 440.76449300000013,
+    "durationMs": 2914.2010689999997,
+    "cohort": "HTTP202 only; excluded HTTP204 filter responses"
+  },
+  "cpuAppMicroseconds": {
+    "user": 1744137,
+    "system": 245359
+  },
+  "rssSampleMaxBytes": 285818880,
+  "eventLoopDelayMs": {
+    "p95": 47.972351,
+    "max": 100.925439
+  },
+  "accepted": 1600,
+  "duplicates": 100,
+  "rejected": 0,
+  "stats": {
+    "totals": {
+      "pv": 1500,
+      "uv": 150,
+      "sessions": 150,
+      "bounceRate": 0,
+      "averageDuration": 0.45000000000000123,
+      "visibleSeconds": 0,
+      "revenueCurrencyStatus": "supported",
+      "revenueCurrencyCoverage": "complete",
+      "revenue": 0,
+      "revenueByCurrency": {},
+      "conversions": 0
+    },
+    "coverage": 1,
+    "freshnessWaitMs": 125.9603390000002
+  },
+  "stages": {}
+}

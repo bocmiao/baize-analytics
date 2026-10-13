@@ -11,7 +11,17 @@ export function digestValues(values:number[]):Centroid[]{const d=new TDigest(); 
  * Compression approximates each centroid by its mean, but counts remain exact across unequal bucket sizes. */
 export function quantile(digests:Centroid[][],q:number):number|null{const cs=digests.flat().filter(c=>Number.isFinite(c.mean)&&Number.isFinite(c.n)&&c.n>0).sort((a,b)=>a.mean-b.mean);const total=cs.reduce((n,c)=>n+c.n,0);if(!total)return null;const rank=Math.max(0,Math.min(1,q))*(total-1);const low=Math.floor(rank),high=Math.ceil(rank);const at=(index:number)=>{let count=0;for(const c of cs){count+=c.n;if(index<count)return c.mean;}return cs.at(-1)!.mean;};const a=at(low),b=at(high);return a+(b-a)*(rank-low);}
 
-export function dayOf(ts:Date|string,timezone:string):string{const parts=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(ts));return ['year','month','day'].map(k=>parts.find(p=>p.type===k)!.value).join('-');}
+// Bounded formatter-only cache: no event dates, visitors or result days survive a call.
+const dayFormatters=new Map<string,Intl.DateTimeFormat>();
+function dayFormatter(timezone:string){
+ let formatter=dayFormatters.get(timezone);
+ if(formatter)dayFormatters.delete(timezone);
+ else formatter=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'});
+ dayFormatters.set(timezone,formatter);
+ if(dayFormatters.size>32)dayFormatters.delete(dayFormatters.keys().next().value!);
+ return formatter;
+}
+export function dayOf(ts:Date|string,timezone:string):string{const parts=dayFormatter(timezone).formatToParts(new Date(ts));return ['year','month','day'].map(k=>parts.find(p=>p.type===k)!.value).join('-');}
 function uuidFor(key:string):string{const h=createHash('sha256').update(key).digest('hex');return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-a${h.slice(17,20)}-${h.slice(20,32)}`;}
 export function sessionTimeoutMs(config:Record<string,unknown>|undefined):number{const minutes=Number(config?.session_timeout_minutes??30);return (Number.isFinite(minutes)&&minutes>=1&&minutes<=1440?minutes:30)*60000;}
 export function sessionize(input:AnalyticsEvent[],timezone='UTC',privacy=false,timeoutMs=1800000):Session[]{

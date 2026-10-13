@@ -24,10 +24,13 @@ export async function createRemainingFactDeleteFixture(options:{deletedAnchor?:b
  {type:'vitals',ts:boundary-30*60000,path:'/before',vitals:{lcp:100}},
  {type:'identify',ts:options.deletedAnchor?boundary-32*60000:bridge-1000,path:'/before',user_id:'deleted-A'},
  {type:'heartbeat',ts:bridge,path:'/before',visible_ms:700,interval_start:bridge-1000,interval_end:bridge},
- {type:'identify',ts:options.emptyPrefix?boundary+1000:bridge+1000,path:'/before',user_id:'retained-B'},
+ // The worker recomputes its retention cutoff after store setup. Keep this
+ // empty-prefix variant beyond setup drift (test deadline 30s), while the
+ // B identify -> pageviews remain one session with one-minute gaps.
+ {type:'identify',ts:options.emptyPrefix?boundary+5*60000:bridge+1000,path:'/before',user_id:'retained-B'},
  ...(options.archivedB?[{type:'pageview',ts:boundary-5*60000,path:'/b-archive'}]:[]),
- {type:'pageview',ts:boundary+60000,path:'/after'},
- {type:'pageview',ts:boundary+120000,path:'/later'},
+ {type:'pageview',ts:boundary+(options.emptyPrefix?6:1)*60000,path:'/after'},
+ {type:'pageview',ts:boundary+(options.emptyPrefix?7:2)*60000,path:'/later'},
  {type:'pageview',ts:boundary-3600000,path:'/other',visitor_id:otherVisitorId,page_id:otherPageId},
  ].map(event=>({event_id:randomUUID(),visitor_id:visitorId,page_id:pageId,url:'https://example.test'+event.path,...event}));
  const response=await fetch(base+'/api/collect',{method:'POST',headers:{'content-type':'application/json',origin:'https://example.test','user-agent':'Mozilla/5.0 Chrome/120.0'},body:JSON.stringify({protocol_version:1,site_id:siteId,sdk:'remaining-fact-native-fixture',sent_at:Date.now(),events})});
@@ -45,5 +48,8 @@ export async function createRemainingFactDeleteFixture(options:{deletedAnchor?:b
  const armRollback=async()=>{await pool.query('CREATE TABLE remaining_delete_fault(visitor_id text PRIMARY KEY)');await pool.query('INSERT INTO remaining_delete_fault VALUES($1)',[visitorId]);await pool.query("CREATE FUNCTION fail_remaining_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF EXISTS(SELECT 1 FROM remaining_delete_fault WHERE visitor_id=OLD.visitor_id) THEN RAISE EXCEPTION 'remaining physical ACK PG rollback'; END IF; RETURN OLD; END $$");await pool.query('CREATE TRIGGER remaining_delete_fault BEFORE DELETE ON canonical_shadow_provenance FOR EACH ROW EXECUTE FUNCTION fail_remaining_delete()');};
  const clearRollback=async()=>{await pool.query('DROP TRIGGER IF EXISTS remaining_delete_fault ON canonical_shadow_provenance');await pool.query('DROP FUNCTION IF EXISTS fail_remaining_delete()');await pool.query('DROP TABLE IF EXISTS remaining_delete_fault');};
  const close=async()=>{await clearRollback();const c=await pool.connect();try{await c.query('BEGIN');const scope=[{visitorId},{visitorId:otherVisitorId}];await facts.eraseSegments(c,siteId,scope);await headers.eraseSegments(c,siteId,scope);await canonical.deleteSegments(c,siteId,scope,async()=>{});await c.query('COMMIT');}finally{await c.query('ROLLBACK');c.release();}await runtime.app.close();await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});};
+ // Padding is a finite fixture assumption, not a constant production cutoff:
+ // the test has a 30s deadline and this guard proves >60s remaining margin.
+ if(options.emptyPrefix){const retainedIdentify=events.find(event=>event.type==='identify'&&'user_id'in event&&event.user_id==='retained-B');if(!retainedIdentify||retainedIdentify.ts<=Date.now()-86400000+60000){await close();throw Error('fixture_retention_boundary_drift');}}
  return {pool,runtime,siteId,visitorId,otherVisitorId,boundary,bridge,dir,events,canonical,headers,facts,snapshot,runWorker,armRollback,clearRollback,close};
 }

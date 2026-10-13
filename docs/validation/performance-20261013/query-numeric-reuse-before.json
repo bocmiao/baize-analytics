@@ -1,0 +1,41 @@
+{
+  "scope": "same real PG fixture; SQL calls include snapshot setup; single-run timings are diagnostic, not an SLO",
+  "observations": [
+    {
+      "name": "aligned",
+      "scans": 1,
+      "sqlCalls": 51,
+      "wallMs": 284.24935400000004,
+      "pv": 3,
+      "uv": 3,
+      "coverage": 1
+    },
+    {
+      "name": "partial",
+      "scans": 2,
+      "sqlCalls": 58,
+      "wallMs": 100.27410099999997,
+      "pv": 2,
+      "uv": 2,
+      "coverage": 1
+    },
+    {
+      "name": "filtered",
+      "scans": 2,
+      "sqlCalls": 48,
+      "wallMs": 80.04862099999991,
+      "pv": 2,
+      "uv": 2,
+      "coverage": 1
+    },
+    {
+      "name": "filtered-partial",
+      "scans": 2,
+      "sqlCalls": 48,
+      "wallMs": 75.43522699999994,
+      "pv": 1,
+      "uv": 1,
+      "coverage": 1
+    }
+  ]
+}

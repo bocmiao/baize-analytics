@@ -1,0 +1,28 @@
+{
+  "profile": "lite",
+  "node": "v24.21.0",
+  "versions": {
+    "user_version": 2
+  },
+  "setupRequired": false,
+  "login": true,
+  "retried": 100,
+  "duplicates": 100,
+  "totals": {
+    "pv": 1500,
+    "uv": 150,
+    "sessions": 150,
+    "bounceRate": 0,
+    "averageDuration": 0.45000000000000123,
+    "visibleSeconds": 0,
+    "revenueCurrencyStatus": "supported",
+    "revenueCurrencyCoverage": "complete",
+    "revenue": 0,
+    "revenueByCurrency": {},
+    "conversions": 0
+  },
+  "coverage": 1,
+  "witnessPath": "/workspace/baize-optimization-20261013/shared/lite-overlay-fixed-after-3.json",
+  "pid": 7,
+  "cgroup": "0::/\n"
+}

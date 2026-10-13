@@ -1,0 +1,10 @@
+{
+  "schema": "opt_b49d337703694e55bbd4fc06b8ca9989",
+  "offered_requests": 30,
+  "offered_declared_events": 1500,
+  "durably_stored_events": 1350,
+  "durable_receipts": 1350,
+  "filtered_request_observations": 3,
+  "filtered_declared_events": 150,
+  "scope": "initial failed tmpfs diagnostic; original client did not retain complete HTTP status log; source returns204 for these durable filter observations"
+}

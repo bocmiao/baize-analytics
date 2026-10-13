@@ -1,0 +1,16 @@
+[
+  {
+    "name": "standard-fixed-before-1",
+    "existing": true
+  },
+  {
+    "name": "standard-fixed-after-1",
+    "exit": 0,
+    "durationSeconds": 17.265671014785767
+  },
+  {
+    "name": "standard-burst-before-1",
+    "exit": 1,
+    "durationSeconds": 79.95425963401794
+  }
+]

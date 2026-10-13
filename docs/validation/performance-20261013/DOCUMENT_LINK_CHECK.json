@@ -1,0 +1,232 @@
+[
+  {
+    "document": "README.md",
+    "sha256": "51fa7503068c95c48589a4a9be4b0191e11331278ac010ccfb0e4d162f76d9d4",
+    "relativeLinks": [
+      {
+        "target": "README.en.md",
+        "exists": true
+      },
+      {
+        "target": "docs/deployment-methods.md",
+        "exists": true
+      },
+      {
+        "target": "docs/api.md",
+        "exists": true
+      },
+      {
+        "target": "docs/migration.md",
+        "exists": true
+      },
+      {
+        "target": "docs/images/baize-desktop.png",
+        "exists": true
+      },
+      {
+        "target": "docs/images/baize-mobile.png",
+        "exists": true
+      },
+      {
+        "target": "docs/lite-migration.md",
+        "exists": true
+      },
+      {
+        "target": "deploy/baize.service.example",
+        "exists": true
+      },
+      {
+        "target": "docs/deployment-methods.md",
+        "exists": true
+      },
+      {
+        "target": "docs/release-packages.md",
+        "exists": true
+      },
+      {
+        "target": "docs/release-native-ops.md",
+        "exists": true
+      },
+      {
+        "target": "docs/deployment.md",
+        "exists": true
+      },
+      {
+        "target": "docs/lite-deployment.md",
+        "exists": true
+      },
+      {
+        "target": "docs/migration.md",
+        "exists": true
+      },
+      {
+        "target": "docs/api.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/README.md",
+        "exists": true
+      },
+      {
+        "target": "docs/development.md",
+        "exists": true
+      },
+      {
+        "target": "docs/compatibility.md",
+        "exists": true
+      },
+      {
+        "target": "docs/STATUS.md",
+        "exists": true
+      },
+      {
+        "target": "docs/IMPLEMENTATION_CHECKLIST.md",
+        "exists": true
+      },
+      {
+        "target": "docs/PERFORMANCE_OPTIMIZATION_20261013.md",
+        "exists": true
+      },
+      {
+        "target": "LICENSE",
+        "exists": true
+      },
+      {
+        "target": "packages/tracker/LICENSE",
+        "exists": true
+      }
+    ]
+  },
+  {
+    "document": "README.en.md",
+    "sha256": "af5b9d535fa5f7f00d34fc71b7b93f06f24545a26e1aef960d567fb63a3993b8",
+    "relativeLinks": [
+      {
+        "target": "README.md",
+        "exists": true
+      },
+      {
+        "target": "docs/deployment-methods.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/README.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/api.md",
+        "exists": true
+      },
+      {
+        "target": "docs/images/baize-desktop.png",
+        "exists": true
+      },
+      {
+        "target": "docs/images/baize-mobile.png",
+        "exists": true
+      },
+      {
+        "target": "docs/lite-migration.md",
+        "exists": true
+      },
+      {
+        "target": "deploy/baize.service.example",
+        "exists": true
+      },
+      {
+        "target": "docs/deployment-methods.md",
+        "exists": true
+      },
+      {
+        "target": "docs/release-packages.md",
+        "exists": true
+      },
+      {
+        "target": "docs/release-native-ops.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/deployment.md",
+        "exists": true
+      },
+      {
+        "target": "docs/lite-deployment.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/migration.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/README.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/api.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/development.md",
+        "exists": true
+      },
+      {
+        "target": "docs/en/compatibility.md",
+        "exists": true
+      },
+      {
+        "target": "docs/STATUS.md",
+        "exists": true
+      },
+      {
+        "target": "docs/IMPLEMENTATION_CHECKLIST.md",
+        "exists": true
+      },
+      {
+        "target": "LICENSE",
+        "exists": true
+      },
+      {
+        "target": "packages/tracker/LICENSE",
+        "exists": true
+      }
+    ]
+  },
+  {
+    "document": "docs/deployment-methods.md",
+    "sha256": "da3a5c3fc09f62ab3c970ee959284ade1d66221694b384d1b6526442140ab6dd",
+    "relativeLinks": [
+      {
+        "target": "release-native-ops.md",
+        "exists": true
+      },
+      {
+        "target": "lite-deployment.md",
+        "exists": true
+      },
+      {
+        "target": "release-packages.md",
+        "exists": true
+      }
+    ]
+  },
+  {
+    "document": "docs/release-packages.md",
+    "sha256": "a57421f24e3b968d320239adbbcae96ff0cea3b75c0b6e3ac52293781966a4d9",
+    "relativeLinks": []
+  },
+  {
+    "document": "docs/release-native-ops.md",
+    "sha256": "91f6b1f85e356398a17df3972881c4db387f367d009880b414a2294c8b5baa17",
+    "relativeLinks": []
+  },
+  {
+    "document": "docs/lite-deployment.md",
+    "sha256": "912320b96bb4f01a8c85fb7c323cc2976da028b133d0403b5c7db4f35a850299",
+    "relativeLinks": [
+      {
+        "target": "deployment-methods.md",
+        "exists": true
+      }
+    ]
+  }
+]

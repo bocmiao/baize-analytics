@@ -3,7 +3,7 @@ import {envelopeSchema,eventSchema,type WireEvent} from '../../packages/contract
 import {sanitizePrivacyProps} from '../../packages/tracker/src/privacy.js';
 import {canonical,visitorHash,dayScopedPageId,anonymizeIP,matchesCIDR,hashToken,HttpError} from '../server/security.js';
 import {siteAllowsOrigin} from '../server/site-hosts.js';
-import {eventDimensions} from '../server/dimensions.js';
+import {prepareEventDimensions} from '../server/dimensions.js';
 import {sanitizeDailyPayload,sanitizeDailyDimensions} from '../server/daily-privacy-policy.js';
 import {classifyBotUA} from '../server/bot-filter.js';
 import type {LiteCollectInput,LiteCollectResult,LiteSite,LiteWriteContext} from './types.js';
@@ -37,6 +37,12 @@ export function handleIntake(context:LiteWriteContext,kind:string,payload:Record
   const receipt=db.prepare('SELECT * FROM receipts WHERE site_id=? AND event_id=?');
   const body=db.prepare('SELECT visitor_id,payload FROM events WHERE site_id=? AND event_id=?');
   const deleted=db.prepare('SELECT 1 FROM tombstones WHERE site_id=? AND (visitor_id=? OR (? IS NOT NULL AND user_id=?)) LIMIT 1');
+  const dayFormatter=new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone});
+  const dimensionsFor=prepareEventDimensions(input.ua,{},site.config,input.ip);
+  const insertReceipt=db.prepare('INSERT INTO receipts(site_id,event_id,wire_hash,ts,visitor_id,page_id,type,parent_event_id) VALUES(?,?,?,?,?,?,?,?)');
+  const insertEvent=db.prepare('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES(?,?,?,?,?,?,?,?,?)');
+  // Revenue statements stay lazy for batches containing no revenue.
+  let findOrder:ReturnType<typeof db.prepare>|undefined,insertOrder:ReturnType<typeof db.prepare>|undefined;
   for(const raw of envelope.events){
    const parsed=eventSchema.safeParse(raw);const id=(raw&&typeof raw==='object')?(raw as {event_id?:string}).event_id:undefined;
    const reject=(reason:string)=>result.rejected.push({event_id:id,reason});
@@ -46,7 +52,7 @@ export function handleIntake(context:LiteWriteContext,kind:string,payload:Record
    if(wire.type==='replay'||wire.type==='heatmap'){reject('feature_unsupported_in_lite');continue;}
    if(wire.ts>now+86400000){reject('future_event');continue;}
    if(wire.ts<now-Number(site.retention_days)*86400000){reject('outside_retention');continue;}
-   const day=new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone}).format(new Date(wire.ts));
+   const day=dayFormatter.format(new Date(wire.ts));
    const previous=receipt.get(site.id,wire.event_id);
    // Anonymous retries retain their original generated visitor identity.
    const visitor=site.privacy_mode==='daily_salt'?visitorHash(site.salt_secret,day,input.ip,input.ua):wire.visitor_id??(previous?String(previous.visitor_id):randomUUID());
@@ -57,14 +63,14 @@ export function handleIntake(context:LiteWriteContext,kind:string,payload:Record
    const orderHash=wire.type==='revenue'?visitorHash(site.salt_secret,site.privacy_mode==='daily_salt'?`order:${day}`:'order',wire.order_id!,''):undefined;
    const page=site.privacy_mode==='daily_salt'?dayScopedPageId(site.salt_secret,day,wire.page_id):wire.page_id;
    let parent:string|null=null;
-   if(orderHash){const order=db.prepare('SELECT * FROM revenue_orders WHERE site_id=? AND order_hash=?').get(site.id,orderHash);if(order){if(order.currency!==wire.currency||Number(order.amount)!==wire.revenue){reject('order_id_conflict');continue;}parent=String(order.event_id);const original=body.get(site.id,parent);if(!original)throw Error('receipt_body_missing');if(deleted.get(site.id,String(original.visitor_id),null,null)){reject('deleted_visitor');continue;}}}
-   db.prepare('INSERT INTO receipts(site_id,event_id,wire_hash,ts,visitor_id,page_id,type,parent_event_id) VALUES(?,?,?,?,?,?,?,?)').run(site.id,wire.event_id,hash,wire.ts,visitor,page,wire.type,parent);
+   if(orderHash){findOrder??=db.prepare('SELECT * FROM revenue_orders WHERE site_id=? AND order_hash=?');const order=findOrder.get(site.id,orderHash);if(order){if(order.currency!==wire.currency||Number(order.amount)!==wire.revenue){reject('order_id_conflict');continue;}parent=String(order.event_id);const original=body.get(site.id,parent);if(!original)throw Error('receipt_body_missing');if(deleted.get(site.id,String(original.visitor_id),null,null)){reject('deleted_visitor');continue;}}}
+   insertReceipt.run(site.id,wire.event_id,hash,wire.ts,visitor,page,wire.type,parent);
    if(parent){result.accepted++;result.duplicates++;continue;}
    let clean=cleanEvent(wire,input.ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor;if(orderHash)clean.order_id=orderHash;clean.page_id=page;
-   let dimensions:Record<string,unknown>={...eventDimensions(input.ua,wire,{},site.config,input.ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(input.ip)};
+   let dimensions:Record<string,unknown>={...dimensionsFor(wire),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(input.ip)};
    if(site.privacy_mode==='daily_salt'){clean=sanitizeDailyPayload(clean,{visitorId:visitor,pageId:page});dimensions=sanitizeDailyDimensions(dimensions);}
-   db.prepare('INSERT INTO events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions) VALUES(?,?,?,?,?,?,?,?,?)').run(site.id,wire.event_id,wire.ts,visitor,page,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(dimensions));
-   if(orderHash)db.prepare('INSERT INTO revenue_orders(site_id,order_hash,event_id,visitor_id,ts,currency,amount) VALUES(?,?,?,?,?,?,?)').run(site.id,orderHash,wire.event_id,visitor,wire.ts,wire.currency!,wire.revenue!);
+   insertEvent.run(site.id,wire.event_id,wire.ts,visitor,page,wire.type,wire.path,JSON.stringify(clean),JSON.stringify(dimensions));
+   if(orderHash){insertOrder??=db.prepare('INSERT INTO revenue_orders(site_id,order_hash,event_id,visitor_id,ts,currency,amount) VALUES(?,?,?,?,?,?,?)');insertOrder.run(site.id,orderHash,wire.event_id,visitor,wire.ts,wire.currency!,wire.revenue!);}
    changed=true;result.accepted++;
   }
   if(changed){const generation=Number(site.generation)+1;db.prepare('UPDATE sites SET generation=? WHERE id=?').run(generation,site.id);db.prepare("INSERT INTO jobs(id,site_id,kind,dedupe_key,status,payload,next_at,epoch,generation) VALUES(?,?,'aggregate',?,'pending','{}',?,?,?)").run(randomUUID(),site.id,String(generation),now,site.epoch,generation);}

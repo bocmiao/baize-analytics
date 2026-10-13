@@ -1,0 +1,543 @@
+[
+  {
+    "profile": "standard",
+    "scenario": "complete",
+    "currentRequests": 1,
+    "previousRequests": 2,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "standard",
+    "scenario": "pending-complete",
+    "currentRequests": 2,
+    "previousRequests": 3,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 0
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "standard",
+    "scenario": "rapid-query",
+    "currentRequests": 3,
+    "previousRequests": 6,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-30T00:00:00.000Z",
+        "to": "2026-10-02T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-30T00:00:00.000Z",
+        "to": "2026-10-02T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-03T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-03T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-03T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-30T00%3A00%3A00.000Z&to=2026-10-02T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-10-02T00%3A00%3A00.000Z&to=2026-10-04T00%3A00%3A00.000Z&",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-30T00%3A00%3A00.000Z&to=2026-10-02T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-10-02T00%3A00%3A00.000Z&to=2026-10-03T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "standard",
+    "scenario": "refresh",
+    "currentRequests": 2,
+    "previousRequests": 5,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "standard",
+    "scenario": "error-retry",
+    "currentRequests": 2,
+    "previousRequests": 3,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "lite",
+    "scenario": "complete",
+    "currentRequests": 1,
+    "previousRequests": 2,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "lite",
+    "scenario": "pending-complete",
+    "currentRequests": 2,
+    "previousRequests": 3,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 0
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "lite",
+    "scenario": "rapid-query",
+    "currentRequests": 3,
+    "previousRequests": 6,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-30T00:00:00.000Z",
+        "to": "2026-10-02T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-30T00:00:00.000Z",
+        "to": "2026-10-02T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-03T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-03T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-10-02T00:00:00.000Z",
+        "to": "2026-10-03T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-30T00%3A00%3A00.000Z&to=2026-10-02T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-10-02T00%3A00%3A00.000Z&to=2026-10-04T00%3A00%3A00.000Z&",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-30T00%3A00%3A00.000Z&to=2026-10-02T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-10-02T00%3A00%3A00.000Z&to=2026-10-03T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "lite",
+    "scenario": "refresh",
+    "currentRequests": 2,
+    "previousRequests": 5,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  },
+  {
+    "profile": "lite",
+    "scenario": "error-retry",
+    "currentRequests": 2,
+    "previousRequests": 3,
+    "log": [
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": true,
+        "from": "2026-10-01T00:00:00.000Z",
+        "to": "2026-10-04T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      },
+      {
+        "current": false,
+        "from": "2026-09-28T00:00:00.000Z",
+        "to": "2026-10-01T00:00:00.000Z",
+        "coverage": 1
+      }
+    ],
+    "failures": [
+      {
+        "query": "?from=2026-09-28T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "comparisonPoints": "1",
+    "pageErrors": []
+  }
+]

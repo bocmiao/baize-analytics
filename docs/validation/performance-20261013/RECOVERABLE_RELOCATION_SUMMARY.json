@@ -1,0 +1,34 @@
+{
+  "regularFileBytesRelocated": 1439703677,
+  "preservedCopiesVerifiedBeforeSourceEntryRemoval": true,
+  "paths": [
+    {
+      "original": "/workspace/baize-acceptance-e5aff3b/package-smoke",
+      "preserved": "/tmp/baize-optimization-preserved-20261013/package-smoke",
+      "regularFileBytes": 157750900
+    },
+    {
+      "original": "/workspace/baize-acceptance-e5aff3b/package-smoke-attempt2",
+      "preserved": "/tmp/baize-optimization-preserved-20261013/package-smoke-attempt2",
+      "regularFileBytes": 157750930
+    },
+    {
+      "original": "/workspace/baize-acceptance-e5aff3b/package-smoke-attempt3",
+      "preserved": "/tmp/baize-optimization-preserved-20261013/package-smoke-attempt3",
+      "regularFileBytes": 442703696
+    },
+    {
+      "original": "/workspace/baize-acceptance-e5aff3b/package-smoke-attempt4",
+      "preserved": "/tmp/baize-optimization-preserved-20261013/package-smoke-attempt4",
+      "regularFileBytes": 681498151
+    }
+  ],
+  "shaModeOwnerSymlinkHardlinkLedger": "/workspace/baize-optimization-20261013/recoverable-relocation.json",
+  "ledgerPrivateNotPublished": true,
+  "oldArchivesRemoved": false,
+  "nodeModulesRemoved": false,
+  "nativeNodeBindSourcesRemoved": false,
+  "dockerPrune": false,
+  "otherDataRemoved": false,
+  "note": "Archive/benchmark evidence and raw private ledger retained; original smoke folders can be reconstructed from listed preserved paths. This record is not a download link."
+}

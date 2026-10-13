@@ -1,0 +1,96 @@
+{
+  "retainedNewCapturesLocalRoot": "/workspace/baize-optimization-20261013/browser-captures-preserved",
+  "files": [
+    {
+      "path": "docs/screenshots/approved-ui/desktop-1440-collapsed.json",
+      "retainedNewCaptureBytes": 839,
+      "retainedNewCaptureSha256": "c21e6b7852e75fb80824c8bde9df383b109c10bce41495e97d3f60e32ccae872",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-1440-collapsed.png",
+      "retainedNewCaptureBytes": 159499,
+      "retainedNewCaptureSha256": "b8716221c1063d1de0d870afc6895e6db2c6f1a9e9cf99226a6b940697c54f6b",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-1440-expanded.json",
+      "retainedNewCaptureBytes": 838,
+      "retainedNewCaptureSha256": "c3839600928c5c41124509400f1a5f2a40a48c4564991377c107af4f38def2d8",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-1440-expanded.png",
+      "retainedNewCaptureBytes": 199186,
+      "retainedNewCaptureSha256": "3ca7b7d55cadcd2703a890f1571efe121e2ab51b43e3de90093e1097a89f85fc",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-ai-unconfigured.json",
+      "retainedNewCaptureBytes": 871,
+      "retainedNewCaptureSha256": "cc84a4e8484f23e53a96c608e0ef670481613fcd424f0a74de51ec4a815c1cf7",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-ai-unconfigured.png",
+      "retainedNewCaptureBytes": 133748,
+      "retainedNewCaptureSha256": "fda0f4f84e43d7d0a3581169f272c7a3cdf9b3bea7e47af973cc7ca026ef709b",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-empty-site.json",
+      "retainedNewCaptureBytes": 874,
+      "retainedNewCaptureSha256": "9e980f2422aa54505a0ac24a277f932932f6ce4b66a48896a4d6cafbc50a6645",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-empty-site.png",
+      "retainedNewCaptureBytes": 145927,
+      "retainedNewCaptureSha256": "570cd3473064d96bb6ed799e463e90fad5c0cbcaa6f23f77a21b2c6c301c38b5",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-seo-unconfigured.json",
+      "retainedNewCaptureBytes": 872,
+      "retainedNewCaptureSha256": "76bc35a8f148e1592e4c527917eaabe2d851f80b05e44f79f9dd50d463b8c5a1",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/desktop-seo-unconfigured.png",
+      "retainedNewCaptureBytes": 131308,
+      "retainedNewCaptureSha256": "623ca1e94e042ca41884367c50e078d66e8537eab0931284e343a59332db6069",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/mobile-390.json",
+      "retainedNewCaptureBytes": 825,
+      "retainedNewCaptureSha256": "ea955b7e66bf097c0c0c058467043fc4e5a774c6b63641693103b6c6f59dffd0",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/approved-ui/mobile-390.png",
+      "retainedNewCaptureBytes": 60201,
+      "retainedNewCaptureSha256": "926cb44b8ebe28e5c5ad3527515520b722da4ea024aaed0a6f21361388de5bc9",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/dashboard-acceptance.png",
+      "retainedNewCaptureBytes": 39727,
+      "retainedNewCaptureSha256": "e8f52c7c887ca1dbc46a0c80ccb0cbe1be4e7e038b376bb7b54c03bc8bbb0db3",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/dashboard-mobile-acceptance.png",
+      "retainedNewCaptureBytes": 147485,
+      "retainedNewCaptureSha256": "9b57d03ccc5f076e14c089076706849e8512e27efc66cb9013b8f3a3df6bb53b",
+      "historicalGitBlobRestored": true
+    },
+    {
+      "path": "docs/screenshots/geography-acceptance.png",
+      "retainedNewCaptureBytes": 100472,
+      "retainedNewCaptureSha256": "a653f69c4a89cd084235be067365e216b2945575abd44903342eb1ec2e3cbdc3",
+      "historicalGitBlobRestored": true
+    }
+  ],
+  "readmeNewDesktopAndMobileRetained": true
+}

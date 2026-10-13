@@ -1,0 +1,197 @@
+{
+  "root": "/workspace/baize-analytics",
+  "profile": "standard",
+  "mode": "fixed",
+  "node": "v24.21.0",
+  "sources": {
+    "src/server/analytics-core.ts": "eaa4665b516ac57b5a747eb821de5b7f8425d504d66067116d97810a77751797",
+    "src/server/collect.ts": "9a808e9d830554a35bf595d616d694ac96cebc936662aa131a350051fe420e4e",
+    "src/server/dimensions.ts": "a84dc2a5a1a68fc38b5205826ab2e90517ec56d4aa3fa8416bc38e6cd0961268",
+    "src/server/relational-stats.ts": "bbf1eba1698681d95f03b72adf64e9f932eae3ff0b69818ac393c89978d7aad2",
+    "src/lite/intake-domain.ts": "c0e0e744ed12b525eedd20f5078c40ead975cdc31502972eb51d379a4533d932"
+  },
+  "storage": {
+    "path": "/var/lib/postgresql/data",
+    "filesystemType": 2035054128
+  },
+  "cgroup": {
+    "cpuMax": "100000 100000\n",
+    "memoryMax": "1799999488\n",
+    "memorySwapMax": "0\n",
+    "cpuBefore": {
+      "usage_usec": 27292690,
+      "user_usec": 23015207,
+      "system_usec": 4277482,
+      "nice_usec": 0,
+      "nr_periods": 782,
+      "nr_throttled": 208,
+      "throttled_usec": 5173040,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "cpuAfter": {
+      "usage_usec": 33816863,
+      "user_usec": 28505042,
+      "system_usec": 5311821,
+      "nice_usec": 0,
+      "nr_periods": 848,
+      "nr_throttled": 260,
+      "throttled_usec": 7118313,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "memoryCurrentSampleMaxBytes": 609824768,
+    "memoryPeakSinceGroupCreation": "860917760\n"
+  },
+  "load": {
+    "unique": 1500,
+    "retries": 100,
+    "batch": 50,
+    "offeredIntervalMs": 100,
+    "burst": null,
+    "dispatchElapsedMs": [
+      6.22110100000009,
+      100.18534199999976,
+      199.64028699999972,
+      299.9329130000001,
+      399.5839780000001,
+      499.61524499999996,
+      599.4527159999998,
+      698.415485,
+      802.017304,
+      899.3081039999997,
+      999.2268669999999,
+      1099.6674309999999,
+      1199.1672499999995,
+      1300.722366,
+      1399.2290039999998,
+      1498.4476160000004,
+      1599.2515869999997,
+      1700.7151059999997,
+      1799.1505120000002,
+      1899.136732,
+      1999.2288440000002,
+      2099.322693,
+      2198.1762259999996,
+      2299.738026,
+      2399.2101549999998,
+      2498.6196250000003,
+      2599.5387519999995,
+      2699.2206239999996,
+      2799.4322709999997,
+      2899.2009049999997
+    ],
+    "sender": "same Node process; scheduled dispatch measured, not independent throughput proof",
+    "background": true,
+    "redis": true,
+    "canonical": false
+  },
+  "ack": {
+    "p50": 2612.010907,
+    "p95": 3738.673767,
+    "max": 3762.308699000001,
+    "durationMs": 6661.550727
+  },
+  "cpuAppMicroseconds": {
+    "user": 3146340,
+    "system": 538930
+  },
+  "rssSampleMaxBytes": 268943360,
+  "eventLoopDelayMs": {
+    "p95": 19.234815,
+    "max": 75.694079
+  },
+  "accepted": 1600,
+  "duplicates": 100,
+  "rejected": 0,
+  "stats": {
+    "totals": {
+      "pv": 1500,
+      "uv": 150,
+      "sessions": 150,
+      "bounceRate": 0,
+      "averageDuration": 0.45000000000000123,
+      "visibleSeconds": 0,
+      "revenueCurrencyStatus": "supported",
+      "revenueCurrencyCoverage": 1,
+      "revenue": 0,
+      "revenueByCurrency": {},
+      "conversions": 0
+    },
+    "coverage": 1,
+    "freshnessWaitMs": 8288.483339000002
+  },
+  "stages": {
+    "collect:pool_acquire": {
+      "n": 32,
+      "p95": 1321.349878,
+      "sum": 14142.516054000005
+    },
+    "collect:partition_lock": {
+      "n": 32,
+      "p95": 4.618247999999767,
+      "sum": 45.957320999999865
+    },
+    "collect:site_lock": {
+      "n": 32,
+      "p95": 2169.7473199999995,
+      "sum": 45277.664257000004
+    },
+    "background:partition_lock": {
+      "n": 21,
+      "p95": 27.772694999999658,
+      "sum": 225.2401830000017
+    },
+    "background:page_path_lookup": {
+      "n": 1600,
+      "p95": 0.8881779999992432,
+      "sum": 906.6603069999373
+    },
+    "background:session_build_wall": {
+      "n": 2,
+      "p95": 6007.453744999999,
+      "sum": 7006.768176
+    },
+    "background:incremental_session_reuse": {
+      "n": 2,
+      "p95": 15.285999000003358,
+      "sum": 18.472300000003088
+    },
+    "background:site_lock": {
+      "n": 2,
+      "p95": 1732.9152480000002,
+      "sum": 1733.0351959999998
+    },
+    "background:worker_facts_wall": {
+      "n": 2,
+      "p95": 6203.837247999998,
+      "sum": 9570.651125999997
+    },
+    "background:pool_acquire": {
+      "n": 12,
+      "p95": 0.05987900000036461,
+      "sum": 0.24209999999766296
+    },
+    "stats:site_shared_lock": {
+      "n": 2,
+      "p95": 0.4130280000008497,
+      "sum": 0.5274740000040765
+    },
+    "stats:partition_lock": {
+      "n": 2,
+      "p95": 0.19540799999958836,
+      "sum": 0.2639039999994566
+    },
+    "stats:aggregate_sql": {
+      "n": 28,
+      "p95": 100.97809500000221,
+      "sum": 342.4723760000106
+    },
+    "stats:stats_snapshot_hold": {
+      "n": 2,
+      "p95": 782.5713340000002,
+      "sum": 936.9781640000001
+    }
+  },
+  "schema": "opt_93542ea49443438fbd933a56765eb4c5"
+}

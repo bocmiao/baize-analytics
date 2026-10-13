@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "profiles": [
+    "standard",
+    "lite"
+  ],
+  "scenarios": [
+    "complete",
+    "pending-complete",
+    "rapid-query",
+    "refresh",
+    "error-retry"
+  ],
+  "checks": "Exact primary/previous HTTP counts and final visible comparison point; canceled stale requests retained in raw logs."
+}

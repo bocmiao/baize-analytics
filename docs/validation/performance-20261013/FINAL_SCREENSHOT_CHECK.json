@@ -1,0 +1,30 @@
+[
+  {
+    "path": "docs/images/baize-desktop.png",
+    "bytes": 192528,
+    "MiB": 0.1836090087890625,
+    "sha256": "6d2522e2991f2e90923f2c537e669ae061ad146e86618fc0c9513cf3d38446ac",
+    "dimensions": [
+      1440,
+      1447
+    ],
+    "allCapturedSourceAndCompiledHashesMatchFinalSource": true,
+    "matchesBeforeDdlImagePixels": true,
+    "actualApiPgSynthetic": true,
+    "mockedStats": false
+  },
+  {
+    "path": "docs/images/baize-mobile.png",
+    "bytes": 155238,
+    "MiB": 0.14804649353027344,
+    "sha256": "b670cfb02c660f2ce496d02e9d07a4c6b98739992cab544b49fa7b177aac66b5",
+    "dimensions": [
+      390,
+      2346
+    ],
+    "allCapturedSourceAndCompiledHashesMatchFinalSource": true,
+    "matchesBeforeDdlImagePixels": true,
+    "actualApiPgSynthetic": true,
+    "mockedStats": false
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "profile": "standard",
+    "chartIds": {
+      "id": "ec_1791861514672",
+      "toggle0": "ec_1791861514672",
+      "toggle1": "ec_1791861514672",
+      "toggle2": "ec_1791861514672",
+      "toggle3": "ec_1791861514672",
+      "toggle4": "ec_1791861514672",
+      "toggle5": "ec_1791861514672"
+    },
+    "distinctChartInstances": 1,
+    "resizeCallsFor50WindowEvents": 1,
+    "contentRequests": 1,
+    "errors": []
+  },
+  {
+    "profile": "lite",
+    "chartIds": {
+      "id": "ec_1791861528292",
+      "toggle0": "ec_1791861528292",
+      "toggle1": "ec_1791861528292",
+      "toggle2": "ec_1791861528292",
+      "toggle3": "ec_1791861528292",
+      "toggle4": "ec_1791861528292",
+      "toggle5": "ec_1791861528292"
+    },
+    "distinctChartInstances": 1,
+    "resizeCallsFor50WindowEvents": 1,
+    "contentRequests": 2,
+    "errors": []
+  }
+]

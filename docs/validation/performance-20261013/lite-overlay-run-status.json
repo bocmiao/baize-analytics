@@ -1,0 +1,62 @@
+[
+  {
+    "name": "lite-overlay-fixed-before-1",
+    "exit": 0,
+    "durationSeconds": 16.8452205657959
+  },
+  {
+    "name": "lite-overlay-fixed-after-1",
+    "exit": 0,
+    "durationSeconds": 6.698936700820923
+  },
+  {
+    "name": "lite-overlay-burst-before-1",
+    "exit": 0,
+    "durationSeconds": 6.502259731292725
+  },
+  {
+    "name": "lite-overlay-burst-after-1",
+    "exit": 0,
+    "durationSeconds": 4.777775287628174
+  },
+  {
+    "name": "lite-overlay-fixed-after-2",
+    "exit": 0,
+    "durationSeconds": 5.145298480987549
+  },
+  {
+    "name": "lite-overlay-fixed-before-2",
+    "exit": 0,
+    "durationSeconds": 5.098949670791626
+  },
+  {
+    "name": "lite-overlay-burst-after-2",
+    "exit": 0,
+    "durationSeconds": 4.814911127090454
+  },
+  {
+    "name": "lite-overlay-burst-before-2",
+    "exit": 0,
+    "durationSeconds": 5.760739326477051
+  },
+  {
+    "name": "lite-overlay-fixed-before-3",
+    "exit": 0,
+    "durationSeconds": 5.338388919830322
+  },
+  {
+    "name": "lite-overlay-fixed-after-3",
+    "exit": 0,
+    "durationSeconds": 5.282041311264038
+  },
+  {
+    "name": "lite-overlay-burst-before-3",
+    "exit": 0,
+    "durationSeconds": 5.346492767333984
+  },
+  {
+    "name": "lite-overlay-burst-after-3",
+    "exit": 0,
+    "durationSeconds": 4.8075056076049805
+  }
+]

@@ -93,3 +93,5 @@ ACK 延迟是每批 HTTP 接收响应耗时，不能代替后台聚合完成耗�
 本次 after 测量使用基线镜像加只读候选编译模块，证据为 `shared-standard-after/result.json` 与 `actual-overlay-collect-witness.json`。候选 `src/server/collect.ts` SHA256 为 `987f121cf75cbbb5a8c9d7523a705170f88a72a26e263ff398a9a4f165cab41f`；实际执行的 `collect.js` SHA256 为 `bc31aea4fc43bbd72320f03904ed09360eb7dd9600008809e928691d57a6664f`。
 
 候选测量不是旧 `ae0e55f` 正式镜像的新功能验收。最终发布须由发布清单的完整软件 SHA、源码文件哈希及实际编译文件哈希另行绑定；只有输入匹配才能引用这里的结果，正式产物启动与完整性验证也需单独记录。
+
+2026-10-13 后续优化采用不同源码与独立负载条件，见 [性能复验记录](PERFORMANCE_OPTIMIZATION_20261013.md)。这里的固定/峰值混合结论和原文件哈希不改写为后续结果；新三波突发也不替代本报告的旧单波峰值。

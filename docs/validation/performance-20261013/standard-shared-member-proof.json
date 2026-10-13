@@ -1,0 +1,48 @@
+{
+  "members": [
+    {
+      "pid": 160,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 18,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 19,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 20,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 22,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 23,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 24,
+      "role": "postgres",
+      "cgroup": "0::/\n"
+    },
+    {
+      "pid": 28,
+      "role": "redis-server",
+      "cgroup": "0::/\n"
+    }
+  ],
+  "cpuMax": "100000 100000\n",
+  "memoryMax": "1799999488\n",
+  "swapMax": "0\n",
+  "memoryEvents": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\n"
+}

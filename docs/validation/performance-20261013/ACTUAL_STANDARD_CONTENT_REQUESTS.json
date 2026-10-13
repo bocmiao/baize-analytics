@@ -1,0 +1,21 @@
+{
+  "profile": "standard",
+  "actualServer": true,
+  "apiMocking": false,
+  "siteId": "cc2d0c8e000806ca2f42acda",
+  "initialRequests": 1,
+  "refreshRequests": 1,
+  "paths": [
+    {
+      "path": "/api/v1/sites/cc2d0c8e000806ca2f42acda/content",
+      "query": "?from=2026-10-13T00%3A00%3A00.000Z&to=2026-10-14T00%3A00%3A00.000Z&"
+    },
+    {
+      "path": "/api/v1/sites/cc2d0c8e000806ca2f42acda/content",
+      "query": "?from=2026-10-13T00%3A00%3A00.000Z&to=2026-10-14T00%3A00%3A00.000Z&"
+    }
+  ],
+  "pageErrors": [],
+  "syntheticEmptySite": true,
+  "scope": "actual compiled server/frontend content request count; no performance timing or nonempty data claim"
+}

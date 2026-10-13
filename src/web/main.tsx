@@ -112,6 +112,8 @@ function View({ profile, site, tab, query, refresh, canWrite, canAdmin,instanceA
     const [analysisLoading,setAnalysisLoading]=useState(false);
     const [analysisRetry,setAnalysisRetry]=useState(0);
     const [previous, setPrevious] = useState<Row>({});
+    const [previousCompletion,setPreviousCompletion]=useState(0);
+    const currentCoverage=useRef({scope:'',pending:false});
     const [previousRangeUnavailable,setPreviousRangeUnavailable]=useState(false);
     const [overviewDefinitions,setOverviewDefinitions]=useState<{goals:Row[];funnels:Row[]}>({goals:[],funnels:[]});
     const [error, setError] = useState('');
@@ -121,13 +123,23 @@ function View({ profile, site, tab, query, refresh, canWrite, canAdmin,instanceA
     const base = `/api/v1/sites/${site.id}`;
     const endpoint = ['overview', 'pages', 'sources', 'audience', 'events', 'retention', 'paths', 'vitals'].includes(tab) ? 'stats' : ['downloads','notFound','eventTrend'].includes(tab)?'content':tab === 'privacy' ? 'usage' : tab === 'settings' ? 'usage' : tab === 'userpaths' ? 'identities' : tab;
     const requestPath = ['seo', 'ai', 'gsc', 'ga4', 'serp', 'suggestions', 'seo-conversions'].includes(tab) ? `/api/sites/${site.id}/${tab === 'seo' ? 'seo/scans' : tab === 'ai' ? 'ai/usage' : tab === 'seo-conversions' ? 'seo/conversions' : tab}${['gsc', 'ga4', 'seo-conversions'].includes(tab) ? `?start=${civilDate(new URLSearchParams(query).get('from')!, site.timezone)}&end=${inclusiveEnd(new URLSearchParams(query).get('to')!, site.timezone)}` : ''}` : `${base}/${endpoint}?${query}${endpoint==='identities'?`&registrationEvent=${encodeURIComponent(registrationEvent)}`:''}`;
+    const currentScope=JSON.stringify([base,tab,query,version,refresh]);
+    // A completed first response needs no second previous-period read. Only real
+    // responses in this request scope can announce pending aggregation completion.
+    function observeCurrentCoverage(scope:string,result:Row){
+        const observed=currentCoverage.current;
+        if(observed.scope!==scope||typeof result.coverage!=='number'||!Number.isFinite(result.coverage))return;
+        if(result.coverage<1)observed.pending=true;
+        else if(observed.pending){observed.pending=false;setPreviousCompletion(value=>value+1);}
+    }
     useEffect(() => {
+        currentCoverage.current={scope:currentScope,pending:false};
         if(tab==='realtime'||profile.profile==='lite'&&['seo','ai'].includes(tab))return;
         const controller = new AbortController(); let active = true;
         setLoading(true); setError(''); setData({});
-        void api<Row>(requestPath, undefined, 'GET', controller.signal).then(result => { if (active) setData(result); }).catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setLoading(false); });
+        void api<Row>(requestPath, undefined, 'GET', controller.signal).then(result => { if (active) {observeCurrentCoverage(currentScope,result);setData(result);} }).catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setLoading(false); });
         return () => { active = false; controller.abort(); };
-    }, [requestPath, refresh, version,profile,tab]);
+    }, [requestPath, refresh, version,profile,tab,currentScope]);
     const pendingExports = tab === 'exports' && !error && rows(data).some(row=>['pending','running'].includes(String(row.status)));
     const pendingAggregation = endpoint === 'stats' && data.coverage !== undefined && Number(data.coverage) < 1 && !['partial_unavailable','future_only'].includes(String(data.rangeStatus));
     useEffect(() => {
@@ -136,10 +148,10 @@ function View({ profile, site, tab, query, refresh, canWrite, canAdmin,instanceA
         const timer = setInterval(() => {
             if (busy || document.visibilityState === 'hidden') return;
             busy = true;
-            void api<Row>(requestPath, undefined, 'GET', controller.signal).then(result => { if (active) { setData(result); setError(''); } }).catch(e => { if (active) {setData({});setError(e.message);} }).finally(() => { busy = false; });
+            void api<Row>(requestPath, undefined, 'GET', controller.signal).then(result => { if (active) { observeCurrentCoverage(currentScope,result);setData(result); setError(''); } }).catch(e => { if (active) {setData({});setError(e.message);} }).finally(() => { busy = false; });
         }, 2000);
         return () => { active = false; controller.abort(); clearInterval(timer); };
-    }, [requestPath, pendingAggregation, pendingExports, refresh, version]);
+    }, [requestPath, pendingAggregation, pendingExports, refresh, version,currentScope]);
     useEffect(() => {
         if (!['goals', 'funnels'].includes(tab)) return;
         const controller = new AbortController(); let active = true; setAnalysis({});setAnalysisError('');setAnalysisLoading(true);
@@ -161,7 +173,7 @@ function View({ profile, site, tab, query, refresh, canWrite, canAdmin,instanceA
         const q=selection.query;
         void api<Row>(`${base}/stats?${q}`, undefined, 'GET', controller.signal).then(result => { if (active) setPrevious(result); }).catch(e => { if (active) setError(e.message); });
         return () => { active = false; controller.abort(); };
-    }, [base, tab, query, version, refresh, site.timezone, data.coverage]);
+    }, [base, tab, query, version, refresh, site.timezone, previousCompletion]);
     useEffect(() => {
         if (tab !== 'realtime'||!supportsReport(profile,'realtime')) return;
         let active=true,generation=0,busy=false,queued=false;
@@ -204,7 +216,11 @@ function View({ profile, site, tab, query, refresh, canWrite, canAdmin,instanceA
     }, [base, tab,refresh,version,profile]);
     if(profile.profile==='lite'&&tab==='seo')return <LiteManualSeo key={`${site.id}-${query}`} site={site} query={query}/>;
     if(profile.profile==='lite'&&tab==='ai')return <LiteManualAi key={`${site.id}-${query}`} site={site} query={query}/>;
-    if (['downloads','notFound','eventTrend'].includes(tab)) return <ContentAnalysis siteId={site.id} query={query} kind={tab as 'downloads'|'notFound'|'eventTrend'}/>;
+    if (['downloads','notFound','eventTrend'].includes(tab)) {
+        if(loading)return <section className="panel" aria-busy="true"><p role="status">{t('正在读取真实数据…')}</p></section>;
+        if(error)return <section className="panel"><p className="error" role="alert">{t('请求失败：')}{error}</p><button onClick={()=>setVersion(value=>value+1)}>{language()==='en'?'Retry this view':'重试当前视图'}</button></section>;
+        return <ContentAnalysis data={data} siteId={site.id} query={query} kind={tab as 'downloads'|'notFound'|'eventTrend'}/>;
+    }
     if(tab==='settings'&&profile.profile==='lite')return <section className="panel"><h2>{t('追踪代码与站点信息')}</h2><SiteMetadata site={site} onSaved={()=>setVersion(n=>n+1)}/><Snippet site={site}/><LiteConsent site={site} onSaved={()=>setVersion(n=>n+1)}/><Action title="更新保留策略" scopeLabel={`${site.name} (${site.domain})`} currentRetention={site.retention_days} endpoint={`${base}/retention`} method="PATCH" fields={[["days","明细保留天数","number"]]} onSaved={()=>setVersion(n=>n+1)}/></section>;
     if (tab === 'settings')
         return <section className="panel"><h2>{t("追踪代码与站点信息")}</h2><SiteMetadata site={site} onSaved={()=>setVersion(n=>n+1)}/><Snippet site={site}/><p>{t("标识模式：")}{site.privacy_mode === 'daily_salt' ? t('每日盐隐私模式') : t('标准模式')}{t("· 时区：")}{site.timezone}</p><Action title="更新保留策略" scopeLabel={`${site.name} (${site.domain})`} currentRetention={site.retention_days} endpoint={`${base}/retention`} method="PATCH" fields={[['days', '明细保留天数', 'number']]} onSaved={() => setVersion(n => n + 1)}/><PrivacyFeatures key={JSON.stringify(site.config)} siteId={site.id} initial={site.config} onSaved={() => setVersion(n => n + 1)}/><SourceSettings siteId={site.id} initial={site.config} onSaved={() => setVersion(n=>n+1)}/>{instanceAdmin&&<GeoIpSettings/>}<SelfHostDiagnostics siteId={site.id} refresh={refresh+version}/>{instanceAdmin&&<details><summary>{language()==='en'?'Instance-wide enterprise SSO settings':'实例级企业 SSO 设置'}</summary><Action title="实例企业微信 SSO（仅实例管理员）" endpoint="/api/admin/sso/wecom" method="PUT" fields={[["corpId", "企业 ID"], ["agentId", "应用 ID"], ["secret", "应用密钥", "password"], ["enabled", "启用 true/false", "json"], ["mappings", "已授权外部成员与本地用户映射 JSON", "json"]]} onSaved={() => setVersion(n => n + 1)}/></details>}</section>;

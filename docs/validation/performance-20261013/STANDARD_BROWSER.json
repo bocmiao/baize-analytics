@@ -1,0 +1,783 @@
+{
+  "profile": "standard",
+  "execution": "compiled node dist/server/src/server/main.js for global browser app; independent business fixture servers load production TS and serve built dist/web",
+  "strictClickHouseFixtureEnabled": true,
+  "stats": {
+    "startTime": "2026-10-13T06:23:09.877Z",
+    "duration": 312893.603,
+    "expected": 48,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "specs": [
+    {
+      "title": "actual readonly semantic queries render persistent evidence charts and English advanced flows, with explicit simulated model transport",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 27233,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "approved dashboard actual thirty-day facts, insight memory and mobile navigation preserve all entries",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 41452,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real saved connector settings hydrate, preserve secrets and toggle opt-ins; empty-site model test uses simulated provider",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 5803,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "installation token stays in POST body and lost setup response requires ordinary login",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1277,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "failed initialization status read is retryable without creating an account",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1058,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "lost site response reconciles existing sites before another creation",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1506,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "page detail replaces a scope path once and retains the remaining filters",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1228,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "a blocked ownerless restore never claims an existing login or repeats initialization",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 831,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "guarded environment diagnosis sends only the credential and does not initialize an owner",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1360,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real retained content, global campaign filter, repair CSV and advanced English controls",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 9832,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual tracker funnel loss uses typed properties and honest time, retention and privacy boundaries",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 8701,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real app and PostgreSQL GA4 history uses explicit simulated Google transport: independent users, unsupported periods and scoped English errors",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 8177,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual custom CSV upload, column mapping, preview and idempotent independent import",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 5026,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real English login, revoked permission, share and unconfigured connector errors use stable safe messages",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 6744,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real observed intake, bot explanation, manual annotation lifecycle and sanitized admin diagnostic download",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 13382,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "overview uses the available container width, accessible controls and honest isolated points",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 3748,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "clipboard absence, rejection, success and stale consent results provide honest feedback",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 2259,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "exports poll until complete, stop on failed and allow retry after HTTP error",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 12996,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "realtime pauses hidden resources, resumes snapshots and serializes event refreshes",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 3476,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "complete realtime Top exceeds 200-row preview and retention never renders immature days as zero",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 6943,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual seven-filter report save/edit and member role changes preserve permissions and bilingual controls",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 9780,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real collected replay and charts fit 375/768/1440 widths with keyboard controls and readable status",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 20411,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual tracker revenue keeps currencies separate and event-time account switches isolated",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 11445,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual consented experiment assignment and tracker conversion survive stop and resume",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 4380,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 8505,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "localized initial 401 recovers through login and preserves a safe workspace scope",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1498,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "expired report session recovers but forbidden report stays in the workspace",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1299,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Lite visitor deletion exposes only its supported identity input",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1152,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "logout failure gives feedback without an unhandled rejection and permits retry",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 2019,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "metadata PATCH is single flight and preserves inputs after a retryable failure",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1842,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "a skipped site civil date stays editable without fetching or showing stale statistics",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1431,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "strict real CH facts show verified source and clear stale values after authoritative body loss",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 13734,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chinese date picker uses the selected site timezone rather than browser UTC",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 4,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "date range includes the whole civil day across US daylight saving transition",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 3,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "previous period preserves natural days across both DST transitions and daily API end stays inclusive",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 9,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ordered English consent addon Decline and private heatmap exclusions",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1295,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ordered English consent addon Accept and private heatmap exclusions",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 2052,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "product landing is the default, login is an explicit action",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 826,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real administrator → site → durable collection → aggregate → Chinese dashboard",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 4254,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "tracker consent does not identify or transmit before grant and stops after revoke",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 7336,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "real goal, funnel, saved report, protected share and revocation workflows",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 8933,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "core English interface preference and Chinese reset",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1182,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "invited viewer registration is scoped and cannot administer other sites",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 1933,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "opened realtime view receives a newly persisted event and heartbeat online count without refresh",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 4946,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "local immutable evidence → suggestion states → actual recheck → verified without a paid model",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 4810,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chinese dashboard remains usable at mobile width without page overflow",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 2297,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual opted-in rrweb and heatmap collection render the safe replay UI and heatmap",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 7313,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "actual URL filters, history, task navigation and named mobile drawer preserve site data and keyboard scope",
+      "ok": true,
+      "tests": [
+        {
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "duration": 13579,
+              "error": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

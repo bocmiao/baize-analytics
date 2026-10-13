@@ -1,0 +1,35 @@
+{
+  "repositoryBase": "454ce2ddb34ec3f97ab6e599e7c283272fc259b1",
+  "typecheck": "passed after final Playwright scope patch",
+  "lint": "passed after final Playwright scope patch",
+  "build": "passed after partition fix; all 602 output hashes and operational TS hashes still match",
+  "standardPostfixBrowser": {
+    "passed": 48,
+    "failed": 0,
+    "skipped": 0
+  },
+  "liteIsolatedPostfixBrowser": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "postfixTargetedPartitionRelated": {
+    "passed": 12,
+    "failed": 0
+  },
+  "originalFullBatch": {
+    "passed": 1159,
+    "failed": 1,
+    "skipped": 0,
+    "total": 1160
+  },
+  "finalFullBatch": "still running; final JSON/log to be added",
+  "actionsWorkflowsPresent": false,
+  "cnbManualOnly": true,
+  "hostedCiTriggered": false,
+  "productionTouched": false,
+  "newImageAndNativeFour": "not built; disk protection preflight",
+  "old12Artifacts": "bytes/SHA verified unchanged; current software7509481",
+  "libraryMutationsThisOptimization": "not attempted until source freeze; refreshed helper and existing screenshot identities retained",
+  "historicalCheckpointNote": "Retained interim state; final completed outcome is FINAL_TEST_STATUS.json, not this prior checkpoint."
+}

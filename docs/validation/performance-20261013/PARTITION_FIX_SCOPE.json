@@ -1,0 +1,32 @@
+{
+  "originalFullBatch": {
+    "total": 1160,
+    "passed": 1159,
+    "failed": 1,
+    "skipped": 0,
+    "failedFile": "tests/integration/partition-intake-race.test.ts",
+    "error": "relation events_2020_03 does not exist inside dropEmptyHistoricalPartitions after pre-parent-lock existence probe"
+  },
+  "isolatedPreFix": {
+    "passed": 4,
+    "failed": 0
+  },
+  "postFixRelatedTests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "fix": "exclusive partition advisory gate -> parent AccessExclusive locks -> recheck child name -> verify empty -> detach/drop",
+  "unchanged": "gate before relation/site/FK lock order, empty-partition-only protection, transaction rollback",
+  "preFixPartitionSourceSha256": "695bf06833bb665dde21ee5e02c7431365f3ac84956948db1f4bfcdb5b373247",
+  "finalPartitionSourceSha256": "ab00767f479375718577684e18e01ed14a2e4c1cd4c0f6856ddbd6865d2dd3c2",
+  "measurementScope": "24 performance trials preceded this DDL safety fix; core optimization file hashes still match, but final DDL variant latency has not been remeasured",
+  "finalFullBatch": {
+    "total": 1160,
+    "passed": 1160,
+    "failed": 0,
+    "skipped": 0,
+    "testSourceFiles": 311,
+    "logicalSuites": 500,
+    "exitCode": 0
+  }
+}

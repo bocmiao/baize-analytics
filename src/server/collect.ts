@@ -13,7 +13,7 @@ import { createHash,createHmac,randomUUID,timingSafeEqual } from 'node:crypto';
 import {sanitizePrivacyProps} from '../../packages/tracker/src/privacy.js';
 import {checkIdentity,registerIdentity} from './identity.js';
 import { ingestGovernance,replayIsMasked } from './governance.js';
-import {eventDimensions as dimensions} from './dimensions.js';
+import {eventDimensions as dimensions,prepareEventDimensions} from './dimensions.js';
 import {createBotFilter} from './bot-filter.js';
 import {resolveCanonicalIngest,publishCanonicalIngest,verifyCanonicalRetryReceipt} from './canonical-ingest.js';
 import {recordControlledEventProvenance} from './canonical-shadow-provenance.js';
@@ -55,6 +55,8 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
       if(origin){if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');}
       if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
+      const dayFormatter=new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone});
+      const batchDimensions=prepareEventDimensions(ua,geo,site.config,ip);
       const canonicalTarget=await resolveCanonicalIngest(ctx.pool,client,site.id);
       // Only this controlled revenue-containing intake may carry historical
       // coverage across the non-event generation fence. Unknown/identify/replay
@@ -73,7 +75,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         if(wire.ts>Date.now()+86400000){rejected.push({index,event_id:wire.event_id,reason:'future_event'});continue;}
         if(wire.ts<Date.now()-Number(site.retention_days)*86400000){rejected.push({index,event_id:wire.event_id,reason:'outside_retention'});continue;}
         if(wire.type==='replay'||wire.type==='heatmap'){if(site.config[wire.type]!==true){rejected.push({index,event_id:wire.event_id,reason:'feature_not_enabled'});continue;}}
-        const day=new Intl.DateTimeFormat('en-CA',{timeZone:site.timezone}).format(new Date(wire.ts));
+        const day=dayFormatter.format(new Date(wire.ts));
         const visitor=site.privacy_mode==='daily_salt'?visitorHash(site.salt_secret,day,ip,ua):wire.visitor_id??randomUUID();
         let userId=site.privacy_mode==='standard'&&wire.user_id?visitorHash(site.salt_secret,'identity',wire.user_id,''):undefined;
         const identity=await checkIdentity(client,site.id,visitor,wire.ts,userId??null,wire.type==='identify');if(!identity.allowed){rejected.push({index,event_id:wire.event_id,reason:identity.reason??'deleted_visitor'});continue;}
@@ -102,7 +104,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=wire.type==='identify'?await checkIdentity(client,site.id,visitor,wire.ts,userId??null):identity;if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
         let clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
         if(site.privacy_mode==='daily_salt')clean.page_id=dayScopedPageId(site.salt_secret,day,wire.page_id);
-        let metadata={...dimensions(ua,wire,geo,site.config,ip),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
+        let metadata={...batchDimensions(wire),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
         if(site.privacy_mode==='daily_salt'){clean=sanitizeDailyPayload(clean,{visitorId:visitor,pageId:clean.page_id});metadata=sanitizeDailyDimensions(metadata);}
         // Replay is revalidated by the governance module before raw JSON can be retained.
         if(wire.type==='replay'){
