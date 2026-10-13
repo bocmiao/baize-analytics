@@ -101,3 +101,7 @@ that account; keep writable data, keys and private environment files outside
 it. Do not recursively change release modes: strict inventory verification
 checks modes as well as content. The archive's numeric owner is packaging
 metadata; a normal non-root extraction is owned by the extracting account.
+
+## 新增实例更新执行器
+
+本次增量更新源码接续自 `d4115f7a6bedaa0ae95c64f30cfdc22d99dde56b` 的已校验补丁，生成新的普通提交，不改变历史包身份。`npm run build` 同时生成独立执行器 `dist/updater`；运行包内离线保留 [实例增量更新指南](INSTANCE_INCREMENTAL_UPDATES.md)。运行包与执行器必须来自同一冻结源码。正式签名分发及首次主机接入仍需操作者按指南配置；本次不创建 Release、不上传生产源、不更改权限。

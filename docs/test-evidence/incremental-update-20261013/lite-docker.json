@@ -1,0 +1,158 @@
+{
+  "profile": "lite",
+  "realApplication": true,
+  "realDatabase": "SQLite",
+  "productionBackupMode": "lite",
+  "upgrade": {
+    "version": 1,
+    "phase": "completed",
+    "current": {
+      "imageId": "sha256:247eab585bee159f43a178353ff7548565c61880c1a903bd7b06402f4ae872ac",
+      "manifestDigest": "sha256:db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+      "releaseId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "schemaFingerprint": "ceb5b6e648fbcd7d50964d1333ca78fbd9f086969daaa8e5a1435a2114ed8d9e",
+      "profile": "lite"
+    },
+    "steps": {
+      "preflight": "passed",
+      "download": "passed",
+      "backup": "passed",
+      "update": "passed",
+      "health": "passed",
+      "rollback": "pending"
+    },
+    "operationId": "903ac06e-6e74-4c17-a62d-d2b7a08fd3b6",
+    "plannedPayloadBytes": 212,
+    "metadataBytes": 13353,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:a3db7cf887ff53823c01d05f418358a4478fda7a73bf656f88cbffe26a6560a1"
+    ],
+    "label": "本地真实应用 Docker 增量验收",
+    "notes": [
+      "镜像层增量，非文件级补丁；数据库结构不变。"
+    ],
+    "availableRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "availableManifestSha256": "db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+    "requestFingerprint": "1eb5c46673b772e81ea098f384d23099caa7dfbef5f6090cbb7452727a66a2d4",
+    "from": {
+      "imageId": "sha256:8dfa0065c2bba2c39858ed56387b5557ed064f688a126f8262a49bb2fef25f3f",
+      "releaseId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestDigest": "sha256:064956089d79e850f375bd81102b3f2739356b22c239473b2e8c269e21aaed81",
+      "schemaFingerprint": "ceb5b6e648fbcd7d50964d1333ca78fbd9f086969daaa8e5a1435a2114ed8d9e",
+      "profile": "lite"
+    },
+    "backupCreated": true,
+    "downloadedPayloadBytes": 212,
+    "target": {
+      "imageId": "sha256:247eab585bee159f43a178353ff7548565c61880c1a903bd7b06402f4ae872ac",
+      "manifestDigest": "sha256:db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+      "releaseId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "schemaFingerprint": "ceb5b6e648fbcd7d50964d1333ca78fbd9f086969daaa8e5a1435a2114ed8d9e",
+      "profile": "lite"
+    },
+    "previous": {
+      "imageId": "sha256:8dfa0065c2bba2c39858ed56387b5557ed064f688a126f8262a49bb2fef25f3f",
+      "releaseId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestDigest": "sha256:064956089d79e850f375bd81102b3f2739356b22c239473b2e8c269e21aaed81",
+      "schemaFingerprint": "ceb5b6e648fbcd7d50964d1333ca78fbd9f086969daaa8e5a1435a2114ed8d9e",
+      "profile": "lite"
+    }
+  },
+  "rollback": {
+    "version": 1,
+    "phase": "rolled_back",
+    "current": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "064956089d79e850f375bd81102b3f2739356b22c239473b2e8c269e21aaed81",
+      "imageId": "sha256:8dfa0065c2bba2c39858ed56387b5557ed064f688a126f8262a49bb2fef25f3f"
+    },
+    "steps": {
+      "preflight": "passed",
+      "download": "skipped",
+      "backup": "passed",
+      "update": "passed",
+      "health": "passed",
+      "rollback": "passed"
+    },
+    "operationId": "f9e4bed8-fb80-4552-b62d-aabf47ea2338",
+    "plannedPayloadBytes": 212,
+    "metadataBytes": 13353,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:a3db7cf887ff53823c01d05f418358a4478fda7a73bf656f88cbffe26a6560a1"
+    ],
+    "label": "本地真实应用 Docker 增量验收",
+    "notes": [
+      "镜像层增量，非文件级补丁；数据库结构不变。"
+    ],
+    "availableRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "availableManifestSha256": "db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+    "requestFingerprint": "79d44126b54f77bc2fefa8f2c32509db802eca62d66080fb2a11b749c7c3c79b",
+    "from": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+      "imageId": "sha256:247eab585bee159f43a178353ff7548565c61880c1a903bd7b06402f4ae872ac"
+    },
+    "backupCreated": true,
+    "downloadedPayloadBytes": 0,
+    "target": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "064956089d79e850f375bd81102b3f2739356b22c239473b2e8c269e21aaed81",
+      "imageId": "sha256:8dfa0065c2bba2c39858ed56387b5557ed064f688a126f8262a49bb2fef25f3f"
+    },
+    "previous": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+      "imageId": "sha256:247eab585bee159f43a178353ff7548565c61880c1a903bd7b06402f4ae872ac"
+    },
+    "ownerId": "a84e7f8e-b51f-4cee-8aff-0036cb7efa51",
+    "deploymentMode": "docker-managed",
+    "mechanism": "image-layers",
+    "profile": "lite",
+    "maintenance": false,
+    "changedFiles": [],
+    "unchangedFiles": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:a3db7cf887ff53823c01d05f418358a4478fda7a73bf656f88cbffe26a6560a1"
+    ],
+    "deletedFiles": [],
+    "fixture": false
+  },
+  "verification": {
+    "operationId": "903ac06e-6e74-4c17-a62d-d2b7a08fd3b6",
+    "manifestDigest": "sha256:db55b4b30388debdb825e990f8cb9ae7222b90636765ec25529e086249bc26de",
+    "imageId": "sha256:247eab585bee159f43a178353ff7548565c61880c1a903bd7b06402f4ae872ac",
+    "downloadedLayerBytes": 212,
+    "metadataConfigBytes": 8559,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:a3db7cf887ff53823c01d05f418358a4478fda7a73bf656f88cbffe26a6560a1"
+    ],
+    "noNetworkFullImageDownloaded": true
+  },
+  "bothWritesSurvived": true,
+  "configPreserved": true,
+  "priorFailures": [],
+  "fix": "Each backup operation uses a distinct key-package directory; retry retained database and prior backups."
+}

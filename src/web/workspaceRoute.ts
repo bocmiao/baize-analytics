@@ -5,7 +5,7 @@ export const navigationGroups=[
  {id:'experience',zh:'体验',en:'Experience',reports:['vitals','heatmap','replay']},
  {id:'search',zh:'搜索与优化',en:'Search and optimization',reports:['seo','gsc','seo-conversions','serp','suggestions']},
  {id:'reports',zh:'AI 与报表',en:'AI and reporting',reports:['ai','reports','alerts','schedules']},
- {id:'settings',zh:'设置',en:'Settings',reports:['settings','ga4','shares','members','tokens','audit','jobs','privacy','exports','channels']}
+ {id:'settings',zh:'设置',en:'Settings',reports:['updates','settings','ga4','shares','members','tokens','audit','jobs','privacy','exports','channels']}
 ] as const;
 export const workspaceReports=['overview','realtime',...navigationGroups.flatMap(group=>group.reports)] as readonly string[];
 export interface WorkspaceRoute {siteId:string;report:string;from:string;to:string;filters:ReportFilters;notice?:'invalid-context'}

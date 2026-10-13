@@ -1,0 +1,93 @@
+import {constants,chmodSync,closeSync,copyFileSync,existsSync,fsyncSync,lstatSync,mkdirSync,openSync,readFileSync,symlinkSync,unlinkSync,writeFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {z} from 'zod';
+import {verifyRelease,safeAncestors,assertDisjoint,pathWithin} from '../release/preflight.js';
+import {acquireNativeRuntimeLock} from '../release/runtime-lock.js';
+import {digest,operationFingerprint,parseRelease,validateDelta,payloadPlan,schemaFingerprint,type Delta} from './protocol.js';
+import {UpdateSource} from './source.js';
+import {StateStore,durableJSON,trustedJSON,privateDirectory,syncDirectory,guardSpace,type Pointer,type UpdateState} from './state.js';
+
+export const agentConfigSchema=z.object({version:z.literal(1),deploymentMode:z.enum(['native-supervised','docker-version-volume']).optional(),ownerId:z.uuid(),agentDir:z.string(),releasesDir:z.string(),initialRoot:z.string(),initialManifestSha256:z.string().regex(/^[a-f0-9]{64}$/),dataDir:z.string(),keyDir:z.string(),envFile:z.string(),nodePath:z.string(),publicUrl:z.string().url(),source:z.object({url:z.string().url(),keys:z.record(z.string(),z.string()),allowLocalFixture:z.boolean().optional(),authorizationFile:z.string().optional()}).strict()}).strict();
+export type AgentConfig=z.infer<typeof agentConfigSchema>;
+export interface AgentRuntime {start(pointer:Pointer):Promise<void>;stop():Promise<void>;healthy(pointer:Pointer):Promise<void>;backup(pointer:Pointer,destination:string):Promise<void>;backupEstimate(pointer:Pointer):Promise<number>}
+const activePhases=['preflight','downloading','staged','maintenance','backup','switching','health','rolling_back'];
+const validId=(id:string)=>z.uuid().parse(id);
+const code=(error:unknown)=>error instanceof Error&&/^UPDATE_[A-Z_]+$/.test(error.message)?error.message:'UPDATE_OPERATION_FAILED';
+
+/** Independent supervisor engine. Requests contain owner/action/id, never shell, URL or filesystem paths. */
+export class UpdateAgent {
+ readonly config:AgentConfig;readonly store:StateStore;readonly source:UpdateSource;readonly pointerFile:string;readonly gateFile:string;
+ private busy=false;private lockLost=false;private closing=false;private releaseLock?:()=>Promise<void>;readonly profile:'standard'|'lite';
+ constructor(config:AgentConfig,readonly runtime:AgentRuntime){
+  this.config=agentConfigSchema.parse(config);for(const path of [config.agentDir,config.releasesDir,config.initialRoot,config.dataDir,config.keyDir,config.envFile,config.nodePath]){if(path!==resolve(path))throw Error('UPDATE_CONFIG_ABSOLUTE_PATH_REQUIRED');safeAncestors(path);}
+  assertDisjoint([config.agentDir,config.releasesDir,config.dataDir,config.keyDir,config.envFile]);
+  if(!pathWithin(config.releasesDir,config.initialRoot)||config.initialRoot===config.releasesDir)throw Error('UPDATE_INITIAL_ROOT_OUTSIDE_RELEASES');
+  privateDirectory(config.agentDir);privateDirectory(config.releasesDir);privateDirectory(join(config.agentDir,'operations'));privateDirectory(join(config.agentDir,'downloads'));privateDirectory(join(config.agentDir,'backups'));
+  this.store=new StateStore(config.agentDir);this.source=new UpdateSource(config.source);this.pointerFile=join(config.agentDir,'current.json');this.gateFile=join(config.agentDir,'maintenance.json');
+  this.profile=parseRelease(readFileSync(join(config.initialRoot,'release-manifest.json'),'utf8')).profile;
+  if(!existsSync(this.pointerFile)){const bytes=readFileSync(join(config.initialRoot,'release-manifest.json'),'utf8');if(digest(bytes)!==config.initialManifestSha256)throw Error('UPDATE_INITIAL_MANIFEST_PIN_MISMATCH');const m=parseRelease(bytes);this.verify({root:config.initialRoot,revision:m.revision,manifestSha256:digest(bytes)});durableJSON(this.pointerFile,{root:config.initialRoot,revision:m.revision,manifestSha256:digest(bytes)});}
+ }
+ private verify(pointer:Pointer){
+  if(!pointer||typeof pointer.root!=='string'||!pathWithin(this.config.releasesDir,pointer.root)||pointer.root===this.config.releasesDir||!/^[a-f0-9]{40}$/.test(pointer.revision)||!/^[a-f0-9]{64}$/.test(pointer.manifestSha256))throw Error('UPDATE_POINTER_INVALID');
+  safeAncestors(pointer.root);const bytes=readFileSync(join(pointer.root,'release-manifest.json'),'utf8');if(digest(bytes)!==pointer.manifestSha256)throw Error('UPDATE_INSTALLED_MANIFEST_CHANGED');const m=verifyRelease(pointer.root);if(m.revision!==pointer.revision)throw Error('UPDATE_INSTALLED_REVISION_CHANGED');return bytes;
+ }
+ current(validate=true){const p=trustedJSON<Pointer>(this.pointerFile);if(validate)this.verify(p);else if(!p||typeof p.root!=='string'||!pathWithin(this.config.releasesDir,p.root)||!/^[a-f0-9]{40}$/.test(p.revision)||!/^[a-f0-9]{64}$/.test(p.manifestSha256))throw Error('UPDATE_POINTER_INVALID');return p;}
+ private assertLock(){if(this.closing)throw Error('UPDATE_EXECUTOR_STOPPING');if(this.lockLost||!this.releaseLock)throw Error('UPDATE_EXECUTOR_LOCK_LOST');guardSpace(this.config.agentDir);guardSpace(this.config.releasesDir);}
+ private fence(operationId:string){durableJSON(this.gateFile,{version:1,operationId,maintenance:true});}
+ private unfence(){if(existsSync(this.gateFile)){if(!lstatSync(this.gateFile).isFile())throw Error('UPDATE_MAINTENANCE_FILE_UNTRUSTED');unlinkSync(this.gateFile);syncDirectory(this.config.agentDir);}}
+ private remember(){const id=this.store.state.operationId;if(id)durableJSON(join(this.config.agentDir,'operations',validId(id)+'.json'),this.store.state);}
+ private authorize(actor:string){if(actor!==this.config.ownerId)throw Error('UPDATE_INSTANCE_OWNER_REQUIRED');}
+ status(){const s=this.store.state;const clean=(p?:Pointer)=>p?{revision:p.revision,manifestSha256:p.manifestSha256}:undefined;const {actorId:_actor,from:_from,target:_target,previous:_previous,backupPath:_backup,...rest}=s;return {...rest,unchangedFileCount:s.unchangedFiles?.length??0,changedFileCount:s.changedFiles?.length??0,deletedFileCount:s.deletedFiles?.length??0,unchangedFiles:s.unchangedFiles?.slice(0,10),changedFiles:s.changedFiles?.slice(0,100),deletedFiles:s.deletedFiles?.slice(0,100),current:clean(this.current(false)),from:clean(s.from),target:clean(s.target),previous:clean(s.previous),ownerId:this.config.ownerId,deploymentMode:this.config.deploymentMode??'native-supervised',mechanism:'file-delta',profile:this.profile,maintenance:existsSync(this.gateFile),backupCreated:!!s.backupPath};}
+ async open(){this.releaseLock=await acquireNativeRuntimeLock(this.config.agentDir,()=>{this.lockLost=true;this.fence(this.store.state.operationId??'lock-lost');void this.runtime.stop();});await this.recover();}
+ async close(){this.closing=true;while(this.busy)await new Promise(done=>setTimeout(done,25));await this.runtime.stop();await this.releaseLock?.();this.releaseLock=undefined;}
+ async recover(){
+  this.assertLock();let pointer=this.current();const s=this.store.state;
+  if(['maintenance','backup','switching','health','rolling_back'].includes(s.phase)){
+   if(!s.from)throw Error('UPDATE_RECOVERY_INTENT_MISSING');this.verify(s.from);this.fence(s.operationId??'recovery');pointer=s.from;durableJSON(this.pointerFile,pointer);this.store.save({phase:'interrupted',error:'UPDATE_INTERRUPTED_CODE_RESTORED'});
+  }else if(activePhases.includes(s.phase)){this.store.save({phase:'interrupted',error:'UPDATE_INTERRUPTED_BEFORE_SWITCH'});}
+  try{await this.runtime.start(pointer);await this.runtime.healthy(pointer);this.unfence();this.remember();}
+  catch{this.fence(s.operationId??'recovery');this.store.save({phase:'failed',error:'UPDATE_RECOVERY_HEALTH_FAILED'});throw Error('UPDATE_RECOVERY_HEALTH_FAILED');}
+ }
+ async check(actor:string){
+  this.authorize(actor);if(this.busy)throw Error('UPDATE_BUSY');this.busy=true;
+  try{this.assertLock();const from=this.current();this.store.save({phase:'checking',operationId:undefined,from,steps:{}});const latest=await this.source.latest();const {base,target}=validateDelta(latest.delta,this.verify(from));const plan=payloadPlan(latest.delta,base);
+   this.store.save({phase:'ready',label:latest.delta.label,notes:latest.delta.notes,availableRevision:target.revision,availableManifestSha256:digest(latest.delta.releaseManifest),fixture:latest.delta.fixture===true,plannedPayloadBytes:plan.bytes,metadataBytes:latest.metadataBytes,downloadedPayloadBytes:0,changedFiles:latest.delta.changed.map(e=>e.path),unchangedFiles:target.files.filter(e=>!latest.delta.changed.some(c=>c.path===e.path)).map(e=>e.path),deletedFiles:latest.delta.deletedFiles,deletedDirectories:latest.delta.deletedDirectories,error:undefined,target:undefined});return this.status();
+  }catch(error){this.store.save({phase:'failed',error:code(error)});throw error;}finally{this.busy=false;}
+ }
+ private existing(id:string){const path=join(this.config.agentDir,'operations',validId(id)+'.json');return existsSync(path)?trustedJSON<UpdateState>(path):undefined;}
+ admit(actor:string,id:string,action:'apply'|'rollback',expected?:{revision:string;manifestSha256:string}){this.authorize(actor);const old=this.existing(id);if(old?.requestFingerprint&&old.requestFingerprint!==operationFingerprint(action,action==='apply'?expected:undefined))throw Error('UPDATE_IDEMPOTENCY_MISMATCH');return old;}
+ async apply(actor:string,id:string,expected?:{revision:string;manifestSha256:string}){
+  this.authorize(actor);validId(id);const fp=operationFingerprint('apply',expected),previous=this.existing(id);if(previous){if(previous.requestFingerprint&&previous.requestFingerprint!==fp)throw Error('UPDATE_IDEMPOTENCY_MISMATCH');return previous;}if(this.busy)throw Error('UPDATE_BUSY');this.busy=true;let fenced=false;
+  const from=this.current();this.store.save({version:1,phase:'preflight',operationId:id,requestFingerprint:fp,actorId:actor,from,target:undefined,error:undefined,backupPath:undefined,steps:{preflight:'running',download:'pending',backup:'pending',update:'pending',health:'pending',rollback:'pending'},downloadedPayloadBytes:0});
+  try{
+   this.assertLock();const latest=await this.source.latest();const {base,target}=validateDelta(latest.delta,this.verify(from));const plan=payloadPlan(latest.delta,base);if(expected&&(expected.revision!==target.revision||expected.manifestSha256!==digest(latest.delta.releaseManifest)))throw Error('UPDATE_RELEASE_CHANGED_CHECK_AGAIN');const backupEstimate=await this.runtime.backupEstimate(from);
+   const releaseBytes=target.files.reduce((s,e)=>s+e.bytes,0);
+   if(lstatSync(this.config.releasesDir).dev===lstatSync(this.config.agentDir).dev)guardSpace(this.config.agentDir,releaseBytes+plan.bytes+backupEstimate);
+   else{guardSpace(this.config.releasesDir,releaseBytes);guardSpace(this.config.agentDir,plan.bytes+backupEstimate);}
+   this.store.save({label:latest.delta.label,notes:latest.delta.notes,availableRevision:target.revision,availableManifestSha256:digest(latest.delta.releaseManifest),fixture:latest.delta.fixture===true,plannedPayloadBytes:plan.bytes,metadataBytes:latest.metadataBytes,changedFiles:latest.delta.changed.map(e=>e.path),unchangedFiles:target.files.filter(e=>!latest.delta.changed.some(c=>c.path===e.path)).map(e=>e.path),deletedFiles:latest.delta.deletedFiles,deletedDirectories:latest.delta.deletedDirectories});this.store.passed('preflight');
+   const root=join(this.config.releasesDir,target.revision+'-'+id),to:Pointer={root,revision:target.revision,manifestSha256:digest(latest.delta.releaseManifest)};this.store.save({target:to});await this.stage(latest.delta,from,to,id);this.store.passed('download');this.store.phase('staged');
+   this.assertLock();this.fence(id);fenced=true;this.store.phase('maintenance');await this.runtime.stop();this.verify(from);
+   this.store.phase('backup','backup');const backup=join(this.config.agentDir,'backups',id);await this.runtime.backup(from,backup);this.store.save({backupPath:backup});this.store.passed('backup');
+   this.assertLock();this.verify(to);this.store.phase('switching','update');durableJSON(this.pointerFile,to);this.store.passed('update');this.store.phase('health','health');await this.runtime.start(to);await this.runtime.healthy(to);this.store.passed('health');
+   this.assertLock();this.store.save({phase:'completed',previous:from,error:undefined});this.remember();this.unfence();return this.status();
+  }catch(error){if(this.lockLost){await this.runtime.stop();throw Error('UPDATE_EXECUTOR_LOCK_LOST');}const failure=code(error);if(fenced){await this.runtime.stop();this.verify(from);this.store.phase('rolling_back','rollback');durableJSON(this.pointerFile,from);try{await this.runtime.start(from);await this.runtime.healthy(from);this.store.passed('rollback');this.unfence();}catch{this.store.save({phase:'failed',error:'UPDATE_ROLLBACK_HEALTH_FAILED'});this.remember();throw Error('UPDATE_ROLLBACK_HEALTH_FAILED');}}
+   this.store.save({phase:'failed',error:failure});this.remember();throw error;
+  }finally{this.busy=false;}
+ }
+ private async stage(delta:Delta,from:Pointer,to:Pointer,id:string){
+  const {base,target}=validateDelta(delta,this.verify(from)),old=new Map(base.files.map(e=>[e.path,e])),plan=payloadPlan(delta,base),cache=join(this.config.agentDir,'downloads',id);privateDirectory(cache);this.store.phase('downloading','download');
+  for(const [hash,bytes]of plan.blobs){this.assertLock();guardSpace(cache,bytes);const body=await this.source.blob(hash,bytes);if(body.length!==bytes||digest(body)!==hash)throw Error('UPDATE_BLOB_INTEGRITY_FAILED');const file=join(cache,hash),fd=openSync(file,constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,body);fsyncSync(fd);}finally{closeSync(fd);}syncDirectory(cache);this.store.save({downloadedPayloadBytes:(this.store.state.downloadedPayloadBytes??0)+body.length});}
+  this.assertLock();mkdirSync(to.root,{mode:0o700});
+  for(const d of [...target.directories].sort((a,b)=>a.path.split('/').length-b.path.split('/').length))mkdirSync(join(to.root,d.path),{mode:0o700});
+  for(const e of target.files){this.assertLock();guardSpace(to.root,e.bytes);const destination=join(to.root,e.path);if(e.type==='symlink')symlinkSync(e.target!,destination);else{const baseEntry=old.get(e.path);copyFileSync(baseEntry?.type!=='symlink'&&baseEntry?.sha256===e.sha256&&baseEntry?.bytes===e.bytes?join(from.root,e.path):join(cache,e.sha256),destination);chmodSync(destination,e.mode);const fd=openSync(destination,constants.O_RDONLY|constants.O_NOFOLLOW);try{fsyncSync(fd);}finally{closeSync(fd);}}}
+  writeFileSync(join(to.root,'release-manifest.json'),delta.releaseManifest,{mode:0o444});const fd=openSync(join(to.root,'release-manifest.json'),'r');try{fsyncSync(fd);}finally{closeSync(fd);}
+  for(const d of [...target.directories].sort((a,b)=>b.path.split('/').length-a.path.split('/').length)){chmodSync(join(to.root,d.path),d.mode);syncDirectory(join(to.root,d.path));}syncDirectory(to.root);chmodSync(to.root,0o555);syncDirectory(this.config.releasesDir);this.verify(to);
+ }
+ async rollback(actor:string,id:string){
+  this.authorize(actor);validId(id);const fp=operationFingerprint('rollback'),prior=this.existing(id);if(prior){if(prior.requestFingerprint&&prior.requestFingerprint!==fp)throw Error('UPDATE_IDEMPOTENCY_MISMATCH');return prior;}if(this.busy)throw Error('UPDATE_BUSY');const from=this.current(),to=this.store.state.previous;
+  if(!to)throw Error('UPDATE_ROLLBACK_VERSION_MISSING');if(schemaFingerprint(parseRelease(this.verify(from)))!==schemaFingerprint(parseRelease(this.verify(to))))throw Error('UPDATE_SCHEMA_CHANGE_REQUIRES_OPERATOR');
+  this.busy=true;this.store.save({phase:'rolling_back',operationId:id,requestFingerprint:fp,actorId:actor,from,target:to,error:undefined,steps:{backup:'pending',rollback:'running',health:'pending'}});this.fence(id);
+  try{this.assertLock();await this.runtime.stop();const backup=join(this.config.agentDir,'backups',id);await this.runtime.backup(from,backup);this.store.save({backupPath:backup});this.store.passed('backup');durableJSON(this.pointerFile,to);await this.runtime.start(to);await this.runtime.healthy(to);this.store.passed('health');this.store.passed('rollback');this.store.save({phase:'rolled_back',previous:from});this.remember();this.unfence();return this.status();}
+  catch(error){await this.runtime.stop();durableJSON(this.pointerFile,from);try{await this.runtime.start(from);await this.runtime.healthy(from);this.unfence();}catch{this.store.save({phase:'failed',error:'UPDATE_ROLLBACK_HEALTH_FAILED'});this.remember();throw Error('UPDATE_ROLLBACK_HEALTH_FAILED');}this.store.save({phase:'failed',error:code(error)});this.remember();throw error;}finally{this.busy=false;}
+ }
+}

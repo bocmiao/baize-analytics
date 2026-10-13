@@ -1,3 +1,5 @@
+import {registerUpdates} from '../update/http.js';
+import {maintenanceActive,runningUpdateIdentity} from '../update/maintenance.js';
 import Fastify,{type FastifyReply,type FastifyRequest} from 'fastify';
 import cookie from '@fastify/cookie';
 import staticFiles from '@fastify/static';
@@ -34,7 +36,8 @@ export async function createLiteApp(options:LiteAppOptions={}){
  const dataDir=resolve(options.dataDir??process.env.DATA_DIR??'.baize/lite'),keyDir=resolve(options.keyDir??process.env.KEYS_DIR??join(dataDir,'keys'));
  const publicUrl=options.publicUrl??process.env.PUBLIC_URL??'http://localhost:3000';const origin=new URL(publicUrl).origin;
  await keyFile(keyDir);const store=options.store??createLiteStore({dataDir,keyDir});await store.runtime;try{await store.call('bootstrap_prepare');}catch(error){await store.close();throw error;}
- const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});await app.register(cookie);
+ const updateIdentity=runningUpdateIdentity();
+ const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});await app.register(cookie);app.addHook('onRequest',async req=>{if(maintenanceActive()&&!['GET','HEAD','OPTIONS'].includes(req.method)&&!req.url.startsWith('/api/admin/updates/'))throw new HttpError(503,'update_maintenance_active');});
  const limits=new Map<string,{count:number;expires:number}>();const limited=(key:string,max:number)=>{const now=Date.now();let v=limits.get(key);if(!v||v.expires<=now){v={count:0,expires:now+60000};limits.set(key,v);}if(++v.count>max)throw new HttpError(429,'rate_limited');if(limits.size>10000){for(const[k,v]of limits)if(v.expires<=now)limits.delete(k);while(limits.size>10000)limits.delete(limits.keys().next().value!);}};
  const bot=createBotFilter(null);
  app.addHook('onRequest',async(req,reply)=>{reply.header('X-Content-Type-Options','nosniff').header('Referrer-Policy','strict-origin-when-cross-origin').header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");if(!['GET','HEAD','OPTIONS'].includes(req.method)&&req.url.split('?')[0]!=='/api/collect'){if(req.headers.origin&&req.headers.origin!==origin||req.headers['sec-fetch-site']==='cross-site')throw new HttpError(403,'跨站请求被拒绝');}});
@@ -62,7 +65,7 @@ export async function createLiteApp(options:LiteAppOptions={}){
   return {...record,isCancelled:()=>record.cancelled,finish};
  }
  const siteId=(r:FastifyRequest)=>(r.params as {siteId:string}).siteId;
- app.get('/healthz',async(_req,reply)=>{try{return await liteHealthStatus(store);}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
+ app.get('/healthz',async(_req,reply)=>{try{return {...await liteHealthStatus(store),updateIdentity};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
  app.get('/api/capabilities',async()=>liteCapabilities);
  async function installationStatus(){const status=await store.read<{required:boolean;credentialRequired:boolean;state:string;blocked?:boolean}>('bootstrap_status');const states=['pending','claimed','legacy','restored_blocked'];const state=states.includes(status.state)?status.state:'blocked';return {required:status.required===true,credentialRequired:status.credentialRequired===true,state,...(status.blocked||state==='blocked'?{blocked:true}:{})};}
  app.get('/api/setup',installationStatus);
@@ -70,6 +73,7 @@ export async function createLiteApp(options:LiteAppOptions={}){
  app.post('/api/login',async(req,reply)=>{limited('login:'+hashToken(req.ip),10);const b=loginSchema.parse(req.body);const u=await store.read<LiteUser&{password_hash:string}|null>('accounts_login',{email:b.email});const ok=await checkPassword(b.password,u?.password_hash??'scrypt:invalid:'+'00'.repeat(64));if(!u||!ok)throw new HttpError(401,'邮箱或密码错误');await session(reply,u);return {user:{id:u.id,email:u.email,name:u.name,is_admin:Boolean(u.is_admin)}};});
  app.post('/api/logout',async(req,reply)=>{if(req.cookies.baize_session)await store.call('session_delete',{tokenHash:hashToken(req.cookies.baize_session)});reply.clearCookie('baize_session',{path:'/'});return {ok:true};});
  app.get('/api/me',async req=>({user:await user(req)}));app.get('/api/sso',async()=>({wecom:false}));app.get('/api/sso/status',async()=>({enabled:false}));
+ registerUpdates(app,{profile:'lite',owner:async req=>{if(req.headers.authorization!==undefined)throw new HttpError(403,'admin_cookie_required');const u=await user(req);if(!u.is_admin)throw new HttpError(403,'update_instance_owner_required');return {id:u.id,claimedOwnerId:await store.read<string|null>('bootstrap_owner')};}});
  app.get('/api/v1/sites',async req=>{const u=await user(req);const sites=await store.read<LiteSite[]>(u.is_admin?'sites_admin':'sites_list',{userId:u.id});return {sites:await Promise.all(sites.map(async s=>publicSite(s,(await store.read<{role:string}|null>('site_member',{siteId:s.id,userId:u.id}))?.role??'admin')))};});
  app.post('/api/v1/sites',async(req,reply)=>{const u=await user(req);if(!u.is_admin)throw new HttpError(403,'仅管理员可创建站点');const b=siteSchema.parse(req.body);const created=await store.call<{id:string}>('sites_create',{...b,config:{...b.config,tags:b.tags},ownerId:u.id,salt_secret:randomBytes(32).toString('hex')});reply.code(201);return {site:publicSite((await store.read<LiteSite>('site_get',{siteId:created.id})))};});
  app.get('/api/v1/sites/:siteId',async req=>{const a=await authorize(req,siteId(req));return {site:publicSite(a.s,a.role)};});
@@ -101,7 +105,7 @@ export async function createLiteApp(options:LiteAppOptions={}){
  let wal:unknown=null;
  app.get('/api/admin/lite/diagnostics',async req=>{const u=await user(req);if(!u.is_admin)throw new HttpError(403,'instance_admin_required');return {wal,maintenance,taskDepth:await store.read('task_depth')};});
  const maintain=async(name:'checkpoint'|'retention')=>{const state=maintenance[name];if(Date.now()<state.next)return;try{if(name==='checkpoint')wal=await store.call('wal_status');else{const sites=await store.read<LiteSite[]>('sites_admin');for(const site of sites)await privacyMutation(site.id,()=>store.call('retention',{siteId:site.id}));}state.failures=0;state.lastError=null;state.next=Date.now()+60000;}catch(error){state.failures++;state.lastError=(error as Error).message;state.next=Date.now()+Math.min(300000,1000*2**Math.min(state.failures,8));}};
- const pump=async()=>{if(closing||running)return;running=(async()=>{let claim:LiteClaim|null=null;let publishedFile:string|undefined;try{
+ const pump=async()=>{if(closing||running||maintenanceActive())return;running=(async()=>{let claim:LiteClaim|null=null;let publishedFile:string|undefined;try{
   await maintain('checkpoint');claim=await store.call<LiteClaim|null>('task_claim',{});
   if(!claim){await maintain('retention');return;}
   const snapshot=await store.read<LiteSnapshot>('stats_snapshot',{siteId:claim.siteId});

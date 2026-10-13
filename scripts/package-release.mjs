@@ -12,7 +12,7 @@ export function runtimeLicensePackages(needed) {
  const providers={'libdl.so.2':'libc6','libm.so.6':'libc6','libpthread.so.0':'libc6','libc.so.6':'libc6','ld-linux-x86-64.so.2':'libc6','libstdc++.so.6':'libstdc++6','libgcc_s.so.1':'libgcc-s1','libatomic.so.1':'libatomic1'};
  return [...new Set(needed.map(name=>{if(!Object.hasOwn(providers,name))throw Error('RELEASE_LIBRARY_LICENSE_UNKNOWN:'+name);return providers[name];}))].sort();
 }
-export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','README.en.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md','docs/images/baize-desktop.png','docs/images/baize-mobile.png']);
+export const documentationWhitelist=Object.freeze(['deploy/baize.service.example','README.md','README.en.md','docs/deployment-methods.md','docs/release-native-ops.md','docs/release-packages.md','docs/INSTANCE_INCREMENTAL_UPDATES.md','docs/lite-deployment.md','docs/lite-migration.md','docs/lite-implementation.md','docs/lite-optional-insights.md','docs/migration.md','docs/api.md','docs/images/baize-desktop.png','docs/images/baize-mobile.png']);
 export const releaseReadmeNotice='> 运行包说明：本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。\n\n';
 export const releaseEnglishReadmeNotice='> Runtime package: the primary operation and maintenance guides are available offline. Fixed-revision links to source code and historical material require network access and permission to the private repository.\n\n';
 export function rewriteDocumentationLinks(text,sourcePath,revision,included=documentationWhitelist){

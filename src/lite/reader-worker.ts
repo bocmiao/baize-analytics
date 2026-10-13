@@ -16,6 +16,7 @@ function read(kind:string,p:Record<string,unknown>):unknown{
  if(kind==='sites_admin')return db.prepare('SELECT * FROM sites ORDER BY name,id').all().map(site);
  if(kind==='site_usage')return db.prepare('SELECT count(*) events,coalesce(sum(length(cast(payload AS BLOB))+length(cast(dimensions AS BLOB))),0) body_bytes,min(ts) first_ts,max(ts) last_ts FROM events WHERE site_id=?').get(String(p.siteId));
  if(kind==='task_depth')return db.prepare('SELECT status,count(*) count FROM jobs GROUP BY status').all();
+ if(kind==='bootstrap_owner')return db.prepare('SELECT claimed_user_id FROM install_bootstrap WHERE id=1').get()?.claimed_user_id??null;
  if(kind==='bootstrap_status')return readBootstrapStatus(db);
  if(kind==='deployment_status'){validateKnownSchema(db);return {schemaVersion:Number(db.prepare('PRAGMA user_version').get()!.user_version)};}
  if(kind==='metadata')return {setup_required:readBootstrapStatus(db).required};

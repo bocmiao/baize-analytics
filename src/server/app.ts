@@ -1,3 +1,5 @@
+import {registerUpdates} from '../update/http.js';
+import {maintenanceActive,runningUpdateIdentity} from '../update/maintenance.js';
 import {installFactStore} from './fact-store.js';
 import {installRemainingFactStore} from './remaining-fact-store.js';
 import {cleanupRemainingFactStoreOrphans} from './remaining-fact-maintenance.js';
@@ -31,7 +33,7 @@ import { access } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { createPool,migrate,transaction,lockSite } from './db.js';
 import { masterKey,HttpError } from './security.js';
-import { authFunctions,registerAuth } from './auth.js';
+import { authFunctions,registerAuth,requireAdminSession } from './auth.js';
 import {registerStandardDeploymentDiagnostics} from './deployment-diagnostics.js';
 import { registerRequestRateLimits } from './request-rate-limit.js';
 import { registerSites } from './sites.js';
@@ -116,8 +118,10 @@ export async function createApp(options:AppOptions={}){
   const geoAccount=configuredGeo?configuredGeo.enabled?configuredGeo.accountId:undefined:process.env.MAXMIND_ACCOUNT_ID;
   const geoLicense=configuredGeo?configuredGeo.enabled?configuredGeo.licenseKey:undefined:process.env.MAXMIND_LICENSE_KEY;
   if(process.env.BAIZE_NATIVE_VALIDATE_ONLY!=='1'&&geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
+  const updateIdentity=runningUpdateIdentity();
   const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});
   await app.register(cookie);
+  app.addHook('onRequest',async req=>{if(maintenanceActive()&&!['GET','HEAD','OPTIONS'].includes(req.method)&&!req.url.startsWith('/api/admin/updates/'))throw new HttpError(503,'update_maintenance_active');});
   if(options.performanceSink)app.addHook('onRequest',(req,reply,done)=>{const path=req.url.split('?')[0]!;const route=path==='/api/collect'?'collect':/^\/api\/v1\/sites\/[^/]+\/stats$/.test(path)?'stats':'other';withPerformanceObservation('http_request',options.performanceSink,()=>{const scope=getPerformanceScopeId();if(scope)reply.header('X-Baize-Performance-Scope',scope);done();},route);});
   app.addHook('onRequest',async(req,reply)=>{
     reply.header('X-Content-Type-Options','nosniff').header('Referrer-Policy','strict-origin-when-cross-origin');
@@ -129,9 +133,9 @@ export async function createApp(options:AppOptions={}){
   });
   app.addHook('preParsing',async(req,_reply,payload)=>{if(req.headers['content-encoding']!=='gzip')return payload;let size=0;const chunks:Buffer[]=[];for await(const chunk of payload){const bytes=Buffer.from(chunk);size+=bytes.length;if(size>1024*1024)throw new HttpError(413,'请求过大');chunks.push(bytes);}let out:Buffer;try{out=gunzipSync(Buffer.concat(chunks),{maxOutputLength:1024*1024});}catch{throw new HttpError(400,'无效或过大的 gzip 请求');}delete req.headers['content-encoding'];req.headers['content-length']=String(out.length);const {Readable}=await import('node:stream');return Readable.from(out);});
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);if(body.error==='share_password_busy')reply.header('Retry-After','1');return reply.code(statusCode).send(body);});
-  app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
+  app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1,updateIdentity};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   registerRequestRateLimits(app,ctx);
-  await registerAuth(app,ctx);registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
+  await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
@@ -146,7 +150,7 @@ export async function createApp(options:AppOptions={}){
     ()=>cleanupSessionHeaderOrphans(pool),()=>cleanupFactStoreOrphans(pool),()=>cleanupRemainingFactStoreOrphans(pool),()=>cleanupCacheStoreOrphans(pool)
   ]);
   let busy=false;let timer:NodeJS.Timeout|undefined;
-  if(options.background!==false){timer=setInterval(async()=>{if(busy)return;busy=true;try{await withPerformanceObservation('background_worker',options.performanceSink,async()=>{
+  if(options.background!==false){timer=setInterval(async()=>{if(busy||maintenanceActive())return;busy=true;try{await withPerformanceObservation('background_worker',options.performanceSink,async()=>{
     try{await runWorkerOnce(pool);}catch{/* Durable work remains queued. */}
     try{await ctx.clickhouseMirror?.runOnce();}catch{/* Mirror failure cannot starve maintenance. */}
     await maintenance();

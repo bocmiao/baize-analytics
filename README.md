@@ -117,3 +117,5 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 本轮性能优化及实际复验范围见 [性能复验记录](docs/PERFORMANCE_OPTIMIZATION_20261013.md)。历史运行包仍对应各自的固定版本；新源码不能替换旧包的版本标识。
 
 应用主体采用 **AGPL-3.0-only**；独立网站追踪脚本采用 **MIT**。嵌入 tracker 与修改、托管应用主体的许可责任不同，详见 [LICENSE](LICENSE) 与 [tracker LICENSE](packages/tracker/LICENSE)。
+
+实例拥有者可在“设置 → 系统更新”核对增量版本与下载量。首次接入、支持范围和回滚规则见 [实例增量更新指南](docs/INSTANCE_INCREMENTAL_UPDATES.md)。
