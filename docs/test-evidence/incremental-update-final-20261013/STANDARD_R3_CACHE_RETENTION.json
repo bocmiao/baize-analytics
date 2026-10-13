@@ -1,0 +1,7 @@
+{
+  "original": "/workspace/baize-transfer/final-standard-delivery-agent/images",
+  "retained": "/workspace/baize-transfer/final-standard-delivery-images-r3-retained.tar.gz",
+  "bytes": 1183360426,
+  "retainedBytes": 347314278,
+  "method": "tar gzip, compare, remove unused failed cache"
+}

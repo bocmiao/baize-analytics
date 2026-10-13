@@ -1,0 +1,44 @@
+[
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-standard-bundled-node-linux-x64-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-standard-bundled-node-linux-x64-d8362d0.tar.gz",
+    "bytes": 80099346,
+    "sha256": "dc430569a85cc97762e9aa5f374343e4e19a8d7314ab868637c3c0ed618e41c8",
+    "method": "copy, verify SHA256, retain with symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-standard-docker-offline-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-standard-docker-offline-d8362d0.tar.gz",
+    "bytes": 292093725,
+    "sha256": "e2082e47b1f05814d5c3e54a63dbdaa3a4ac861045e8f9f1fe551151ac4a7bba",
+    "method": "copy, verify SHA256, retain with symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-standard-node-ready-linux-x64-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-standard-node-ready-linux-x64-d8362d0.tar.gz",
+    "bytes": 35409651,
+    "sha256": "3214b8b98bb928daa48c14ef97b68c849885ef994277d717debb2ffbc8445571",
+    "method": "copy, verify SHA256, retain with symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-lite-node-ready-linux-x64-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-lite-node-ready-linux-x64-d8362d0.tar.gz",
+    "bytes": 30516049,
+    "sha256": "eaaa6fe148ae41cec2dc0900d5df12e79f009f5a2103e02f41e2ea9511536268",
+    "method": "copy, verify SHA256, retain with symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-lite-bundled-node-linux-x64-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-lite-bundled-node-linux-x64-d8362d0.tar.gz",
+    "bytes": 75203067,
+    "sha256": "5c15650a0341cf7e36fd9ac7fa2f7fb120954c9cf66098eeeca071aab12c1251",
+    "method": "copy, verify SHA256, retain with symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-lite-docker-offline-d8362d0.tar.gz",
+    "retained": "/tmp/baize-delivery-retained/baize-lite-docker-offline-d8362d0.tar.gz",
+    "bytes": 124958759,
+    "sha256": "9ef092f5426031940705ba989552087c2f3b9eed5a7b80ab9d6b4a89f9916537",
+    "method": "copy, verify SHA256, retain with symlink"
+  }
+]

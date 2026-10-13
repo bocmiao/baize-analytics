@@ -1,0 +1,38 @@
+[
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-standard-node-ready-linux-x64-d8362d0",
+    "retained": "/tmp/baize-delivery-retained/baize-standard-node-ready-linux-x64-d8362d0",
+    "bytes": 148593741,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/standard-runtime",
+    "retained": "/tmp/baize-delivery-retained/standard-runtime",
+    "bytes": 150793761,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-lite-bundled-node-linux-x64-d8362d0",
+    "retained": "/tmp/baize-delivery-retained/baize-lite-bundled-node-linux-x64-d8362d0",
+    "bytes": 263534075,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-lite-node-ready-linux-x64-d8362d0",
+    "retained": "/tmp/baize-delivery-retained/baize-lite-node-ready-linux-x64-d8362d0",
+    "bytes": 136617891,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/baize-standard-bundled-node-linux-x64-d8362d0",
+    "retained": "/tmp/baize-delivery-retained/baize-standard-bundled-node-linux-x64-d8362d0",
+    "bytes": 275509925,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-d8362d0/lite-runtime",
+    "retained": "/tmp/baize-delivery-retained/lite-runtime",
+    "bytes": 133730802,
+    "method": "copy, SHA256/symlink verification, remove original readonly tree, symlink retained copy"
+  }
+]

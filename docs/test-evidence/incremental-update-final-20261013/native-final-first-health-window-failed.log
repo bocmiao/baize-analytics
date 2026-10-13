@@ -1,0 +1,9 @@
+file:///workspace/baize-analytics/.baize/final-native-delivery.mjs:805
+      if (["completed", "failed"].includes(s.phase) && s.operationId === killHealth) throw Error("missed deterministic target health window");
+                                                                                           ^
+
+Error: missed deterministic target health window
+    at file:///workspace/baize-analytics/.baize/final-native-delivery.mjs:805:92
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.19.0

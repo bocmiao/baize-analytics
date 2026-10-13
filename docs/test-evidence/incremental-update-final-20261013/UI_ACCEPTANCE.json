@@ -1,0 +1,49 @@
+{
+  "realDockerApplication": true,
+  "evidence": [
+    {
+      "profile": "standard",
+      "width": 1440,
+      "reducedMotion": true,
+      "checkboxOperated": true,
+      "keyboardTabOperated": true,
+      "horizontalOverflow": false,
+      "pageErrors": [],
+      "total": "预计总下载量\n14.89 KiB · 15,246 bytes",
+      "screenshot": "/workspace/baize-transfer/final-ui-d8362d0-r3/update-standard-1440.png"
+    },
+    {
+      "profile": "standard",
+      "width": 320,
+      "reducedMotion": true,
+      "checkboxOperated": true,
+      "keyboardTabOperated": true,
+      "horizontalOverflow": false,
+      "pageErrors": [],
+      "total": "预计总下载量\n14.89 KiB · 15,246 bytes",
+      "screenshot": "/workspace/baize-transfer/final-ui-d8362d0-r3/update-standard-320.png"
+    },
+    {
+      "profile": "lite",
+      "width": 1440,
+      "reducedMotion": true,
+      "checkboxOperated": true,
+      "keyboardTabOperated": true,
+      "horizontalOverflow": false,
+      "pageErrors": [],
+      "total": "预计总下载量\n14.87 KiB · 15,222 bytes",
+      "screenshot": "/workspace/baize-transfer/final-ui-d8362d0-r3/update-lite-1440.png"
+    },
+    {
+      "profile": "lite",
+      "width": 320,
+      "reducedMotion": true,
+      "checkboxOperated": true,
+      "keyboardTabOperated": true,
+      "horizontalOverflow": false,
+      "pageErrors": [],
+      "total": "预计总下载量\n14.87 KiB · 15,222 bytes",
+      "screenshot": "/workspace/baize-transfer/final-ui-d8362d0-r3/update-lite-320.png"
+    }
+  ]
+}
