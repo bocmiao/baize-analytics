@@ -1,0 +1,34 @@
+[
+  {
+    "path": "docs/images/baize-desktop.png",
+    "bytes": 237893,
+    "sha256": "01b15505f558f8e5d7ec166bcce083002e2dc545e3e70697a9809cfae5433a0e",
+    "synthetic": true,
+    "mockedStats": false,
+    "rawSyntheticGeoDimensionsNotIpLookup": true
+  },
+  {
+    "path": "docs/images/baize-mobile.png",
+    "bytes": 211952,
+    "sha256": "9a224e03cd33cc8cbbdd400e8a93d114a807db6ece0b464f82f97af5ea06cbf6",
+    "synthetic": true,
+    "mockedStats": false,
+    "rawSyntheticGeoDimensionsNotIpLookup": true
+  },
+  {
+    "path": "docs/validation/overview-redesign-20261013/overview-desktop-first-screen.png",
+    "bytes": 159511,
+    "sha256": "a6e7fbeba750bd7868483ae0c4ef5270531c499d284d4a25fdb978b1c570c4ec",
+    "synthetic": true,
+    "mockedStats": false,
+    "rawSyntheticGeoDimensionsNotIpLookup": true
+  },
+  {
+    "path": "docs/validation/overview-redesign-20261013/overview-mobile-first-screen.png",
+    "bytes": 59608,
+    "sha256": "9c6dc50be2435cc9685ac70b691b70c90c8f4db378b39e468860bc70e623d4d3",
+    "synthetic": true,
+    "mockedStats": false,
+    "rawSyntheticGeoDimensionsNotIpLookup": true
+  }
+]

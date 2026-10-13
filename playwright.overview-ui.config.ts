@@ -1,0 +1,3 @@
+import {join} from 'node:path';
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests/e2e',testMatch:process.env.BAIZE_OVERVIEW_TEST_MATCH||'overview-redesign.spec.ts',outputDir:join(process.cwd(),'.baize/overview-browser-artifacts',(process.env.BAIZE_OVERVIEW_TEST_MATCH||'overview-redesign').replace(/[^a-zA-Z0-9_-]/g,'_')),workers:1,fullyParallel:false,use:{headless:true,launchOptions:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:undefined,trace:'retain-on-failure'},reporter:[['list'],['json',{outputFile:join(process.env.BAIZE_OVERVIEW_EVIDENCE_DIR||join(process.cwd(),'.baize/overview-ui-evidence'),'playwright-results.json')}]]});

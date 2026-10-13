@@ -1,0 +1,11 @@
+{
+  "checkedAtUTC": "2026-10-13T12:29:48.325517+00:00",
+  "workspaceFreeBytes": 11795869696,
+  "unchangedFloorBytes": 2147483648,
+  "driver": "vfs",
+  "plannedAdditionalBudgetBytes": 6442450944,
+  "canBeginWithUnchangedFloor": true,
+  "nonGuarantee": true,
+  "oldPackagesPreserved": true,
+  "plan": "frozen matching revision; minimal exported build context; standard then Lite; monitor each stage; no prune; old docs/dependency evidence remain outside context"
+}

@@ -16,7 +16,9 @@ Baize is free, self-hosted, privacy-oriented website analytics with Chinese and 
 
 ## Interface
 
-These desktop and mobile screenshots show the running application with safe example data.
+The desktop overview groups period comparisons, trends, sources, popular pages and session entry pages. Locations, devices and goal completions share one reading area. Mobile displays all six core metrics without clipped numbers.
+
+These screenshots show the running application with synthetic demonstration data. Locations are examples, not production traffic or real IP geolocation.
 
 ![Baize desktop interface](docs/images/baize-desktop.png)
 
