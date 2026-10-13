@@ -1,0 +1,31 @@
+{
+  "checkedAtUTC": "2026-10-13T10:33:42.300287+00:00",
+  "freeBytesBefore": 13309992960,
+  "additionalBudgetBytes": 536870912,
+  "floorBytesUnchanged": 2147483648,
+  "freeBytesAfter": 12991856640,
+  "results": [
+    {
+      "profile": "lite",
+      "originalBytes": 74722987,
+      "originalSha256": "39d4f00aa9e2a9c2655c9895f0721e39aa034281401f93e765353c051c3e961f",
+      "partCount": 10,
+      "maxPartBytes": 7864320,
+      "actualReassemblySha256": "39d4f00aa9e2a9c2655c9895f0721e39aa034281401f93e765353c051c3e961f",
+      "byteForByteCmpPassed": true,
+      "scriptExecutedPackageContents": false,
+      "cliOutput": "Verified package: /workspace/baize-new-split-129d972/lite-reassembled-validation.tar.gz\nbytes=74722987 SHA256=39d4f00aa9e2a9c2655c9895f0721e39aa034281401f93e765353c051c3e961f\nNo package contents were executed or unpacked.\n"
+    },
+    {
+      "profile": "standard",
+      "originalBytes": 84323463,
+      "originalSha256": "654b90b6556694d4b3bae7cca114f2d31b4a900121036b5796cdd4441089aef5",
+      "partCount": 11,
+      "maxPartBytes": 7864320,
+      "actualReassemblySha256": "654b90b6556694d4b3bae7cca114f2d31b4a900121036b5796cdd4441089aef5",
+      "byteForByteCmpPassed": true,
+      "scriptExecutedPackageContents": false,
+      "cliOutput": "Verified package: /workspace/baize-new-split-129d972/standard-reassembled-validation.tar.gz\nbytes=84323463 SHA256=654b90b6556694d4b3bae7cca114f2d31b4a900121036b5796cdd4441089aef5\nNo package contents were executed or unpacked.\n"
+    }
+  ]
+}
