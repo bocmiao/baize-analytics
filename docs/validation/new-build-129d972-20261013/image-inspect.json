@@ -1,0 +1,152 @@
+[
+    {
+        "Id": "sha256:857643f99ad924c86e4acbab313f3635a3d627c44cd66907684282ae546c8df1",
+        "RepoTags": [
+            "baize-new:standard-129d972"
+        ],
+        "RepoDigests": [],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-13T10:12:43.16543475Z",
+        "DockerVersion": "",
+        "Author": "",
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 389939549,
+        "GraphDriver": {
+            "Data": null,
+            "Name": "vfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+                "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+                "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+                "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+                "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+                "sha256:8fd2a53343880cb4cdcc27ead0b0ad1cd125f975ea11f3842eb5a4dd3d4d25c7",
+                "sha256:8097e82490c2f7f68f1b3cb5f331e5a22020b07d62bf6d711f858f9574eead58",
+                "sha256:807e0d8cad96c0c55900ddbe9c7bf47f8979ac10cd617134150761a50606ed98"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-13T10:12:44.515231315Z"
+        },
+        "Config": {
+            "ArgsEscaped": true,
+            "Cmd": [
+                "node",
+                "dist/server/src/server/main.js"
+            ],
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NODE_VERSION=24.21.0",
+                "YARN_VERSION=1.22.22",
+                "NODE_ENV=production",
+                "HOST=0.0.0.0",
+                "PORT=3000",
+                "DATA_DIR=/app/data",
+                "KEYS_DIR=/app/keys"
+            ],
+            "ExposedPorts": {
+                "3000/tcp": {}
+            },
+            "Healthcheck": {
+                "Interval": 10000000000,
+                "StartPeriod": 30000000000,
+                "Test": [
+                    "CMD-SHELL",
+                    "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=\u003e{if(!r.ok)process.exit(1)}).catch(()=\u003eprocess.exit(1))\""
+                ],
+                "Timeout": 5000000000
+            },
+            "Labels": {
+                "org.opencontainers.image.revision": "129d972cde1ba8d3da97a130e3adf70f8673402d",
+                "org.opencontainers.image.source": "https://github.com/bocmiao/baize-analytics"
+            },
+            "OnBuild": null,
+            "User": "node",
+            "Volumes": null,
+            "WorkingDir": "/app"
+        }
+    },
+    {
+        "Id": "sha256:af3e70ad04f6599ed45c115840b97ce1b0b5ee20a00974fcad20878bab33dd88",
+        "RepoTags": [
+            "baize-new:lite-129d972"
+        ],
+        "RepoDigests": [],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-13T10:13:16.563831848Z",
+        "DockerVersion": "",
+        "Author": "",
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 361566952,
+        "GraphDriver": {
+            "Data": null,
+            "Name": "vfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+                "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+                "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+                "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+                "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+                "sha256:8fd2a53343880cb4cdcc27ead0b0ad1cd125f975ea11f3842eb5a4dd3d4d25c7",
+                "sha256:7a3ba0c82bf408abdd17ed5fb8e9b2b601bfdf54430f36b96549eff4fc76cecf",
+                "sha256:80a4b1d0fbad0c45598cfa41920e6a38be21a77eb8231830d8b0991c815a6628"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-13T10:13:17.599508215Z"
+        },
+        "Config": {
+            "ArgsEscaped": true,
+            "Cmd": [
+                "node",
+                "dist/server/src/lite/main.js"
+            ],
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NODE_VERSION=24.21.0",
+                "YARN_VERSION=1.22.22",
+                "NODE_ENV=production",
+                "HOST=0.0.0.0",
+                "PORT=3000",
+                "DATA_DIR=/app/data",
+                "KEYS_DIR=/app/keys"
+            ],
+            "ExposedPorts": {
+                "3000/tcp": {}
+            },
+            "Healthcheck": {
+                "Interval": 10000000000,
+                "StartPeriod": 30000000000,
+                "Test": [
+                    "CMD-SHELL",
+                    "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=\u003e{if(!r.ok)process.exit(1)}).catch(()=\u003eprocess.exit(1))\""
+                ],
+                "Timeout": 5000000000
+            },
+            "Labels": {
+                "org.opencontainers.image.revision": "129d972cde1ba8d3da97a130e3adf70f8673402d",
+                "org.opencontainers.image.source": "https://github.com/bocmiao/baize-analytics"
+            },
+            "OnBuild": null,
+            "User": "node",
+            "Volumes": null,
+            "WorkingDir": "/app"
+        }
+    }
+]
