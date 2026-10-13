@@ -1,0 +1,94 @@
+{
+  "results": [
+    {
+      "profile": "standard",
+      "variant": "node-ready",
+      "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+      "archiveDerivedRuntime": true,
+      "startedViaPackagedShell": true,
+      "noDevelopmentSessionDependency": true,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "cache": "disabled",
+        "geoip": "unknown",
+        "schemaVersion": 1,
+        "updateIdentity": {
+          "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+          "manifestSha256": "784d1c6694255b7f04d440ff31c4919b7ef1b0619df51c67dc79e721a9f9c794",
+          "launchId": null
+        }
+      },
+      "node": "v24.21.0"
+    },
+    {
+      "profile": "standard",
+      "variant": "bundled-node",
+      "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+      "archiveDerivedRuntime": true,
+      "startedViaPackagedShell": true,
+      "noDevelopmentSessionDependency": true,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "cache": "disabled",
+        "geoip": "unknown",
+        "schemaVersion": 1,
+        "updateIdentity": {
+          "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+          "manifestSha256": "b04e3c46065ff30856f99e75615809555801b8b9e8d38688d85603e1b7c83fdc",
+          "launchId": null
+        }
+      },
+      "node": "v24.21.0"
+    },
+    {
+      "profile": "lite",
+      "variant": "node-ready",
+      "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+      "archiveDerivedRuntime": true,
+      "startedViaPackagedShell": true,
+      "noDevelopmentSessionDependency": true,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "storage": "sqlite",
+        "cache": "disabled",
+        "geoip": "unavailable",
+        "schemaVersion": 2,
+        "sqliteVersion": "3.53.3",
+        "sourceId": "2026-06-26 20:14:12 d4c0e51e4aeb96955b99185ab9cde75c339e2c29c3f3f12428d364a10d782c62",
+        "updateIdentity": {
+          "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+          "manifestSha256": "cc55fbda493fbb01a179445c1c3fdad8a1c77366529d2655f14a7de1c4df6ee6",
+          "launchId": null
+        }
+      },
+      "node": "v24.21.0"
+    },
+    {
+      "profile": "lite",
+      "variant": "bundled-node",
+      "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+      "archiveDerivedRuntime": true,
+      "startedViaPackagedShell": true,
+      "noDevelopmentSessionDependency": true,
+      "health": {
+        "ok": true,
+        "database": "ready",
+        "storage": "sqlite",
+        "cache": "disabled",
+        "geoip": "unavailable",
+        "schemaVersion": 2,
+        "sqliteVersion": "3.53.4",
+        "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc",
+        "updateIdentity": {
+          "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+          "manifestSha256": "31029174e83110e5c788953ee2b07eb89ec4a13818141ace8f3a6cea765a4052",
+          "launchId": null
+        }
+      },
+      "node": "v24.21.0"
+    }
+  ]
+}

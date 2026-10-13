@@ -1,0 +1,56 @@
+[
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-standard-node-ready-linux-x64-52c2ddf.tar.gz",
+    "bytes": 40105047,
+    "sha256": "0380b2ade7146d2ef997913c6b29a64916589348d35a9d2491845625e2e4ea77",
+    "expandedRegularFileBytes": 157705891,
+    "profile": "standard",
+    "variant": "node-ready",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+    "imageId": "sha256:154ceb3bf0c352a7ac5a691c2f4f60f798b259ce4dbab9557502a0da525f0f98"
+  },
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-standard-bundled-node-linux-x64-52c2ddf.tar.gz",
+    "bytes": 84792909,
+    "sha256": "987c473dd307ed15bd44c7bd0f485238fa9b6ea28b7eb175eda4b958ae700696",
+    "expandedRegularFileBytes": 284620795,
+    "profile": "standard",
+    "variant": "bundled-node",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+    "imageId": "sha256:154ceb3bf0c352a7ac5a691c2f4f60f798b259ce4dbab9557502a0da525f0f98"
+  },
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-lite-node-ready-linux-x64-52c2ddf.tar.gz",
+    "bytes": 40085770,
+    "sha256": "26d519da99a9d8ea3b8841a75c6088fffd85e115e612079f10716def22be688f",
+    "expandedRegularFileBytes": 157705891,
+    "profile": "lite",
+    "variant": "node-ready",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+    "imageId": "sha256:72be8994276768395a839cf7e1a16c46c82d1d336555b743aea579563d2d49d3"
+  },
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-lite-bundled-node-linux-x64-52c2ddf.tar.gz",
+    "bytes": 84770303,
+    "sha256": "9eed754c3c52c6fd982755024bcdb9c2eece394c4aebc6dd661222f1b1a44e76",
+    "expandedRegularFileBytes": 284620795,
+    "profile": "lite",
+    "variant": "bundled-node",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df",
+    "imageId": "sha256:72be8994276768395a839cf7e1a16c46c82d1d336555b743aea579563d2d49d3"
+  },
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-source-52c2ddf.tar.gz",
+    "bytes": 31943296,
+    "sha256": "159f19e7d6ae0f866e55bda28e6170eb71c192f09d43cf2b2464ea9739326eff",
+    "kind": "source",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df"
+  },
+  {
+    "archive": "/workspace/baize-transfer/packages/baize-updater-52c2ddf.tar.gz",
+    "bytes": 329108,
+    "sha256": "27fc5ec99fb31bad8d6fafdc0e540201e133abfa84a84138611d4ded2aa13ca0",
+    "kind": "independent-updater",
+    "revision": "52c2ddfd7aaf54cf272b41c50ee89bd16061c0df"
+  }
+]
