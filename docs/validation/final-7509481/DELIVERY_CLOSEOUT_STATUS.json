@@ -1,0 +1,159 @@
+{
+  "timeUtc": "2026-10-13T00:05:28.665692+00:00",
+  "artifactBaselineMain": "e170d79996c305b8332d6de1948c90b8e21613bc",
+  "softwareRevision": "7509481a366b9ec1d0c3dc42ab31dc08d0792986",
+  "documentationRevision": "a683944148d0d6bbd5607c7eb8962e6374789e8e",
+  "productFilesAndScreenshots": [
+    {
+      "file": "baize-lite-bundled-node-linux-x64-7509481.tar.gz",
+      "bytes": 74717627,
+      "sha256": "2dfc0ba55959f9492ddc7ccd106f6cdc7726cbc2eea02e630ea06770ada898fb",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-lite-docker-install-7509481.zip",
+      "bytes": 30455084,
+      "sha256": "e613e85124a379602c207e6793232f15ad4a8a1eb458e7ebabe2097ea6685f7e",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-lite-docker-offline-7509481.tar.gz",
+      "bytes": 125436728,
+      "sha256": "b4c082e3c179b2d7c3234aa0bfb4031310b624cab689d9f617b81ac4d436976d",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-lite-node-ready-linux-x64-7509481.tar.gz",
+      "bytes": 30036242,
+      "sha256": "8871fe373a9b2ef766e42e80bf69f2a4dba0c1cc0d3f1d3b412bff029465e7c8",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-source-7509481.zip",
+      "bytes": 30454013,
+      "sha256": "58472cfaba35224bca53c4ee9fdd90c9fcf11704bff8bce1509d0fb5da42ddd3",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-standard-bundled-node-linux-x64-7509481.tar.gz",
+      "bytes": 84321660,
+      "sha256": "7bdd3fb4f400d6b5c36c18166ba9861f4e7c0a54820bff131dd9adc22a514492",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-standard-docker-install-7509481.zip",
+      "bytes": 30455085,
+      "sha256": "f96efb0e3aee529f98558884fdbb3c481036d7711fe590034648a3b89c37cbf6",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-standard-docker-offline-7509481.tar.gz",
+      "bytes": 297011351,
+      "sha256": "f73025dee09b94e83a66ef75dea8f93bc0cfbd7f3db4bd2f76c91805d3116cd3",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-standard-node-ready-linux-x64-7509481.tar.gz",
+      "bytes": 39639282,
+      "sha256": "097c36a8bba658b6c779cabd60400969237690cb0464691a7d5b8b1118f71013",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-tracker-browser-7509481.zip",
+      "bytes": 81731,
+      "sha256": "e10950ff979bfa2bef3ad591d1e911054466e5403eb36d7acccf251430020987",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-tracker-source-7509481.zip",
+      "bytes": 22833,
+      "sha256": "c05b4d2bc9f81f719690d7bfa5efcbf48e1010def0eb6556d0776e07168eabf2",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-wordpress-7509481.zip",
+      "bytes": 14054,
+      "sha256": "1cd176c56235964e5d069d4513baee140bd4e393933f89e978523b3ce28fc926",
+      "status": "verified_current_final_index"
+    },
+    {
+      "file": "baize-desktop.png",
+      "bytes": 192816,
+      "sha256": "42bd2a13310d409129ef72c4793ba602bba9657666f0a9d1b3ed24731ad09298",
+      "existingLibraryMetadataId": "libfile_65ce384d550c8191802f48aebeb14648",
+      "currentVersionNotReturned": true
+    },
+    {
+      "file": "baize-mobile.png",
+      "bytes": 155111,
+      "sha256": "536de71b35fe66ed887ca95088c056d463769ebbf3774814afe9d4f23cb21916",
+      "existingLibraryMetadataId": "libfile_94dd7491a98081918d0d7bea9bb346cf",
+      "currentVersionNotReturned": true
+    }
+  ],
+  "readOnlyLibraryMetadata": "succeeded; post20UTC list empty, no cursor",
+  "earlierUploadOutputsWereEmptyAndKnownBeforeMutationFailures": true,
+  "uploadAttemptsThisTurn": 1,
+  "exactUploadError": "library upload failed: hosted apps tools/list request failed: network",
+  "uploadResultBytes": 0,
+  "newLibraryIds": [],
+  "newLibraryVersions": [],
+  "xattrsReturned": false,
+  "uncertainWrites": false,
+  "authenticationOrPermissionsChanged": false,
+  "ciTriggered": false,
+  "developmentOrSoftwareTestsOrRepackRun": false,
+  "ownTestProcessShutdown": {
+    "pid": 9932,
+    "parentPid": 9907,
+    "command": "node dist/server/src/lite/main.js",
+    "testDataDir": "/workspace/baize-acceptance-e5aff3b/lite-browser/data",
+    "testPort": 3392,
+    "scopeVerifiedFromOriginalParentCommandAndStartTime": true,
+    "environNotRead": "permission denied; not bypassed",
+    "signal": "SIGTERM",
+    "exited": true,
+    "productionTouched": false
+  },
+  "runningDockerContainers": [],
+  "remainingZombieShell": {
+    "pid": 9907,
+    "state": "defunct; no running code, no I/O; parent PID1 owns reaping"
+  },
+  "recoverableCleanup": {
+    "timeUtc": "2026-10-13T00:03:53.572253+00:00",
+    "files": [
+      {
+        "fileName": "library_file_transfer.cpython-312.pyc",
+        "originalPath": "/workspace/baize-acceptance-e5aff3b/library-helpers/__pycache__/library_file_transfer.cpython-312.pyc",
+        "restoreFromPath": "/workspace/baize-acceptance-e5aff3b/quarantine-closeout-20261013/library-helpers/__pycache__/library_file_transfer.cpython-312.pyc",
+        "bytes": 17650,
+        "sha256": "93be5c3acdb450213e4064c19f6b5abfe55d842dd6bb7f95f198534bb0d15ac8",
+        "reason": "derived Python bytecode cache; original .py dependency retained",
+        "xattrsPreserved": true
+      },
+      {
+        "fileName": "library_hosted_apps.cpython-312.pyc",
+        "originalPath": "/workspace/baize-acceptance-e5aff3b/library-helpers/__pycache__/library_hosted_apps.cpython-312.pyc",
+        "restoreFromPath": "/workspace/baize-acceptance-e5aff3b/quarantine-closeout-20261013/library-helpers/__pycache__/library_hosted_apps.cpython-312.pyc",
+        "bytes": 17480,
+        "sha256": "3c664e463b6a0d46745f9ece246ada5d415bd723142a115578ecda3c09016a11",
+        "reason": "derived Python bytecode cache; original .py dependency retained",
+        "xattrsPreserved": true
+      }
+    ],
+    "totalBytes": 35130,
+    "permanentDeletion": false,
+    "diskSpaceReclamationClaimed": false,
+    "preserved": [
+      "all 12 formal products",
+      "README screenshots",
+      "original test evidence",
+      "old versions in /tmp/baize-acceptance-preserved",
+      "all runtime databases/keys and stopped volumes",
+      "source helpers and npm/node dependencies",
+      "every unclassified or suspicious file"
+    ]
+  },
+  "remainingBlocker": "Prepared Library upload helper cannot discover tools because its tools/list connection reports network failure. All current binary files remain local and have not been delivered."
+}
