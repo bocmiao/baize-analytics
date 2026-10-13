@@ -1,0 +1,58 @@
+[
+  {
+    "package": "baize-lite-bundled-node-linux-x64-8e47a2e",
+    "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+    "imageId": "sha256:f1f865d6f8c226175c40cfb2a37182ff1226ece0ba378b095f3534e3e1bf604e",
+    "compiledFileCount": 602,
+    "independentHostMismatches": [],
+    "readmeScreenshotsSameFrozenGit": true,
+    "imageHashes": {
+      "docs/images/baize-desktop.png": "01b15505f558f8e5d7ec166bcce083002e2dc545e3e70697a9809cfae5433a0e",
+      "docs/images/baize-mobile.png": "9a224e03cd33cc8cbbdd400e8a93d114a807db6ece0b464f82f97af5ea06cbf6"
+    },
+    "nodeVersion": "v24.21.0",
+    "dependencyVersionChecks": 166
+  },
+  {
+    "package": "baize-lite-node-ready-linux-x64-8e47a2e",
+    "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+    "imageId": "sha256:f1f865d6f8c226175c40cfb2a37182ff1226ece0ba378b095f3534e3e1bf604e",
+    "compiledFileCount": 602,
+    "independentHostMismatches": [],
+    "readmeScreenshotsSameFrozenGit": true,
+    "imageHashes": {
+      "docs/images/baize-desktop.png": "01b15505f558f8e5d7ec166bcce083002e2dc545e3e70697a9809cfae5433a0e",
+      "docs/images/baize-mobile.png": "9a224e03cd33cc8cbbdd400e8a93d114a807db6ece0b464f82f97af5ea06cbf6"
+    },
+    "nodeVersion": "v24.21.0",
+    "dependencyVersionChecks": 166
+  },
+  {
+    "package": "baize-standard-bundled-node-linux-x64-8e47a2e",
+    "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+    "imageId": "sha256:94f0aad6885fe4550c30d17d41e63015cead9f62eb1b694d34bc9f8e1b013b79",
+    "compiledFileCount": 602,
+    "independentHostMismatches": [],
+    "readmeScreenshotsSameFrozenGit": true,
+    "imageHashes": {
+      "docs/images/baize-desktop.png": "01b15505f558f8e5d7ec166bcce083002e2dc545e3e70697a9809cfae5433a0e",
+      "docs/images/baize-mobile.png": "9a224e03cd33cc8cbbdd400e8a93d114a807db6ece0b464f82f97af5ea06cbf6"
+    },
+    "nodeVersion": "v24.21.0",
+    "dependencyVersionChecks": 169
+  },
+  {
+    "package": "baize-standard-node-ready-linux-x64-8e47a2e",
+    "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+    "imageId": "sha256:94f0aad6885fe4550c30d17d41e63015cead9f62eb1b694d34bc9f8e1b013b79",
+    "compiledFileCount": 602,
+    "independentHostMismatches": [],
+    "readmeScreenshotsSameFrozenGit": true,
+    "imageHashes": {
+      "docs/images/baize-desktop.png": "01b15505f558f8e5d7ec166bcce083002e2dc545e3e70697a9809cfae5433a0e",
+      "docs/images/baize-mobile.png": "9a224e03cd33cc8cbbdd400e8a93d114a807db6ece0b464f82f97af5ea06cbf6"
+    },
+    "nodeVersion": "v24.21.0",
+    "dependencyVersionChecks": 169
+  }
+]

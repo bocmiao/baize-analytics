@@ -1,0 +1,13 @@
+{
+  "label": "offline-compose-install",
+  "startedAtUTC": "2026-10-13T13:04:36.750581+00:00",
+  "floorBytesUnchanged": 2147483648,
+  "extraStopReserveBytes": 1073741824,
+  "planningBudgetBytes": 1610612736,
+  "freeBeforeBytes": 5836423168,
+  "minimumSampledFreeBytes": 3114168320,
+  "stoppedByGuard": true,
+  "exitCode": -2,
+  "freeAfterBytes": 3105583104,
+  "finishedAtUTC": "2026-10-13T13:05:20.369240+00:00"
+}

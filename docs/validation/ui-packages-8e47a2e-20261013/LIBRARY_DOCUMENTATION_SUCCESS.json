@@ -1,0 +1,86 @@
+{
+  "results": [
+    {
+      "operation": "create_library_file",
+      "status": "succeeded",
+      "path": "/DELIVERY_MANIFEST.json",
+      "file_id": "file_00000000014c81f88957f005ad434730",
+      "library_file_id": "libfile_060a54fdd840819198adb47b18cac0e8",
+      "file_name": "DELIVERY_MANIFEST.json",
+      "current_version_number": 0,
+      "restored_from_version_number": null,
+      "xattrs": [
+        {
+          "name": "user.library-file-version",
+          "value": "0"
+        }
+      ],
+      "directory_id": "libdir_cb4922d96bc88191b2266ccfd94f70e1",
+      "mime_type": "application/json",
+      "library_artifact_type": "other",
+      "file_size_bytes": 3871
+    },
+    {
+      "operation": "create_library_file",
+      "status": "succeeded",
+      "path": "/SHA256SUMS(1)",
+      "file_id": "file_0000000022c881f5b1696c9c80a0c05c",
+      "library_file_id": "libfile_05f0ddf048108191a8585ac95bf42936",
+      "file_name": "SHA256SUMS(1)",
+      "current_version_number": 0,
+      "restored_from_version_number": null,
+      "xattrs": [
+        {
+          "name": "user.library-file-version",
+          "value": "0"
+        }
+      ],
+      "directory_id": "libdir_cb4922d96bc88191b2266ccfd94f70e1",
+      "mime_type": "text/plain",
+      "library_artifact_type": "other",
+      "file_size_bytes": 682
+    },
+    {
+      "operation": "create_library_file",
+      "status": "succeeded",
+      "path": "/INSTALL_UI_8e47a2e.md",
+      "file_id": "file_000000004ddc81f8a02cc2056b1c0847",
+      "library_file_id": "libfile_8d952ab7e9f88191aab53bc5a3a559a0",
+      "file_name": "INSTALL_UI_8e47a2e.md",
+      "current_version_number": 0,
+      "restored_from_version_number": null,
+      "xattrs": [
+        {
+          "name": "user.library-file-version",
+          "value": "0"
+        }
+      ],
+      "directory_id": "libdir_cb4922d96bc88191b2266ccfd94f70e1",
+      "mime_type": "text/markdown",
+      "library_artifact_type": "other",
+      "file_size_bytes": 14169
+    },
+    {
+      "operation": "create_library_file",
+      "status": "succeeded",
+      "path": "/RELEASE_MATERIALS_UI_8e47a2e.md",
+      "file_id": "file_00000000d284820eb833e8c4027a2e3d",
+      "library_file_id": "libfile_a7067341e9cc819184bbd8922adbcf8d",
+      "file_name": "RELEASE_MATERIALS_UI_8e47a2e.md",
+      "current_version_number": 0,
+      "restored_from_version_number": null,
+      "xattrs": [
+        {
+          "name": "user.library-file-version",
+          "value": "0"
+        }
+      ],
+      "directory_id": "libdir_cb4922d96bc88191b2266ccfd94f70e1",
+      "mime_type": "text/markdown",
+      "library_artifact_type": "other",
+      "file_size_bytes": 1912
+    }
+  ],
+  "warnings": [],
+  "external_connectors_accessed": false
+}

@@ -1,0 +1,13 @@
+{
+  "label": "lite-node-ready",
+  "startedAtUTC": "2026-10-13T12:48:25.610531+00:00",
+  "floorBytesUnchanged": 2147483648,
+  "extraStopReserveBytes": 1073741824,
+  "planningBudgetBytes": 1073741824,
+  "freeBeforeBytes": 6982045696,
+  "minimumSampledFreeBytes": 5973422080,
+  "stoppedByGuard": false,
+  "exitCode": 0,
+  "freeAfterBytes": 6787211264,
+  "finishedAtUTC": "2026-10-13T12:48:45.132323+00:00"
+}

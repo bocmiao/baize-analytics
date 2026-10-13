@@ -1,0 +1,74 @@
+{
+  "checkedAtUTC": "2026-10-13T13:14:23.800048+00:00",
+  "old129d972Untouched": true,
+  "allNewSixArchivesUnchanged": true,
+  "scope": "only four freshly generated sealed expanded runtime directories; no data/keys/volumes/cache",
+  "records": [
+    {
+      "originalExpandedPath": "/workspace/baize-ui-packages-8e47a2e/baize-lite-bundled-node-linux-x64-8e47a2e",
+      "retainedExpandedPath": "/tmp/baize-ui-retained-expanded-8e47a2e/baize-lite-bundled-node-linux-x64-8e47a2e",
+      "archivePath": "/workspace/baize-ui-packages-8e47a2e/baize-lite-bundled-node-linux-x64-8e47a2e.tar.gz",
+      "archiveBytes": 74821436,
+      "archiveSha256": "d930174ff1652c89f4597f593f6501abb364168e444f7425b7de1aef8ab9c037",
+      "sealedInventoryAndModesVerifiedBeforeAndAfter": true,
+      "verification": {
+        "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+        "imageId": "sha256:f1f865d6f8c226175c40cfb2a37182ff1226ece0ba378b095f3534e3e1bf604e",
+        "files": 9299,
+        "directories": 1235
+      },
+      "restoreMethod": "tar --same-permissions -xzf ARCHIVE -C /workspace/baize-ui-packages-8e47a2e; verify-release before reuse",
+      "nativeSmokeReplayNeedsOriginalExpandedPathRestored": true
+    },
+    {
+      "originalExpandedPath": "/workspace/baize-ui-packages-8e47a2e/baize-lite-node-ready-linux-x64-8e47a2e",
+      "retainedExpandedPath": "/tmp/baize-ui-retained-expanded-8e47a2e/baize-lite-node-ready-linux-x64-8e47a2e",
+      "archivePath": "/workspace/baize-ui-packages-8e47a2e/baize-lite-node-ready-linux-x64-8e47a2e.tar.gz",
+      "archiveBytes": 30131071,
+      "archiveSha256": "4643c8af884cfa353ebddfadb8cf8b83375963318e728be9823f25a2cde9e5ad",
+      "sealedInventoryAndModesVerifiedBeforeAndAfter": true,
+      "verification": {
+        "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+        "imageId": "sha256:f1f865d6f8c226175c40cfb2a37182ff1226ece0ba378b095f3534e3e1bf604e",
+        "files": 9294,
+        "directories": 1232
+      },
+      "restoreMethod": "tar --same-permissions -xzf ARCHIVE -C /workspace/baize-ui-packages-8e47a2e; verify-release before reuse",
+      "nativeSmokeReplayNeedsOriginalExpandedPathRestored": true
+    },
+    {
+      "originalExpandedPath": "/workspace/baize-ui-packages-8e47a2e/baize-standard-bundled-node-linux-x64-8e47a2e",
+      "retainedExpandedPath": "/tmp/baize-ui-retained-expanded-8e47a2e/baize-standard-bundled-node-linux-x64-8e47a2e",
+      "archivePath": "/workspace/baize-ui-packages-8e47a2e/baize-standard-bundled-node-linux-x64-8e47a2e.tar.gz",
+      "archiveBytes": 84421386,
+      "archiveSha256": "604d50544d3db28c590071c7fd51886ead8454f66d36eec0eb5b57f153530aad",
+      "sealedInventoryAndModesVerifiedBeforeAndAfter": true,
+      "verification": {
+        "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+        "imageId": "sha256:94f0aad6885fe4550c30d17d41e63015cead9f62eb1b694d34bc9f8e1b013b79",
+        "files": 9341,
+        "directories": 1246
+      },
+      "restoreMethod": "tar --same-permissions -xzf ARCHIVE -C /workspace/baize-ui-packages-8e47a2e; verify-release before reuse",
+      "nativeSmokeReplayNeedsOriginalExpandedPathRestored": true
+    },
+    {
+      "originalExpandedPath": "/workspace/baize-ui-packages-8e47a2e/baize-standard-node-ready-linux-x64-8e47a2e",
+      "retainedExpandedPath": "/tmp/baize-ui-retained-expanded-8e47a2e/baize-standard-node-ready-linux-x64-8e47a2e",
+      "archivePath": "/workspace/baize-ui-packages-8e47a2e/baize-standard-node-ready-linux-x64-8e47a2e.tar.gz",
+      "archiveBytes": 39728040,
+      "archiveSha256": "529aa9a1e326d75e8d4a24723cd2eb18b39d5304dc6d225c3b600b74d4758146",
+      "sealedInventoryAndModesVerifiedBeforeAndAfter": true,
+      "verification": {
+        "revision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+        "imageId": "sha256:94f0aad6885fe4550c30d17d41e63015cead9f62eb1b694d34bc9f8e1b013b79",
+        "files": 9336,
+        "directories": 1243
+      },
+      "restoreMethod": "tar --same-permissions -xzf ARCHIVE -C /workspace/baize-ui-packages-8e47a2e; verify-release before reuse",
+      "nativeSmokeReplayNeedsOriginalExpandedPathRestored": true
+    }
+  ],
+  "freeAfterBytes": 4003479552,
+  "tmpFreeBytes": 8473772032
+}

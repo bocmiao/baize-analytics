@@ -1,0 +1,51 @@
+{
+  "pinnedImage": "clickhouse/clickhouse-server:25.8-alpine@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146",
+  "platform": "linux/amd64",
+  "layers": [
+    {
+      "layer": {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:55afa1ecc21d2bb5e5045f32dafee56272ffd89860bac26f6c32123439af26a4",
+        "size": 3846391
+      },
+      "actualSha256": "55afa1ecc21d2bb5e5045f32dafee56272ffd89860bac26f6c32123439af26a4",
+      "extractedWhitelistFiles": []
+    },
+    {
+      "layer": {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:1beb758f63bf1a4e0e4099f8431fea4efa7eb17bc0cd7a2bda5adcf1d9f6be85",
+        "size": 1651053
+      },
+      "actualSha256": "1beb758f63bf1a4e0e4099f8431fea4efa7eb17bc0cd7a2bda5adcf1d9f6be85",
+      "extractedWhitelistFiles": []
+    },
+    {
+      "layer": {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:472b5d1c319ed8b3b4c3b3a4806de1caeb8516b73aca830f47e213e5e44b70bb",
+        "size": 194204709
+      },
+      "actualSha256": "472b5d1c319ed8b3b4c3b3a4806de1caeb8516b73aca830f47e213e5e44b70bb",
+      "extractedWhitelistFiles": [
+        {
+          "path": "etc/clickhouse-server/config.xml",
+          "bytes": 90075,
+          "sha256": "44bac6673d07b48bfc1d431cac3f1f8dbd11ebc1fa72834fbee4d7a03460b208"
+        },
+        {
+          "path": "etc/clickhouse-server/users.xml",
+          "bytes": 5724,
+          "sha256": "1059ce402d328bff83706f9ab91646fab9f7cb67f3a1bab8abc146011012c7bc"
+        },
+        {
+          "path": "usr/bin/clickhouse",
+          "bytes": 699318736,
+          "sha256": "6a96266c0f00897225f9bb2ab0f965111298da75d7ec1b67465c6c9d5cf5ae81"
+        }
+      ]
+    }
+  ],
+  "workspaceFreeBytes": 4002947072,
+  "tmpFreeBytes": 7568969728
+}

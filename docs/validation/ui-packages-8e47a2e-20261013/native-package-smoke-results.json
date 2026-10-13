@@ -1,0 +1,84 @@
+[
+  {
+    "name": "baize-standard-node-ready-linux-x64-8e47a2e",
+    "profile": "standard",
+    "variant": "node-ready",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "cache": "disabled",
+      "geoip": "unknown",
+      "schemaVersion": 1
+    },
+    "actualShellStartup": true,
+    "nonceClaimAndOwnerCookie": true,
+    "actualFrontendHtml": true,
+    "actualShellBackupRestore": true,
+    "restoredOwnerCount": 1,
+    "restoredSetupBlocked": true,
+    "trafficSwitched": false
+  },
+  {
+    "name": "baize-standard-bundled-node-linux-x64-8e47a2e",
+    "profile": "standard",
+    "variant": "bundled-node",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "cache": "disabled",
+      "geoip": "unknown",
+      "schemaVersion": 1
+    },
+    "actualShellStartup": true,
+    "nonceClaimAndOwnerCookie": true,
+    "actualFrontendHtml": true,
+    "actualShellBackupRestore": true,
+    "restoredOwnerCount": 1,
+    "restoredSetupBlocked": true,
+    "trafficSwitched": false
+  },
+  {
+    "name": "baize-lite-node-ready-linux-x64-8e47a2e",
+    "profile": "lite",
+    "variant": "node-ready",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "storage": "sqlite",
+      "cache": "disabled",
+      "geoip": "unavailable",
+      "schemaVersion": 2,
+      "sqliteVersion": "3.53.3",
+      "sourceId": "2026-06-26 20:14:12 d4c0e51e4aeb96955b99185ab9cde75c339e2c29c3f3f12428d364a10d782c62"
+    },
+    "actualShellStartup": true,
+    "nonceClaimAndOwnerCookie": true,
+    "actualFrontendHtml": true,
+    "actualShellBackupRestore": true,
+    "restoredOwnerCount": 1,
+    "restoredSetupBlocked": true,
+    "trafficSwitched": false
+  },
+  {
+    "name": "baize-lite-bundled-node-linux-x64-8e47a2e",
+    "profile": "lite",
+    "variant": "bundled-node",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "storage": "sqlite",
+      "cache": "disabled",
+      "geoip": "unavailable",
+      "schemaVersion": 2,
+      "sqliteVersion": "3.53.4",
+      "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    },
+    "actualShellStartup": true,
+    "nonceClaimAndOwnerCookie": true,
+    "actualFrontendHtml": true,
+    "actualShellBackupRestore": true,
+    "restoredOwnerCount": 1,
+    "restoredSetupBlocked": true,
+    "trafficSwitched": false
+  }
+]

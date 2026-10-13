@@ -1,0 +1,13 @@
+{
+  "label": "lite-offline-resume-after-helper-completion",
+  "startedAtUTC": "2026-10-13T13:22:42.270409+00:00",
+  "floorBytesUnchanged": 2147483648,
+  "extraStopReserveBytes": 1073741824,
+  "planningBudgetBytes": 1073741824,
+  "freeBeforeBytes": 4817166336,
+  "minimumSampledFreeBytes": 4002926592,
+  "stoppedByGuard": false,
+  "exitCode": 0,
+  "freeAfterBytes": 4003012608,
+  "finishedAtUTC": "2026-10-13T13:23:09.836728+00:00"
+}

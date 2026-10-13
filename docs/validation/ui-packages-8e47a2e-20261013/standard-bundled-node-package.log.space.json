@@ -1,0 +1,13 @@
+{
+  "label": "standard-bundled-node",
+  "startedAtUTC": "2026-10-13T12:47:57.526514+00:00",
+  "floorBytesUnchanged": 2147483648,
+  "extraStopReserveBytes": 1073741824,
+  "planningBudgetBytes": 1073741824,
+  "freeBeforeBytes": 7381749760,
+  "minimumSampledFreeBytes": 6109188096,
+  "stoppedByGuard": false,
+  "exitCode": 0,
+  "freeAfterBytes": 6982049792,
+  "finishedAtUTC": "2026-10-13T12:48:25.562217+00:00"
+}

@@ -1,0 +1,1836 @@
+{
+  "sourceRevision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+  "registeredSkippedCases": 285,
+  "files": 94,
+  "missingClickHouseCases": 285,
+  "existingUnconditionalOrFalseFeatureFlagCases": 0,
+  "conditionsAreExistingButSkipCauseIsThisEnvironment": true,
+  "clickhouseURLWasUnset": true,
+  "postgresRedisConfigured": true,
+  "canonicalActivationReady": true,
+  "uncollectedFiles": [
+    {
+      "file": "/workspace/baize-analytics/tests/integration/canonical-backup.test.ts",
+      "message": "Invalid URL",
+      "assertionsCollected": 0
+    },
+    {
+      "file": "/workspace/baize-analytics/tests/integration/canonical-replay-retention-proof.test.ts",
+      "message": "Invalid URL",
+      "assertionsCollected": 0
+    },
+    {
+      "file": "/workspace/baize-analytics/tests/integration/restore-replica.test.ts",
+      "message": "Invalid URL",
+      "assertionsCollected": 0
+    },
+    {
+      "file": "/workspace/baize-analytics/tests/integration/stats-replica-budget.test.ts",
+      "message": "Invalid URL",
+      "assertionsCollected": 0
+    }
+  ],
+  "collectionFailureExplanation": "Vitest skipIf still executes describe callbacks during collection; callbacks instantiate stores/new URL with undefined CLICKHOUSE_TEST_URL before skipped cases register. No fake URL injected.",
+  "records": [
+    {
+      "file": "tests/integration/ai-fact-source.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "AI typed tools read real worker facts from CH after PG effect removal, never fake empty coverage"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('AI typed tools read real worker facts from CH after PG effect removal, never fake empty coverage',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/cache-body-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "cache signed sidecar with exact canonical batch coverage preserves covered and uncovered strata in independent target with no mixed batch or double count"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('cache signed sidecar with exact canonical batch coverage',()=>{it('preserves covered and uncovered strata in independent target with no mixed batch or double count',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/cache-centroid-rebuild.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real two-visitor CH samples rebuild invalidated centroids after exact deletion, without PG digest fallback"
+      ],
+      "guardExpressions": [
+        {
+          "line": 22,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('real two-visitor CH samples rebuild invalidated centroids after exact deletion, without PG digest fallback',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/cache-store.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "sealed legacy caches actual PG CH preserves per-bucket historical values, weighted centroid and typed heatmap without permanent PG bodies, fails closed and physically invalidates",
+        "isolated sealed cache restore preserves original producer seals across target epoch/namespace and rejects forged contents before writes",
+        "cache maintenance durable transport failure uses max-one pool, records exponential retry and recovers after actual TCP refusal"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('sealed legacy caches actual PG CH',()=>{"
+        },
+        {
+          "line": 28,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('isolated sealed cache restore',()=>{"
+        },
+        {
+          "line": 45,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('cache maintenance durable transport failure',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-authority-flow.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "production native HTTP canonical authority: setup → verified cutover → raw prune → collection/AI/delete/cold failure uses actual HTTP administrative operations and committed CH bodies without manually assigning authority"
+      ],
+      "guardExpressions": [
+        {
+          "line": 19,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('production native HTTP canonical authority: setup → verified cutover → raw prune → collection/AI/delete/cold failure',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 36,
+          "source": "const configured=await http(`/api/sites/${site}/external`,{kind:'ai',secret:'SIMULATED-KEY',settings:{enabled:true,endpoint:'https://canonical-model.example.invalid/v1',model:'fixture',monthlyTokenBudget:1000000,maxTokens:1024}},'PUT');expect(configured.status,configured.text).toBe(200);const question=await http(`/api/sites/${site}/ai`,{purpose:'question',question:'实际PV?',start:day,end:day});expect(question.status,question.text).toBe(200);expect(question.json().questionEvidence.charts[0].points).toEqual([{label:day,value:4}]);expect(modelCalls).toBe(2);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-clickhouse.test.ts",
+      "skippedCount": 6,
+      "cases": [
+        "canonical batch independent real PG CH PG rollback leaves invisible CH orphan; later committed batch exposes exactly one copy; retry conflict rejects",
+        "canonical batch independent real PG CH common read/client and source stream prefer authority, globally order and filter exact fields",
+        "canonical batch independent real PG CH explicit epoch fence and CH unavailable never return successful empty PG fallback",
+        "canonical batch independent real PG CH shadow batches persist body checksum and late older arrivals are not lost behind a cursor",
+        "canonical batch independent real PG CH activation and pruning fail closed until all mandatory integrations are verified",
+        "canonical batch independent real PG CH fsync barrier precedes physical deletion; exact A interval preserves B and verifies rows"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('canonical batch independent real PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-daily-authority-flow.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "daily-salt actual native canonical lifecycle with controlled collector proofs actual controlled daily cutover, CH-only collection, precise day deletion and unavailable-source rollback",
+        "daily-salt actual native canonical lifecycle with controlled collector proofs same actual flow including production startup body replacement and exact replacement proof lineage",
+        "daily-salt actual native canonical lifecycle with controlled collector proofs startup body replacement recovers durable CH ACK after actual PG proof rollback"
+      ],
+      "guardExpressions": [
+        {
+          "line": 20,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('daily-salt actual native canonical lifecycle with controlled collector proofs',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-daily-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "proved daily backup to an independent real CH target verifies source shadow, survives raw pruning, imports seals and sanitizes target before commit without changing source"
+      ],
+      "guardExpressions": [
+        {
+          "line": 20,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('proved daily backup to an independent real CH target',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-deletion.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "application deletion with real canonical PG CH fsynced application journal deletes A without mirror-all or loss of B; replay remains exact and missing adapter fails closed"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('application deletion with real canonical PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-heatmap.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "canonical heatmap bounded base and committed raw delta keeps expired legacy counts, adds late/new coordinates once, rejects unavailable evidence and never borrows the locked pool"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('canonical heatmap bounded base and committed raw delta',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-identity.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "immutable canonical body and temporal identity ledger real PG CH delayed identifies project event-time A/B without changing immutable body or requiring PG events",
+        "immutable canonical body and temporal identity ledger real PG CH requires physical ACK before identity proof purge; precise A deletion retains B body/identity/contribution",
+        "immutable canonical body and temporal identity ledger real PG CH daily-salt projection always strips any original or ledger user_id; wrongsite/batchlimit rejected"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('immutable canonical body and temporal identity ledger real PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-ingest.test.ts",
+      "skippedCount": 4,
+      "cases": [
+        "canonical ingestion staged real PG CH, activation closed default PG collection unchanged, canonical authority refuses202 while integration unready",
+        "canonical ingestion staged real PG CH, activation closed CH unavailable rolls back keys/outbox/manifest, never key-only reliable ACK",
+        "canonical ingestion staged real PG CH, activation closed post-body PG rollback leaves invisible orphan; committed metadata reads actual CH body with PG body absent",
+        "canonical ingestion staged real PG CH, activation closed direct canonical daily producer stores column proof without PG body, unknown and changed columns fail closed"
+      ],
+      "guardExpressions": [
+        {
+          "line": 15,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('canonical ingestion staged real PG CH, activation closed',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-new-revenue.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "canonical new revenue: accepted-event metadata ownership accepts new CH revenue without PG raw and preserves currency/order receipt conflicts"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('canonical new revenue: accepted-event metadata ownership',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-operations-api.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "explicit canonical operator API real PG/CH max1 requires admin and strict explicit action, preserves PG body when accepted intake makes cutover validation stale"
+      ],
+      "guardExpressions": [
+        {
+          "line": 11,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('explicit canonical operator API real PG/CH max1',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-privacy-cleanup.test.ts",
+      "skippedCount": 5,
+      "cases": [
+        "daily privacy immutable cleanup real PG CH max1 physically removes known aliases, preserves safe business data and original retry hash, recovers orphan after ACK rollback and records verified policy",
+        "daily privacy immutable cleanup real PG CH max1 removes forbidden daily identify and replay body content without erasing unrelated safe traffic",
+        "daily privacy immutable cleanup real PG CH max1 refuses unknown single-day source despite an earlier privacy-only completion marker",
+        "daily privacy immutable cleanup real PG CH max1 refuses unreconstructable cross-day visitor columns before any body is touched",
+        "daily privacy immutable cleanup real PG CH max1 preserves original proof and authenticates the replacement first-event carry anchor, rejecting arbitrary transforms and tampered original bodies"
+      ],
+      "guardExpressions": [
+        {
+          "line": 14,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('daily privacy immutable cleanup real PG CH max1',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-raw-backup-readiness.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "raw prune requires actual signed current raw backup and rejects forged, damaged and new-arrival uncovered proof"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('raw prune requires actual signed current raw backup and rejects forged, damaged and new-arrival uncovered proof',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-read-snapshot.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "waits for committed deletion before RR and preserves empty authoritative read/export metadata with max-one pool"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('waits for committed deletion before RR and preserves empty authoritative read/export metadata with max-one pool',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-replay-collect.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "actual canonical masked replay collector preserves durable receipts, sequence identity and physical retention/deletion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 18,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('actual canonical masked replay collector preserves durable receipts, sequence identity and physical retention/deletion',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-replay-deletion.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "application deletion with real canonical PG CH replaces a mixed chunk immutably, physically erases A records and old copies while retaining B metadata and verified body",
+        "application deletion with real canonical PG CH recovers verified replacement orphan after physical ACK followed by PG rollback, then journal replay cannot resurrect A",
+        "application deletion with real canonical PG CH replays the newest independent journal against an old CH body and old metadata snapshot without resurrecting A or losing B"
+      ],
+      "guardExpressions": [
+        {
+          "line": 14,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('application deletion with real canonical PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-replay-history-retention.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "live PG-authority historical replay retention with real PG CH covers PG-only raw-history and active canonical sites with v2 proof, keeps seven-day authorization after90-day policy and physically retains newer record/derived facts",
+        "live PG-authority historical replay retention with real PG CH retries a real history physicalACK followed by rollback while preserving mixed newer records",
+        "live PG-authority historical replay retention with real PG CH retains the authorization scope even after current raw manifests disappear, protecting old backup replay"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('live PG-authority historical replay retention with real PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-replay-retention.test.ts",
+      "skippedCount": 5,
+      "cases": [
+        "physical replay retention with real canonical PG CH uses 30 days rather than longer site policy, physically replaces mixed old/new records and keeps new records",
+        "physical replay retention with real canonical PG CH honours a shorter site policy through the actual maintenance runner with max1 pool",
+        "physical replay retention with real canonical PG CH keeps retry pointer after physical ACK then PG rollback and recovers immutable replacement on retry",
+        "physical replay retention with real canonical PG CH persists bounded retry backoff and monotonic authorization despite policy lengthening",
+        "physical replay retention with real canonical PG CH physically removes a fully expired chunk and its committed index/member"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('physical replay retention with real canonical PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-retention.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "application deletion with real canonical PG CH expires only site-local old canonical rows and orphans after physical ACK, retaining boundary rows, keys, live outbox and tombstones",
+        "application deletion with real canonical PG CH keeps independent column proofs through physical ACK plus PG rollback, then removes only expired proof on retry"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('application deletion with real canonical PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-revenue-receipt.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "production native HTTP canonical authority: setup → verified cutover → raw prune → revenue alias physical receipt rejects new-event order duplicates when original canonical body is missing or CH unreadable"
+      ],
+      "guardExpressions": [
+        {
+          "line": 15,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('production native HTTP canonical authority: setup → verified cutover → raw prune → revenue alias physical receipt',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-shadow-provenance.test.ts",
+      "skippedCount": 5,
+      "cases": [
+        "controlled PG provenance and real CH shadow preconditions proves two daily scopes from memory-only inputs, publishes verified actual CH bodies and preserves proof through timezone changes",
+        "controlled PG provenance and real CH shadow preconditions verifies portable column proof after raw/key pruning and immutable CH body/ID replacement, rejecting changed columns and unproven single-day rows",
+        "controlled PG provenance and real CH shadow preconditions rejects unknown legacy, forged proofs, body/column mutation and guessed daily derivation",
+        "controlled PG provenance and real CH shadow preconditions fails closed when an old PG replay chunk has no retained raw source",
+        "controlled PG provenance and real CH shadow preconditions backfills only body-matched masked legacy replay and keeps missing first sequence explicit"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('controlled PG provenance and real CH shadow preconditions',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-shadow-validation.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "shadow verification actual PG/CH max1 checks body against committed PG, repairs identity rewrite, then records exact fenced validation",
+        "shadow verification actual PG/CH max1 does not let an uncommitted same-hash orphan authorize verification; shadow repairs the missing committed attempt",
+        "shadow verification actual PG/CH max1 removes expired shadow bodies with physical acknowledgement before accepting an empty verified snapshot"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('shadow verification actual PG/CH max1',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-site-export.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "canonical site export same-client EAV exports committed properties after PG raw absence using a max-one pool transaction",
+        "canonical site export same-client EAV honours exact identity deletion segments and fails without the authority registry"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('canonical site export same-client EAV',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/canonical-startup-privacy.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "canonical privacy startup real app PG/CH max1 boots without erasing authoritative raw, removes known aliases physically and stays valid on restart"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('canonical privacy startup real app PG/CH max1',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/clickhouse-app.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "full application ClickHouse startup and upgraded privacy barrier wires actual authenticated selection and preserves a standard-mode replica across app restarts",
+        "full application ClickHouse startup and upgraded privacy barrier fails closed on upgraded privacy replica cleanup errors, then removes expired legacy aliases before queries reopen"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!configured)('full application ClickHouse startup and upgraded privacy barrier',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 12,
+          "source": "const configured=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/clickhouse-incremental.test.ts",
+      "skippedCount": 7,
+      "cases": [
+        "actual incremental ClickHouse publication and continuous-write hybrid reads streams bootstrap then uploads only deltas and returns exact hybrid results during real continuing collection",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads forces a streamed rebuild for event-time identity rewrites and keeps direct paid typed fields intact",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads pins PG tail during actual continuing writes without falling back and rejects a deletion epoch changed mid-read",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads deletes behind an in-flight append barrier without reviving a deleted visitor and preserves other PG visitors",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads invalidates incremental pointers and physically erases retained-out rows even in postgres read mode",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads keeps partial physical bootstrap invisible, retries safely and durably cleans failed generations",
+        "actual incremental ClickHouse publication and continuous-write hybrid reads publishes incremental source and reads a consistent hybrid tail with a single-connection pool"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "describe.skipIf(!enabled)('actual incremental ClickHouse publication and continuous-write hybrid reads',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 15,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/clickhouse-select-budget.test.ts",
+      "skippedCount": 4,
+      "cases": [
+        "real ClickHouse explicit SELECT execution limit supports fractional execution deadline with throw, never a successful partial JSON result",
+        "real ClickHouse explicit SELECT execution limit HTTP 200 streaming response followed by execution error is rejected at complete body, not acknowledged",
+        "real ClickHouse explicit SELECT execution limit real SELECT adapters reject HTTP200 JSON and JSONEachRow execution exceptions with a safe code",
+        "real ClickHouse explicit SELECT execution limit explicit SELECT settings do not enter INSERT/ALTER DELETE; actual synchronous deletion and unknown-write response checks remain"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('real ClickHouse explicit SELECT execution limit',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/clickhouse.test.ts",
+      "skippedCount": 16,
+      "cases": [
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch mirrors the full sanitized collector schema, preserves retry idempotency, and switches actual content/geo/filtered stats reads",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch publishes captured high-watermarks during sustained collection and explicitly falls back until fresh",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch uses bounded equivalent PG and CH filters with explicit truncation and typed-array bindings",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch switches real realtime, typed attributes and temporal identity view/path endpoints while streaming workers retain PG RR",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch takes exclusive claims, recovers expired leases, and rejects a pre-restore epoch pointer",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch stops a lost lease before uploading any rows and preserves the prior published pointer",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch blocks deletion behind an in-flight upload, then removes old snapshots before ACK and never republishes them",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps a failed deletion journal durable, fails the ACK, and recovers through a real replica restore barrier",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch falls back on transport failure, replica loss and a generation change during the actual CH read",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch persists bounded retry/DLQ without affecting collection, then administrator replay recovers actual CH writes",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch reliably removes old published and failed snapshots, retries cleanup, and never deletes the current pointer",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch enforces per-site retained event deletion in every snapshot even after switching back to PostgreSQL",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch fails safely when the bounded PG snapshot budget is exceeded, without publishing a partial replica",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch invalidates real Redis metadata on mode/replay and separates newly published snapshot cache keys",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps a durable mode change and its audit successful when Redis invalidation fails",
+        "reliable full-schema PostgreSQL → real ClickHouse mirror and query switch keeps PostgreSQL RR worker snapshots authoritative and preserves root metadata/deletion locks"
+      ],
+      "guardExpressions": [
+        {
+          "line": 19,
+          "source": "describe.skipIf(!enabled)('reliable full-schema PostgreSQL → real ClickHouse mirror and query switch', () => {"
+        },
+        {
+          "line": 145,
+          "source": "it.skipIf(!process.env.REDIS_URL)('invalidates real Redis metadata on mode/replay and separates newly published snapshot cache keys', async () => site(async id => {"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 18,
+          "source": "const enabled = Boolean(process.env.TEST_DATABASE_URL && process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/cutover-receipt.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "first-authority transition exact archived-owner receipt binds verified CH shadow to old PG head and surviving V1 archive, rejects mutation, stale state and deletion advancement"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('first-authority transition exact archived-owner receipt',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/cutover-worker.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "first rebuilding worker consumes the real processed PG head through a verified cutover receipt"
+      ],
+      "guardExpressions": [
+        {
+          "line": 18,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('first rebuilding worker consumes the real processed PG head through a verified cutover receipt',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/deletion-authorization.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "47 recovery authorization binds real fsynced journal scope and refuses invented records or serialized current tokens"
+      ],
+      "guardExpressions": [
+        {
+          "line": 5,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('47 recovery authorization binds real fsynced journal scope and refuses invented records or serialized current tokens',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/deletion-same-transaction.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "restore journal replay shares max-one target transaction and rejects invented scopes"
+      ],
+      "guardExpressions": [
+        {
+          "line": 4,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('restore journal replay shares max-one target transaction and rejects invented scopes',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/durable-inbox-canonical-publisher.test.ts",
+      "skippedCount": 18,
+      "cases": [
+        "real canonical publisher site_gate prepared standard rows publish through real CH readback and same PG commit without rehashing identity",
+        "real canonical publisher site_gate CH ACK followed by inbox PG failure leaves invisible orphan; fresh retry authenticates only committed attempt",
+        "real canonical publisher site_gate event-time deletion fences an old claim before CH and preserves the later prepared row",
+        "real canonical publisher site_gate real published event-time A deletion ACK removes CH/PG/inbox positives while B survives and the pending old A claim is fenced",
+        "real canonical publisher site_gate CH physical ACK followed by PG deletion rollback is not ACK; missing A fails closed until controlled deletion retry",
+        "real canonical publisher site_gate same-client duplicate prepared event key verifies durable CH body and never writes a second attempt",
+        "real canonical publisher site_gate a prepared retry key with missing actual CH body cannot publish or ACK",
+        "real canonical publisher independent prepared standard rows publish through real CH readback and same PG commit without rehashing identity",
+        "real canonical publisher independent CH ACK followed by inbox PG failure leaves invisible orphan; fresh retry authenticates only committed attempt",
+        "real canonical publisher independent event-time deletion fences an old claim before CH and preserves the later prepared row",
+        "real canonical publisher independent real published event-time A deletion ACK removes CH/PG/inbox positives while B survives and the pending old A claim is fenced",
+        "real canonical publisher independent CH physical ACK followed by PG deletion rollback is not ACK; missing A fails closed until controlled deletion retry",
+        "real canonical publisher independent same-client duplicate prepared event key verifies durable CH body and never writes a second attempt",
+        "real canonical publisher independent a prepared retry key with missing actual CH body cannot publish or ACK",
+        "combined same-client cycle publishes real CH receipts without a second pool checkout",
+        "combined real CH ACK then PG failure preserves durable attempt but rolls back publication; retry orphan stays invisible",
+        "combined cycle keeps precise real CH A deletion, B contribution and old retry negative",
+        "combined prepared retry cannot ACK actual CH body loss and rolls back its inbox transaction"
+      ],
+      "guardExpressions": [
+        {
+          "line": 29,
+          "source": "it.skipIf(!enabled)('prepared standard rows publish through real CH readback and same PG commit without rehashing identity',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 32,
+          "source": "it.skipIf(!enabled)('CH ACK followed by inbox PG failure leaves invisible orphan; fresh retry authenticates only committed attempt',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 35,
+          "source": "it.skipIf(!enabled)('event-time deletion fences an old claim before CH and preserves the later prepared row',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 39,
+          "source": "it.skipIf(!enabled)('real published event-time A deletion ACK removes CH/PG/inbox positives while B survives and the pending old A claim is fenced',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 42,
+          "source": "it.skipIf(!enabled)('CH physical ACK followed by PG deletion rollback is not ACK; missing A fails closed until controlled deletion retry',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 45,
+          "source": "it.skipIf(!enabled)('same-client duplicate prepared event key verifies durable CH body and never writes a second attempt',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 48,
+          "source": "it.skipIf(!enabled)('a prepared retry key with missing actual CH body cannot publish or ACK',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 54,
+          "source": "it.skipIf(!enabled)('combined same-client cycle publishes real CH receipts without a second pool checkout',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 57,
+          "source": "it.skipIf(!enabled)('combined real CH ACK then PG failure preserves durable attempt but rolls back publication; retry orphan stays invisible',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 60,
+          "source": "it.skipIf(!enabled)('combined cycle keeps precise real CH A deletion, B contribution and old retry negative',async()=>fixture(async f=>{"
+        },
+        {
+          "line": 63,
+          "source": "it.skipIf(!enabled)('combined prepared retry cannot ACK actual CH body loss and rolls back its inbox transaction',async()=>fixture(async f=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 21,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-backup-v1-upgrade.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "authentic pre055 v1 signed package survives schema upgrade, isolated restore recomputes hints, and authentic v2/v3 profiles retain distinct signed metadata"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('authentic pre055 v1 signed package survives schema upgrade, isolated restore recomputes hints, and authentic v2/v3 profiles retain distinct signed metadata',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-body-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "sealed fact backup actual PG CH restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('sealed fact backup actual PG CH',()=>{it('restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-closure-pruned-owner.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "selected sealed pruned owner and fresh PG closure migration (real PG CH) authenticates unchanged old sealed kinds while backfilling the new PG run with exact original rows",
+        "selected sealed pruned owner and fresh PG closure migration (real PG CH) does not exempt a nonempty mismatched PG oracle even when its CH marker is complete",
+        "selected sealed pruned owner and fresh PG closure migration (real PG CH) fails closed when the already-pruned owner retains receipts but its real CH body is missing"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('selected sealed pruned owner and fresh PG closure migration (real PG CH)',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-coverage-selected-runs.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "single-closure selected-run SQL reuse real PG CH oracle preserves every digest byte/count and empty retired owner with real pruned sealed facts, including timezone restoration",
+        "single-closure selected-run SQL reuse real PG CH oracle recomputes after owner mutations instead of reusing a prior capture closure",
+        "single-closure selected-run SQL reuse real PG CH oracle retains original invalid-owner rejection and cleans failed scopes without pool reuse leakage"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('single-closure selected-run SQL reuse real PG CH oracle',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-deletion-api.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "044 actual deletion and changedfalse journal derived fact erasure physically erases A effects after failure/recovery and preserves B receipts, body and proof"
+      ],
+      "guardExpressions": [
+        {
+          "line": 14,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('044 actual deletion and changedfalse journal derived fact erasure',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-identity-elision.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "authenticated CH identity staging elision actual PG CH preserves complete CH multi-effects/vitals, exact path filters and identity time deletion",
+        "authenticated CH identity staging elision actual PG CH preserves CH effects to legacy PG vital identity ownership and missing-owner rejection"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('authenticated CH identity staging elision actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-publication-pipeline.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "bounded fact publication authenticates real CH batches and leaves rollback attempts invisible"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('bounded fact publication authenticates real CH batches and leaves rollback attempts invisible',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-response-budget.test.ts",
+      "skippedCount": 9,
+      "cases": [
+        "bounded signed response hints actual PG CH preserves twelve hinted manifests and mixed-kind tail with exact A deletion/B fences",
+        "bounded signed response hints actual PG CH default writer near-32KiB Unicode authenticates all twelve attempts in one bounded request",
+        "bounded signed response hints actual PG CH a physically missing twelfth committed attempt fails the whole first group before any yield",
+        "bounded signed response hints actual PG CH legacy NULL hints retain three-attempt groups without inferred response budgets",
+        "bounded signed response hints actual PG CH rejects a tampered hint seal before transport without returning data",
+        "bounded signed response hints actual PG CH rejects an authenticated underestimated response bound without splitting or retrying",
+        "bounded signed response hints actual PG CH refuses 16MiB overflow and cancels once without a retry or early yield",
+        "bounded signed response hints actual PG CH rejects a 101-row same-attempt sentinel before any authenticated group yield",
+        "bounded signed response hints actual PG CH keeps cumulative SELECT budget typed failure and the same max-one connection reusable"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('bounded signed response hints actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-source-batch-cte.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "same-batch CH fact TEMP CTE with actual PG CH dedupes repeated event identities without dropping effects and preserves exact tombstone filtering"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('same-batch CH fact TEMP CTE with actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-store-source.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "bounded transaction-local fact source with actual PG CH manifest reuse=false unions CH effects and zero-kind receipts, filters identities and enforces current source",
+        "bounded transaction-local fact source with actual PG CH manifest reuse=true unions CH effects and zero-kind receipts, filters identities and enforces current source"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('bounded transaction-local fact source with actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-store-worker.test.ts",
+      "skippedCount": 2,
+      "cases": [
+        "manifest reuse=false production worker exact queries survive PG body removal and physical partial deletion",
+        "manifest reuse=true production worker exact queries survive PG body removal and physical partial deletion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 17,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL).each([false,true])('manifest reuse=%s production worker exact queries survive PG body removal and physical partial deletion',async validationManifestReuse=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-store.test.ts",
+      "skippedCount": 12,
+      "cases": [
+        "derived facts durable actual PG CH verified CH upload with PG rollback stays invisible; fresh exact attempts commit and publish bounded batches",
+        "derived facts durable actual PG CH typed fresh bulk receipts preserve real PK/FK failures and refuse trigger-shortened inserts without altering verified CH visibility",
+        "derived facts durable actual PG CH reads two committed attempts in one bounded request and fails closed on interrupted response EOF",
+        "derived facts durable actual PG CH default producer near-32KiB Unicode records authenticate unchanged through pair encoding",
+        "derived facts durable actual PG CH bounded orphan sweep removes rollback attempts while preserving committed same-run bodies",
+        "derived facts durable actual PG CH maintenance persists safe failure and exponential backoff then recovers using one held client",
+        "derived facts durable actual PG CH producer seal rejects altered bodies and restore authenticates before remapping",
+        "derived facts durable actual PG CH isolated published restore preserves authenticated provenance and validates positive vital ownership",
+        "derived facts durable actual PG CH stale source epoch and unavailable committed body fail closed without PG fallback",
+        "derived facts durable actual PG CH published PG backfill compares exact original rows and physical completeness without restore permission",
+        "derived facts durable actual PG CH fresh independent RC callback rejects epoch change after CH upload without borrowing the held max-one pool",
+        "derived facts durable actual PG CH exact physical deletion removes rollback orphans and one interval, then rebases surviving receipts without resigning source"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('derived facts durable actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-triple-read.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "bounded triple committed fact transport actual PG CH preserves >3 same-kind manifests, mixed-kind tail and exact A removal/B source fences",
+        "bounded triple committed fact transport actual PG CH default writer near-32KiB Unicode authenticates all three legacy attempts in one request",
+        "bounded triple committed fact transport actual PG CH a physically missing third committed attempt fails the whole first group before any yield"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('bounded triple committed fact transport actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/fact-validation-manifest.test.ts",
+      "skippedCount": 16,
+      "cases": [
+        "versioned publication validation manifest actual PG CH on/off records and exact aggregate inputs agree and every normal batch carries a valid certificate",
+        "versioned publication validation manifest actual PG CH legacy NULL/NULL uses original full validation and current source fence remains mandatory",
+        "versioned publication validation manifest actual PG CH changed full PG tuples with a recomputed checksum cannot authenticate a forged CH body",
+        "versioned publication validation manifest actual PG CH wrong immutable context and a missing member are rejected before yielding",
+        "versioned publication validation manifest actual PG CH a valid certificate never hides a physically missing B body",
+        "versioned publication validation manifest actual PG CH CH ACK followed by PG rollback leaves no committed receipt whitelist for the orphan attempt",
+        "versioned publication validation manifest actual PG CH authenticated A deletion signs only surviving B tuples and authenticates the empty final batch",
+        "versioned publication validation manifest actual PG CH invalid old full metadata is rejected before any deletion mutation even when deleting a different member",
+        "versioned publication validation manifest actual PG CH restore verifies original row HMAC before fresh target certification and preserves source provenance",
+        "versioned publication validation manifest actual PG CH real response same_count_duplicate fails before any certified batch is yielded",
+        "versioned publication validation manifest actual PG CH real response extra fails before any certified batch is yielded",
+        "versioned publication validation manifest actual PG CH real response whole_batch_omitted fails before any certified batch is yielded",
+        "versioned publication validation manifest actual PG CH bad signatures cannot downgrade into the full reader when reuse is disabled",
+        "versioned publication validation manifest actual PG CH after_insert rollback leaves an orphan attempt unselectable and same-event retry publishes exactly once",
+        "versioned publication validation manifest actual PG CH after_readback rollback leaves an orphan attempt unselectable and same-event retry publishes exactly once",
+        "versioned publication validation manifest actual PG CH after_sign rollback leaves an orphan attempt unselectable and same-event retry publishes exactly once"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('versioned publication validation manifest actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/governance-canonical.test.ts",
+      "skippedCount": 7,
+      "cases": [
+        "governance canonical authority real PG CH, activation remains closed canonical ingest stores metadata only and real CH replay is reconstructed with max1 same-client reads",
+        "governance canonical authority real PG CH, activation remains closed actual full export worker includes CH replay body and canonical manifest while PG body remains absent",
+        "governance canonical authority real PG CH, activation remains closed duplicate sequence chooses first accepted chunk and rejects unmasked or disabled input",
+        "governance canonical authority real PG CH, activation remains closed canonical provider failure is unavailable even with empty filter, never a PG zero fallback",
+        "governance canonical authority real PG CH, activation remains closed governance alerts fixes RR after a pending deletion gate, not before waiting",
+        "governance canonical authority real PG CH, activation remains closed governance site fixes RR after a pending deletion gate, not before waiting",
+        "governance canonical authority real PG CH, activation remains closed whole-visitor tombstone suppresses canonical replay and usage without consulting empty PG events"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('governance canonical authority real PG CH, activation remains closed',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/header-deletion-api.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "036 actual deletion and changedfalse journal carry erasure physically clears deleted A carry and exact keys while keeping B across epoch rotation and restored stale A"
+      ],
+      "guardExpressions": [
+        {
+          "line": 11,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('036 actual deletion and changedfalse journal carry erasure',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-app.test.ts",
+      "skippedCount": 4,
+      "cases": [
+        "full application optional history startup and deletion closure activates through explicit option with actual setup/collector/authenticated storage routes",
+        "full application optional history startup and deletion closure failed history barrier leaves durable journal; startup replay erases physical snapshot before serving requests",
+        "full application optional history startup and deletion closure preserves a standard site unique safe history despite a synthetic privacy cleanup marker",
+        "full application optional history startup and deletion closure cleans known legacy daily aliases at startup while preserving real collected traffic and safe history aggregates"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!enabled)('full application optional history startup and deletion closure',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 11,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-backup-snapshot.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "history backup fresh deletion snapshot waits for an actual deletion gate before RR and refuses to mint stale archived identity"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('history backup fresh deletion snapshot',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-cache-store-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "selected history caches preserve producer seals and original owners in an isolated target with exact heatmap mapping"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('selected history caches preserve producer seals and original owners in an isolated target with exact heatmap mapping',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-replay-retention-restore.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "actual historical replay retention after isolated restore physically removes expired records from the target mixed chunk while source namespace and later record remain"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('actual historical replay retention after isolated restore',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-response-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "authentic pre055 history sidecar keeps original checksum after upgrade; explicit055 scope binds nullable response hints"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('authentic pre055 history sidecar keeps original checksum after upgrade; explicit055 scope binds nullable response hints',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-security.test.ts",
+      "skippedCount": 12,
+      "cases": [
+        "actual authorized history APIs, signed backups, durable deletion barriers enforces real token/site/admin permissions, records audits, signs file and restores only isolated verified data",
+        "actual authorized history APIs, signed backups, durable deletion barriers persists journal before failed history deletion, blocks acknowledgement, and replay physically erases data with max1 pool",
+        "actual authorized history APIs, signed backups, durable deletion barriers refuses missing or truncated independent journal instead of bypassing restore integrity checks",
+        "actual authorized history APIs, signed backups, durable deletion barriers executes the operator CLI against isolated real PG/CH and reconciles signed file restore",
+        "actual authorized history APIs, signed backups, durable deletion barriers serializes an in-flight capture with fsynced deletion so late uploads are erased before acknowledgement",
+        "actual authorized history APIs, signed backups, durable deletion barriers fails closed if a used history store is disabled and enforces site retention on signed backup restore",
+        "actual authorized history APIs, signed backups, durable deletion barriers binds signed envelopes to explicit key versions and permits only retained trusted rotation keys",
+        "actual authorized history APIs, signed backups, durable deletion barriers revokes local backup before real disk cleanup failure and durably retries its own file path",
+        "actual authorized history APIs, signed backups, durable deletion barriers holds the mint barrier afterWrite and cannot publish a local raw backup after deletion acknowledgement",
+        "actual authorized history APIs, signed backups, durable deletion barriers holds the mint barrier beforePublish and cannot publish a local raw backup after deletion acknowledgement",
+        "actual authorized history APIs, signed backups, durable deletion barriers reaps a crashed writing record and its durably recorded temporary file without touching another file",
+        "actual authorized history APIs, signed backups, durable deletion barriers does not unlink an existing ready backup when a replacement fails before taking file ownership"
+      ],
+      "guardExpressions": [
+        {
+          "line": 18,
+          "source": "describe.skipIf(!enabled)('actual authorized history APIs, signed backups, durable deletion barriers',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 17,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-store.test.ts",
+      "skippedCount": 13,
+      "cases": [
+        "real PG and ClickHouse historical manifests cleans daily unique historical aliases with physical ACK and reconciles metadata after rollback while retaining B facts",
+        "real PG and ClickHouse historical manifests rejects single-day legacy daily history without controlled column proof",
+        "real PG and ClickHouse historical manifests copies retained actual events plus archived facts without inventing old raw events or reducing currencies and weighted vitals",
+        "real PG and ClickHouse historical manifests restores into a distinct CH namespace and checks journal twice; corruption and stale deletion evidence cannot be accepted",
+        "real PG and ClickHouse historical manifests captures a stable source high watermark while intake continues and refuses export after deletion epoch change",
+        "real PG and ClickHouse historical manifests fails safely after physical upload and epoch change; retry is isolated and does not duplicate data",
+        "real PG and ClickHouse historical manifests persists transport failure and enforces an explicit backup row budget rather than silently truncating",
+        "real PG and ClickHouse historical manifests streams more than one source chunk, cleans a partial failed upload durably, and verifies retry shadow",
+        "real PG and ClickHouse historical manifests enforces task expiry before uploading and recovers stale interrupted captures using a real replica lock",
+        "real PG and ClickHouse historical manifests precisely deletes A identity interval while preserving B unique history after PG raw expires, and rebuilds manifest checksums at the new epoch",
+        "real PG and ClickHouse historical manifests expires only old raw slices while preserving newer unique B and archived aggregates with refreshed physical checksums",
+        "real PG and ClickHouse historical manifests physically removes A records inside unique mixed replay history while retaining B and repairs metadata after a mutation followed by rollback",
+        "real PG and ClickHouse historical manifests captures actual canonical bodies with PG raw pruned, marks the real source, and refuses unavailable CH rather than exporting an empty PG snapshot"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!enabled)('real PG and ClickHouse historical manifests',()=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 11,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/history-strict-fact-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "outer managed signed history restores strict 047/048 backing without mutation and denies a newer real deletion journal"
+      ],
+      "guardExpressions": [
+        {
+          "line": 27,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('outer managed signed history restores strict 047/048 backing without mutation and denies a newer real deletion journal',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-archived-owner.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "strict incremental current tail preserves independently closed expired archive sessions and vitals"
+      ],
+      "guardExpressions": [
+        {
+          "line": 31,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('strict incremental current tail preserves independently closed expired archive sessions and vitals',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-coverage-witness.test.ts",
+      "skippedCount": 8,
+      "cases": [
+        "strict coverage witness preserves expired archive scope and rejects corrupted or unknown source closure",
+        "strict revenue FULL transition preserves the prior authenticated expired coverage scope",
+        "strict controlled restore reset preserves expired witness through authenticated FULL rebuild",
+        "strict retention expansion 365 to 1 to 365 preserves independent expired archive oracle",
+        "strict legacy missing witness refuses unproved retained window expansion without losing archive",
+        "strict retirement committed before shrink worker refuses expansion with witness",
+        "strict retirement committed before shrink worker refuses expansion without legacy witness",
+        "strict pre058 physical retirement upgrades as unknown and refuses unsafe expansion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 126,
+          "source": "const coverageTest=it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY);"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-publication-faults.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "strict delta rollback after CH ACK leaves published owners intact",
+        "strict delta lease after CH ACK leaves published owners intact",
+        "strict delta deletion_epoch after CH ACK leaves published owners intact"
+      ],
+      "guardExpressions": [
+        {
+          "line": 30,
+          "source": "for(const fault of ['rollback','lease','deletion_epoch'] as const)it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)(`strict delta ${fault} after CH ACK leaves published owners intact`,async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-restore.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "incremental multi-run signed child backup restores carry/hour owner closure and B after latest A deletion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 45,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY||!process.env.BAIZE_OPS_POSTGRES_CONTAINER)('incremental multi-run signed child backup restores carry/hour owner closure and B after latest A deletion',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-strict-boundaries.test.ts",
+      "skippedCount": 4,
+      "cases": [
+        "actual strict incremental pageless boundary uses authenticated complete sources",
+        "actual strict incremental daily boundary uses authenticated complete sources",
+        "actual strict incremental missing boundary uses authenticated complete sources",
+        "actual strict incremental cutoff boundary uses authenticated complete sources"
+      ],
+      "guardExpressions": [
+        {
+          "line": 82,
+          "source": "for(const kind of ['pageless','daily','missing','cutoff'] as const)it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)(`actual strict incremental ${kind} boundary uses authenticated complete sources`,()=>scenario(kind),90000);"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-session-strict.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "strict dirty-visitor incremental reuse preserves untouched ownership and matches a full late-bridge rebuild"
+      ],
+      "guardExpressions": [
+        {
+          "line": 30,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('strict dirty-visitor incremental reuse preserves untouched ownership and matches a full late-bridge rebuild',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/incremental-visitor-metadata-deletion.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "deletion purges mixed delta positive visitor metadata and signed namespaces without removing B"
+      ],
+      "guardExpressions": [
+        {
+          "line": 33,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('deletion purges mixed delta positive visitor metadata and signed namespaces without removing B',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/partition-replica-race.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real replica upload, journal-backed deletion and partition DROP finish without a three-way advisory cycle"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('real replica upload, journal-backed deletion and partition DROP finish without a three-way advisory cycle',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/provenance-lifecycle.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "independent proof ledger privacy lifecycle actual PG CH max1 keeps proof after raw/key pruning and policy expiry while any canonical member remains",
+        "independent proof ledger privacy lifecycle actual PG CH max1 does not discard proof before failed physical ACK or rollback, retries precise A deletion and retains B proof on unchanged journal replay",
+        "independent proof ledger privacy lifecycle actual PG CH max1 can still verify an independently attested daily source when wire keys disappear"
+      ],
+      "guardExpressions": [
+        {
+          "line": 14,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('independent proof ledger privacy lifecycle actual PG CH max1',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-body-backup-daily.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "whole signed remaining daily package restores real collector-derived lineage to independent CH target after raw/key pruning and erases only journal A"
+      ],
+      "guardExpressions": [
+        {
+          "line": 15,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('whole signed remaining daily package',()=>{it('restores real collector-derived lineage to independent CH target after raw/key pruning and erases only journal A',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-body-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "sealed fact backup actual PG CH restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A"
+      ],
+      "guardExpressions": [
+        {
+          "line": 20,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('sealed fact backup actual PG CH',()=>{it('restores non-PG bodies and zero kind into isolated target, preserving source and removing journal A',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-deletion.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "remaining derived privacy native source fixture collects real A→B identities, keeps B after exact interval deletion and retries a post-ACK PG rollback"
+      ],
+      "guardExpressions": [
+        {
+          "line": 8,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('remaining derived privacy native source fixture',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-full-deletion.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "047 actual full visitor physical privacy deletion publishes real five-kind worker state, rolls back PG after CH ACK, retries and preserves the other visitor"
+      ],
+      "guardExpressions": [
+        {
+          "line": 7,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('047 actual full visitor physical privacy deletion',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-grouped-read.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real grouped remaining receipts preserve five kinds, mixed tails and last-attempt fail closed under max1"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('real grouped remaining receipts preserve five kinds, mixed tails and last-attempt fail closed under max1',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-members.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "bounded remaining receipt INSERT real PG atomicity actual CH write/readback followed by PG member failure leaves no committed receipt or visible body"
+      ],
+      "guardExpressions": [
+        {
+          "line": 7,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL)('bounded remaining receipt INSERT real PG atomicity',()=>{"
+        },
+        {
+          "line": 16,
+          "source": "it.skipIf(!process.env.CLICKHOUSE_TEST_URL)('actual CH write/readback followed by PG member failure leaves no committed receipt or visible body',async()=>{const store=new ClickHouseRemainingFactStore({url:process.env.CLICKHOUSE_TEST_URL!,username:'baize',password:'local-test-only'});await store.initialize();const c=await pool.connect(),target=randomUUID(),session=randomUUID(),visitor='orphan-'+randomUUID(),from='2026-01-01T00:00:00.001Z',to='2026-01-01T01:00:00.002Z';try{await c.query('BEGIN');await c.query(\"INSERT INTO analytics_fact_runs(id,site_id,epoch,generation,outbox_high_watermark,status) VALUES($1,$2,$3,1,0,'ready')\",[target,site,epoch]);await c.query(\"CREATE FUNCTION reject_remaining_member() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'controlled member failure'; END $$\");await c.query('CREATE TRIGGER reject_remaining_member BEFORE INSERT ON analytics_remaining_fact_members FOR EACH ROW EXECUTE FUNCTION reject_remaining_member()');await expect(store.stageRecords(c,site,target,'sessions',[{visitorId:visitor,sessionId:session,from,to,row:{run_id:target,session_id:session,visitor_id:visitor,data:{id:session,visitor_id:visitor,started_at:from,last_active:to,entry_path:'/a',exit_path:'/b',pageviews:1,duration_s:0,visible_ms:0,bounced:true,dimensions:{}}}}],{expectedAggregationEpoch:epoch,verifyLiveFence:async()=>{}})).rejects.toThrow('controlled member failure');await c.query('ROLLBACK');expect((await c.query('SELECT 1 FROM analytics_remaining_fact_batches WHERE run_id=$1',[target])).rowCount).toBe(0);expect((await c.query('SELECT 1 FROM analytics_remaining_fact_members WHERE run_id=$1',[target])).rowCount).toBe(0);"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-partial-deletion.test.ts",
+      "skippedCount": 4,
+      "cases": [
+        "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":false,\"emptyPrefix\":false,\"archivedB\":false} and survives physical ACK rollback and replay",
+        "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":false,\"archivedB\":false} and survives physical ACK rollback and replay",
+        "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":true,\"archivedB\":false} and survives physical ACK rollback and replay",
+        "047 actual identity-segment physical privacy deletion rebuilds shared-cookie carry {\"deletedAnchor\":true,\"emptyPrefix\":false,\"archivedB\":true} and survives physical ACK rollback and replay"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('047 actual identity-segment physical privacy deletion',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-source.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "remaining five-body bounded consumer actual PG CH reads CH-only bodies including owned carry after PG pruning, merges explicit legacy PG and refuses a missing sealed checkpoint"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('remaining five-body bounded consumer actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-store.test.ts",
+      "skippedCount": 12,
+      "cases": [
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH real session and numeric ownership stage with exact attempts; rollback stays invisible",
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH final producer publishes all five original kinds including authenticated standard carry",
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH trusted replacement physically removes old carry checkpoint body while retaining new sealed marker",
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH bounded orphan GC preserves committed body and partial carry deletion fails closed",
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH published session backfill accepts only exact PG originals and rejects incomplete migration",
+        "remaining derived body canonical reuse=false remaining derived body actual PG CH maintenance durable backoff rejects real TCP failure and recovers without second pool lease",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH real session and numeric ownership stage with exact attempts; rollback stays invisible",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH final producer publishes all five original kinds including authenticated standard carry",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH trusted replacement physically removes old carry checkpoint body while retaining new sealed marker",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH bounded orphan GC preserves committed body and partial carry deletion fails closed",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH published session backfill accepts only exact PG originals and rejects incomplete migration",
+        "remaining derived body canonical reuse=true remaining derived body actual PG CH maintenance durable backoff rejects real TCP failure and recovers without second pool lease"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.each([false,true])('remaining derived body canonical reuse=%s',canonicalValidationReuse=>{describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('remaining derived body actual PG CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-unavailable.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "47 TCP refusal fails closed before metadata/proof trimming and actual durable journal recovery preserves B"
+      ],
+      "guardExpressions": [
+        {
+          "line": 7,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('47 TCP refusal fails closed before metadata/proof trimming and actual durable journal recovery preserves B',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-fact-worker.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "production worker publishes five remaining-body kinds from real session reducers without PG pruning"
+      ],
+      "guardExpressions": [
+        {
+          "line": 21,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('production worker publishes five remaining-body kinds from real session reducers without PG pruning',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/remaining-historical-identity.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "47 historical B checkpoint and exact archive remain available after later identity A deletion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 22,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('47 historical B checkpoint and exact archive remain available after later identity A deletion',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/replica-pool-capacity.test.ts",
+      "skippedCount": 3,
+      "cases": [
+        "default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=false)",
+        "default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=true)",
+        "max1 failed replica cleanup records durable retry using its existing client"
+      ],
+      "guardExpressions": [
+        {
+          "line": 21,
+          "source": "for(const fault of [false,true])it.skipIf(!enabled)(`default max10 mirror and nine real deletion transactions complete without waiting for an eleventh connection (fault=${fault})`,async()=>fixture(10,async({pool,ch,site,ctx,mirror,config})=>{"
+        },
+        {
+          "line": 24,
+          "source": "it.skipIf(!enabled)('max1 failed replica cleanup records durable retry using its existing client',async()=>fixture(1,async({pool,site,config})=>{"
+        }
+      ],
+      "guardAliases": [
+        {
+          "line": 13,
+          "source": "const enabled=Boolean(process.env.TEST_DATABASE_URL&&process.env.CLICKHOUSE_TEST_URL);"
+        }
+      ],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/retention-analysis.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real PostgreSQL mature exact cohort observations reads exact archived cohort return members from real CH after PG effect bodies are removed"
+      ],
+      "guardExpressions": [
+        {
+          "line": 38,
+          "source": "it.skipIf(!process.env.CLICKHOUSE_TEST_URL)('reads exact archived cohort return members from real CH after PG effect bodies are removed',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/session-header-backup.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "signed CH topology package, real isolated PG and CH restores published receipts and bodies to an independent CH database, applies latest A journal, and never modifies source"
+      ],
+      "guardExpressions": [
+        {
+          "line": 13,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('signed CH topology package, real isolated PG and CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/session-header-canonical-worker.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "manually selected CH authority publishes bounded sealed headers and repairs partial deletion without persistent PG header bodies"
+      ],
+      "guardExpressions": [
+        {
+          "line": 16,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('manually selected CH authority publishes bounded sealed headers and repairs partial deletion without persistent PG header bodies',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/session-header-orphans.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "durable CH header orphan reclamation, actual PG/CH reclaims an uncommitted attempt in a still-live run, preserves its committed body and records retry failure"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('durable CH header orphan reclamation, actual PG/CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/session-header-reuse.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "transaction-local header consumer with actual PG and CH spills mixed published CH/legacy PG owners, verifies seals, filters tombstones and never borrows the max1 pool"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('transaction-local header consumer with actual PG and CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/session-header-source.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "transaction-local header consumer with actual PG and CH spills mixed published CH/legacy PG owners, verifies seals, filters tombstones and never borrows the max1 pool"
+      ],
+      "guardExpressions": [
+        {
+          "line": 10,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('transaction-local header consumer with actual PG and CH',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/site-fact-config.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real authenticated site configuration after raw pruning blocks privacy-mode mixing despite empty PG keys/raw, and marks changed archived semantics unavailable while preserving unique B backing"
+      ],
+      "guardExpressions": [
+        {
+          "line": 12,
+          "source": "describe.skipIf(!process.env.CLICKHOUSE_TEST_URL)('real authenticated site configuration after raw pruning',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/stats-read-budget.test.ts",
+      "skippedCount": 11,
+      "cases": [
+        "whole stats read budgets with actual PG CH and max-one pool counts cumulative actual SELECT calls across nested reads without resetting the scope",
+        "whole stats read budgets with actual PG CH and max-one pool rejects cumulative decoded bytes although each actual response fits the chosen cap and original per-request cap",
+        "whole stats read budgets with actual PG CH and max-one pool comparison two ranges share the budget and cannot return normal partial coverage",
+        "whole stats read budgets with actual PG CH and max-one pool authenticated HTTP stats budget failure is typed unavailable, not a successful partial metric payload",
+        "whole stats read budgets with actual PG CH and max-one pool whole deadline aborts transport, awaits actual socket end before pool release and permits the next max-one query",
+        "whole stats read budgets with actual PG CH and max-one pool whole deadline interrupts an actual in-transaction PG statement and releases its gates",
+        "whole stats read budgets with actual PG CH and max-one pool budget-owned idle transaction fatal is handled until end and leaves max-one reusable",
+        "whole stats read budgets with actual PG CH and max-one pool original stricter idle timeout remains native failure rather than a budget reinterpretation",
+        "whole stats read budgets with actual PG CH and max-one pool deadline during occupied max-one pool does not leak a late acquired connection",
+        "whole stats read budgets with actual PG CH and max-one pool budget success keeps original source epoch rejection rather than returning fabricated zero",
+        "whole stats read budgets with actual PG CH and max-one pool does not reinterpret physical body loss as a budget success with zero coverage"
+      ],
+      "guardExpressions": [
+        {
+          "line": 9,
+          "source": "describe.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('whole stats read budgets with actual PG CH and max-one pool',()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/stats-read-snapshot.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "comparison reuses authenticated CH facts on one client and preserves exact oracle and missing-body failure"
+      ],
+      "guardExpressions": [
+        {
+          "line": 14,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL)('comparison reuses authenticated CH facts on one client and preserves exact oracle and missing-body failure',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/strict-fact-worker.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "real sealed backup activates strict facts and subsequent workers retain no persistent PG body"
+      ],
+      "guardExpressions": [
+        {
+          "line": 29,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('real sealed backup activates strict facts and subsequent workers retain no persistent PG body',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/strict-identity-api.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "actual native identity sessions remain sourced from CH after sealed strict activation"
+      ],
+      "guardExpressions": [
+        {
+          "line": 33,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY)('actual native identity sessions remain sourced from CH after sealed strict activation',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    },
+    {
+      "file": "tests/integration/strict-identity-restore.test.ts",
+      "skippedCount": 1,
+      "cases": [
+        "actual signed child backup and independent strict restore preserves B identity after A deletion"
+      ],
+      "guardExpressions": [
+        {
+          "line": 44,
+          "source": "it.skipIf(!process.env.TEST_DATABASE_URL||!process.env.CLICKHOUSE_TEST_URL||!CANONICAL_ACTIVATION_READY||!process.env.BAIZE_OPS_POSTGRES_CONTAINER)('actual signed child backup and independent strict restore preserves B identity after A deletion',async()=>{"
+        }
+      ],
+      "guardAliases": [],
+      "effectiveReason": "CLICKHOUSE_TEST_URL absent; PG/Redis/native-ops prerequisites configured; CANONICAL_ACTIVATION_READY=true",
+      "unconditionalSkipsInFile": 0
+    }
+  ]
+}

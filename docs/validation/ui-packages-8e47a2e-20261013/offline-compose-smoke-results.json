@@ -1,0 +1,38 @@
+[
+  {
+    "profile": "standard",
+    "image": "baize-ui:standard-8e47a2e",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "cache": "ready",
+      "geoip": "unknown",
+      "schemaVersion": 1
+    },
+    "composeNoBuildNoPull": true,
+    "existingVolumeInitializerUsed": true,
+    "actualNonceClaimAndCookie": true,
+    "freshIsolatedProject": "baize-ui-offline-8e-standard",
+    "stoppedRetainedVolumes": true
+  },
+  {
+    "profile": "lite",
+    "image": "baize-ui:lite-8e47a2e",
+    "health": {
+      "ok": true,
+      "database": "ready",
+      "storage": "sqlite",
+      "cache": "disabled",
+      "geoip": "unavailable",
+      "schemaVersion": 2,
+      "sqliteVersion": "3.53.4",
+      "sourceId": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    },
+    "composeNoBuildNoPull": true,
+    "existingVolumeInitializerUsed": true,
+    "actualNonceClaimAndCookie": true,
+    "freshIsolatedProject": "baize-ui-offline-8e-lite",
+    "resumedOnlyAfterVerifiedExpandedRelocation": true,
+    "stoppedRetainedVolumes": true
+  }
+]

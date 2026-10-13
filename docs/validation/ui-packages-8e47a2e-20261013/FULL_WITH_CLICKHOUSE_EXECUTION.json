@@ -1,0 +1,16 @@
+{
+  "startedUTC": "2026-10-13T13:35:22.936400+00:00",
+  "floorBytes": 2147483648,
+  "extraReserveBytes": 1073741824,
+  "sourceRevision": "8e47a2e9a3cc3c700fac2d06089fd22d10cf38d1",
+  "nativePinnedClickHouse": true,
+  "noDockerPullOrProduction": true,
+  "minimumFreeBytes": {
+    "/workspace": 3566301184,
+    "/tmp": 6878191616
+  },
+  "actualClickHouseVersion": "25.8.33.6",
+  "testCommandExitCode": 0,
+  "clickHouseStoppedRetainedData": true,
+  "finishedUTC": "2026-10-13T13:49:34.544266+00:00"
+}
