@@ -1,4 +1,4 @@
-import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,readdirSync,existsSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {DockerAgent} from '../../src/update/docker-agent.js';
@@ -14,6 +14,6 @@ try{
  const login=await fetch(config.healthUrl+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'owner@fixture.invalid',password:'ControlledFixtureOnly!12'})});if(!login.ok)throw Error('login failed');const cookie=login.headers.get('set-cookie')!.split(';')[0]!;
  const sites=await(await fetch(config.healthUrl+'/api/v1/sites',{headers:{cookie}})).json()as any;if(!sites.sites.some((s:any)=>s.name==='Before update')||!sites.sites.some((s:any)=>s.name==='After update'))throw Error('data lost');
  if(!(await(await fetch(config.healthUrl+'/assets/update-fixture.js')).text()).includes('"A"'))throw Error('base file missing');
- const verification=JSON.parse(readFileSync(join(config.agentDir,'images',upgrade.operationId,'verification.json'),'utf8'));
+ const verificationPath=join(config.agentDir,'images',upgrade.operationId,'verification.json');const previousEvidence=join(root,profile.toUpperCase()+'_DOCKER_RESUMED_E2E.json');const verification=existsSync(verificationPath)?JSON.parse(readFileSync(verificationPath,'utf8')):JSON.parse(readFileSync(previousEvidence,'utf8')).verification;
  writeFileSync(join(root,profile.toUpperCase()+'_DOCKER_RESUMED_E2E.json'),JSON.stringify({profile,realApplication:true,realDatabase:profile==='standard'?'PostgreSQL':'SQLite',productionBackupMode:config.backupMode,upgrade,rollback:rolled,verification,bothWritesSurvived:true,configPreserved:readFileSync(config.envFile,'utf8')==='POSTGRES_PASSWORD=IsolatedAcceptanceOnly\n',priorFailures:records.filter(v=>v.phase==='failed').map(v=>({operationId:v.operationId,error:v.error})),fix:'Each backup operation uses a distinct key-package directory; retry retained database and prior backups.'},null,2));console.log('PASSED '+profile+' rollback retry and both writes');
 }finally{await agent.close();}

@@ -15,7 +15,7 @@ export async function acquireNativeRuntimeLock(dataDir:string,onLost:()=>void){
  await new Promise<void>((ready,reject)=>{
   helper.stdout!.once('data',()=>{acquired=true;ready();});
   helper.once('error',()=>reject(Error('NATIVE_RUNTIME_LOCK_TOOL_UNAVAILABLE')));
-  helper.once('exit',()=>{if(!acquired)reject(Error('NATIVE_RUNTIME_ALREADY_RUNNING'));else if(!releasing)onLost();});
+  helper.once('exit',()=>{helper.stdin?.destroy();if(!acquired)reject(Error('NATIVE_RUNTIME_ALREADY_RUNNING'));else if(!releasing)onLost();});
  });
  return async()=>{if(releasing)return;releasing=true;if(helper.exitCode!==null||helper.signalCode!==null)return;const exited=new Promise<void>(done=>helper.once('exit',()=>done()));helper.stdin!.end();await exited;};
 }

@@ -119,3 +119,5 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 应用主体采用 **AGPL-3.0-only**；独立网站追踪脚本采用 **MIT**。嵌入 tracker 与修改、托管应用主体的许可责任不同，详见 [LICENSE](LICENSE) 与 [tracker LICENSE](packages/tracker/LICENSE)。
 
 实例拥有者可在“设置 → 系统更新”核对增量版本与下载量。首次接入、支持范围和回滚规则见 [实例增量更新指南](docs/INSTANCE_INCREMENTAL_UPDATES.md)。
+
+维护执行器失去独占锁时保持维护状态，确认旧执行器及任务停止后再接续。部署交付为标准/Lite两个离线Docker包与四个原生包，源码和执行器是额外附件；详见实例增量更新指南。

@@ -1,12 +1,20 @@
 // Build-time only: preserve the TS maintenance interface while removing build/test tools.
-import {cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync} from 'node:fs';
-import {resolve, relative} from 'node:path';
+import {cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync,unlinkSync} from 'node:fs';
+import {resolve, relative, dirname} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 
 export function copyRuntimeEntry(source, target) {
   // fs.cp otherwise resolves relative links against the original build tree.
   cpSync(source, target, {recursive: true, verbatimSymlinks: true});
+}
+
+export function deduplicateRuntimeEsbuild(target) {
+ const binary=resolve(target,'node_modules/esbuild/bin/esbuild');
+ const shared=resolve(target,'node_modules/@esbuild/linux-x64/bin/esbuild');
+ if(!existsSync(binary)||!existsSync(shared))return false;
+ if(!readFileSync(binary).equals(readFileSync(shared)))throw Error('Runtime esbuild copies differ; refusing deduplication');
+ unlinkSync(binary);symlinkSync(relative(dirname(binary),shared),binary);return true;
 }
 
 export function stageRuntime(sourceArgument = '.', targetArgument = '/runtime') {
@@ -36,6 +44,7 @@ writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 execFileSync('npm', ['prune', '--omit=dev', '--offline', '--ignore-scripts', '--no-audit', '--no-fund'], {
   cwd: target, stdio: 'inherit', env: {...process.env, npm_config_update_notifier: 'false'},
 });
+deduplicateRuntimeEsbuild(target);
 // Preserve source identities used by the backup/restore/upgrade acceptance guard.
 // The separate witness describes the intentionally smaller installed runtime graph.
 const witness = resolve(target, 'runtime-dependencies');

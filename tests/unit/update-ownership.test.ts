@@ -1,0 +1,77 @@
+import {it,expect,vi} from 'vitest';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,chmodSync,rmSync,readdirSync,lstatSync} from 'node:fs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {randomUUID} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {DockerAgent} from '../../src/update/docker-agent.js';
+import {ImageTransfer} from '../../src/update/image-transfer.js';
+import {UpdateAgent,type AgentRuntime,type AgentConfig} from '../../src/update/agent.js';
+import {digest} from '../../src/update/protocol.js';
+import type {DockerConfig} from '../../src/update/docker-runtime.js';
+import {validateComposeApp,validateRunningApp} from '../../src/update/docker-runtime.js';
+function deferred(){let done!:()=>void;const promise=new Promise<void>(r=>done=r);return {promise,done};}
+function killHelper(directory:string){const rows=execFileSync('ps',['--ppid',String(process.pid),'-o','pid=,args='],{encoding:'utf8'}).split('\n');const row=rows.find(v=>v.includes('flock -n '+join(directory,'native-runtime.lock')+' '));if(!row)throw Error('Fixture flock child not found');process.kill(Number(row.trim().split(/\s+/)[0]),'SIGKILL');}
+function removeFixture(r:string){const walk=(p:string)=>{if(lstatSync(p).isDirectory()){chmodSync(p,0o700);for(const n of readdirSync(p))walk(join(p,n));}};walk(r);rmSync(r,{recursive:true,force:true});}
+function root(){return mkdtempSync(join(tmpdir(),'baize-owner-cutoff-'));}
+const initial={imageId:'sha256:'+'1'.repeat(64),manifestDigest:'sha256:'+'2'.repeat(64),releaseId:'a'.repeat(40),schemaFingerprint:'3'.repeat(64),profile:'lite' as const};
+const target={...initial,imageId:'sha256:'+'4'.repeat(64),manifestDigest:'sha256:'+'5'.repeat(64),releaseId:'b'.repeat(40)};
+function dockerConfig(r:string):DockerConfig{const compose=join(r,'compose.json'),env=join(r,'runtime.env');writeFileSync(compose,'{}',{mode:0o600});writeFileSync(env,'FIXTURE_ONLY=1\n',{mode:0o600});return {version:1,ownerId:randomUUID(),agentDir:join(r,'agent'),socketDir:join(r,'socket'),dockerBinary:'/usr/bin/true',dockerRoot:r,project:'baize-owner-fixture',composeFile:compose,composeSha256:digest('{}'),envFile:env,healthUrl:'http://127.0.0.1:33099',source:{url:'http://127.0.0.1:33098/',keys:{},allowLocalFixture:true},initial,backupMode:'fixture',postgresUser:'baize',postgresDatabase:'baize'};}
+it.each(['downloading','backup','switching','health'])('Docker loss of actual flock during %s stops, waits and stays fenced without restart',async phase=>{
+ const r=root(),config=dockerConfig(r),paused=deferred(),continueOperation=deferred(),stopFinished=deferred(),stopEntered=deferred(),starts:string[]=[];let hold=false;
+ vi.spyOn(ImageTransfer.prototype,'inspect').mockReturnValue({Id:initial.imageId,Size:1,Architecture:'amd64',Os:'linux',RootFS:{Layers:[]},Config:{User:'node',Cmd:['node']}});
+ const agent=new DockerAgent(config);const runtime=agent.runtime;
+ const pause=async()=>{paused.done();await continueOperation.promise;};
+ vi.spyOn(runtime,'start').mockImplementation(async image=>{starts.push(image.releaseId);if(hold&&phase==='switching'&&image.releaseId===target.releaseId)await pause();});
+ vi.spyOn(runtime,'healthy').mockImplementation(async image=>{if(hold&&phase==='health'&&image.releaseId===target.releaseId)await pause();});
+ vi.spyOn(runtime,'stop').mockResolvedValue();vi.spyOn(runtime,'preflightBackup').mockResolvedValue();
+ vi.spyOn(runtime,'stopOwned').mockImplementation(async()=>{if(hold){stopEntered.done();await stopFinished.promise;}});
+ vi.spyOn(runtime,'backup').mockImplementation(async()=>{if(phase==='backup')await pause();return 'fixture-backup';});
+ vi.spyOn(agent.transfer,'latest').mockResolvedValue({metadataBytes:1,delta:{fixture:true,target,notes:[],label:'controlled lock fixture'} as any});
+ vi.spyOn(agent.transfer,'validate').mockReturnValue({manifest:{config:{size:1}},missing:[],reused:[{uncompressedDigest:'sha256:'+'0'.repeat(64)}]} as any);
+ vi.spyOn(agent.transfer,'stage').mockImplementation(async()=>{if(phase==='downloading')await pause();return {identity:target,downloadedLayerBytes:0,configBytes:1,reusedLayers:[],fullCompressedBytes:0};});
+ try{
+  await agent.open();hold=true;let settled=false;const outcome=agent.apply(config.ownerId,randomUUID()).then(value=>({value,error:undefined}),error=>({value:undefined,error})).finally(()=>settled=true);
+  await paused.promise;const startCount=starts.length;killHelper(config.agentDir);await stopEntered.promise;expect(existsSync(agent.gateFile)).toBe(true);
+  continueOperation.done();await new Promise(r=>setTimeout(r,30));expect(settled).toBe(false);expect(starts).toHaveLength(startCount);
+  const contender=new DockerAgent(config);vi.spyOn(contender.runtime,'start').mockResolvedValue();vi.spyOn(contender.runtime,'healthy').mockResolvedValue();vi.spyOn(contender.runtime,'stopOwned').mockResolvedValue();await expect(contender.open()).rejects.toThrow('UPDATE_EXECUTOR_PREVIOUS_OWNER_RUNNING');
+  stopFinished.done();const result=await outcome;expect(result.error?.message).toBe('UPDATE_EXECUTOR_LOCK_LOST');expect(starts).toHaveLength(startCount);expect(existsSync(agent.gateFile)).toBe(true);
+  await agent.close();hold=false;await contender.open();expect(existsSync(agent.gateFile)).toBe(false);await contender.close();
+ }finally{continueOperation.done();stopFinished.done();vi.restoreAllMocks();removeFixture(r);}
+});
+function nativeFixture(r:string){const releases=join(r,'releases');mkdirSync(releases);const pointers=[];
+ for(const revision of ['a'.repeat(40),'b'.repeat(40)]){const path=join(releases,revision);mkdirSync(path);mkdirSync(join(path,'dist/server/src/lite'),{recursive:true});writeFileSync(join(path,'dist/server/src/lite/schema.js'),'fixture',{mode:0o444});chmodSync(join(path,'dist/server/src/lite/schema.js'),0o444);writeFileSync(join(path,'fixture.js'),'fixture',{mode:0o444});chmodSync(join(path,'fixture.js'),0o444);const body=JSON.stringify({version:1,profile:'lite',variant:'node-ready',revision,imageId:'sha256:'+'1'.repeat(64),platform:{os:'linux',architecture:'amd64'},files:[{path:'dist/server/src/lite/schema.js',type:'file',bytes:7,sha256:digest('fixture'),mode:0o444},{path:'fixture.js',type:'file',bytes:7,sha256:digest('fixture'),mode:0o444}],directories:['dist','dist/server','dist/server/src','dist/server/src/lite'].map(path=>({path,mode:0o555}))});for(const d of ['dist/server/src/lite','dist/server/src','dist/server','dist'])chmodSync(join(path,d),0o555);writeFileSync(join(path,'release-manifest.json'),body,{mode:0o444});pointers.push({root:path,revision,manifestSha256:digest(body)});}
+ const config:AgentConfig={version:1,ownerId:randomUUID(),agentDir:join(r,'agent'),releasesDir:releases,initialRoot:pointers[0]!.root,initialManifestSha256:pointers[0]!.manifestSha256,dataDir:join(r,'data'),keyDir:join(r,'keys'),envFile:join(r,'env'),nodePath:process.execPath,publicUrl:'http://127.0.0.1:33199',source:{url:'http://127.0.0.1:33198/',keys:{},allowLocalFixture:true}};return {config,pointers};}
+it.each(['lost','closing'])('native rollback paused in backup does not switch/restart/unfence when %s',async mode=>{
+ const r=root(),{config,pointers}=nativeFixture(r),paused=deferred(),continueBackup=deferred(),stopFinished=deferred(),stopEntered=deferred(),starts:string[]=[];let hold=false;
+ const runtime:AgentRuntime={start:async p=>{starts.push(p.revision);},healthy:async()=>{},stop:async()=>{if(hold){stopEntered.done();await stopFinished.promise;}},backup:async()=>{paused.done();await continueBackup.promise;},backupEstimate:async()=>0};const agent=new UpdateAgent(config,runtime);
+ try{await agent.open();agent.store.save({previous:pointers[1]});const before=readFileSync(agent.pointerFile);let settled=false;const result=agent.rollback(config.ownerId,randomUUID()).then(value=>({value,error:undefined}),error=>({value:undefined,error})).finally(()=>settled=true);await Promise.race([paused.promise,result.then(v=>{throw v.error??Error('rollback ended before pause');})]);hold=true;let closing:Promise<void>|undefined;
+  if(mode==='lost'){killHelper(config.agentDir);await stopEntered.promise;}else closing=agent.close();continueBackup.done();await stopEntered.promise;await new Promise(r=>setTimeout(r,30));expect(settled).toBe(false);expect(starts).toEqual([pointers[0]!.revision]);expect(readFileSync(agent.pointerFile)).toEqual(before);expect(existsSync(agent.gateFile)).toBe(true);
+  stopFinished.done();const ended=await result;expect(ended.error?.message).toBe(mode==='lost'?'UPDATE_EXECUTOR_LOCK_LOST':'UPDATE_EXECUTOR_STOPPING');expect(starts).toEqual([pointers[0]!.revision]);expect(readFileSync(agent.pointerFile)).toEqual(before);expect(existsSync(agent.gateFile)).toBe(true);await(closing??agent.close());
+ }finally{continueBackup.done();stopFinished.done();removeFixture(r);}
+});
+it.each([
+ {name:'root user',extra:{user:'root'}},
+ {name:'root uid',extra:{user:'0:0'}},
+ {name:'entrypoint override',extra:{entrypoint:['sh','-c','id']}},
+ {name:'command override',extra:{command:['sh','-c','id']}},
+ {name:'device exposure',extra:{devices:['/dev/sda:/dev/sda']}},
+ {name:'alternative docker socket',extra:{volumes:[{type:'bind',source:'/run/docker.sock',target:'/run/docker.sock'}]}},
+ {name:'root filesystem mount',extra:{volumes:[{type:'bind',source:'/',target:'/app/data'}]}},
+ {name:'API socket option',extra:{use_api_socket:true}},
+ {name:'Node options injection',extra:{environment:{NODE_OPTIONS:'--import /app/data/unsigned.js'}}},
+ {name:'PATH injection',extra:{environment:{PATH:'/app/data/bin'}}},
+ {name:'supplementary groups',extra:{group_add:['999']}},
+ {name:'code config mount',extra:{configs:[{source:'unsigned',target:'/app/main.js'}]}}
+])('rejects merged Compose $name before launch',({extra})=>{const r=root(),config=dockerConfig(r);try{expect(()=>validateComposeApp(extra,initial,config)).toThrow(/^UPDATE_(?:COMPOSE|CONTAINER)_/);}finally{removeFixture(r);}});
+it('checks actual container user, command, entrypoint, devices and mounts, not only image labels',()=>{
+ const r=root(),config=dockerConfig(r);try{
+  const found={Config:{User:'node',WorkingDir:'/app',Cmd:['node','dist/server/src/lite/main.js'],Entrypoint:['docker-entrypoint.sh'],Env:['BAIZE_UPDATE_LAUNCH_ID=fixture']},HostConfig:{},Mounts:[{Destination:'/run/baize-updater',Source:config.socketDir,Type:'bind',RW:false}]};
+  expect(()=>validateRunningApp(found,initial,'fixture',config)).not.toThrow();
+  for(const extra of [{User:'root'},{WorkingDir:'/app/data'},{Cmd:['sh']},{Entrypoint:['sh']}])expect(()=>validateRunningApp({...found,Config:{...found.Config,...extra}},initial,'fixture',config)).toThrow('UPDATE_CONTAINER_EXECUTION_POLICY');
+  expect(()=>validateRunningApp({...found,HostConfig:{Devices:[{PathOnHost:'/dev/sda'}]}},initial,'fixture',config)).toThrow('UPDATE_CONTAINER_EXECUTION_POLICY');
+  expect(()=>validateRunningApp({...found,Mounts:[{Destination:'/run/docker.sock',Source:'/run/docker.sock',RW:false,Type:'bind'}]},initial,'fixture',config)).toThrow('UPDATE_CONTAINER_MOUNT_POLICY');
+ }finally{removeFixture(r);}
+});
+
+it('an unclaimed native close leaves the actual owner gate and runtime untouched',async()=>{const r=root(),{config}=nativeFixture(r);let stopped=0;const runtime:AgentRuntime={start:async()=>{},healthy:async()=>{},stop:async()=>{stopped++;},backup:async()=>{},backupEstimate:async()=>0};const owner=new UpdateAgent(config,runtime),other=new UpdateAgent(config,{...runtime,stop:async()=>{throw Error('unclaimed stop');}});try{await owner.open();await expect(other.open()).rejects.toThrow('NATIVE_RUNTIME_ALREADY_RUNNING');await other.close();expect(stopped).toBe(0);expect(existsSync(owner.gateFile)).toBe(false);await owner.close();}finally{removeFixture(r);}});
