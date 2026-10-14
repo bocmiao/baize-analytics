@@ -37,3 +37,6 @@
 保持 2 GiB 底线加 1 GiB 缓冲，串行执行重型操作。未在旧环境重试或删除旧包。仅清理本环境自有已完成/失败的展开副本、停止的验收容器和明确 ID 的旧构建缓存：先归档并核验 gzip、tar 内容或 SHA，保留原包、源码、补丁、数据卷、配置、签名材料与原始证据。每项文件名、字节、保留位置和方法见本目录 *_RETENTION.json；目标 buildx prune 只按已确认自有缓存 ID 选择，无全局 prune 或强制删除。包保留位置变动通过映射记录，未改变六包内容。
 
 自动触发检查：没有 .github/workflows；.cnb.yml 只有手动 web_trigger/web_trigger_validate，无 push、cron、NPC。只执行带 [skip ci] 的普通 main 推送，不使用 force、PR、GitHub Actions、CNB、Release 或权限修改。
+
+
+2026-10-14 分发复查：六包字节/SHA 再次一致，当前 Library 正式流程两次均在准备前失败，无 Library ID；私库 Release 只读列表为空，连接工具没有 Release 写入接口，gh 认证失败。准确证据见 [DISTRIBUTION_STATUS.json](../test-evidence/incremental-update-distribution-20261014/DISTRIBUTION_STATUS.json)。下载后的本版命令见 [38c9c61 安装说明](../DELIVERY_38C9C61_INSTALL.md)，避免使用包内旧 Docker 示例的 tag。
