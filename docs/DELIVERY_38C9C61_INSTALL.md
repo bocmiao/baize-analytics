@@ -1,6 +1,6 @@
 # 38c9c61 六包安装说明
 
-六包均已完成 SHA256、真实启动及 Docker load 验收，尚未成功保存到 Library 或 Release，没有可用安装包下载链接。2026-10-14 当前正式上传两次均在准备前失败；Release 读取成功但为空，本环境 gh 认证失败，连接工具没有 Release 写入接口。没有更改凭据或私库权限。分发完成后，把选定归档和 [SHA256SUMS](test-evidence/incremental-update-closure-20261014/SHA256SUMS) 放在同一私有交付目录。只下载所需包时，在 Bash 中校验，例如：
+六包均已完成 SHA256、真实启动及 Docker load 验收。最新直接工具验证已成功保存标准和 Lite 两个 NodeReady 包到 Library；四个大包取得正式 prepared 会话后，实际 PUT 请求报 Forbidden，已传输 0 字节，未 finalize。两个已保存包的 Library IDs 和六包校验见 [DIRECT_PATH_FINAL.json](test-evidence/incremental-update-distribution-20261014/DIRECT_PATH_FINAL.json)。早前 Python helper 发现失败不代表直接工具不可用。私库 Release 仍无可用写入接口，本环境 gh 认证失败。没有更改凭据或私库权限。分发完成后，把选定归档和 [SHA256SUMS](test-evidence/incremental-update-closure-20261014/SHA256SUMS) 放在同一私有交付目录。只下载所需包时，在 Bash 中校验，例如：
 
 ```bash
 set -euo pipefail

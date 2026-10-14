@@ -28,7 +28,7 @@
 
 完整 SHA256、源码与镜像 ID：[DELIVERY_INDEX.json](../test-evidence/incremental-update-closure-20261014/DELIVERY_INDEX.json)、[SHA256SUMS](../test-evidence/incremental-update-closure-20261014/SHA256SUMS)。标准 Docker 离线包包含应用/Node、PostgreSQL 17、Redis 7；Lite 只含应用/Node。NodeReady 要求现有兼容 Node24，bundled-node 自带 Node；部署与私有签名源、配置及恢复操作见 [INSTANCE_INCREMENTAL_UPDATES.md](../INSTANCE_INCREMENTAL_UPDATES.md)。标准/Lite 使用各自已有生产依赖裁剪，不改写 lockfile。Docker 接收方仍依赖受信发布方签署的 schema fingerprint，不自行从镜像迁移文件重新推导。
 
-**分发尚未完成。** 当前 Library 支持的整批 prepared upload helper 在 `hosted apps tools/list` 处报 network，尚未进入上传准备，没有生成 Library ID；精确失败见 LIBRARY_FINAL38_PACKAGE_RESULT.json。六包保存在本环境且已核验，不能将本地路径当作用户下载链接。按最新指令没有把归档或二进制分片加入 Git，也没有发布 Release。恢复交付可在 Library 网络恢复后用相同受支持 helper 提交这六包，或由用户指定私有产物存储；代码、文档、清单和截图通过现有私库普通 main 推送交付。暂不称六包已下载可用。
+**分发完成 2/6。** 当前本环境直接 Library create 工具已成功保存两个 NodeReady 包，完整身份和字节见 [DIRECT_PATH_FINAL.json](../test-evidence/incremental-update-distribution-20261014/DIRECT_PATH_FINAL.json)。四个大包正式 prepared 工具成功，但官方传输实现 PUT 报 Forbidden，仍为 0 字节，未 finalize；自有重复重试已停止。Python helper tools/list 的旧失败只说明该发现路径阻塞，不代表直接工具不可用。没有把归档或二进制分片加入 Git，没有修改私库权限或生成凭据。代码、清单和截图已由私库普通 main 推送交付。剩余四包需恢复本环境正式 prepared 字节传输能力；Release 当前只有读取接口、gh 认证失败，不具备现成上传路径。
 
 ## 最终页面与空间保留
 
@@ -40,3 +40,6 @@
 
 
 2026-10-14 分发复查：六包字节/SHA 再次一致，当前 Library 正式流程两次均在准备前失败，无 Library ID；私库 Release 只读列表为空，连接工具没有 Release 写入接口，gh 认证失败。准确证据见 [DISTRIBUTION_STATUS.json](../test-evidence/incremental-update-distribution-20261014/DISTRIBUTION_STATUS.json)。下载后的本版命令见 [38c9c61 安装说明](../DELIVERY_38C9C61_INSTALL.md)，避免使用包内旧 Docker 示例的 tag。
+
+
+最新直接路径诊断已取代先前“无 Library ID”的分发状态：标准 NodeReady `libfile_843d7a91e7088191b087077dcae0593c`（35412021 bytes），Lite NodeReady `libfile_20ea06045abc8191b2554aef3dbd4d1e`（30514231 bytes）。这两个保存确认与本地 SHA 校验均通过；没有宣称执行过 Library 远端重新下载的 SHA 比较。四大包为传输拒绝，未保存。
