@@ -1,0 +1,300 @@
+{
+  "realDocker": true,
+  "sameImmutableImageId": "sha256:0958b0fbf381485f5b2bdae3f53620b247d9ea5d24ae3248bc2955cdcc56503c",
+  "foreignContainerId": "9f7e22bdb09b2df1fa7800e2dbf090deda45c3876564511a36d0d4b302dd87fc",
+  "foreignLaunchId": "396cd7d0-0833-408c-abd4-2ccad42add58",
+  "backupChangedLaunchId": "fdf70167-ff8a-4015-a13a-a254df63d8e0",
+  "actualBackupCompleted": true,
+  "normalStopPreservedForeign": true,
+  "startAndErrorRecoveryRefusedComposeUp": true,
+  "closePreservedForeign": true,
+  "maintenanceRetained": true,
+  "result": {
+    "error": "UPDATE_ROLLBACK_HEALTH_FAILED"
+  },
+  "state": {
+    "version": 1,
+    "phase": "failed",
+    "current": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "65f9d4925f65ed2d22b1f7a47053eac96b4a4128562d10fc3d2b23168373e419",
+      "imageId": "sha256:0958b0fbf381485f5b2bdae3f53620b247d9ea5d24ae3248bc2955cdcc56503c"
+    },
+    "steps": {
+      "preflight": "passed",
+      "download": "skipped",
+      "backup": "passed",
+      "update": "running",
+      "health": "pending",
+      "rollback": "pending"
+    },
+    "operationId": "8810a1a5-c685-4567-867c-d75af629cceb",
+    "plannedPayloadBytes": 210,
+    "metadataBytes": 15012,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:8a59113cac63249f15fd719642c0838ab98f1212c7c3ea023cc5a60babfe802d",
+      "sha256:3e5034e5236531593e493dc774ef6748bbc3e8c1595c210d4a700b58c3767e7c"
+    ],
+    "label": "本地真实应用 Docker 增量验收",
+    "notes": [
+      "镜像层增量，非文件级补丁；数据库结构不变。"
+    ],
+    "availableRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "availableManifestSha256": "34d08d0c167c70a34e5f47ef4ee8efe14e11aa671ef2c37d61f159e1c2864a5a",
+    "requestFingerprint": "79d44126b54f77bc2fefa8f2c32509db802eca62d66080fb2a11b749c7c3c79b",
+    "from": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "65f9d4925f65ed2d22b1f7a47053eac96b4a4128562d10fc3d2b23168373e419",
+      "imageId": "sha256:0958b0fbf381485f5b2bdae3f53620b247d9ea5d24ae3248bc2955cdcc56503c"
+    },
+    "backupCreated": true,
+    "downloadedPayloadBytes": 0,
+    "target": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "34d08d0c167c70a34e5f47ef4ee8efe14e11aa671ef2c37d61f159e1c2864a5a",
+      "imageId": "sha256:b31653a9ab3e9271c99a23f5c932bfd1847dc593ba6360023a7591888f806222"
+    },
+    "previous": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "34d08d0c167c70a34e5f47ef4ee8efe14e11aa671ef2c37d61f159e1c2864a5a",
+      "imageId": "sha256:b31653a9ab3e9271c99a23f5c932bfd1847dc593ba6360023a7591888f806222"
+    },
+    "error": "UPDATE_ROLLBACK_HEALTH_FAILED",
+    "ownerId": "c23aa922-5f5c-4dad-a62b-f902de10427a",
+    "deploymentMode": "docker-managed",
+    "mechanism": "image-layers",
+    "profile": "lite",
+    "maintenance": true,
+    "changedFiles": [],
+    "unchangedFiles": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:8a59113cac63249f15fd719642c0838ab98f1212c7c3ea023cc5a60babfe802d",
+      "sha256:3e5034e5236531593e493dc774ef6748bbc3e8c1595c210d4a700b58c3767e7c"
+    ],
+    "deletedFiles": [],
+    "fixture": false
+  },
+  "commands": [
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "stop",
+      "--time",
+      "30",
+      "c173f9a8b03c27f0ef049c4206df00f2d77001ef0d943f5da27a7c153fb38598"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c27f0ef049c4206df00f2d77001ef0d943f5da27a7c153fb38598"
+    ],
+    [
+      "compose",
+      "--project-name",
+      "baize-upd-accept-lite-684cea",
+      "--env-file",
+      "/tmp/baize-d836-docker-accept/lite/ops/.env",
+      "-f",
+      "/tmp/baize-d836-docker-accept/lite/compose.json",
+      "-f",
+      "/workspace/baize-transfer/final-lite-delivery-agent/compose-update-override.json",
+      "run",
+      "--rm",
+      "--no-deps",
+      "--pull",
+      "never",
+      "-T",
+      "--entrypoint",
+      "node",
+      "app",
+      "dist/server/scripts/lite-ops.js",
+      "backup",
+      "/backup-out/recovery"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--filter",
+      "label=com.docker.compose.oneoff=False",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ],
+    [
+      "container",
+      "stop",
+      "--time",
+      "30",
+      "c173f9a8b03c27f0ef049c4206df00f2d77001ef0d943f5da27a7c153fb38598"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c27f0ef049c4206df00f2d77001ef0d943f5da27a7c153fb38598"
+    ],
+    [
+      "container",
+      "ls",
+      "--all",
+      "--filter",
+      "label=com.docker.compose.project=baize-upd-accept-lite-684cea",
+      "--filter",
+      "label=com.docker.compose.service=app",
+      "--format",
+      "{{.ID}}"
+    ],
+    [
+      "container",
+      "inspect",
+      "9f7e22bdb09b"
+    ],
+    [
+      "container",
+      "inspect",
+      "c173f9a8b03c"
+    ]
+  ],
+  "commandFailures": [],
+  "directStart": {
+    "error": "UPDATE_CONTAINER_NOT_OWNED"
+  }
+}

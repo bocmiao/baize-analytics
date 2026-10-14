@@ -1,0 +1,14 @@
+[
+  {
+    "original": "/workspace/baize-transfer/delivery-38c9c61/baize-standard-bundled-node-linux-x64-38c9c61",
+    "retained": "/workspace/baize-transfer/delivery-38c9c61/baize-standard-bundled-node-linux-x64-38c9c61.tar.gz",
+    "bytes": 275515627,
+    "method": "packaged startup and verifyRelease passed; remove only own expanded bundled copy; archive retained"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-38c9c61/baize-lite-bundled-node-linux-x64-38c9c61",
+    "retained": "/workspace/baize-transfer/delivery-38c9c61/baize-lite-bundled-node-linux-x64-38c9c61.tar.gz",
+    "bytes": 263539777,
+    "method": "packaged startup and verifyRelease passed; remove only own expanded bundled copy; archive retained"
+  }
+]

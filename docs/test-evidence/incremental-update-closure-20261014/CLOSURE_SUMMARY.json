@@ -1,0 +1,26 @@
+{
+  "codeRevision": "38c9c611cb535816edc8748c6144284434ba3e67",
+  "fullRegression": {
+    "numTotalTestSuites": 503,
+    "numPassedTestSuites": 503,
+    "numFailedTestSuites": 0,
+    "numPendingTestSuites": 0,
+    "numTotalTests": 1192,
+    "numPassedTests": 1192,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "numTodoTests": 0
+  },
+  "targetedPassed": 32,
+  "ownershipPassed": 24,
+  "protocolPassed": 8,
+  "finalNativeExecutorSha256": "7ddd8c69bbd4e4987af387cbd653bea2068d26920161319580cbe431bfd39b55",
+  "standardDocker": true,
+  "liteDocker": true,
+  "offlineActualLoadBoth": true,
+  "nativePackagesActualStartupFour": true,
+  "finalUiBoth1440And320": true,
+  "libraryPackagesUploaded": false,
+  "libraryBlocker": "hosted apps tools/list request failed: network",
+  "binaryArchivesCommitted": false
+}

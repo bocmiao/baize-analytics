@@ -1,0 +1,11 @@
+{
+  "sourceRevision": "38c9c611cb535816edc8748c6144284434ba3e67",
+  "exitCode": 0,
+  "abortedForSpace": false,
+  "minimumAvailableBytes": {
+    "/workspace": 5019566080,
+    "/tmp": 3894775808
+  },
+  "guardBytes": 3489660928,
+  "temporaryDirectory": "/workspace/ci-tmp"
+}

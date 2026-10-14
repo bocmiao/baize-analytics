@@ -1,0 +1,16 @@
+[
+  {
+    "original": "/workspace/baize-transfer/native-final-health-38c9c61/standard/releases",
+    "retained": "/workspace/baize-transfer/38c9c61-synchronized-standard-releases-retained.tar.gz",
+    "bytes": 592316536,
+    "retainedBytes": 175592163,
+    "method": "gzip1 tar compare; retire stopped controlled code trees; all data/config/keys/backups and synchronized proof retained"
+  },
+  {
+    "original": "/workspace/baize-transfer/native-final-health-38c9c61/lite/releases",
+    "retained": "/workspace/baize-transfer/38c9c61-synchronized-lite-releases-retained.tar.gz",
+    "bytes": 544423052,
+    "retainedBytes": 154048439,
+    "method": "gzip1 tar compare; retire stopped controlled code trees; all data/config/keys/backups and synchronized proof retained"
+  }
+]

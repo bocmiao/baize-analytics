@@ -1,0 +1,26 @@
+import {spawn} from 'node:child_process';
+import {readFileSync,writeFileSync,mkdirSync,openSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import {chromium} from '@playwright/test';
+const root=resolve(process.env.BAIZE_DOCKER_ACCEPT_ROOT??'/workspace/baize-transfer/docker-accept-r2');
+const output=resolve(process.env.BAIZE_UPDATE_UI_EVIDENCE??'/workspace/baize-transfer/ui-evidence');mkdirSync(output,{recursive:true,mode:0o700});
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});const evidence=[];
+try{for(const profile of (process.env.BAIZE_UI_PROFILES?.split(',')??['standard','lite'])){
+ const config=JSON.parse(readFileSync(join(root,profile,'private-config.json'),'utf8'));
+ const executor=spawn(process.execPath,[resolve('dist/updater/baize-docker-updater.mjs'),'--docker-config',join(root,profile,'private-config.json')],{env:{...process.env,DOCKER_CONFIG:'/workspace/baize-transfer/docker-cli'},stdio:['ignore',openSync(join(output,profile+'-executor.stdout.log'),'a'),openSync(join(output,profile+'-executor.stderr.log'),'a')]});
+ try{
+  let ready=false;for(let i=0;i<160;i++){try{const r=await fetch(config.healthUrl+'/healthz');if(r.ok){ready=true;break;}}catch{}await new Promise(d=>setTimeout(d,250));}if(!ready)throw Error(profile+' UI runtime not ready');
+  for(const width of [1440,320]){
+   const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce',locale:'zh-CN'});const errors:string[]=[];const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+   let login;for(let attempt=0;attempt<80;attempt++){try{login=await context.request.post(config.healthUrl+'/api/login',{data:{email:'owner@fixture.invalid',password:'ControlledFixtureOnly!12'}});if(login.ok())break;}catch{if(executor.exitCode!==null)throw Error('UI executor exited '+executor.exitCode);}await new Promise(d=>setTimeout(d,250));}if(!login?.ok())throw Error('UI login failed '+login?.status()+' '+await login?.text());
+   const sites=await(await context.request.get(config.healthUrl+'/api/v1/sites')).json();await page.goto(config.healthUrl+'/app?report=updates&site='+sites.sites[0].id);await page.getByRole('heading',{name:'更新与恢复'}).waitFor();await page.getByText('预计总下载量',{exact:true}).waitFor();
+   await page.waitForFunction(()=>document.querySelector('.update-center')?.textContent?.includes('代码已回滚'));
+   const total=await page.locator('.update-release .update-facts div').first().innerText();const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(overflow)throw Error(profile+' '+width+' horizontal overflow');
+   await page.getByRole('checkbox').check();await page.getByRole('checkbox').uncheck();await page.keyboard.press('Tab');
+   await page.getByRole('heading',{name:'更新与恢复'}).click();
+   const screenshot=join(output,`update-${profile}-${width}.png`);await page.screenshot({path:screenshot,fullPage:true});
+   evidence.push({profile,width,reducedMotion:true,checkboxOperated:true,keyboardTabOperated:true,horizontalOverflow:overflow,pageErrors:errors,total,screenshot});if(errors.length)throw Error('UI page errors');await context.close();
+  }
+ }finally{executor.kill('SIGTERM');await new Promise<void>(d=>{if(executor.exitCode!==null)d();else executor.once('exit',()=>d());});}
+}}finally{await browser.close();}
+writeFileSync(join(output,'UI_ACCEPTANCE.json'),JSON.stringify({realDockerApplication:true,evidence},null,2));

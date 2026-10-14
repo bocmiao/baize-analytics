@@ -1,0 +1,16 @@
+[
+  {
+    "original": "/workspace/baize-transfer/delivery-38c9c61/baize-standard-docker-offline-38c9c61.tar.gz",
+    "retained": "/tmp/baize-final38-offline-retained/baize-standard-docker-offline-38c9c61.tar.gz",
+    "bytes": 292097025,
+    "sha256": "609ec43d980884f77e3fdf2c4e9048d5db2adac28404e0d8b6ae6a05edc52e2d",
+    "method": "copy, verify exact final archive SHA256, retain original path as symlink"
+  },
+  {
+    "original": "/workspace/baize-transfer/delivery-38c9c61/baize-lite-docker-offline-38c9c61.tar.gz",
+    "retained": "/tmp/baize-final38-offline-retained/baize-lite-docker-offline-38c9c61.tar.gz",
+    "bytes": 124958546,
+    "sha256": "bd2694fd9eef497907538f5c4418d69b722393fd8fd60fc3f8e0fce5da210347",
+    "method": "copy, verify exact final archive SHA256, retain original path as symlink"
+  }
+]

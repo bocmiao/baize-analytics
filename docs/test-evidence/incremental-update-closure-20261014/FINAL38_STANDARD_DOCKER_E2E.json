@@ -1,0 +1,187 @@
+{
+  "profile": "standard",
+  "realApplication": true,
+  "realDatabase": "PostgreSQL",
+  "sourceRevision": "38c9c611cb535816edc8748c6144284434ba3e67",
+  "upgrade": {
+    "version": 1,
+    "phase": "completed",
+    "current": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+      "imageId": "sha256:218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b"
+    },
+    "steps": {
+      "preflight": "passed",
+      "download": "passed",
+      "backup": "passed",
+      "update": "passed",
+      "health": "passed",
+      "rollback": "pending"
+    },
+    "operationId": "eec28b7a-b516-44ea-a3e6-181e01004f41",
+    "plannedPayloadBytes": 218,
+    "metadataBytes": 15034,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:f4c703844aadbc44e037473366a73dd28740f1e11d2eb38a74f8f32ade925a1a",
+      "sha256:97b3930a2f8e90af4a8a1c43790be03bc4f71db6b1e92826f646ffcca287f758"
+    ],
+    "label": "本地真实应用 Docker 增量验收",
+    "notes": [
+      "镜像层增量，非文件级补丁；数据库结构不变。"
+    ],
+    "availableRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "availableManifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+    "requestFingerprint": "18037658e0c9a8daf1a441bdb451cce0e48a063726965d64f2656ea655a42b34",
+    "from": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "6b01e515b1d846be3fa52611fbecd5043185ed81e1d97d87e0c6caa30b590eaa",
+      "imageId": "sha256:0219b1581e85a1afec279106118429adc6cc0664477f1feab1a38b83a0324877"
+    },
+    "backupCreated": true,
+    "downloadedPayloadBytes": 218,
+    "target": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+      "imageId": "sha256:218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b"
+    },
+    "previous": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "6b01e515b1d846be3fa52611fbecd5043185ed81e1d97d87e0c6caa30b590eaa",
+      "imageId": "sha256:0219b1581e85a1afec279106118429adc6cc0664477f1feab1a38b83a0324877"
+    },
+    "ownerId": "dc865f94-0033-4cfb-96cb-231b25b5b3c7",
+    "deploymentMode": "docker-managed",
+    "mechanism": "image-layers",
+    "profile": "standard",
+    "maintenance": false,
+    "changedFiles": [],
+    "unchangedFiles": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:f4c703844aadbc44e037473366a73dd28740f1e11d2eb38a74f8f32ade925a1a",
+      "sha256:97b3930a2f8e90af4a8a1c43790be03bc4f71db6b1e92826f646ffcca287f758"
+    ],
+    "deletedFiles": [],
+    "fixture": false
+  },
+  "rollback": {
+    "version": 1,
+    "phase": "rolled_back",
+    "current": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "6b01e515b1d846be3fa52611fbecd5043185ed81e1d97d87e0c6caa30b590eaa",
+      "imageId": "sha256:0219b1581e85a1afec279106118429adc6cc0664477f1feab1a38b83a0324877"
+    },
+    "steps": {
+      "preflight": "passed",
+      "download": "skipped",
+      "backup": "passed",
+      "update": "passed",
+      "health": "passed",
+      "rollback": "passed"
+    },
+    "operationId": "d1b0f722-4feb-4d28-a79c-db0a874ece41",
+    "plannedPayloadBytes": 218,
+    "metadataBytes": 15034,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:f4c703844aadbc44e037473366a73dd28740f1e11d2eb38a74f8f32ade925a1a",
+      "sha256:97b3930a2f8e90af4a8a1c43790be03bc4f71db6b1e92826f646ffcca287f758"
+    ],
+    "label": "本地真实应用 Docker 增量验收",
+    "notes": [
+      "镜像层增量，非文件级补丁；数据库结构不变。"
+    ],
+    "availableRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "availableManifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+    "requestFingerprint": "79d44126b54f77bc2fefa8f2c32509db802eca62d66080fb2a11b749c7c3c79b",
+    "from": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+      "imageId": "sha256:218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b"
+    },
+    "backupCreated": true,
+    "downloadedPayloadBytes": 0,
+    "target": {
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "6b01e515b1d846be3fa52611fbecd5043185ed81e1d97d87e0c6caa30b590eaa",
+      "imageId": "sha256:0219b1581e85a1afec279106118429adc6cc0664477f1feab1a38b83a0324877"
+    },
+    "previous": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+      "imageId": "sha256:218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b"
+    },
+    "ownerId": "dc865f94-0033-4cfb-96cb-231b25b5b3c7",
+    "deploymentMode": "docker-managed",
+    "mechanism": "image-layers",
+    "profile": "standard",
+    "maintenance": false,
+    "changedFiles": [],
+    "unchangedFiles": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:f4c703844aadbc44e037473366a73dd28740f1e11d2eb38a74f8f32ade925a1a",
+      "sha256:97b3930a2f8e90af4a8a1c43790be03bc4f71db6b1e92826f646ffcca287f758"
+    ],
+    "deletedFiles": [],
+    "fixture": false
+  },
+  "verification": {
+    "operationId": "eec28b7a-b516-44ea-a3e6-181e01004f41",
+    "manifestDigest": "sha256:ad6116e8af5151c34f683dd724ceb0f40d0b0fad41dbddd66519766fff9b899a",
+    "imageId": "sha256:218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b",
+    "downloadedLayerBytes": 218,
+    "metadataConfigBytes": 9797,
+    "reusedLayers": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:a52fce3e2e53c15bee62149c2a83480bfc3000e19b253dba304220e3d487582f",
+      "sha256:65d71716d250882cedd073ea8e6ab52eb8ce7372fb9eed886775d91dbf9b0f74",
+      "sha256:bdfbfbb03dafc1b269c0668c632ae06c04bff6bc9ae624c8a9cbb3ecb4ad1d3c",
+      "sha256:b6a146dc1aed9a3193cadd3aa94373029d72d93c212e59a42c5d0194b2157ab5",
+      "sha256:4d8c26e26c09a448b231dda65686bd70a922a88f02782aff5b17f47352ec5a70",
+      "sha256:f4c703844aadbc44e037473366a73dd28740f1e11d2eb38a74f8f32ade925a1a",
+      "sha256:97b3930a2f8e90af4a8a1c43790be03bc4f71db6b1e92826f646ffcca287f758"
+    ],
+    "noNetworkFullImageDownloaded": true
+  },
+  "downloadRequests": [
+    {
+      "path": "/latest.json",
+      "bytes": 5237
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 5237
+    },
+    {
+      "path": "/blobs/218030cf73f6a7ef952594f27fd3427dde211b1331e914f40fddab884bda342b",
+      "bytes": 9797
+    },
+    {
+      "path": "/blobs/c63f51d9b39cad3f2bc5b93c2e6878c32e58d44caa4e6d83102f6b86d402fbe5",
+      "bytes": 218
+    }
+  ],
+  "bothWritesSurvived": true
+}

@@ -1,0 +1,178 @@
+{
+  "selected": [
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:34:11.086812726 +0000 UTC",
+        "Description": "mount / from exec /bin/sh -c mkdir -p /app/data /app/keys && chown node:node /app/data /app/keys && chmod 700 /app/data /app/keys",
+        "ID": "ntlkflb8cxawmfm9hynlce1b7",
+        "LastUsedAt": "2 hours ago",
+        "Mutable": false,
+        "Parents": [
+          "anbvxwzb6or3z0r7z6fvhlujx"
+        ],
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "0B",
+        "Type": "regular",
+        "UsageCount": 1
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nntlkflb8cxawmfm9hynlce1b7               \ttrue \t\t0B        \t2 hours ago\nTotal:\t0B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:40:48.925993827 +0000 UTC",
+        "Description": "mount / from exec /bin/sh -c mkdir -p /app/data /app/keys && chown node:node /app/data /app/keys && chmod 700 /app/data /app/keys",
+        "ID": "vztegoz53tzqe6izou9kv35us",
+        "LastUsedAt": "2 hours ago",
+        "Mutable": false,
+        "Parents": [
+          "o99riryr2xonxwdg50nluaduf"
+        ],
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "0B",
+        "Type": "regular",
+        "UsageCount": 1
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nvztegoz53tzqe6izou9kv35us               \ttrue \t\t0B        \t2 hours ago\nTotal:\t0B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:40:46.817643913 +0000 UTC",
+        "Description": "[3/4] COPY --chown=node:node . /app",
+        "ID": "o99riryr2xonxwdg50nluaduf",
+        "LastUsedAt": "2 hours ago",
+        "Mutable": false,
+        "Parents": [
+          "oyyek1jznmroqb0kj83lcnjdh"
+        ],
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "133.7MB",
+        "Type": "regular",
+        "UsageCount": 1
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\no99riryr2xonxwdg50nluaduf               \ttrue \t\t133.7MB   \t2 hours ago\nTotal:\t133.7MB\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:34:09.017239854 +0000 UTC",
+        "Description": "[3/4] COPY --chown=node:node . /app",
+        "ID": "anbvxwzb6or3z0r7z6fvhlujx",
+        "LastUsedAt": "2 hours ago",
+        "Mutable": false,
+        "Parents": [
+          "oyyek1jznmroqb0kj83lcnjdh"
+        ],
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "150.8MB",
+        "Type": "regular",
+        "UsageCount": 1
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nanbvxwzb6or3z0r7z6fvhlujx               \ttrue \t\t150.8MB   \t2 hours ago\nTotal:\t150.8MB\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:40:41.572684549 +0000 UTC",
+        "Description": "local source for context",
+        "ID": "1mi22kvkhe0ob3ay445c86v67",
+        "LastUsedAt": "10 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "0B",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n1mi22kvkhe0ob3ay445c86v67*              \ttrue \t\t0B        \t11 minutes ago\nTotal:\t0B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:34:04.488120287 +0000 UTC",
+        "Description": "local source for context",
+        "ID": "399bejg5f08hbc2pw4kv8mg6k",
+        "LastUsedAt": "11 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "0B",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n399bejg5f08hbc2pw4kv8mg6k*              \ttrue \t\t0B        \t12 minutes ago\nTotal:\t0B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:40:41.556492285 +0000 UTC",
+        "Description": "local source for dockerfile",
+        "ID": "mlbs8r75cddhaxl749zz7fmzi",
+        "LastUsedAt": "10 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "819B",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nmlbs8r75cddhaxl749zz7fmzi*              \ttrue \t\t819B      \t11 minutes ago\nTotal:\t819B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:34:04.476275577 +0000 UTC",
+        "Description": "local source for dockerfile",
+        "ID": "wqwukwjmp4mlgi7dddn02w4mc",
+        "LastUsedAt": "11 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "825B",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nwqwukwjmp4mlgi7dddn02w4mc*              \ttrue \t\t825B      \t12 minutes ago\nTotal:\t825B\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:40:41.587236282 +0000 UTC",
+        "Description": "local source for context",
+        "ID": "dztsvfn00qawjb8rnfqqkwxfi",
+        "LastUsedAt": "10 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "133.7MB",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\ndztsvfn00qawjb8rnfqqkwxfi*              \ttrue \t\t133.7MB   \t11 minutes ago\nTotal:\t133.7MB\n"
+    },
+    {
+      "record": {
+        "CreatedAt": "2026-10-13 21:34:04.499518237 +0000 UTC",
+        "Description": "local source for context",
+        "ID": "jsfpf06v75cizombfklq21694",
+        "LastUsedAt": "11 minutes ago",
+        "Mutable": true,
+        "Parents": null,
+        "Reclaimable": true,
+        "Shared": false,
+        "Size": "150.8MB",
+        "Type": "source.local",
+        "UsageCount": 2
+      },
+      "output": "WARNING! This will remove all dangling build cache. Are you sure you want to continue? [y/N] ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\njsfpf06v75cizombfklq21694*              \ttrue \t\t150.8MB   \t12 minutes ago\nTotal:\t150.8MB\n"
+    }
+  ],
+  "recoverFrom": [
+    "d8362d0-all-own-delivery-images-retained.tar.gz",
+    "closure2-d836-standard-runtime-retained.tar.gz",
+    "closure2-d836-lite-runtime-retained.tar.gz"
+  ],
+  "method": "only exact self-owned inactive old delivery cache IDs; rebuild from retained exact images/staging trees; no global prune"
+}
