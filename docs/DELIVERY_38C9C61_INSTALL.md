@@ -166,3 +166,6 @@ KEYS_DIR=/var/lib/baize/keys
 对外使用前配置 HTTPS 反向代理、正确的 `PUBLIC_URL` 与受信代理。不要把数据、密钥、备份或配置目录设置为静态根目录。网页检查的 HTTPS 配置提示不代表证书已验证；对外开放前须实际检查域名、证书和代理。
 
 升级保留旧发布、配置和独立密钥；先停止源写入并获取验证过的备份，在新的数据库/目录中验证候选版本，再由操作员明确切换服务。失败保留源数据及恢复点。回滚恢复到兼容旧版本的新目标，同时回放最新独立删除日志；不能直接让旧程序读取新版数据库。恢复会撤销旧登录会话及临时授权，用户用原密码重新登录。标准版非 Docker PG-only 工具不支持严格 ClickHouse 历史权威模式，会提前拒绝。详细命令见 [原生维护](release-native-ops.md)、[Lite 部署](lite-deployment.md)及 [发布包清单](release-packages.md)。
+
+
+1Panel／宝塔请优先使用 [面板安装说明](PANEL_INSTALLATION.md)。环境恢复后旧 /tmp 两 Docker 原归档已不可读；从相同镜像恢复的新归档使用独立 recovered 文件名与新 SHA，见 [当前恢复清单](test-evidence/panel-install-20261014/RECOVERED_OFFLINE_INDEX.json)。原历史清单不代表这些恢复归档的压缩字节身份。

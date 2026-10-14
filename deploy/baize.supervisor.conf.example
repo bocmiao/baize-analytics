@@ -1,0 +1,28 @@
+; 1Panel Supervisor / equivalent Baota process supervisor.
+; Operator imports this program section; not an auto-installer.
+; Replace release directory, existing service user, private env and log paths.
+; Keep this outside the sealed release; do not run a second process manager.
+[program:baize]
+directory=/opt/baize/releases/baize-lite-node-ready-linux-x64-38c9c61
+command=/bin/bash /opt/baize/releases/baize-lite-node-ready-linux-x64-38c9c61/scripts/release-start.sh --env-file /etc/baize/runtime.env
+user=baize
+numprocs=1
+autostart=true
+autorestart=unexpected
+exitcodes=0
+startsecs=3
+startretries=3
+stopsignal=TERM
+stopwaitsecs=30
+stopasgroup=true
+killasgroup=true
+umask=0077
+redirect_stderr=false
+stdout_logfile=/var/log/baize/app.log
+stderr_logfile=/var/log/baize/app-error.log
+stdout_logfile_maxbytes=20MB
+stderr_logfile_maxbytes=20MB
+stdout_logfile_backups=2
+stderr_logfile_backups=2
+; NodeReady: expose the actual Node 24 bin directory through the manager PATH.
+; Bundled Node: use the matching bundled-node release directory above.

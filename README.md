@@ -121,3 +121,6 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 实例拥有者可在“设置 → 系统更新”核对增量版本与下载量。首次接入、支持范围和回滚规则见 [实例增量更新指南](docs/INSTANCE_INCREMENTAL_UPDATES.md)。
 
 维护执行器失去独占锁时保持维护状态，确认旧执行器及任务停止后再接续。部署交付为标准/Lite两个离线Docker包与四个原生包，源码和执行器是额外附件；详见实例增量更新指南。
+
+
+面板部署优先阅读 [1Panel／宝塔安装与网页初始化](docs/PANEL_INSTALLATION.md)：包含实际受测的守护配置、私有目录、初始化和中断恢复；安装与后台增量更新分开操作。
