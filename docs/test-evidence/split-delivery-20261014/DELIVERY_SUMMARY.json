@@ -1,0 +1,28 @@
+{
+  "checkedAtUtc": "2026-10-14T16:27:09.766599+00:00",
+  "largeArchiveCount": 4,
+  "partCount": 19,
+  "maximumPartBytes": 33554432,
+  "allPartCreatesSucceeded": true,
+  "allReturnedSizesMatched": true,
+  "identityMetadataAppliedAll19": true,
+  "originalArchivesUnchanged": true,
+  "actualFourReassembliesVerified": true,
+  "deliveredPythonRestoreAllFourVerified": true,
+  "missingPartRejected": true,
+  "existingOutputRejected": true,
+  "powershellExecutedOnWindows": false,
+  "existingNodeReadyNotReuploaded": true,
+  "noBinaryPartsCommittedToGit": true,
+  "oldPutTransportFailureUnchanged": true,
+  "resourceAuthorizationDenialCodeObserved": false,
+  "noPermissionCredentialDestinationChanges": true,
+  "downloadKit": {
+    "file_name": "baize-split-download-kit-20261014.zip",
+    "file_size_bytes": 10590,
+    "library_file_id": "libfile_fd149a08c84c8191830dd8ac4f485185",
+    "file_id": "file_000000002a188230a4edb2fd91400e67"
+  },
+  "downloadKitSha256": "7a01dacc0537f8faf0ac7eba21cb71572662483e6a709da01b71bf89319e3d10",
+  "verificationCopyRetirement": "Only newly reassembled verification copies were removed after hashes and archive checks. Original archives and all 19 parts remain under /workspace/baize-transfer."
+}

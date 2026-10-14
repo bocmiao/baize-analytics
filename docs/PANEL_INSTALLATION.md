@@ -22,7 +22,7 @@ sha256sum -c chosen.SHA256SUMS
 
 其他包使用自己的精确文件名。不要相信来源不明的同名包。软件 revision 固定为 `38c9c611cb535816edc8748c6144284434ba3e67`，这份面板说明和配置是附加交付，不需要修改密封运行包。下载 [守护配置](../deploy/baize.supervisor.conf.example) 放在包外，不向包内添加文件，以免完整性检查拒绝启动。
 
-部署机须为 Linux x64/glibc，具备兼容的 Node 24、Bash、flock；Lite 还会实际检查 Node SQLite 能力。NodeReady 不包含 Node。不要直接采用面板默认的较旧 Node。已有 bundled-node 包可自动使用包里的 runtime/bin/node，但这两个 bundled 包及 Docker 包尚未成功完成 Library 分发，不能把它们当作已有下载链接。
+部署机须为 Linux x64/glibc，具备兼容的 Node 24、Bash、flock；Lite 还会实际检查 Node SQLite 能力。NodeReady 不包含 Node。不要直接采用面板默认的较旧 Node。已有 bundled-node 包可自动使用包里的 runtime/bin/node，两个 bundled 包及 Docker 包现已通过 [分卷交付](SPLIT_DELIVERY_20261014.md) 保存到 Library，下载完整分卷后还原；不是单个完整大包链接。
 
 标准版使用 PostgreSQL，不能填 MySQL 连接串；当前原生自动更新仅支持 PG-only。Redis 可选，ClickHouse 模式有单独维护约束。两版不能通过换包互转数据库。PHP 适合另一些项目的安装目标，但对白泽做 PHP 重写会丢失现有运行与维护体系，不是简化安装的必要条件。
 
@@ -120,7 +120,7 @@ curl --fail --silent --show-error http://127.0.0.1:3000/healthz
 
 本次新增文档和守护配置，沿用已验收的 38c9c61 程序包，没有重写后端或重做全站。标准与 Lite 实际浏览器 + Supervisor 4.3.0 安装、重复安装拒绝、安装前重启、强杀自动恢复、管理员/站点/配置保留均通过，安装相关回归 28/28。数据/配置留在包外；未部署生产、修改现有账户或执行平台任务。
 
-可下载的 Library 包仍只有上述两个 NodeReady。四大包的 prepared 字节上传此前报 Forbidden，未解决；私库 Release 未发布。环境恢复使旧 /tmp Docker 两归档丢失，本轮已从原精确镜像恢复到持久工作区，以 recovered 文件名单独记录新字节/SHA并实际 load 核对镜像 ID；不冒称其压缩字节与旧包一致，也没有上传成功链接。详见 [恢复包清单](test-evidence/panel-install-20261014/RECOVERED_OFFLINE_INDEX.json)。
+可下载的 Library 交付为上述两个 NodeReady 整包及 [四大包分卷](SPLIT_DELIVERY_20261014.md)。旧 prepared PUT 路径仍未修复，本次使用用户明确要求的正式小文件创建接口，19 卷均保存成功；私库 Release 未发布。环境恢复使旧 /tmp Docker 两归档丢失，本轮已从原精确镜像恢复到持久工作区，以 recovered 文件名单独记录新字节/SHA并实际 load 核对镜像 ID；不冒称其压缩字节与旧包一致，也没有上传成功链接。详见 [恢复包清单](test-evidence/panel-install-20261014/RECOVERED_OFFLINE_INDEX.json)。
 
 本轮未安装 1Panel/宝塔完整面板 UI，未在真实域名验证证书和反向代理；不把这些待用户部署项计为通过。[实际测试证据](test-evidence/panel-install-20261014/PANEL_INSTALL_E2E.json)、[回归结果](test-evidence/panel-install-20261014/INSTALL_REGRESSION.json)和[截图](screenshots/panel-install-20261014/lite-setup-diagnostics-320.png)可核对。
 

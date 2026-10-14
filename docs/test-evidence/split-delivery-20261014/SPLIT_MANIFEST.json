@@ -1,0 +1,187 @@
+{
+  "formatVersion": 1,
+  "partSizeBytes": 33554432,
+  "allPartsSavedToLibrary": true,
+  "partCount": 19,
+  "packages": [
+    {
+      "file": "baize-standard-bundled-node-linux-x64-38c9c61.tar.gz",
+      "bytes": 80098280,
+      "sha256": "5ed1fa58fc3d580abc9dfabb517d6a577ef876b6c26d8c3850387ec4222e7bdc",
+      "partSizeBytes": 33554432,
+      "recoveredImageArchive": false,
+      "actualReassemblySha256Matched": true,
+      "reassembledGzipAndTarValidated": true,
+      "parts": [
+        {
+          "file": "baize-standard-bundled-node-linux-x64-38c9c61.tar.gz.part001",
+          "bytes": 33554432,
+          "sha256": "766bd43556f30457a715df54d74d0b2d53a34de564dfccc9c50b998c60b8d0d6",
+          "library_file_id": "libfile_df0baae71be08191aeb9a890aa5543f8",
+          "file_id": "file_00000000ef5481f596267797b13a6235"
+        },
+        {
+          "file": "baize-standard-bundled-node-linux-x64-38c9c61.tar.gz.part002",
+          "bytes": 33554432,
+          "sha256": "72a7e8931de909c06a151bde5c7ba22f560d941302655a59c0d878234884ab1c",
+          "library_file_id": "libfile_bf1ef8d4f01c8191a9e3442303d1c380",
+          "file_id": "file_00000000f440824388939f27bd081d94"
+        },
+        {
+          "file": "baize-standard-bundled-node-linux-x64-38c9c61.tar.gz.part003",
+          "bytes": 12989416,
+          "sha256": "d4be9fc69a8ed3098120cd75beaec4f9765a1d19cb8653dee163a8d5d980b8b8",
+          "library_file_id": "libfile_3982fb3aad048191b21273c941be69dc",
+          "file_id": "file_00000000581081f79d9a80991087283b"
+        }
+      ]
+    },
+    {
+      "file": "baize-lite-bundled-node-linux-x64-38c9c61.tar.gz",
+      "bytes": 75196927,
+      "sha256": "4e2c575e9812317bc5a60b2fb1a7004671083cde71237dbe4d3921486089556d",
+      "partSizeBytes": 33554432,
+      "recoveredImageArchive": false,
+      "actualReassemblySha256Matched": true,
+      "reassembledGzipAndTarValidated": true,
+      "parts": [
+        {
+          "file": "baize-lite-bundled-node-linux-x64-38c9c61.tar.gz.part001",
+          "bytes": 33554432,
+          "sha256": "5459edb03795f94168ec09e0f33c76a32edba075abe90fbc2d6c2ac5b928ead5",
+          "library_file_id": "libfile_96d2e4a9215c8191b41262cc9a076959",
+          "file_id": "file_00000000b5f881fdb4dd189afb28afdb"
+        },
+        {
+          "file": "baize-lite-bundled-node-linux-x64-38c9c61.tar.gz.part002",
+          "bytes": 33554432,
+          "sha256": "4ed4ace0013a5d73e255c3e45be9f8bbe8d8f5e4af46539394dc490fec05a7fe",
+          "library_file_id": "libfile_6ebbbed72a988191981088cf4ce0816a",
+          "file_id": "file_00000000b52c81fd8b5bd1b488c86ba0"
+        },
+        {
+          "file": "baize-lite-bundled-node-linux-x64-38c9c61.tar.gz.part003",
+          "bytes": 8088063,
+          "sha256": "174e1d06370480d868c6faec01a504e29b8f302678fb82a5220efb204a288058",
+          "library_file_id": "libfile_ab567acfbe488191b2a25ba466a5aea9",
+          "file_id": "file_000000005178822fba8fcfa24917d02f"
+        }
+      ]
+    },
+    {
+      "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz",
+      "bytes": 292387008,
+      "sha256": "e5a6e85006c0eca79def2b06eec0e151059ffd97dff3cee754232dc26068853e",
+      "partSizeBytes": 33554432,
+      "recoveredImageArchive": true,
+      "actualReassemblySha256Matched": true,
+      "reassembledGzipAndTarValidated": true,
+      "parts": [
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part001",
+          "bytes": 33554432,
+          "sha256": "21c3d0bb2fb3e3e85b44e100471d3e30f943bae296611817c2e32db7ab9870a8",
+          "library_file_id": "libfile_89ce372e083481918eb848973fbe50dc",
+          "file_id": "file_00000000a43081fdbeff9174f2f293ff"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part002",
+          "bytes": 33554432,
+          "sha256": "305d6fbd477d8693091fbb4f1151bb0bface7e4f5f8df87d5e909adb4b115bad",
+          "library_file_id": "libfile_af544cd71f008191832ed2d9f34796db",
+          "file_id": "file_000000009ac8820ea3e78e01009f64cf"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part003",
+          "bytes": 33554432,
+          "sha256": "95ca563339d246aad51859567f29a44b89970298cee37481dcd473c894265256",
+          "library_file_id": "libfile_a6d8efcd01f48191952f7a690e49e2d0",
+          "file_id": "file_000000004bec8230a5da7bb7a7fb0cd8"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part004",
+          "bytes": 33554432,
+          "sha256": "8eacc77a95a2c678b6409d8c4d842139cbc26054630609e7131fcf33cc4697f2",
+          "library_file_id": "libfile_7dba70df40048191ad7795f5d6fdbd8f",
+          "file_id": "file_00000000281881f4b723af155c1d23e0"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part005",
+          "bytes": 33554432,
+          "sha256": "e9479ca8fdba950a68dbd758c0b239d196e8925f5082bb278e2f1e123c452397",
+          "library_file_id": "libfile_900ef332b4dc819199cd3f1279da56f5",
+          "file_id": "file_00000000e24881f5bcf9b799add13006"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part006",
+          "bytes": 33554432,
+          "sha256": "bfdfb87f8494ba898f9603133eb67847cfdc1c5c4db07a150972829f6f838b59",
+          "library_file_id": "libfile_a2c053efc1108191aa3f222035fbfbff",
+          "file_id": "file_000000005424822fb5cf911475f311dd"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part007",
+          "bytes": 33554432,
+          "sha256": "80afe0c61439831a3d9d60590d9be2ae8aa86fa8901f866512e764e018bab366",
+          "library_file_id": "libfile_da4e0d94cdb08191b5ab31a1213f027e",
+          "file_id": "file_00000000bf448243a74cbdbd1af85f12"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part008",
+          "bytes": 33554432,
+          "sha256": "b94a23bfc351ab21b0c4b3c4259e2e259018c01fcda147c53ac76a4322d22ff2",
+          "library_file_id": "libfile_ffa1463092048191ab08970b7a8cbc99",
+          "file_id": "file_000000004dcc8210a8a18bf9041f95a6"
+        },
+        {
+          "file": "baize-standard-docker-offline-38c9c61-recovered.tar.gz.part009",
+          "bytes": 23951552,
+          "sha256": "6a4a131c6ad13151ec0c6ae069878c40154194189ab4db16c76b097573dd3ce1",
+          "library_file_id": "libfile_55ec379280c081918a79236957f38dd7",
+          "file_id": "file_00000000e2ac82118ebe6376b8ef2400"
+        }
+      ]
+    },
+    {
+      "file": "baize-lite-docker-offline-38c9c61-recovered.tar.gz",
+      "bytes": 125912375,
+      "sha256": "fdec4bd82997e0e77e54206be3e17fbaa05a7d3621973c86afddef3bd1646b95",
+      "partSizeBytes": 33554432,
+      "recoveredImageArchive": true,
+      "actualReassemblySha256Matched": true,
+      "reassembledGzipAndTarValidated": true,
+      "parts": [
+        {
+          "file": "baize-lite-docker-offline-38c9c61-recovered.tar.gz.part001",
+          "bytes": 33554432,
+          "sha256": "11fee83d3ea77b56e89e91b99a284444253b96f1b13c05dc41a451596ccc6f85",
+          "library_file_id": "libfile_c08ef12478d48191aac7f9d22d4d109d",
+          "file_id": "file_00000000fbdc81f590cdff1c28574701"
+        },
+        {
+          "file": "baize-lite-docker-offline-38c9c61-recovered.tar.gz.part002",
+          "bytes": 33554432,
+          "sha256": "dd2de27197849b74bf2e026e3f570d734920f41203e7c9dbeb467c75a8dad737",
+          "library_file_id": "libfile_2b656c8569c48191b36fce1d62645dec",
+          "file_id": "file_0000000087308211903cb31e027b1281"
+        },
+        {
+          "file": "baize-lite-docker-offline-38c9c61-recovered.tar.gz.part003",
+          "bytes": 33554432,
+          "sha256": "67c99b528435c67995e4a2d3b91b46ad6313792d4d298db89599df5b5982ee22",
+          "library_file_id": "libfile_cf4c43a4504081919d01e9974f0e6fdb",
+          "file_id": "file_00000000d67c81fd992c516ee1ea5851"
+        },
+        {
+          "file": "baize-lite-docker-offline-38c9c61-recovered.tar.gz.part004",
+          "bytes": 25249079,
+          "sha256": "775c865c84af2809dab7e5bb8cc0a82de7633d0cc73785f4dea7cc8232e427e8",
+          "library_file_id": "libfile_53810216573c8191831048ccefde9d22",
+          "file_id": "file_00000000356c81f592daff118fcbb868"
+        }
+      ]
+    }
+  ],
+  "unchangedNodeReadyPackagesNotReuploaded": true,
+  "authorizationNote": "User requested split files via official small-file create. Each create succeeded; no credential, permission, destination or signed URL altered. No resource authorization denial code had been received; old direct PUT transport Forbidden retained as historical failure."
+}

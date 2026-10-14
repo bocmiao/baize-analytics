@@ -1,6 +1,6 @@
 # 38c9c61 六包安装说明
 
-六包均已完成 SHA256、真实启动及 Docker load 验收。最新直接工具验证已成功保存标准和 Lite 两个 NodeReady 包到 Library；四个大包取得正式 prepared 会话后，实际 PUT 请求报 Forbidden，已传输 0 字节，未 finalize。两个已保存包的 Library IDs 和六包校验见 [DIRECT_PATH_FINAL.json](test-evidence/incremental-update-distribution-20261014/DIRECT_PATH_FINAL.json)。早前 Python helper 发现失败不代表直接工具不可用。私库 Release 仍无可用写入接口，本环境 gh 认证失败。没有更改凭据或私库权限。分发完成后，把选定归档和 [SHA256SUMS](test-evidence/incremental-update-closure-20261014/SHA256SUMS) 放在同一私有交付目录。只下载所需包时，在 Bash 中校验，例如：
+六包均已完成 SHA256、真实启动及 Docker load 验收。两个 NodeReady 整包已保存到 Library；四个大包现在通过 [19 卷分卷交付](SPLIT_DELIVERY_20261014.md) 保存到 Library，按清单还原即可。旧 prepared PUT Forbidden 路径仍未修复，不能将分卷成功误认为旧路径恢复。两个 Docker 包使用恢复后的 recovered 文件名及新 SHA，原历史 Docker 归档清单不代表恢复归档压缩字节。没有更改凭据或私库权限。下载并还原后，把选定归档和 [SHA256SUMS](test-evidence/incremental-update-closure-20261014/SHA256SUMS) 放在同一私有交付目录。只下载所需包时，在 Bash 中校验，例如：
 
 ```bash
 set -euo pipefail
@@ -169,3 +169,6 @@ KEYS_DIR=/var/lib/baize/keys
 
 
 1Panel／宝塔请优先使用 [面板安装说明](PANEL_INSTALLATION.md)。环境恢复后旧 /tmp 两 Docker 原归档已不可读；从相同镜像恢复的新归档使用独立 recovered 文件名与新 SHA，见 [当前恢复清单](test-evidence/panel-install-20261014/RECOVERED_OFFLINE_INDEX.json)。原历史清单不代表这些恢复归档的压缩字节身份。
+
+
+最新交付：两个 NodeReady 整包之外，四个大包已通过正式小文件创建接口分成 19 卷保存到 Library。下载说明、全包/分卷校验和 Library IDs 见 [分卷交付](SPLIT_DELIVERY_20261014.md)。Docker 使用 recovered 新文件名和新 SHA；历史原归档清单不可替代恢复包清单。
