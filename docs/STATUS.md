@@ -4,7 +4,7 @@
 
 ## 本轮新增
 
-保留原Node标准版，新增独立PHP + MySQL网页安装版，接收服务器只需PHP-FPM、数据库及CLI队列；MariaDB另行实测。安装入口、备份所需密钥与独立删除日志、旧Node数据边界见 [PHP安装说明](PHP_INSTALLATION.md)，业务套件、真实浏览器及隔离Nginx/FPM验证见 [本轮PHP记录](PHP_VALIDATION_20261015.md)。没有将PHP版作为Lite profile，也没有承诺直接打开旧PG/CH存档或相同大规模吞吐。
+保留原Node标准版，新增独立PHP + MySQL网页安装版，接收服务器只需PHP-FPM、数据库及CLI队列；MariaDB另行实测。安装入口、备份所需密钥与独立删除日志、旧Node数据边界见 [PHP安装说明](PHP_INSTALLATION.md)，业务套件、真实浏览器及隔离Nginx/FPM验证见 [本轮PHP记录](PHP_VALIDATION_20261015.md)，最终包修订、SHA256、每库29项HTTP及94状态浏览器见 [最终交付收据](PHP_DELIVERY_20261015.md)。没有将PHP版作为Lite profile，也没有承诺直接打开旧PG/CH存档或相同大规模吞吐。
 
 总览将本期观察放回趋势内部横向信息带，页面指标合为可比较表格，来源/地域/设备按内容分组；桌面、窄屏、少量/空数据与长文字证据见 [总览布局记录](OVERVIEW_LAYOUT_20261015.md)。39份历史交付、验收和交接文档已带原路径索引归档；原SDK、迁移、测试及历史截图证据保留，见 [仓库整理记录](REPOSITORY_ORGANIZATION_20261015.md)。
 

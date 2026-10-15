@@ -5,7 +5,7 @@
 | 任务 | 入口 |
 | --- | --- |
 | 运行原 Node 标准版或 Node Lite | [部署与首次使用](deployment-methods.md)、[1Panel／宝塔 Node 托管](PANEL_INSTALLATION.md) |
-| 安装独立 PHP + 数据库版 | [PHP 安装与验证边界](PHP_INSTALLATION.md) |
+| 安装独立 PHP + 数据库版 | [PHP 安装与验证边界](PHP_INSTALLATION.md)、[最终包交付收据](PHP_DELIVERY_20261015.md) |
 | 核对运行包依赖与内容 | [Node 发布包](release-packages.md)、[原生维护](release-native-ops.md) |
 | 备份、升级或迁移 | [迁移与恢复](migration.md)、[实例增量更新](INSTANCE_INCREMENTAL_UPDATES.md)、[Lite → Node 标准版](lite-migration.md) |
 | 使用 API 与连接器 | [API 手册](api.md)、[MCP](mcp.md)、[手动搜索导入](MANUAL_SEARCH_IMPORT.md) |

@@ -1,5 +1,7 @@
 # PHP + MySQL 网页安装版
 
+最终已验安装包、SHA-256、双数据库运行记录及剩余边界见 [2026-10-15 交付收据](PHP_DELIVERY_20261015.md)。
+
 原 Node.js 标准版继续保留，原安装入口为仓库根目录 `install.sh`、`docs/PANEL_INSTALLATION.md`。本目录说明独立的 PHP 运行时，代码在 `php/`，安装包只携带预构建的 React / ECharts 前端和 tracker；接收服务器不需要 Node.js。
 
 PHP 版使用独立的 InnoDB 文档表、事务锁行及队列租约，不执行 PostgreSQL 迁移，不将原库直接切换为 MySQL。原版的数据存档、scrypt 密码、加密设置和 ClickHouse 权威存储必须保留；没有经过验证的迁移工具时，不能直接复制表或替换正在运行的实例。PHP 目标为标准版功能；具体实现和测试边界请同时阅读随本次交付记录提供的功能对照，不把入口可用当作完整兼容证明。

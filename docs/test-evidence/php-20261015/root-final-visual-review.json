@@ -1,0 +1,32 @@
+{
+  "reviewer": "root",
+  "date": "2026-10-15",
+  "method": "Each listed image opened using view_image and visually inspected independently of the implementation agent.",
+  "images": [
+    {
+      "path": "docs/test-evidence/php-20261015/fpm-mariadb-final/php-desktop.png",
+      "sha256": "5503e199ba9c96e96f2359a8e18d3ae67cf9f0a3fea89928a3962e67ca288721"
+    },
+    {
+      "path": "docs/test-evidence/php-20261015/fpm-mariadb-final/php-mobile.png",
+      "sha256": "6dbf8747f62d50cac5cc8f2d1c69808a59540147f910214af9a0eedad5c9c0e3"
+    },
+    {
+      "path": "docs/test-evidence/overview-20261015/after/overview-desktop-full.png",
+      "sha256": "56a64de3559bc3f4b5d854474116f835753d2bf149652b637b87924cf8e72cde"
+    },
+    {
+      "path": "docs/test-evidence/overview-20261015/after/overview-long-chinese-390-controlled.png",
+      "sha256": "af7b31d8628cbc5e9da31f8987889063a4f898947c5238dd94bb389cd72de3c8"
+    }
+  ],
+  "observations": [
+    "Node multiple-data desktop: observations sit below trend; comparable page table precedes source/geography/device groups, without the old right-column hole.",
+    "Controlled long Chinese/mobile: text stays in page cells, all comparative columns remain in a local scroll area.",
+    "Final package MariaDB desktop and mobile: real small data rendered, chart single point is labelled; exact USD 1e-18 shown, sections stack without global horizontal overflow."
+  ],
+  "limitations": [
+    "Synthetic event fixtures; controlled long-text screenshot is explicitly intercepted data.",
+    "This visual inspection does not prove all backend semantics or production readiness."
+  ]
+}

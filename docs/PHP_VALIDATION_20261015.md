@@ -1,6 +1,6 @@
 # PHP 安装版验证记录（2026-10-15）
 
-> 本文件记录当前候选源码的统一业务回归。两个源码检查点的当时状态保留在 [检查点记录](PHP_REVIEW_CHECKPOINT_20261015.md)；封装后运行结果与包指纹以最终交付收据为准。
+> 本文件记录冻结源码的统一业务回归。两个源码检查点的当时状态保留在 [检查点记录](PHP_REVIEW_CHECKPOINT_20261015.md)；封装后运行结果与包指纹见 [最终交付收据](PHP_DELIVERY_20261015.md)。
 
 本轮从 `f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6` 独立实现，未取得 Windows `D:\codex存储\2026-10-15\task-5` 草稿，未迁移、覆盖或删除该草稿。原 Node 标准版及 PostgreSQL 迁移、SDK、测试均保留。
 
@@ -24,8 +24,8 @@ PHP 8.3.35 下，MySQL 8.4.11、MariaDB 11.4.13各自运行11套件并通过。�
 
 最终统一日志对应同一候选源码，11套件在两种数据库逐套串行通过。此前治理78/91与分析100是较早检查点的结果，不累加为最终次数。独立复核真实复现并修复HTTP旧删除日志窗口、报表周期、审计、分享和告警7组问题；实现者之外的定向复验每库50项，共100/100通过，原失败证据保留。后续分析250含真实capture→backup→restore、late→capture追平、持久热图、配置变更、保留天数上调后真实裁剪边界，以及已裁剪边界小时晚到后明确失效。见 [最终套件结果](test-evidence/php-20261015/suite-results.json)、[最终完整日志](test-evidence/php-20261015/php-dual-database-final.log.txt)、[独立修复前后复核](test-evidence/php-20261015/checkpoint-review/fixed-results.json)。
 
-- 源码HTTP与独立发行包的Nginx 1.28 / PHP-FPM 8.3环境均完成真实网页安装、登录、创建站点、采集重试、统计与浏览器联调，各28项检查通过。FPM与CLI以同一网站用户运行；worker实际处理采集队列。发行运行容器没有Node可执行文件。公开路径不能读取配置、bootstrap或隐藏环境文件。测试地址仅限隔离loopback，不是正式部署；未安装或操作真实1Panel控制面板。
-- 当前预构建React前端连接真实PHP/MySQL，39个报告入口分别检查少量/空数据桌面，再对8个关键入口检查390px窄屏，共94状态通过。最终记录555条API GET响应，页面/控制台/API契约/横向溢出错误均为零。未为凑数据模拟管理记录，记录详情与编辑流程由对应业务套件覆盖。见 [浏览器结果](test-evidence/php-20261015/browser-final-results.json)、[独立看图记录与构建哈希](test-evidence/php-20261015/browser-final-review.json)。
+- 早期源码HTTP与预览包完成28项检查；新增微额收入精确字符串检查后，最终源码以及最终发行包的MySQL、MariaDB环境分别29/29通过。最终Nginx 1.28 / PHP-FPM 8.3中，MySQL保留测试私有状态执行包升级，MariaDB从独立空库真实网页安装、登录和创建站点。FPM与CLI以同一网站用户运行；worker实际处理队列。运行容器没有Node可执行文件，公开路径不能读取配置、bootstrap或隐藏环境文件。测试地址仅限隔离loopback，不是正式部署；未操作真实1Panel控制面板。见 [最终运行指纹](test-evidence/php-20261015/fpm-final-runtime.json)。
+- 最终包的预构建React前端连接真实PHP/MySQL，39个报告入口分别检查少量/空数据桌面，再对8个关键入口检查390px窄屏，共94状态通过，页面/API契约/全局横向溢出错误均为零。详情与编辑流程由对应业务套件覆盖。见 [最终包浏览器结果](test-evidence/php-20261015/fpm-final/browser-release-results.json)、[实际HTTP资源指纹](test-evidence/php-20261015/fpm-final/browser-release-asset-verification.json)。此前源码构建的94状态与555条API GET另保留在 [旧构建结果](test-evidence/php-20261015/browser-final-results.json) 和 [旧构建独立看图记录](test-evidence/php-20261015/browser-final-review.json)，不混用其资源哈希。
 - 原Fastify真实注册157条路由，PHP注册152条；参数别名归一后原API路径均有对应。原通配SPA及7个Tracker路径由Nginx静态服务处理；PHP另有capabilities/operations/实验预检入口。此清单仅用于查漏，不能证明处理语义相同，见 [路由清单](test-evidence/php-20261015/routes.json)。
 - 发布包18项检查通过，包括严格umask构建、文件和目录模式、完整资源、无实例私密文件/Node依赖、内容篡改/多余文件/符号链接拒绝、保留权限解包后再验证，以及禁止输出覆盖源码。清单含121个运行文件；最终发布包修订、大小和SHA256以交付的清单及收据为准。见 [发布检查](test-evidence/php-20261015/package-publisher.log.txt)。
 

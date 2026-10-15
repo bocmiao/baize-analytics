@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-15",
+  "baseline": "f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6",
+  "implementationRevision": "8ee220f17ed921e92f775bc3b93e8380f05e8318",
+  "archive": {
+    "path": ".baize/releases/baize-php-8ee220f.tar.gz",
+    "sha256": "560455292f59af694b5fa2eefa3274c6b545e6d6636e1f52323c0f635166cb7e",
+    "bytes": 1912027
+  },
+  "files": 121,
+  "manifestSha256": "cd27ff10dc987f39fec310850ea605a2dba00a8e337bb6f074469963736b2d27",
+  "cleanBuild": true,
+  "php": {
+    "cliAssertionsPerDatabase": 961,
+    "databases": [
+      "8.4.11",
+      "11.4.13-MariaDB-ubu2404"
+    ],
+    "httpChecksPerDatabase": 29,
+    "browser": {
+      "views": 94,
+      "passed": 94,
+      "failed": 0,
+      "pageErrors": 0,
+      "contractFailures": 0,
+      "semanticFailures": 0,
+      "bodyOverflow": 0,
+      "anonymousDenied": true
+    },
+    "runtime": "fpm-final-runtime.json",
+    "receipts": [
+      "fpm-final-receipts/results.json",
+      "fpm-mariadb-final-receipts/results.json"
+    ]
+  },
+  "node": {
+    "unit": 579,
+    "integrationPassed": 574,
+    "initialIntegrationSkipped": 2,
+    "subsequentRestoreChecksPassed": 2,
+    "typecheck": true,
+    "lint": true,
+    "build": true,
+    "publisherChecks": 9
+  },
+  "publisherChecks": 18,
+  "archiveDocuments": 39,
+  "windowsDraftAccessed": false,
+  "productionDeployed": false,
+  "actionsOrCnbTriggered": false,
+  "realOnePanelOrLiveProvidersTested": false,
+  "fullNodeSemanticOrCapacityEquivalenceClaimed": false,
+  "limitations": "../../PHP_PARITY_MATRIX_20261015.md",
+  "delivery": "../../PHP_DELIVERY_20261015.md"
+}
