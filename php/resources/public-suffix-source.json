@@ -1,0 +1,13 @@
+{
+  "name": "Public Suffix List (ICANN and PRIVATE)",
+  "license": "MPL-2.0",
+  "official_url": "https://publicsuffix.org/list/public_suffix_list.dat",
+  "official_header_verified_version": "2026-10-07_07-28-19_UTC",
+  "commit": "3929462652695bad04f0a27afb600974014a3c8b",
+  "source_url": "https://raw.githubusercontent.com/publicsuffix/list/3929462652695bad04f0a27afb600974014a3c8b/public_suffix_list.dat",
+  "retrieval_note": "The official URL and its commit header were verified through the web reader. Shell HTTPS to publicsuffix.org returned proxy HTTP 403, so the bytes were retrieved from that exact commit in the official publicsuffix/list repository.",
+  "source_sha256": "2919eb9803c91a3f73a507cc6fedc934de005543c22c4016f72e3343de5dd6e7",
+  "runtime_ascii_sha256": "a849dfdabf33e96c4183c639046f890ad42b5bd526c1b20c4a5de6c0a1f73b90",
+  "build": "node php/resources/build-psl.mjs",
+  "runtime": "PHP reads only the pinned ASCII list; no Node, network request or background auto-update is used."
+}

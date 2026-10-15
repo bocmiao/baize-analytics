@@ -1,0 +1,8 @@
+Usage: php bin/backup.php PRIVATE_BACKUP_PATH
+Encrypted PHP snapshot; retain current keys and independent privacy journal separately.
+Usage: php bin/restore.php PRIVATE_BACKUP_PATH [--replace]
+Requires the matching current independent privacy journal, watermark, identity guard and original keys. Never replace them with an older backup.
+Usage: php bin/export.php SITE_ID PRIVATE_OUTPUT_PATH
+Exports the selected site after applying its independent privacy journal.
+Usage: php bin/upgrade.php
+Applies PHP schema migrations and privacy journal replay; install verified PHP code separately.

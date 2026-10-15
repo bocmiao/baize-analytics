@@ -1,0 +1,20 @@
+# 1Panel PHP site: point the document root at the extracted package's public/.
+# Replace the fastcgi_pass with the socket/address of the site's PHP 8.3+ runtime.
+server {
+    listen 80;
+    server_name analytics.example.com;
+    root /var/www/baize-php/public;
+    index index.php;
+    client_max_body_size 32m; # PHP keeps collection at 1 MiB; manual CSV import accepts larger JSON.
+    location / { try_files $uri $uri/ /index.php?$query_string; }
+    location ~ ^/(index|install)\.php$ {
+        include fastcgi_params;
+        fastcgi_param HTTPS $https if_not_empty;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/php/baize.sock;
+    }
+    location ~ \.php$ { return 404; }
+    location ~ /\. { deny all; }
+}
+# Enable HTTPS using your existing 1Panel certificate before the browser installer.
+# Do not expose the package parent directory or private/ as a second document root.

@@ -4,7 +4,7 @@
 
 Baize is free, self-hosted, privacy-oriented website analytics with Chinese and English interfaces. Add a tracker snippet to your website to see traffic, acquisition channels, pages and audiences, then enable events, goals, SEO or AI assistance as needed. There are no paid product feature gates; you cover your own hosting and external-service costs.
 
-[中文](README.md) · [Deployment and first use](docs/deployment-methods.md) · [English documentation](docs/en/README.md) · [API](docs/en/api.md)
+[中文](README.md) · [Documentation index](docs/README.md) · [Node deployment](docs/deployment-methods.md) · [PHP installation](docs/PHP_INSTALLATION.md) · [English documentation](docs/en/README.md) · [API](docs/en/api.md)
 
 ## What you can do
 
@@ -29,9 +29,18 @@ These screenshots show the running application with synthetic demonstration data
 
 </details>
 
-## Standard or Lite?
+## Choose an installation runtime
 
-Both profiles share the brand, interface and tracker. Available features follow the server's capabilities.
+| Runtime | Installation guide | Database and scope |
+| --- | --- | --- |
+| Original Node application | [Docker and precompiled packages](docs/deployment-methods.md), [Node hosting in 1Panel/Baota](docs/PANEL_INSTALLATION.md) | The PostgreSQL Standard application and existing SQLite Lite profile remain available |
+| Independent PHP application | [PHP + database web installation](docs/PHP_INSTALLATION.md) | Separate `php/` implementation for PHP-FPM, MySQL and 1Panel; see its guide for implementation coverage and actual validation |
+
+The PHP application follows the full Standard feature scope and is maintained separately from Node Lite. Use its own installer, database migrations and maintenance commands. The original Node application, SDK, migrations and tests remain in the repository.
+
+## Original Node application: Standard or Lite?
+
+Both Node profiles share the brand, interface and tracker. Available features follow the server's capabilities.
 
 | | Standard | Lite |
 | --- | --- | --- |
@@ -44,7 +53,7 @@ Both profiles share the brand, interface and tracker. Available features follow 
 
 Choose Lite for a single instance with fewer database services to maintain. Choose Standard for deeper behavioral analysis or its connectors. Changing an image or connection string does not convert profiles; follow the [Lite migration procedure](docs/lite-migration.md).
 
-## Three deployment paths
+## Three deployment paths for Node
 
 | Path | Requirements | Use it when |
 | --- | --- | --- |
@@ -76,7 +85,7 @@ From the extracted package root:
 bash scripts/release-start.sh --env-file /absolute/private/runtime.env
 ```
 
-For long-running service, use the operator-reviewed [systemd example](deploy/baize.service.example) or your panel's process manager. Node panels can use the package's `npm start` or `dist/server/src/release/panel-start.js`; disable automatic dependency installation and builds. Process supervision must continue independently of terminals and browsers.
+For long-running service, use the operator-reviewed [systemd example](deploy/baize.service.example), [Supervisor example](deploy/baize.supervisor.conf.example) or your panel's process manager. Node panels can use the package's `npm start` or `dist/server/src/release/panel-start.js`; disable automatic dependency installation and builds. Process supervision must continue independently of terminals and browsers.
 
 See [deployment and first use](docs/deployment-methods.md) for configuration, permissions and application-image save commands, and [package contents](docs/release-packages.md) for runtime requirements. An application image save excludes PG/Redis/CH. Source archives, dist-only archives and Git bundles are not complete runtime packages.
 
@@ -112,6 +121,6 @@ Procedures: [native Standard maintenance](docs/release-native-ops.md), [Docker a
 
 ## Documentation and licenses
 
-[English guides](docs/en/README.md) · [API](docs/en/api.md) · [Development](docs/en/development.md) · [Compatibility](docs/en/compatibility.md) · [Implementation and acceptance boundaries](docs/STATUS.md) · [Feature checklist and historical evidence](docs/IMPLEMENTATION_CHECKLIST.md)
+[Documentation index](docs/README.md) · [Historical documents and path map](docs/archive/README.md) · [English guides](docs/en/README.md) · [API](docs/en/api.md) · [Development](docs/en/development.md) · [Compatibility](docs/en/compatibility.md) · [Implementation and acceptance boundaries](docs/STATUS.md) · [Feature checklist and historical evidence](docs/IMPLEMENTATION_CHECKLIST.md)
 
 Application: **AGPL-3.0-only**. Independent website tracker: **MIT**. Embedding the tracker has different license obligations from modifying or hosting the application. See [LICENSE](LICENSE) and [tracker LICENSE](packages/tracker/LICENSE).

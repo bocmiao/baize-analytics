@@ -1,0 +1,1296 @@
+{
+  "baseRevision": "f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6",
+  "nodeRegistered": 157,
+  "phpRegistered": 152,
+  "normalization": "parameter names and Fastify merged :name|:name aliases are equivalent",
+  "staticHandledByNginx": [
+    {
+      "method": "GET",
+      "path": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-consent.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-heatmap.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-min.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-replay.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-vitals.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker.LICENSE.txt"
+    }
+  ],
+  "uncoveredDynamicRoutes": [],
+  "phpAdditional": [
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/experiments/:id/assign"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/capabilities"
+    }
+  ],
+  "limitation": "Presence is an inventory only, not semantic parity. PHP MySQL authority and manual package upgrades intentionally differ; see validation document and runtime-specific 409 responses.",
+  "nodeRoutes": [
+    {
+      "method": "GET",
+      "path": "*"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/geoip/refresh"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/geoip"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/geoip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/keys/rotate"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sso/wecom"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/sso/wecom"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/apply"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/check"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/rollback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/updates/status"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/collect"
+    },
+    {
+      "method": "POST",
+      "path": "/api/collect"
+    },
+    {
+      "method": "GET",
+      "path": "/api/google/callback"
+    },
+    {
+      "method": "POST",
+      "path": "/api/login"
+    },
+    {
+      "method": "POST",
+      "path": "/api/logout"
+    },
+    {
+      "method": "GET",
+      "path": "/api/me"
+    },
+    {
+      "method": "POST",
+      "path": "/api/setup/diagnostics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/setup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/setup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai/query"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ai/questions/:callId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai/test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ai/usage"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/evidence"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/sites/:siteId/external/:kind"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/external/jobs/retry"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/external/jobs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/external"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/sites/:siteId/external"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ga4/import"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ga4/window"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ga4"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/google/oauth"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/gsc/import"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/gsc"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/:id/csv"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/manual-search/commit"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/manual-search/preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/template"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/seo/conversions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/seo/scan"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/seo/scans"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/serp/check"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/serp"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/suggestions/:id/recheck"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/sites/:siteId/suggestions/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/suggestions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/suggestions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso/wecom/callback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso/wecom/start"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tracker/config/:siteId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/experiments/:id/assign"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/invites/:token/accept"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/invites/:token/register"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/shares/:token"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/alerts/:id/silence"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/alerts/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/alerts"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/alerts"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/analysis/features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/analysis"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/annotations/:id"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/annotations/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/annotations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/annotations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/audit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/bot-observations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/canonical"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/canonical"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/channels/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/channels"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/channels"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/content/404.csv"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/content"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/delete-visitor"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/event-properties"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/experiments/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/experiments"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/experiments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/exports/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/exports"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/exports"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/funnels/:funnelId|:id/analysis"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/funnels/:funnelId|:id"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/funnels/:funnelId|:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/funnels"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/funnels"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/geography"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/goals/:id"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/goals/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/goals"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/goals"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/heatmap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/identities/:userKey/activity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/identities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/intake-status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/invites"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/jobs/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/jobs"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/members/:userId"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/members/:userId"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/members"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/pages/detail"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/realtime/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/realtime"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/reports/:id/run"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/reports/:id"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/reports/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/reports"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/reports"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/retention"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/revenue"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/schedules/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/schedules"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/schedules"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/self-host-diagnostics/export"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/self-host-diagnostics"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/shares/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/shares"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/shares"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/stats"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/:id/backup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/:id/restore"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/capture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/storage/history"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/storage"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/storage"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/tokens/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/tokens"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/tokens"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/users/:userId/paths"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/write-key"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites"
+    },
+    {
+      "method": "GET",
+      "path": "/embed/chart"
+    },
+    {
+      "method": "GET",
+      "path": "/healthz"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-consent.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-heatmap.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-min.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-replay.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker-vitals.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker.js"
+    },
+    {
+      "method": "GET",
+      "path": "/tracker.LICENSE.txt"
+    }
+  ],
+  "phpRoutes": [
+    {
+      "method": "GET",
+      "path": "/api/setup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/setup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/login"
+    },
+    {
+      "method": "POST",
+      "path": "/api/logout"
+    },
+    {
+      "method": "GET",
+      "path": "/api/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/write-key"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tracker/config/:siteId"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/collect"
+    },
+    {
+      "method": "POST",
+      "path": "/api/collect"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/jobs"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/jobs/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/intake-status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/bot-observations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/stats"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/pages/detail"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/content"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/analysis/features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/content/404.csv"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/goals"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/goals"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/goals/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/goals/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/funnels"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/funnels"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/funnels/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/funnels/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/analysis"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/funnels/:funnelId/analysis"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/event-properties"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/geography"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/revenue"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/identities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/identities/:userKey/activity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/users/:userId/paths"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/heatmap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/realtime"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/realtime/stream"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/experiments"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/experiments/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/experiments"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/experiments/:id/assign"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/experiments/:id/assign"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/reports"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/channels"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/schedules"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/alerts"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/shares"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/tokens"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/audit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/exports"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/reports"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/reports/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/reports/:id/run"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/reports/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/schedules/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/alerts/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/channels/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/channels"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/schedules"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/alerts"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/alerts/:id/silence"
+    },
+    {
+      "method": "GET",
+      "path": "/embed/chart"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/tokens"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/tokens/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/shares/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/shares"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/shares/:token"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/members"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/members/:userId"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/members/:userId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/invites"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/invites/:token/accept"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/invites/:token/register"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/usage"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/retention"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/delete-visitor"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/exports"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/exports/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/external/jobs"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/external/jobs/retry"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/external"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/sites/:siteId/external"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/sites/:siteId/external/:kind"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/gsc/import"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/gsc"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ga4/import"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ga4"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ga4/window"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/seo/scan"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/seo/scans"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/serp/check"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/serp"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai/test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/ai/query"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ai/usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/ai/questions/:callId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/google/oauth"
+    },
+    {
+      "method": "GET",
+      "path": "/api/google/callback"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/evidence"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/suggestions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/suggestions"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/sites/:siteId/suggestions/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/suggestions/:id/recheck"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/storage/history"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/capture"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/:id/backup"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/history/:id/restore"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sso/wecom"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/sso/wecom"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso/wecom/start"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sso/wecom/callback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/geoip"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/geoip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/geoip/refresh"
+    },
+    {
+      "method": "POST",
+      "path": "/api/setup/diagnostics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/self-host-diagnostics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/self-host-diagnostics/export"
+    },
+    {
+      "method": "GET",
+      "path": "/api/capabilities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/template"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/manual-search/preview"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/manual-search/commit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/:id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/manual-search/:id/csv"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/seo/conversions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sites/:siteId/mcp"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/annotations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/annotations"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/sites/:siteId/annotations/:id"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sites/:siteId/annotations/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/keys/rotate"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/updates/status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/check"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/apply"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/updates/rollback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/storage"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sites/:siteId/storage"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/storage/replay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sites/:siteId/canonical"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sites/:siteId/canonical"
+    },
+    {
+      "method": "GET",
+      "path": "/healthz"
+    }
+  ]
+}

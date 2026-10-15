@@ -1,0 +1,9 @@
+Baize bot rule library, version 1
+
+This file accompanies bot-rules.json, an unchanged offline copy of the Baize
+standard edition rule library at src/server/bot-rules.json (baseline f26db98).
+Source: https://github.com/bocmiao/baize-analytics/blob/f26db98/src/server/bot-rules.json
+
+License: AGPL-3.0-only, the same license as the Baize repository. See the LICENSE
+included in the distribution. Rule version, rule IDs, categories and literal
+tokens are preserved so PHP packages do not depend on the Node source tree.

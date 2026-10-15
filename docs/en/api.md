@@ -49,7 +49,7 @@ c890 backend:211 unit+421 real integration=632 PASS. 1c1cb65 browser:30 checks(2
 
 ## Historical contracts and stage records
 
-This is the English contract for the implemented self-hosted API. The application is AGPLv3 and the independent tracker is MIT; no paid application tier is required. The current validation/version record is [VALIDATION_MAIN](../VALIDATION_MAIN.md). Development additions below must not be assumed to exist in an older installed image. [中文](../api.md) · [Operations and migration](migration.md).
+This is the English contract for the implemented self-hosted API. The application is AGPLv3 and the independent tracker is MIT; no paid application tier is required. The current validation/version record is [VALIDATION_MAIN](../archive/validation/VALIDATION_MAIN.md). Development additions below must not be assumed to exist in an older installed image. [中文](../api.md) · [Operations and migration](migration.md).
 
 ## Paths, authentication and time
 

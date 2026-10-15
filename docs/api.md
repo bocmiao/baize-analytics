@@ -53,7 +53,7 @@ c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（
 
 ## 现行用户契约与操作手册
 
-本手册描述当前应用路由，面向自托管管理员和集成开发者。主体 AGPLv3，独立 tracker MIT；接口不要求付费订阅。开发中接口单独标注，不能据此假定某个旧镜像已包含新功能。运行版本及真实验收见 [主验收记录](VALIDATION_MAIN.md)。本文件同时提供中文契约与英文操作说明。
+本手册描述当前应用路由，面向自托管管理员和集成开发者。主体 AGPLv3，独立 tracker MIT；接口不要求付费订阅。开发中接口单独标注，不能据此假定某个旧镜像已包含新功能。运行版本及真实验收见 [主验收记录](archive/validation/VALIDATION_MAIN.md)。本文件同时提供中文契约与英文操作说明。
 
 This manual documents implemented self-hosted endpoints. Check your installed version against the validation record. Development additions are explicitly marked; external connector fixtures do not prove real provider-account access.
 

@@ -4,7 +4,7 @@
 
 白泽是免费、自托管、隐私优先的网站分析平台，提供中文与英文界面。部署后为网站添加一段追踪代码，即可查看访问趋势、来源渠道、页面和受众，并按需要启用事件分析、转化目标、SEO 或 AI 辅助分析。产品没有付费功能门槛；外部服务的费用由使用者自行承担。
 
-[English](README.en.md) · [部署与首次使用](docs/deployment-methods.md) · [API 手册](docs/api.md) · [备份与迁移](docs/migration.md)
+[English](README.en.md) · [文档导航](docs/README.md) · [Node 部署与首次使用](docs/deployment-methods.md) · [PHP 安装](docs/PHP_INSTALLATION.md) · [API 手册](docs/api.md) · [备份与迁移](docs/migration.md)
 
 ## 你可以用它做什么
 
@@ -29,9 +29,18 @@
 
 </details>
 
-## 选择标准版还是 Lite
+## 选择安装入口
 
-两个版本共用品牌、界面和追踪脚本，按实际能力显示功能。
+| 运行时 | 安装入口 | 数据库与功能范围 |
+| --- | --- | --- |
+| 原 Node 版 | [Docker／预编译包](docs/deployment-methods.md)、[1Panel／宝塔 Node 托管](docs/PANEL_INSTALLATION.md) | 保留 Node 标准版的 PostgreSQL 体系及原有 Lite SQLite 选项 |
+| 独立 PHP 安装版 | [PHP + 数据库网页安装](docs/PHP_INSTALLATION.md) | 独立 `php/`，面向 PHP-FPM + MySQL 与 1Panel；完整标准功能的实现和实测覆盖见专属指南 |
+
+PHP 安装版与 Node Lite 分开维护。PHP 的安装包、数据库迁移和运维命令使用自己的入口；原 Node 应用、SDK、迁移和测试继续保留。
+
+## 原 Node 版：标准版与 Lite
+
+两个 Node profile 共用品牌、界面和追踪脚本，按实际能力显示功能。
 
 | | 标准版 | Lite |
 | --- | --- | --- |
@@ -44,7 +53,7 @@
 
 Lite 适合希望少维护数据库服务的单实例部署。需要深度行为分析或标准连接器时选择标准版。两者不能通过换镜像或改连接串互相转换；迁移步骤见 [Lite → 标准版](docs/lite-migration.md)。
 
-## 三种部署方式
+## 原 Node 版的三种部署方式
 
 | 入口 | 需要准备 | 适用情况 |
 | --- | --- | --- |
@@ -76,7 +85,7 @@ bash install-lite.sh  # Lite
 bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 ```
 
-长期运行使用 [systemd 示例](deploy/baize.service.example) 或既有面板的进程管理器。Node 面板可使用包内 `npm start` 或 `dist/server/src/release/panel-start.js`；关闭自动安装依赖和自动构建。进程托管应独立于终端和浏览器。
+长期运行使用 [systemd 示例](deploy/baize.service.example)、[Supervisor 示例](deploy/baize.supervisor.conf.example) 或既有面板的进程管理器。Node 面板可使用包内 `npm start` 或 `dist/server/src/release/panel-start.js`；关闭自动安装依赖和自动构建。进程托管应独立于终端和浏览器。
 
 完整配置、镜像 save 启动、依赖与权限步骤见 [部署指南](docs/deployment-methods.md)；运行包清单见 [发布包说明](docs/release-packages.md)。应用镜像 save 不包含 PG/Redis/CH，源码包、只有 dist 的压缩包和 Git bundle 也不是完整运行包。
 
@@ -112,9 +121,9 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 
 ## 文档与许可证
 
-[用户 API](docs/api.md) · [英文文档](docs/en/README.md) · [开发指南](docs/development.md) · [兼容性](docs/compatibility.md) · [项目状态与验收边界](docs/STATUS.md) · [逐项实现与历史证据](docs/IMPLEMENTATION_CHECKLIST.md)
+[文档导航](docs/README.md) · [历史文档归档与原路径映射](docs/archive/README.md) · [用户 API](docs/api.md) · [英文文档](docs/en/README.md) · [开发指南](docs/development.md) · [兼容性](docs/compatibility.md) · [项目状态与验收边界](docs/STATUS.md) · [逐项实现与历史证据](docs/IMPLEMENTATION_CHECKLIST.md)
 
-本轮性能优化及实际复验范围见 [性能复验记录](docs/PERFORMANCE_OPTIMIZATION_20261013.md)。历史运行包仍对应各自的固定版本；新源码不能替换旧包的版本标识。
+本轮性能优化及实际复验范围见 [性能复验记录](docs/archive/reviews/PERFORMANCE_OPTIMIZATION_20261013.md)。历史运行包仍对应各自的固定版本；新源码不能替换旧包的版本标识。
 
 应用主体采用 **AGPL-3.0-only**；独立网站追踪脚本采用 **MIT**。嵌入 tracker 与修改、托管应用主体的许可责任不同，详见 [LICENSE](LICENSE) 与 [tracker LICENSE](packages/tracker/LICENSE)。
 
@@ -123,4 +132,4 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 维护执行器失去独占锁时保持维护状态，确认旧执行器及任务停止后再接续。部署交付为标准/Lite两个离线Docker包与四个原生包，源码和执行器是额外附件；详见实例增量更新指南。
 
 
-面板部署优先阅读 [1Panel／宝塔安装与网页初始化](docs/PANEL_INSTALLATION.md)：包含实际受测的守护配置、私有目录、初始化和中断恢复；安装与后台增量更新分开操作。
+原 Node 版面板部署优先阅读 [1Panel／宝塔安装与网页初始化](docs/PANEL_INSTALLATION.md)：包含实际受测的守护配置、私有目录、初始化和中断恢复；安装与后台增量更新分开操作。

@@ -1,0 +1,3 @@
+# 1Panel scheduled task: run in the same PHP runtime and use an absolute config path.
+# Schedule every minute; the database lease prevents duplicate job settlement.
+* * * * * BAIZE_CONFIG_PATH=/var/lib/baize-php/config.php /usr/bin/php /var/www/baize-php/bin/worker.php --once

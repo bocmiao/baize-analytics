@@ -1,5 +1,7 @@
 # English documentation
 
+These guides describe the original Node application. For the independent PHP-FPM + MySQL installation, use the [PHP guide](../PHP_INSTALLATION.md). See the [documentation index](../README.md) for current guides and historical evidence.
+
 - [Installation, backups, recovery and HTTPS](deployment.md)
 - [Lite: one local SQLite container, backup and restore](../lite-deployment.md)
 - [Development and tests](development.md)
@@ -15,4 +17,4 @@ The Chinese project specification and implementation corrections remain the desi
 
 Site exports are bounded at100,000 rows per table and are not full-instance backups. GA4 exact-window reports preserve provider deduplication and never merge native identities. Real Google/MaxMind/SERP/enterprise provider accounts are separate from local fixture acceptance. Real Ollama inference needs no account, but its official binary download was blocked by the existing proxy403; resource feasibility does not prove inference success. Current AI chart/evidence and031 deletion additions are marked as pending in the manuals until the next immutable validation batch.
 
-Current feature status and preserved failures are in the [implementation checklist](../IMPLEMENTATION_CHECKLIST.md), with version/count provenance in [main validation](../VALIDATION_MAIN.md). Fifth local272 application tests plus19 checks (17 browser,2 date functions), sixth pre-deletefix289 plus20 checks (18 browser,2 date functions), and old CNB223 hosted18 E2E are distinct runs, never additive or interchangeable.
+Current feature status and preserved failures are in the [implementation checklist](../IMPLEMENTATION_CHECKLIST.md), with version/count provenance in [main validation](../archive/validation/VALIDATION_MAIN.md). Fifth local272 application tests plus19 checks (17 browser,2 date functions), sixth pre-deletefix289 plus20 checks (18 browser,2 date functions), and old CNB223 hosted18 E2E are distinct runs, never additive or interchangeable.

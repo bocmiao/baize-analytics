@@ -1,0 +1,9 @@
+{
+  "name": "maxmind-db/reader",
+  "version": "1.14.0",
+  "repository": "https://github.com/maxmind/MaxMind-DB-Reader-php",
+  "revision": "f3c92f68b3bec42a9aa780368399e03dc6b91e89",
+  "license": "Apache-2.0",
+  "copied": ["src/", "LICENSE", "composer.json"],
+  "changes": "Unmodified upstream PHP reader; Baize registers its PSR-4 loader in GeoIP.php."
+}

@@ -1,0 +1,10 @@
+; Apply in both the site's PHP-FPM pool and matching CLI runtime.
+; Required extensions: pdo_mysql, curl, mbstring, dom, Phar, openssl, zlib, intl.
+; GeoIP's portable reader also needs bcmath or gmp.
+post_max_size=32M
+upload_max_filesize=8M
+memory_limit=512M
+max_execution_time=120
+display_errors=Off
+log_errors=On
+expose_php=Off

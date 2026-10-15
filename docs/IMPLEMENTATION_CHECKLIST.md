@@ -4,13 +4,13 @@
 
 ## 历史批次（应用05360be / 运维e991f4c）
 
-四项确定安全缺口、旧长分享密码兼容及外部畸形响应已修复，见 [本批记录](VALIDATION_SECURITY_BATCH.md)。不可变源码空库全轮实际EXIT0：265单元、454真实PG/CH/Redis集成及31浏览器目录检查（29Chromium+2日期函数），0fail/0skip。后续仅文件恢复运维窄修e991f4c，src/db/packages未变；403文件新镜像、独立签名恢复及UID/GID2000真实故障升级回滚均EXIT0，另有3项文件恢复Node回归通过。完整应用测试仍绑定05360be，不声称新SHA重跑。strict5000 FAIL及真实外部/原生设备未测保留；本批未触发托管CI。
+四项确定安全缺口、旧长分享密码兼容及外部畸形响应已修复，见 [本批记录](archive/validation/VALIDATION_SECURITY_BATCH.md)。不可变源码空库全轮实际EXIT0：265单元、454真实PG/CH/Redis集成及31浏览器目录检查（29Chromium+2日期函数），0fail/0skip。后续仅文件恢复运维窄修e991f4c，src/db/packages未变；403文件新镜像、独立签名恢复及UID/GID2000真实故障升级回滚均EXIT0，另有3项文件恢复Node回归通过。完整应用测试仍绑定05360be，不声称新SHA重跑。strict5000 FAIL及真实外部/原生设备未测保留；本批未触发托管CI。
 
 父已核旧957431 CNB最终成功：247单元、442集成通过/1 Docker能力跳过、31浏览器目录通过。此结果仅属旧源码；本批不触发任何托管CI。
 
 ## 历史81415f4验收入口（原记录保留）
 
-已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。
+已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](archive/ui/VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。
 
 同源新镜像与独立签名恢复实际EXIT0：397文件源码与镜像一致、56迁移，独立目标CH恢复源不变、最新日志删A保B，缺sidecar/篡改/worker故障拒绝。镜像 `sha256:1ce85f36babc8552498eb7ee05fc34fc8601a7c51e145f1346311a77ab59100a`；manifest `8ad788a120a7e03dc5e7821f787318c217797e7b16f99fca8e165c76e4680dba`。完整tracker gzip5087字节满足5KiB，未满足5000字节；min为4506字节。
 
@@ -18,7 +18,7 @@
 
 ## 历史f8c9c12验收入口（原记录保留）
 
-[本阶段固定源码收尾](VALIDATION_F8C9C12_CLOSING.md)：空库正式入口EXIT0，247单元+443真实集成=690后端PASS、0fail/0skip/0unhandled；30目录检查（28Chromium+2日期）PASS。新镜像/独立签名恢复EXIT0，56迁移/395文件源码与镜像一致。原strict5000FAIL不变，本轮未追加5000、不宣称整体提速或SLO。
+[本阶段固定源码收尾](archive/validation/VALIDATION_F8C9C12_CLOSING.md)：空库正式入口EXIT0，247单元+443真实集成=690后端PASS、0fail/0skip/0unhandled；30目录检查（28Chromium+2日期）PASS。新镜像/独立签名恢复EXIT0，56迁移/395文件源码与镜像一致。原strict5000FAIL不变，本轮未追加5000、不宣称整体提速或SLO。
 
 UI方向已批准，A/B参考PNG已实际解码并打开；尚未实施正式视觉。Git正常fetch/ff接入ae5ede9素材，所有托管CI仍禁止。本轮仅证据/文档，不外推后续应用变更。
 
@@ -61,7 +61,7 @@ UI方向已批准，A/B参考PNG已实际解码并打开；尚未实施正式视
 
 | 不可变阶段 | 实际本地结果与边界 |
 |---|---|
-| 7fbb561 | 100 单元+394 集成全部 PASS；22检查=20真实Chromium+2日期全部 PASS，fresh Compose EXIT0/cleanup；见 [VALIDATION_TENTH.md](VALIDATION_TENTH.md) |
+| 7fbb561 | 100 单元+394 集成全部 PASS；22检查=20真实Chromium+2日期全部 PASS，fresh Compose EXIT0/cleanup；见 [VALIDATION_TENTH.md](archive/validation/VALIDATION_TENTH.md) |
 | b7a0a5f | 114 单元+395 集成 PASS；浏览器25/27 PASS、2 FAIL（23真实Chromium+2日期通过），旧失败保留 |
 | be95373 | 163 单元 PASS；398集成中396 PASS、2 FAIL，整轮 EXIT1；受影响定向修复不改写该整轮结果 |
 | 1e39942 | 浏览器28/29 PASS（26真实Chromium+2日期）、1回放focus FAIL，保留 |
@@ -73,7 +73,7 @@ UI方向已批准，A/B参考PNG已实际解码并打开；尚未实施正式视
 
 ce6ebcc 与 b0be327 严格1000完整窗口基准已入仓且完整性 PASS，最终HTTP PV1000/coverage1、认证正文及PG正文清零/outbox/水位对账通过。ce 排空4查询 P95 7726.857ms、最终HTTP8825.490ms；b0最终HTTP7009.640ms，仍慢，不能据此承诺实时SLO/1C2G或5000规模。详见 [完整窗口说明](research/round2/PREFETCH_VALIDATION.md)及 [ce证据](test-evidence/main-ce6ebcc-independent-strict-1000.json)、[b0证据](test-evidence/main-b0be327-independent-strict-1000.json)。原strict5000失败保留。完整七筛选保存/编辑已实现并定向复验，不再列为待实现。
 
-042独立 `5b402dd` 自定义搜索手动导入4单元+7真实PG+1真实浏览器（11+1）及build/type/lint PASS；见 [manual-search-clean-main.json](test-evidence/manual-search-clean-main.json)。历史第八377=88+289/20、历史第七318=84+234/20、第五272/19、第六289/20均按各自冻结范围保留，不称“最近”或累加。第七分阶段通过不是单次shared EXIT0。历史依据见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)、[VALIDATION_SEVENTH.md](VALIDATION_SEVENTH.md)。
+042独立 `5b402dd` 自定义搜索手动导入4单元+7真实PG+1真实浏览器（11+1）及build/type/lint PASS；见 [manual-search-clean-main.json](test-evidence/manual-search-clean-main.json)。历史第八377=88+289/20、历史第七318=84+234/20、第五272/19、第六289/20均按各自冻结范围保留，不称“最近”或累加。第七分阶段通过不是单次shared EXIT0。历史依据见 [VALIDATION_EIGHTH.md](archive/validation/VALIDATION_EIGHTH.md)、[VALIDATION_SEVENTH.md](archive/validation/VALIDATION_SEVENTH.md)。
 
 CNB223的7分31秒EXIT0/18E2E已父核验。最近已验实际日志的fa3e托管84unit通过、集成222通过/3失败/9跳过（4失败套件），E2E未运行、EXIT1；夹具隔离与历史oracle已在本次空Compose复验通过，但未预称新CNB托管绿。两次本地全量失败（271/6/9及288/1/0）与下载403均保留，见第八记录。GitHub Actions已停用且无活动YAML，不启用/重跑；只CNB/local，仓库私有不外网部署。当前托管规则：全部实现与本地集成收工后再由负责人手动执行最新源验收；不因分阶段同步、专项通过或文档更新触发托管，不把未运行的最新main/CNB记绿。
 
@@ -746,7 +746,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 
 ## P2 独立验收目标
 
-- P2-01 ClickHouse 明细可选迁移：**严格权威主体已实现并本地验收，规模与新镜像未完成**。025副本/增量混合读取及028历史签名恢复保留；036–049严格权威正文、会话/事实/carry/缓存迁出、精准删除与签名独立恢复已进入main7fbb561，核心guardtrue且每站proof/epoch仍强制。同源空卷494应用与22检查通过，见 [VALIDATION_TENTH.md](VALIDATION_TENTH.md)。严格模式PG保留元数据与受控签名操作状态，不把镜像模式等同权威；5000持续负载正在运行，新生产镜像及独立CH服务器运维验收待，集群灾备与生产SLO不据单节点通过而承诺。旧副本证据见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)、[ACCEPTANCE_HISTORY_STORE.md](ACCEPTANCE_HISTORY_STORE.md)。
+- P2-01 ClickHouse 明细可选迁移：**严格权威主体已实现并本地验收，规模与新镜像未完成**。025副本/增量混合读取及028历史签名恢复保留；036–049严格权威正文、会话/事实/carry/缓存迁出、精准删除与签名独立恢复已进入main7fbb561，核心guardtrue且每站proof/epoch仍强制。同源空卷494应用与22检查通过，见 [VALIDATION_TENTH.md](archive/validation/VALIDATION_TENTH.md)。严格模式PG保留元数据与受控签名操作状态，不把镜像模式等同权威；5000持续负载正在运行，新生产镜像及独立CH服务器运维验收待，集群灾备与生产SLO不据单节点通过而承诺。旧副本证据见 [ACCEPTANCE_CLICKHOUSE.md](ACCEPTANCE_CLICKHOUSE.md)、[ACCEPTANCE_HISTORY_STORE.md](ACCEPTANCE_HISTORY_STORE.md)。
 - P2-02 隐私优先会话回放：**已实现且本地专项验收**。opt-in、服务端严格遮罩、真实 rrweb sandbox player 已测；9cd7 专项进一步验证多 SPA/多标签三页面实例各自完整 snapshot、独立播放/Play/Pause、私密文本不进入播放器与 API、真实 metadata/过滤。证据 tracker-collector.test.ts、tracker-replay-heatmap.test.ts、third-main-tests.json、ACCEPTANCE_WEB.md。复杂真实站点/CSS 还原兼容与更多浏览器未全矩阵实测；当前是保守结构回放，不恢复远端资源或遮罩文本。
 - P2-03 热力图：**已实现且本地专项验收**。真实 opt-in 点击/四档滚动、不同页面与 1000/400 CSS 视口独立分桶、敏感 input/select/private 排除、不可变重试计数不增、真实 API 过滤及 SVG 呈现已验。包含 9cd7 全 180 项与 15 项 fresh-E2E；一次异步滚动失败及修正后的重测保留证据。坐标为文档百分比，不使用演示底图或宿主截图；任意复杂响应式/无限滚动、真实站点兼容仍未全矩阵验证。
 - P2-04 A/B 实验归因：**已实现且本地专项验收**。真实同意门控、确定性 visitor 分组、实际 SDK 目标→唯一转化访客、停止/继续分配且保留历史与稳定 variant、权限/审计已测。双比例检验/Bonferroni 修正/Wilson 转化率区间和不足样本保护、账号 A→B 删除保留 B/独立日志重放、event_id+ts 幂等、旧无明细历史禁显著性均有真实 PG/浏览器证明，纳入 9cd7 的 180/15。固定周期是统计方法约定，当前不由平台强制锁定结束时间；观察归因不证明真实支付或因果。
@@ -811,7 +811,7 @@ D3/D4固定中英文、真实多目标百分比与隐私提示已本地验收；
 历史第九不可变本地验收：`3e052d816c48a701fb82ce137436c30a770cf080`，全新测试专属 PG17/CH25.8/Redis7 Compose 空卷，`validate-local-final.sh` EXIT0 并清理。100 单元 +391 集成=491 PASS，0失败/0跳过；22 E2E 中20 Chromium真实浏览器+2日期函数全部通过。证据：[main-3e052d8-local-final.json](test-evidence/main-3e052d8-local-final.json)。主线核心激活 guard 已true，但每站证明/删除/水位屏障仍强制。D1000严格CH完整性通过，查询p95 9.41秒、水位滞后p95 63.71秒，不满足性能SLO；5000及新应用镜像尚待，不标完成。保留全部旧失败；本轮未运行CNB托管，自动触发仍暂停。
 
 
-最新更新为[第十不可变验收](VALIDATION_TENTH.md)：7fbb5612cee6121df23425ff14274316e43a4bca，100unit/27files+394integration/145files=494PASS0fail0skip；22E2E=20Chromium+2date全部通过。freshCompose sharedEXIT0、cleanupcomplete；build/lint/type/SDK/freshmigration/compiledentry/journal全部0。收入回执/rawproof/049+保留期窄修闭合。旧3e491/22与701真实失败不修改；新镜像待、5000运行中、托管父最终待，不阶段触发。
+最新更新为[第十不可变验收](archive/validation/VALIDATION_TENTH.md)：7fbb5612cee6121df23425ff14274316e43a4bca，100unit/27files+394integration/145files=494PASS0fail0skip；22E2E=20Chromium+2date全部通过。freshCompose sharedEXIT0、cleanupcomplete；build/lint/type/SDK/freshmigration/compiledentry/journal全部0。收入回执/rawproof/049+保留期窄修闭合。旧3e491/22与701真实失败不修改；新镜像待、5000运行中、托管父最终待，不阶段触发。
 
 19d97af 完整原始日志：`/tmp/baize-19d97af-local-final.log`；完整报告目录：`/tmp/baize-final-local.5Mr38r`，持久 evidence/photos 由负责人保存。不把191+404应用计数与30检查混成浏览器数量，不将历史专项加到595。19d97af镜像已实际EXIT0；该源1000 PASS、5000因9批未发送FAIL；后续ac86cd3新1000已PASS、5000实际FAIL，browser仍在运行，ac最新镜像未运行，托管保持不触发；旧性能FAIL保留，完整性通过不等于SLO。
 

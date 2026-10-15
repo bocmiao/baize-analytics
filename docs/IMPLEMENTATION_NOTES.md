@@ -2,13 +2,13 @@
 
 ## 当前批次（应用05360be / 运维e991f4c）
 
-四项确定安全缺口、旧长分享密码兼容及外部畸形响应已修复，见 [本批记录](VALIDATION_SECURITY_BATCH.md)。不可变源码空库全轮实际EXIT0：265单元、454真实PG/CH/Redis集成及31浏览器目录检查（29Chromium+2日期函数），0fail/0skip。后续仅文件恢复运维窄修e991f4c，src/db/packages未变；403文件新镜像、独立签名恢复及UID/GID2000真实故障升级回滚均EXIT0，另有3项文件恢复Node回归通过。完整应用测试仍绑定05360be，不声称新SHA重跑。strict5000 FAIL及真实外部/原生设备未测保留；本批未触发托管CI。
+四项确定安全缺口、旧长分享密码兼容及外部畸形响应已修复，见 [本批记录](archive/validation/VALIDATION_SECURITY_BATCH.md)。不可变源码空库全轮实际EXIT0：265单元、454真实PG/CH/Redis集成及31浏览器目录检查（29Chromium+2日期函数），0fail/0skip。后续仅文件恢复运维窄修e991f4c，src/db/packages未变；403文件新镜像、独立签名恢复及UID/GID2000真实故障升级回滚均EXIT0，另有3项文件恢复Node回归通过。完整应用测试仍绑定05360be，不声称新SHA重跑。strict5000 FAIL及真实外部/原生设备未测保留；本批未触发托管CI。
 
 父已核旧957431 CNB最终成功：247单元、442集成通过/1 Docker能力跳过、31浏览器目录通过。此结果仅属旧源码；本批不触发任何托管CI。
 
 ## 历史81415f4验收入口（原记录保留）
 
-已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。
+已批准的五项首页精修及200%文本More溢出修复已实施，详见 [最终UI验收](archive/ui/VALIDATION_APPROVED_UI_FINAL.md)。固定源码 `81415f400980bb2783a7bcb7e133ee561f99c603` 的正式空库全轮实际EXIT0：61文件247单元、161文件443真实集成，共690后端PASS；31目录检查（29真实Chromium+2日期函数）PASS，0fail/0skip。
 
 同源新镜像与独立签名恢复实际EXIT0：397文件源码与镜像一致、56迁移，独立目标CH恢复源不变、最新日志删A保B，缺sidecar/篡改/worker故障拒绝。镜像 `sha256:1ce85f36babc8552498eb7ee05fc34fc8601a7c51e145f1346311a77ab59100a`；manifest `8ad788a120a7e03dc5e7821f787318c217797e7b16f99fca8e165c76e4680dba`。完整tracker gzip5087字节满足5KiB，未满足5000字节；min为4506字节。
 
@@ -16,7 +16,7 @@
 
 ## 历史f8c9c12验收入口（原记录保留）
 
-[本阶段固定源码收尾](VALIDATION_F8C9C12_CLOSING.md)：空库正式入口EXIT0，247单元+443真实集成=690后端PASS、0fail/0skip/0unhandled；30目录检查（28Chromium+2日期）PASS。新镜像/独立签名恢复EXIT0，56迁移/395文件源码与镜像一致。原strict5000FAIL不变，本轮未追加5000、不宣称整体提速或SLO。
+[本阶段固定源码收尾](archive/validation/VALIDATION_F8C9C12_CLOSING.md)：空库正式入口EXIT0，247单元+443真实集成=690后端PASS、0fail/0skip/0unhandled；30目录检查（28Chromium+2日期）PASS。新镜像/独立签名恢复EXIT0，56迁移/395文件源码与镜像一致。原strict5000FAIL不变，本轮未追加5000、不宣称整体提速或SLO。
 
 UI方向已批准，A/B参考PNG已实际解码并打开；尚未实施正式视觉。Git正常fetch/ff接入ae5ede9素材，所有托管CI仍禁止。本轮仅证据/文档，不外推后续应用变更。
 
@@ -88,7 +88,7 @@ UI方向已批准，A/B参考PNG已实际解码并打开；尚未实施正式视
 
 更新时间：2026-10-10。本文件最初“仅初始化、尚无应用”的阶段已结束；该陈述作为早期阶段历史，不代表当前交付状态。当前已有TypeScript/Fastify/React/Vite/PG/Redis应用、独立MIT tracker、应用单元/真实PG/CH/Redis集成与Chromium浏览器流程、构建和私有CI配置，以及实际本地Docker安装/备份/独立卷恢复/升级/失败回滚证据。仓库仍私有，未向外网部署。
 
-最近已记录的第五不可变应用阶段为272测试（80单元+192集成）、19检查（17实际浏览器+2日期）；第五Docker c61030b4生命周期EXIT0。第六pre-deletefix为84单元+205集成=289，20检查（18实际浏览器+2日期），不含随后AI删除hooks等改动，不与第五数字相加。详见[主验收](VALIDATION_MAIN.md)和[逐项清单](IMPLEMENTATION_CHECKLIST.md)。
+最近已记录的第五不可变应用阶段为272测试（80单元+192集成）、19检查（17实际浏览器+2日期）；第五Docker c61030b4生命周期EXIT0。第六pre-deletefix为84单元+205集成=289，20检查（18实际浏览器+2日期），不含随后AI删除hooks等改动，不与第五数字相加。详见[主验收](archive/validation/VALIDATION_MAIN.md)和[逐项清单](IMPLEMENTATION_CHECKLIST.md)。
 
 第七第二冻结阶段已实际执行：84单元；234集成中228通过、6失败，原始gzip/MIME失败记录保存在docs/test-evidence/seventh-gzip-mime*。根线程已做nativeHTTP修复及定向检查，新的完整冻结验收仍待执行/汇总；这里不预写最终main/镜像通过数量。新标准MCP已默认注册并有官方SDK真实HTTP/PG4项定向通过；AI trace/chart与派生失效已接当前生产路径；G2治理与规范事实、canonical adapter/回放索引等是定向开发切片，不能替代第七全量结果。
 

@@ -1,0 +1,9 @@
+import {mkdtemp,rm,writeFile,mkdir} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
+import {Pool} from 'pg';
+const {createApp}=await import('../src/server/app.js');
+const connectionString=process.env.TEST_DATABASE_URL;if(!connectionString)throw Error('TEST_DATABASE_URL required for disposable schema route inspection');
+const admin=new Pool({connectionString});const schema='php_parity_'+randomUUID().replaceAll('-','');const pool=new Pool({connectionString,options:`-c search_path=${schema},public`});const dir=await mkdtemp('/tmp/baize-route-inventory-');
+let app:Awaited<ReturnType<typeof createApp>>|undefined;
+try{await admin.query(`CREATE SCHEMA ${schema}`);app=await createApp({pool,redis:null,background:false,clickhouse:null,canonical:null,history:null,dataDir:dir,keyDir:dir+'/keys',publicUrl:'http://localhost'});await app.app.ready();const tree=app.app.printRoutes({commonPrefix:false});await writeFile('/tmp/baize-node-route-tree.txt',tree);const routes:{method:string;path:string}[]=[];const stack:string[]=[];for(const line of tree.split('\n')){const m=line.match(/^([│ ]*)(?:├── |└── )(.+?)(?: \(([^)]+)\))?$/);if(!m)continue;const depth=m[1]!.length/4;const path=(depth?stack[depth-1]??'':'')+m[2];stack[depth]=path;if(m[3])for(const method of m[3].split(', '))if(method!=='HEAD')routes.push({method,path});}if(routes.length<100)throw Error('Route inventory parsing failed');await mkdir('.baize',{recursive:true});await writeFile('.baize/php-route-node.json',JSON.stringify({runtime:'actual Fastify registration against isolated PostgreSQL schema; no route handler stubs',routes:routes.sort((a,b)=>(a.path+a.method).localeCompare(b.path+b.method))},null,2)+'\n');console.log(JSON.stringify({registeredNodeRoutes:routes.length}));}
+finally{await app?.app.close();await pool.end();await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);await admin.end();await rm(dir,{recursive:true,force:true});}

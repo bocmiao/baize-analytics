@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS documents (
+ kind VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ id VARCHAR(191) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ site_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL,
+ body LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK(JSON_VALID(body)),
+ created_at DATETIME(6) NOT NULL,
+ updated_at DATETIME(6) NOT NULL,
+ PRIMARY KEY(kind,id),
+ KEY documents_kind_site(kind,site_id)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS locks(name VARCHAR(191) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY) ENGINE=InnoDB;

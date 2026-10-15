@@ -30,6 +30,7 @@ const englishErrors: Record<string, string> = {
 };
 export function localizedErrorCode(code:unknown,status=500):string {
     const key=typeof code==='string'?code:'';
+    if(key==='invalid_api_response')return language()==='en'?'The server returned an invalid response. Reload the page or retry the request.':'服务器返回的数据格式不正确，请重新加载或重试请求。';
     if(key==='replay_sequence_conflict')return language()==='en'?'This replay sequence already contains different masked content. The conflicting event was rejected.':'此回放序号已存在不同的脱敏内容，冲突事件已拒绝。';
     if(Object.hasOwn(API_ERRORS,key)) {const value=API_ERRORS[key as ApiErrorCode];return language()==='en'?value.en:value.zh;}
     if(Object.hasOwn(EXTERNAL_ERRORS,key)) return language()==='en'?ownValue(englishErrors,key)||API_ERRORS.internal_error.en:EXTERNAL_ERRORS[key as ExternalErrorCode].message;

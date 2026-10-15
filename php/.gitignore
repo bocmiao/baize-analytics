@@ -1,0 +1,9 @@
+/private/*
+!/private/.gitkeep
+/public/assets/
+/public/index.html
+/public/tracker*.js
+/public/tracker*.js.gz
+/public/tracker*.json
+/public/tracker.LICENSE.txt
+/vendor/

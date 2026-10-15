@@ -15,7 +15,7 @@ runtime.command=async(args:string[],...rest:any[])=>{calls.push(args);try{return
 try{
  const operationId=randomUUID(),result=await agent.apply(config.ownerId,operationId,true).then(()=>({error:null}),e=>({error:e.message}));
  if(result.error!=='UPDATE_ROLLBACK_HEALTH_FAILED'||!existsSync(agent.gateFile))throw Error('Expected fenced refusal with foreign main present');
- const changedLaunch=runtime.launchId;const directStart=await runtime.start(image).then(()=>({error:null}),e=>({error:e.message}));if(directStart.error!=='UPDATE_CONTAINER_NOT_OWNED')throw Error('Direct start did not refuse foreign main');
+ const changedLaunch=runtime.launchId;const directStart=await runtime.start(image).then(()=>({error:null}),(e:unknown)=>({error:e instanceof Error?e.message:String(e)}));if(directStart.error!=='UPDATE_CONTAINER_NOT_OWNED')throw Error('Direct start did not refuse foreign main');
  await runtime.stop(image); // Backup created a newer launch ID; the earlier owned main must still be accepted.
  if(!inspect(foreign).State.Running||inspect(foreign).Image!==image.imageId)throw Error('Foreign same-image container changed');
  if(calls.some(a=>a.includes('up')))throw Error('Compose up attempted with foreign main present');

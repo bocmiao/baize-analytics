@@ -38,6 +38,6 @@ ce6ebcc 不可变 Git archive 的独立严格单站基准完整性 PASS：[完�
 
 [有界读取与完整查询窗口](PREFETCH_VALIDATION.md) 记录后续044最多并发2次、单请求16MiB/总在途32MiB、有序100行和完整认证约束，以及受影响13项定向通过；新优化性能对比尚无结果。下一步仍为 b0be327 同口径负载结果、最新同源完整浏览器/后端及最终镜像验证；历史失败和托管暂停规则不变。
 
-最终同源本地全轮08eab82已EXIT0：173单元+401真实集成、30浏览器检查（28真实Chromium+2日期）全部PASS/0skip；lint/types/build与新卷数据库/compiled入口/cleanup通过。最终中文截图及原始报告已保存，见 [第十二批验证](../../VALIDATION_TWELFTH.md) 与 `../../test-evidence/main-08eab82-*`。Google/模型transport仍模拟；生产新镜像及托管验收待，不沿用旧镜像SHA。旧失败和性能边界不改写。
+最终同源本地全轮08eab82已EXIT0：173单元+401真实集成、30浏览器检查（28真实Chromium+2日期）全部PASS/0skip；lint/types/build与新卷数据库/compiled入口/cleanup通过。最终中文截图及原始报告已保存，见 [第十二批验证](../../archive/validation/VALIDATION_TWELFTH.md) 与 `../../test-evidence/main-08eab82-*`。Google/模型transport仍模拟；生产新镜像及托管验收待，不沿用旧镜像SHA。旧失败和性能边界不改写。
 
-10eb88a完整同源新卷本地全轮实际EXIT0：180单元+402真实集成，30检查（28真实Chromium+2日期）全PASS/0skip，cleanup完成。见 `../../test-evidence/main-10eb88a-*` 与 [第十二批](../../VALIDATION_TWELFTH.md)。最新短范围中文总览/SEO/AI实截图独立保存，旧图/旧FAIL均保留；外部运输模拟，下一b65候选、新image与托管未预称通过。
+10eb88a完整同源新卷本地全轮实际EXIT0：180单元+402真实集成，30检查（28真实Chromium+2日期）全PASS/0skip，cleanup完成。见 `../../test-evidence/main-10eb88a-*` 与 [第十二批](../../archive/validation/VALIDATION_TWELFTH.md)。最新短范围中文总览/SEO/AI实截图独立保存，旧图/旧FAIL均保留；外部运输模拟，下一b65候选、新image与托管未预称通过。

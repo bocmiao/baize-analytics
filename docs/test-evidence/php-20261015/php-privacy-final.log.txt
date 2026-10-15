@@ -1,0 +1,4 @@
+collect: 100 assertions passed; 8.4.11
+{"passed":91,"database":"8.4.11","suite":"governance-privacy-backup-ai-ledger"}
+collect: 100 assertions passed; 11.4.13-MariaDB-ubu2404
+{"passed":91,"database":"11.4.13-MariaDB-ubu2404","suite":"governance-privacy-backup-ai-ledger"}

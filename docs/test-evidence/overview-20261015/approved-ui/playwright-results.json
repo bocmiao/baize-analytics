@@ -1,0 +1,169 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/baize-analytics/node_modules/.bin/playwright",
+      "test",
+      "--config",
+      "playwright.overview-ui.config.ts"
+    ],
+    "configFile": "/workspace/baize-analytics/playwright.overview-ui.config.ts",
+    "rootDir": "/workspace/baize-analytics/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/workspace/baize-analytics/.baize/overview-browser-artifacts/approved-ui_spec_ts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/workspace/baize-analytics/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "approved-ui.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/baize-analytics/.baize/overview-browser-artifacts/approved-ui_spec_ts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/workspace/baize-analytics/tests/e2e",
+        "snapshotDir": "/workspace/baize-analytics/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "approved-ui.spec.ts",
+        "timeout": 30000,
+        "use": {
+          "headless": true,
+          "launchOptions": {
+            "executablePath": "/usr/bin/chromium"
+          },
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/workspace/baize-analytics/docs/test-evidence/overview-20261015/approved-ui/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "approved-ui.spec.ts",
+      "file": "approved-ui.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "approved dashboard actual thirty-day facts, on-demand insights and mobile navigation preserve all entries",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 31297,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Approved collapsed card metrics: {\"height\":248.6875,\"minBlockSize\":\"auto\",\"fontFamily\":\"-apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", \\\"PingFang SC\\\", \\\"Microsoft YaHei\\\", sans-serif\",\"fontSize\":\"16px\",\"lineHeight\":\"normal\",\"fontsReady\":\"loaded\"}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T16:34:14.641Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "collapsed-card-font-metrics",
+                      "contentType": "application/json",
+                      "body": "eyJoZWlnaHQiOjI0OC42ODc1LCJtaW5CbG9ja1NpemUiOiJhdXRvIiwiZm9udEZhbWlseSI6Ii1hcHBsZS1zeXN0ZW0sIEJsaW5rTWFjU3lzdGVtRm9udCwgXCJTZWdvZSBVSVwiLCBcIlBpbmdGYW5nIFNDXCIsIFwiTWljcm9zb2Z0IFlhSGVpXCIsIHNhbnMtc2VyaWYiLCJmb250U2l6ZSI6IjE2cHgiLCJsaW5lSGVpZ2h0Ijoibm9ybWFsIiwiZm9udHNSZWFkeSI6ImxvYWRlZCJ9"
+                    },
+                    {
+                      "name": "mobile-layout-diagnostic",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY3JvbGxZIjogMCwKICAidmlld3BvcnQiOiB7CiAgICAid2lkdGgiOiAzOTAsCiAgICAiaGVpZ2h0IjogODQ0CiAgfSwKICAiZWxlbWVudHMiOiB7CiAgICAiLndvcmtzcGFjZS10b29sYmFyIjogewogICAgICAieCI6IDEyLAogICAgICAieSI6IDc1LAogICAgICAid2lkdGgiOiAzNjYsCiAgICAgICJoZWlnaHQiOiA3OCwKICAgICAgIm1hcmdpbiI6ICIwcHggMHB4IDRweCIsCiAgICAgICJwYWRkaW5nIjogIjBweCIsCiAgICAgICJkaXNwbGF5IjogImZsZXgiCiAgICB9LAogICAgIi5kYXRlLXJhbmdlIjogewogICAgICAieCI6IDEyLAogICAgICAieSI6IDExNywKICAgICAgIndpZHRoIjogMzY2LAogICAgICAiaGVpZ2h0IjogMzYsCiAgICAgICJtYXJnaW4iOiAiMHB4IiwKICAgICAgInBhZGRpbmciOiAiMHB4IDNweCIsCiAgICAgICJkaXNwbGF5IjogImZsZXgiCiAgICB9LAogICAgIi50b29sYmFyLXByZWZlcmVuY2VzIjogewogICAgICAieCI6IDM0MiwKICAgICAgInkiOiA3NSwKICAgICAgIndpZHRoIjogMzYsCiAgICAgICJoZWlnaHQiOiAzNiwKICAgICAgIm1hcmdpbiI6ICIwcHgiLAogICAgICAicGFkZGluZyI6ICIwcHgiLAogICAgICAiZGlzcGxheSI6ICJibG9jayIKICAgIH0sCiAgICAiLnBhZ2UtaGVhZGVyIjogewogICAgICAieCI6IDEyLAogICAgICAieSI6IDE1NywKICAgICAgIndpZHRoIjogMzY2LAogICAgICAiaGVpZ2h0IjogMCwKICAgICAgIm1hcmdpbiI6ICIwcHgiLAogICAgICAicGFkZGluZyI6ICIwcHgiLAogICAgICAiZGlzcGxheSI6ICJmbGV4IgogICAgfSwKICAgICJtYWluPi5zY29wZS1jb250ZXh0IjogewogICAgICAieCI6IDEyLAogICAgICAieSI6IDE2NSwKICAgICAgIndpZHRoIjogMTg1LjcxODc1LAogICAgICAiaGVpZ2h0IjogMTYsCiAgICAgICJtYXJnaW4iOiAiMXB4IDBweCA0cHgiLAogICAgICAicGFkZGluZyI6ICIwcHgiLAogICAgICAiZGlzcGxheSI6ICJpbmxpbmUiCiAgICB9LAogICAgIi5xdWVyeS1oZWFsdGgiOiB7CiAgICAgICJ4IjogMzQyLAogICAgICAieSI6IDI1NiwKICAgICAgIndpZHRoIjogMzYsCiAgICAgICJoZWlnaHQiOiA2NCwKICAgICAgIm1hcmdpbiI6ICI4cHggMHB4IiwKICAgICAgInBhZGRpbmciOiAiMHB4IiwKICAgICAgImRpc3BsYXkiOiAiYmxvY2siCiAgICB9LAogICAgIi5hcHByb3ZlZC1vdmVydmlldyI6IHsKICAgICAgIngiOiAxMiwKICAgICAgInkiOiAxOTQsCiAgICAgICJ3aWR0aCI6IDM2NiwKICAgICAgImhlaWdodCI6IDIyNjQuMzc1LAogICAgICAibWFyZ2luIjogIjBweCIsCiAgICAgICJwYWRkaW5nIjogIjBweCIsCiAgICAgICJkaXNwbGF5IjogImJsb2NrIgogICAgfSwKICAgICIub3ZlcnZpZXctc2VjdGlvbi1oZWFkaW5nIjogewogICAgICAieCI6IDAsCiAgICAgICJ5IjogMCwKICAgICAgIndpZHRoIjogMCwKICAgICAgImhlaWdodCI6IDAsCiAgICAgICJtYXJnaW4iOiAiMHB4IDBweCAxMHB4IiwKICAgICAgInBhZGRpbmciOiAiMHB4IiwKICAgICAgImRpc3BsYXkiOiAibm9uZSIKICAgIH0sCiAgICAiLm92ZXJ2aWV3LW1ldHJpY3MiOiB7CiAgICAgICJ4IjogMCwKICAgICAgInkiOiAwLAogICAgICAid2lkdGgiOiAwLAogICAgICAiaGVpZ2h0IjogMCwKICAgICAgIm1hcmdpbiI6ICIwcHgiLAogICAgICAicGFkZGluZyI6ICIwcHgiLAogICAgICAiZGlzcGxheSI6ICJ0YWJsZSIKICAgIH0sCiAgICAiLm92ZXJ2aWV3LXRyZW5kLXBhbmVsIjogewogICAgICAieCI6IDEyLAogICAgICAieSI6IDcyMS42ODc1LAogICAgICAid2lkdGgiOiAzNjYsCiAgICAgICJoZWlnaHQiOiA0MDEuMzQzNzUsCiAgICAgICJtYXJnaW4iOiAiMHB4IiwKICAgICAgInBhZGRpbmciOiAiMTNweCIsCiAgICAgICJkaXNwbGF5IjogImJsb2NrIgogICAgfSwKICAgICIuY2hhcnQiOiBudWxsLAogICAgIi5vdmVydmlldy10cmVuZC1wYW5lbD5kZXRhaWxzIjogbnVsbAogIH0KfQ=="
+                    },
+                    {
+                      "name": "approved-ui-real-fixture",
+                      "contentType": "application/json",
+                      "body": "eyJ3ZWJTb3VyY2VUcmVlU2hhMjU2IjoiYWQ2YjAwMmU2NDVjM2I4OTQxNTBiM2E3ZTU1Mzg1OGEwMjEzYWZlMjIyNWM4OTNmMjM0ZDIwZDE5NTdmNTAwMSIsInNvdXJjZU1lYW5pbmciOiJhY3R1YWwgc291cmNlIHRyZWUgZGlnZXN0OyBTT1VSQ0VfU0hBIGlzIGJhc2UgY29tbWl0IG9ubHkgd2hlbiB3b3JrdHJlZSBjaGFuZ2VzIGV4aXN0Iiwic2l0ZUlkIjoiNGZlNzQxNGIwNzc5Zjc1MDE0MDZjYjljIiwidGltZXpvbmUiOiJVVEMiLCJmcm9tIjoiMjAyNi0wOS0xNSIsInRvIjoiMjAyNi0xMC0xNCIsImV4cGVjdGVkUHYiOjUxMSwiZXhwZWN0ZWRVdiI6MzAsImZpeHR1cmVEYXlzIjo2MCwicXVlcnlEYXlzIjozMCwiY29tcGFyaXNvblB2IjoxMjAsImZpeHR1cmVIb3VyVXRjIjoxMiwiZXhwZWN0ZWRDaGFuZ2UiOiIzMjUuOCUiLCJndWlkZWxpbmVzU2hhIjoiZDI0NmIwMjZmNGYyOWI1ODIzYTljYzg1N2Y5ZWRmM2QyNTA3MDAyZTA1NWUzMjA0MGNhZGVhZjNiMzhlMDIzNCIsImVudHJpZXMiOlsib3ZlcnZpZXciLCJyZXZlbnVlIiwicmVhbHRpbWUiLCJwYWdlcyIsInNvdXJjZXMiLCJhdWRpZW5jZSIsImV2ZW50cyIsImRvd25sb2FkcyIsIm5vdEZvdW5kIiwiZXZlbnRUcmVuZCIsInVzZXJwYXRocyIsImdvYWxzIiwiZnVubmVscyIsInJldGVudGlvbiIsInBhdGhzIiwidml0YWxzIiwicmVwb3J0cyIsInNoYXJlcyIsImFsZXJ0cyIsIm1lbWJlcnMiLCJ0b2tlbnMiLCJhdWRpdCIsImpvYnMiLCJwcml2YWN5IiwiZXhwb3J0cyIsImNoYW5uZWxzIiwic2NoZWR1bGVzIiwiaGVhdG1hcCIsInJlcGxheSIsImV4cGVyaW1lbnRzIiwic2VvIiwiYWkiLCJnc2MiLCJzZW8tY29udmVyc2lvbnMiLCJnYTQiLCJzZXJwIiwic3VnZ2VzdGlvbnMiLCJzZXR0aW5ncyJdfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a411d13d5c15cc7a8fd7-e4d314bb6d2aa47d555b",
+          "file": "approved-ui.spec.ts",
+          "line": 36,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-15T16:34:12.262Z",
+    "duration": 34586.163,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

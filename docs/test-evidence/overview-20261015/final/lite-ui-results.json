@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "actualSQLiteAndAPI": true,
+  "pv": 1,
+  "unsupportedRealtimeRequests": [],
+  "liveCardOmitted": true,
+  "singleObservedBin": true,
+  "unconfiguredGeographyVisible": true,
+  "mobileOverflow": false
+}

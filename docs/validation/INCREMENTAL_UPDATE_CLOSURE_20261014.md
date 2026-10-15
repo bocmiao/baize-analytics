@@ -39,7 +39,7 @@
 自动触发检查：没有 .github/workflows；.cnb.yml 只有手动 web_trigger/web_trigger_validate，无 push、cron、NPC。只执行带 [skip ci] 的普通 main 推送，不使用 force、PR、GitHub Actions、CNB、Release 或权限修改。
 
 
-2026-10-14 分发复查：六包字节/SHA 再次一致，当前 Library 正式流程两次均在准备前失败，无 Library ID；私库 Release 只读列表为空，连接工具没有 Release 写入接口，gh 认证失败。准确证据见 [DISTRIBUTION_STATUS.json](../test-evidence/incremental-update-distribution-20261014/DISTRIBUTION_STATUS.json)。下载后的本版命令见 [38c9c61 安装说明](../DELIVERY_38C9C61_INSTALL.md)，避免使用包内旧 Docker 示例的 tag。
+2026-10-14 分发复查：六包字节/SHA 再次一致，当前 Library 正式流程两次均在准备前失败，无 Library ID；私库 Release 只读列表为空，连接工具没有 Release 写入接口，gh 认证失败。准确证据见 [DISTRIBUTION_STATUS.json](../test-evidence/incremental-update-distribution-20261014/DISTRIBUTION_STATUS.json)。下载后的本版命令见 [38c9c61 安装说明](../archive/delivery/DELIVERY_38C9C61_INSTALL.md)，避免使用包内旧 Docker 示例的 tag。
 
 
 最新直接路径诊断已取代先前“无 Library ID”的分发状态：标准 NodeReady `libfile_843d7a91e7088191b087077dcae0593c`（35412021 bytes），Lite NodeReady `libfile_20ea06045abc8191b2554aef3dbd4d1e`（30514231 bytes）。这两个保存确认与本地 SHA 校验均通过；没有宣称执行过 Library 远端重新下载的 SHA 比较。四大包为传输拒绝，未保存。

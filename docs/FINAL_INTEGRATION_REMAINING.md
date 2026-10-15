@@ -2,7 +2,7 @@
 
 核对时间：2026-10-10。依据 `PROJECT_SPEC.md` 全部 F01–F66/P2、`IMPLEMENTATION_NOTES.md`、逐项清单和各模块实际验收记录。此文件只整合状态，不修改规格目标，不把专项计数累加为全量，也不替代共享主清单。未运行新的 CI、Docker、负载或外部请求。
 
-当前不可变本地已验源为 **7fbb5612cee6121df23425ff14274316e43a4bca**。036–049相关严格读写、删除、缓存、签名恢复及收入alias回执/raw-prune签名proof/收入FK与保留期窄修已验；coreguardtrue，逐站证明仍强制。全新Compose shared EXIT0/cleanup complete：**494应用=100单元+394集成，0失败/0跳过；22 E2E=20真实Chromium+2日期函数**，见[第十验收](VALIDATION_TENTH.md)。新镜像仍待；5000严格负载实际EXIT1，尾部未排空，见第十证据。3e052d8原491/22及701真实392/394集成失败、无浏览器记录保留。
+当前不可变本地已验源为 **7fbb5612cee6121df23425ff14274316e43a4bca**。036–049相关严格读写、删除、缓存、签名恢复及收入alias回执/raw-prune签名proof/收入FK与保留期窄修已验；coreguardtrue，逐站证明仍强制。全新Compose shared EXIT0/cleanup complete：**494应用=100单元+394集成，0失败/0跳过；22 E2E=20真实Chromium+2日期函数**，见[第十验收](archive/validation/VALIDATION_TENTH.md)。新镜像仍待；5000严格负载实际EXIT1，尾部未排空，见第十证据。3e052d8原491/22及701真实392/394集成失败、无浏览器记录保留。
 
 ## 已闭合的 main 功能，不重复列为待开发
 
@@ -53,7 +53,7 @@
 
 ## 历史检查点与失败（保留，不代表当前剩余）
 
-根负责人恢复后实际核对 main 为 **f017f8d8983a720dcf0fe45c6fe0f62225dad6ff**（实现里程碑 5b402dd；仅正常 main 提交）：7f02 阶段包含第八基础，f66f5b2 加强 AI 多轮失效检查。第八不可变证据为 **377 应用 =88 单元+289 集成，0失败/0跳过；20 检查 =18 Chromium+2日期**，见 [VALIDATION_EIGHTH.md](VALIDATION_EIGHTH.md)。这是该冻结源的本地空 Compose 结果；不是当前工作区全集、最新托管或最新 Docker 结果。042 已以独立干净快照进入 main；036/038/039/041/043–048 尚属工作区，不据文件存在推断已合入。
+根负责人恢复后实际核对 main 为 **f017f8d8983a720dcf0fe45c6fe0f62225dad6ff**（实现里程碑 5b402dd；仅正常 main 提交）：7f02 阶段包含第八基础，f66f5b2 加强 AI 多轮失效检查。第八不可变证据为 **377 应用 =88 单元+289 集成，0失败/0跳过；20 检查 =18 Chromium+2日期**，见 [VALIDATION_EIGHTH.md](archive/validation/VALIDATION_EIGHTH.md)。这是该冻结源的本地空 Compose 结果；不是当前工作区全集、最新托管或最新 Docker 结果。042 已以独立干净快照进入 main；036/038/039/041/043–048 尚属工作区，不据文件存在推断已合入。
 
 
 

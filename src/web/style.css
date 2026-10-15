@@ -66,3 +66,7 @@
 #workspace-interpretation-host .query-health>details{min-width:0;max-width:100%;width:100%}
 #workspace-interpretation-host .table-wrap{min-width:0;max-width:100%;overflow-x:auto}
 .workspace-toolbar .toolbar-preferences select{min-width:0}
+
+.money-amount,.money-cell{font-variant-numeric:tabular-nums;overflow-wrap:anywhere;white-space:normal}.money-cell{min-width:130px;white-space:nowrap}.money-currencies{display:grid;gap:5px}.money-currencies>span{white-space:nowrap}
+
+.money-table-hint{display:none}@media(max-width:767px){.money-table-hint{display:block;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:8px 0}}

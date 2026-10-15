@@ -1,0 +1,13 @@
+[program:baize-php-worker]
+command=/usr/bin/php /var/www/baize-php/bin/worker.php --loop
+user=www-data
+directory=/var/www/baize-php
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+redirect_stderr=true
+stdout_logfile=/var/log/baize-php-worker.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=3
+environment=BAIZE_CONFIG_PATH="/var/lib/baize-php/config.php"

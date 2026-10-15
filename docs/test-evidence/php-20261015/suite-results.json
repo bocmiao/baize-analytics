@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-15",
+  "php": "8.3.35",
+  "databases": [
+    "MySQL 8.4.11",
+    "MariaDB 11.4.13"
+  ],
+  "perDatabase": {
+    "kernel": 59,
+    "collect": 100,
+    "analytics": 100,
+    "governance": 91,
+    "sso": 15,
+    "platform": 30,
+    "keyring": 15,
+    "manualSearch": 48,
+    "providers": 94,
+    "mcp": 73,
+    "annotations": 48
+  },
+  "totalPerDatabase": 673,
+  "notes": [
+    "Serial full run passed on each engine. Governance/collect rerun after final CLI privacy barrier; latest governance count 91 supersedes 78 in full log.",
+    "PSL/parser cases repeated per suite invocation; counts are assertions, not independent feature counts.",
+    "External transports are injected fixtures; no live external credentials or production deployment."
+  ],
+  "logs": [
+    "php-dual-database.log.txt",
+    "php-privacy-final.log.txt"
+  ]
+}

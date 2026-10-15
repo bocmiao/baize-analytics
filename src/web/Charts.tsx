@@ -1,7 +1,8 @@
 import type {TrendAnnotation} from './annotationTrend';
 import { useEffect, useRef } from 'react';
 import type { Row } from './api';
-import { t } from './i18n';
+import { t,language } from './i18n';
+import {formatMoney,moneyChartValue} from './moneyFormat';
 import * as echarts from 'echarts/core';
 import { LineChart, SankeyChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, MarkLineComponent } from 'echarts/components';
@@ -22,10 +23,12 @@ function useChart(){
  useEffect(()=>{if(!ref.current)return;const chart=echarts.init(ref.current);chartRef.current=chart;const stop=observeChartSize(ref.current,chart);return()=>{stop();chartRef.current=null;chart.dispose();};},[]);
  return {ref,chartRef};
 }
-function Chart({ data, metricLabel = '浏览量' }: {
+function Chart({ data, metricLabel = '浏览量',money=false }: {
     metricLabel?: string;
     data: Row[];
-}) { const {ref,chartRef}=useChart(); useEffect(() => { const chart=chartRef.current;if(!chart)return; chart.setOption({ animation: false, tooltip: { trigger: 'axis' }, grid: { left: 48, right: 20, bottom: 30, top: 25 }, xAxis: { type: 'category', data: data.map(r => readable(r.time || r.day || r.hour || r.date)), axisLine: { lineStyle: { color: '#D9DFED' } } }, yAxis: { type: 'value', minInterval: 1 }, series: [{ name: t(metricLabel), type: 'line', symbol: 'circle', symbolSize: 7, showSymbol: data.filter(r=>r.pv!==null&&r.pv!==undefined&&Number.isFinite(Number(r.pv))).length===1, smooth: false, data: data.map(r => r.pv===null||r.pv===undefined||!Number.isFinite(Number(r.pv))?null:Number(r.pv)), lineStyle: { color: '#4F46FF', width: 3 }, areaStyle: { color: 'rgba(79,70,255,.08)' } }] },{notMerge:true});  }, [data,metricLabel]); return <div ref={ref} className="chart" role="img" aria-label={`${t(metricLabel)} ${t('趋势')}`}/>; }
+    money?:boolean;
+}) { const {ref,chartRef}=useChart();const values=data.map(row=>money?moneyChartValue(row.pv):row.pv===null||row.pv===undefined||!Number.isFinite(Number(row.pv))?null:Number(row.pv));useEffect(() => { const chart=chartRef.current;if(!chart)return;const locale=language()==='en'?'en-US':'zh-CN';chart.setOption({ animation: false, tooltip: money?{trigger:'axis',renderMode:'richText',formatter:(items:unknown)=>{if(!Array.isArray(items)||!items.length)return '';const index=Number((items[0] as {dataIndex:number}).dataIndex),row=data[index];return row?`${readable(row.time||row.day||row.hour||row.date)}\n${t(metricLabel)}: ${formatMoney(row.pv,locale)}`:'';}}:{ trigger: 'axis' }, grid: { left: money?78:48, right: 20, bottom: 30, top: 25 }, xAxis: { type: 'category', data: data.map(r => readable(r.time || r.day || r.hour || r.date)), axisLine: { lineStyle: { color: '#D9DFED' } } }, yAxis: { type: 'value',...money?{axisLabel:{formatter:(value:number)=>value!==0&&(Math.abs(value)<.001||Math.abs(value)>1e12)?value.toExponential(1):formatMoney(value,locale,{maximumFractionDigits:2})}}:{minInterval:1} }, series: [{ name: t(metricLabel), type: 'line', symbol: 'circle', symbolSize: 7, showSymbol: values.filter(value=>value!==null).length===1, connectNulls:false,smooth: false, data: values, lineStyle: { color: '#4F46FF', width: 3 }, areaStyle: { color: 'rgba(79,70,255,.08)' } }] },{notMerge:true});  }, [data,metricLabel,money]); return <div ref={ref} className="chart" data-money-chart={money?'true':undefined} data-money-observed-points={money?values.filter(value=>value!==null).length:undefined} role="img" aria-label={`${t(metricLabel)} ${t('趋势')}`}/>; }
+export function RevenueTrend({data,metricLabel}:{data:Row[];metricLabel:string}){return <Chart data={data} metricLabel={metricLabel} money/>;}
 function PathChart({ data }: {
     data: Row[];
 }) { const {ref,chartRef}=useChart(); useEffect(() => { const chart=chartRef.current;if(!chart)return; const names = new Set<string>(); const links = data.slice(0, 20).map(r => { const source = `${t('起点')} ${r.source}`, target = `${t('终点')} ${r.target}`; names.add(source); names.add(target); return { source, target, value: Number(r.count) }; }); chart.setOption({ animation: false, tooltip: { trigger: 'item' }, series: [{ type: 'sankey', data: [...names].map(name => ({ name })), links, emphasis: { focus: 'adjacency' }, lineStyle: { color: 'gradient', curveness: .5 } }] },{notMerge:true});  }, [data]); return <div ref={ref} className="chart" role="img" aria-label={t('页面流向桑基图')}/>; }

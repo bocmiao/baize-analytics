@@ -1,0 +1,43 @@
+import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+import {randomUUID} from 'node:crypto';
+import {chromium} from '@playwright/test';
+const base=process.env.BAIZE_PHP_HTTP_URL||'http://127.0.0.1:8099';
+if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Only a disposable loopback PHP fixture may be tested');
+const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-http/session.json','utf8'));
+const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015';mkdirSync(output,{recursive:true});
+let checks=0;const check=(condition,message)=>{if(!condition)throw Error(message);checks++;};
+const json=async(path,{method='GET',body,anonymous=false,...options}={})=>{const res=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(anonymous?{}:{cookie:fixture.cookie}),...options.headers},...(body!==undefined?{body:typeof body==='string'?body:JSON.stringify(body)}:{})});const result=await res.json().catch(()=>null);return {status:res.status,result};};
+const now=Date.now()-60000,visitor=randomUUID(),page=randomUUID(),site=fixture.siteId;
+const event=(type,path,extra={})=>({event_id:randomUUID(),visitor_id:visitor,page_id:page,type,ts:now,url:'https://php-fixture.example.test'+path,path,...extra});
+const events=[event('pageview','/php-http'),event('event','/php-http',{ts:now+1000,event_name:'signup',props:{plan:'pro',paid:true}}),event('heartbeat','/php-http',{ts:now+15000,visible_ms:12000,interval_start:now,interval_end:now+15000}),event('revenue','/php-http',{ts:now+20000,revenue:'0.000000000000000001',currency:'USD',order_id:randomUUID()})];
+const envelope={protocol_version:1,site_id:site,sdk:'php-http-real/1.0.0',sent_at:Date.now(),events};
+const collect=()=>json('/api/collect',{method:'POST',anonymous:true,body:envelope,headers:{Origin:'https://php-fixture.example.test','User-Agent':'Mozilla/5.0 Chrome/145.0.0.0 Safari/537.36'}});
+const first=await collect();check(first.status===202&&first.result.accepted===4,'Actual PHP HTTP collector accepts wire protocol: '+JSON.stringify(first));
+const retry=await collect();check(retry.status===202&&retry.result.duplicates===4,'Actual PHP HTTP exact retry idempotence');
+const from=new Date(now-3600000).toISOString(),to=new Date(Date.now()).toISOString(),query='?from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to);
+const stats=await json('/api/v1/sites/'+site+'/stats'+query);check(stats.status===200&&stats.result.totals.pv>=1,'Actual PHP stats returns persisted pageview');
+check(stats.result.coverage===1,'Actual PHP stats marks exact retained read');
+const revenue=await json('/api/v1/sites/'+site+'/revenue'+query);check(revenue.status===200,'Actual PHP revenue endpoint');
+const invalidOrigin=await json('/api/collect',{method:'POST',anonymous:true,body:envelope,headers:{Origin:'https://unregistered.example.test'}});check(invalidOrigin.status===403,'Collector rejects unregistered origin');
+const denied=await json('/api/v1/sites/'+site+'/stats'+query,{anonymous:true});check(denied.status===401,'Unauthenticated analysis denied');
+const cross=await json('/api/v1/sites/'+site,{method:'PATCH',body:{name:'must not change'},headers:{Origin:'https://unregistered.example.test'}});check(cross.status===403,'Actual PHP CSRF origin enforced');
+const setup=await json('/api/setup',{anonymous:true});check(setup.status===200&&setup.result.required===false,'Browser installer terminal state');
+const reinitialize=await json('/api/setup',{method:'POST',anonymous:true,body:{email:'other@example.test',password:'OtherStrongPassword2026!',installationNonce:'0'.repeat(64)}});check(reinitialize.status===409,'Installation cannot be claimed twice');
+const routes=['analysis','content','geography','event-properties','replay','heatmap','realtime','goals','funnels','experiments','members','tokens','shares','jobs','usage'];
+const outcomes=[];
+for(const path of routes){const extra=path==='event-properties'?'&event_name=signup&property=plan':'';const res=await json('/api/v1/sites/'+site+'/'+path+query+extra);outcomes.push({path,status:res.status});check(res.status===200,'Standard view HTTP '+path+' '+res.status+' '+JSON.stringify(res.result));}
+const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium'});
+let browserResult;
+try{
+ const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+ await context.addCookies([{name:'baize_session',value:fixture.cookie.split('=').slice(1).join('='),url:base,httpOnly:true,sameSite:'Lax'}]);
+ const tab=await context.newPage();const errors=[];const failures=[];tab.on('pageerror',e=>errors.push(e.message));tab.on('response',r=>{if(r.url().startsWith(base+'/api/')&&r.status()>=500)failures.push({path:new URL(r.url()).pathname,status:r.status()});});
+ await tab.goto(base+'/app?site='+site+'&report=overview');await tab.waitForTimeout(1000);
+ check(await tab.locator('h1').count()>0,'Shared prebuilt React interface rendered by PHP');
+ check(errors.length===0,'No PHP frontend runtime exception: '+errors.join('; '));check(failures.length===0,'No PHP frontend HTTP 5xx: '+JSON.stringify(failures));
+ await tab.screenshot({path:output+'/php-desktop.png',fullPage:true});
+ await tab.setViewportSize({width:390,height:844});await tab.screenshot({path:output+'/php-mobile.png',fullPage:true});
+ browserResult={pageErrors:errors,serverFailures:failures,prebuiltFrontend:true,backend:'real PHP HTTP + MySQL'};
+}finally{await browser.close();}
+const evidence={passed:checks,baseUrl:base,collector:{accepted:first.result.accepted,duplicates:retry.result.duplicates},routes:outcomes,browser:browserResult,syntheticFixture:true,liveProviders:false};
+writeFileSync(output+'/http-results.json',JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence));

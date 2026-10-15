@@ -170,7 +170,7 @@ capture返回manifest id，backup返回签名backup id/bytes/integrity，restore
 
 操作后记录实际命令exit、镜像/源码SHA、schema版本、目标DB/卷、journal验证、应用权限、真实采集及幂等、聚合watermark/coverage、export下载与删除物理清理；对外部账号、真实模型质量、Windows/小程序设备等未实测项单列，不用环境smoke替代应用验收。
 
-已保存真实Docker安装/备份/独立卷恢复/提交schema后失败回滚证据，见 [运行验证](validation-ops.md)、[部署](deployment.md) 与 [主验收记录](VALIDATION_MAIN.md)。本地CPU百万手动worker与持续background压力测试分别见 [scale](validation-scale.md) 和 [continuous](validation-continuous-scale.md)，不据此宣称1C2GiB或生产SLO保证。最新主验收记录优先于早期历史数字；本文件不自动重跑外部账号或部署生产。
+已保存真实Docker安装/备份/独立卷恢复/提交schema后失败回滚证据，见 [运行验证](validation-ops.md)、[部署](deployment.md) 与 [主验收记录](archive/validation/VALIDATION_MAIN.md)。本地CPU百万手动worker与持续background压力测试分别见 [scale](validation-scale.md) 和 [continuous](validation-continuous-scale.md)，不据此宣称1C2GiB或生产SLO保证。最新主验收记录优先于早期历史数字；本文件不自动重跑外部账号或部署生产。
 
 ## 下一批AI删除与百度手动迁移边界 / Pending AI deletion and Baidu import boundary
 

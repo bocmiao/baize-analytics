@@ -1,0 +1,23 @@
+{
+  "parsedWithExistingZodSchemas": 102,
+  "browser": "system Chromium",
+  "views": [
+    {
+      "view": "ga4",
+      "tables": 3,
+      "periodDistinctUsers": 7,
+      "errors": []
+    },
+    {
+      "view": "seo",
+      "validVersion": 2,
+      "missingDescriptionVisible": true,
+      "errors": []
+    }
+  ],
+  "fixtures": "Actual PHP provider suite JSON; API intercepted only for UI contract rendering",
+  "screenshots": [
+    "/tmp/baize-provider-contracts-20261015/ga4-desktop.png",
+    "/tmp/baize-provider-contracts-20261015/seo-desktop.png"
+  ]
+}

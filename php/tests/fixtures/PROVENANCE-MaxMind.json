@@ -1,0 +1,1 @@
+{"source":"https://github.com/maxmind/MaxMind-DB","revision":"0ee49278e35fd7bdf341ac236edbba20de1aceb9","path":"test-data/GeoIP2-City-Test.mmdb","sha256":"7ecd1a263834096e3948b459713102ef350412a9f18367b4a88efec018153004","license":"Apache-2.0 OR MIT","syntheticTestDatabase":true,"productionGeoLiteDatabaseIncluded":false}

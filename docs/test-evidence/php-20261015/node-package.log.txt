@@ -1,0 +1,17 @@
+✔ real sealed files and internal symlink survive manifest verification; mutation and extras reject (14.043142ms)
+✔ absolute and escaping symlinks and external state are rejected before sealing (2.915322ms)
+✔ Linux profile/revision identity is required, mode changes are detected (0.791738ms)
+✔ npm start derivation changes only start, preserves original/lock bytes and verifies installed versions (0.967177ms)
+✔ documentation whitelist comes from exact real Git blobs, excludes history and private state (136.625055ms)
+✔ documentation derivation changes only missing link targets and preserves local guide links/text (0.277259ms)
+✔ real tar extraction preserves sealed inventory under umask 077 (8.503999ms)
+✔ actual Node library providers require real notices and unknown providers reject (0.382905ms)
+✔ explicit screenshot Git blobs pass through as binary and README keeps offline image links (76.637204ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 317.333766

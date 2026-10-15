@@ -17,7 +17,7 @@ Node 24 源码方式需要独立 PostgreSQL 17，以及 `DATABASE_URL`、`DATA_D
 
 Compose 默认连接内置 postgres/redis；只在 `.env` 写同名 `DATABASE_URL/REDIS_URL` 不会切换外部服务，需明确的 Compose override。默认 loopback 端口只供本机；`PUBLIC_URL` 不会配置 TLS 或开放公网。持久卷为 `app_data/app_keys/postgres_data/redis_data`，可选 CH 增加 `clickhouse_data`；不要删除业务卷或遗失密钥。
 
-[历史阶段记录](deployment-history.md) 保留原始失败和性能欠项；[运维验收记录](test-evidence/2026-10-12-ops-maintenance/summary.json) 标注各自对应版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。真实域名、HTTPS、Windows 与跨机上线需按目标环境另行验收。
+[历史阶段记录](archive/validation/deployment-history.md) 保留原始失败和性能欠项；[运维验收记录](test-evidence/2026-10-12-ops-maintenance/summary.json) 标注各自对应版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。真实域名、HTTPS、Windows 与跨机上线需按目标环境另行验收。
 
 需 Docker Engine 与 Compose v2。源码安装器在本地构建应用；使用镜像 save 时按 [部署方式](deployment-methods.md) 加载交付镜像。运行 `./install.sh`：保持现有 .env、密钥和卷，随机生成数据库密码与 32 字节主密钥（0600），构建后等待健康检查。首次访问创建管理员，不提供固定初始密码。默认仅 `127.0.0.1:3000` 可访问。
 

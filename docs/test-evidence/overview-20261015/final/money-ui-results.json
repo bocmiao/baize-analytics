@@ -1,0 +1,37 @@
+{
+  "controlledApiResponses": true,
+  "actualStandardSetupAndSession": true,
+  "fixtures": {
+    "micro": "0.000000000000000001",
+    "zero": "0",
+    "large": "9007199254740993.000000000000000001",
+    "nodeNumber": 99.95,
+    "currencies": {
+      "USD": "0.000000000000000001",
+      "JPY": "0",
+      "EUR": "9007199254740993.000000000000000001",
+      "CNY": 99.95
+    }
+  },
+  "verifiedViews": [
+    "overview",
+    "revenue",
+    "identities",
+    "identity activity",
+    "source generic table",
+    "source dimension breakdown"
+  ],
+  "narrowViewport390": true,
+  "chartMicroNonzeroCoordinate": true,
+  "lossyLargeCoordinateOmittedWithExactTable": true,
+  "disclosuresPreserved": true,
+  "consoleErrors": [],
+  "sourceSha256": {
+    "src/web/moneyFormat.ts": "4ab0594d6b8f60a9de417df5887b77e5ae35a4d93384a15ecef3efa118c42885",
+    "src/web/RevenueIdentityViews.tsx": "1ccf690c07f9343a43cf616153b63e2e9d33527eb7d8f01b17ee2278d9431442",
+    "src/web/Charts.tsx": "d2e607997bfe1da23d5d1cb5bbb052b0f1efa723167a0a1a4e0f7c8a6c8eb2fa",
+    "src/web/OverviewDashboard.tsx": "d94b5da483d3cce90378591fad642f0bab678d5426db42e1d9da54bcf934e167",
+    "src/web/main.tsx": "7e5935f7ae357eff89afbf1b35df698c17365c4a6127f983de737945047cba18",
+    "dist/web/index.html": "d3c9045f39ffc80a71943164d373d78041f073eefbf8c42b09510857a96c069f"
+  }
+}

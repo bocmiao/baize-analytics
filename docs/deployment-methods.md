@@ -1,6 +1,8 @@
-# 三种部署方式与首次使用
+# 原 Node 版的三种部署方式与首次使用
 
-同一份白泽提供标准版和 Lite。标准版需要 PostgreSQL；Redis 可配置，未配置时使用有界本机降级，不具备多实例共享限流保证。Lite 使用本地 SQLite，一个应用进程，不需要 PostgreSQL、Redis 或 ClickHouse。品牌、界面和 tracker 不变，两个 profile 不能直接更换镜像来转换数据库。
+本页适用于原 Node 应用。独立的 PHP-FPM + 数据库版使用 [PHP 网页安装指南](PHP_INSTALLATION.md)。
+
+原 Node 应用提供标准版和 Lite。标准版需要 PostgreSQL；Redis 可配置，未配置时使用有界本机降级，不具备多实例共享限流保证。Lite 使用本地 SQLite，一个应用进程，不需要 PostgreSQL、Redis 或 ClickHouse。品牌、界面和 tracker 不变，两个 profile 不能直接更换镜像来转换数据库。
 
 | 入口 | 上传/准备什么 | 部署机还需要什么 |
 | --- | --- | --- |
@@ -125,7 +127,7 @@ KEYS_DIR=/var/lib/baize/keys
 ```
 
 4. 从发布目录运行 `bash scripts/release-start.sh --env-file /etc/baize/baize.env`。初始化凭证由服务器写入私有密钥目录里的 `install-nonce.json`，只在本机查看；切勿上传到公开网站。浏览器打开本机网址，填写凭证，按页面创建管理员、站点、复制 tracker、核对采集状态。初始化后凭证消费与管理员/首个会话同事务提交。
-5. 临时终端启动只用于检查。长期运行使用随包附带的 systemd 示例，或既有面板的进程管理器，让服务独立于浏览器和 SSH 会话。示例不会自动安装或启用服务。先确认重启后健康检查及登录仍可用，再开放反向代理。
+5. 临时终端启动只用于检查。长期运行使用随包附带的 [systemd 示例](../deploy/baize.service.example)、[Supervisor 示例](../deploy/baize.supervisor.conf.example)，或既有面板的进程管理器，让服务独立于浏览器和 SSH 会话。示例不会自动安装或启用服务。先确认重启后健康检查及登录仍可用，再开放反向代理。
 
 ### 宝塔等 Node 项目托管
 

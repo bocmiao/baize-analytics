@@ -1,0 +1,18 @@
+
+> baize-analytics@0.1.0 test:integration
+> vitest run tests/integration
+
+
+ RUN  v4.1.11 /workspace/baize-analytics
+
+
+ Test Files  193 passed | 2 skipped (195)
+      Tests  574 passed | 2 skipped (576)
+   Start at  16:35:26
+   Duration  598.76s (transform 3.60s, setup 0ms, import 67.93s, tests 507.93s, environment 17ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
