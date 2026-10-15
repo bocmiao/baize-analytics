@@ -1,0 +1,734 @@
+{
+  "scope": "Independent retest of the seven findings originally reproduced at 797851476f13a4daa3ea3edbc9869cc6e0477a6f; current working tree source, repository read only.",
+  "source_hashes_after_run": {
+    "php/src/Governance.php": "c7deffa61a45e2045132c2fa58ae3bb8dc45f463eed6dd978164a3250f570a7f",
+    "php/src/Operations.php": "23de1af404ccf48e2aec9a4cd1c38dab009215bd86961d7f68909b9fb1106a1c",
+    "php/src/External.php": "feb8b1759af08380bbfc6390d6649177b7e980863215ea3f8fe4e81e19160580",
+    "php/src/Analytics.php": "c5b03f5f47abaab8f134b22cc1a5cccd8218813af8bd146815b27791d4c0c6bc",
+    "php/src/AnalysisEngine.php": "2f4b8c5704c917c5f489c8f36260bc08f56176d4f13cc11af70edd0d6bb67df2",
+    "php/src/Sites.php": "aa571070833c0e23b31eec496c2adde2c9ee84e92bd7385c7ff24079015a38fb",
+    "php/src/Auth.php": "6e056780ac2145f8fc8846832b45bcf042e15cad6ee7d8511cb18db5e7fbd385",
+    "php/src/Installer.php": "c144d41052e4c963b7c6cbf9f1a80c4da014040f24c1072462766b557f21cbc6"
+  },
+  "scripts": [
+    {
+      "path": "/tmp/baize-fixed-history-review.php",
+      "sha256": "cbdee312ed123031631748c2e792bf2c8b03ff7ece40eea1ddc1a8a09c53f82d"
+    },
+    {
+      "path": "/tmp/baize-fixed-governance-review.php",
+      "sha256": "a5c239e5ca65fc61b882662e335dea9290afe48e956734c73e2e9a1b8742b228"
+    },
+    {
+      "path": "/tmp/baize-fixed-alert-review.php",
+      "sha256": "573512dbb8f5f4496cd5fbd5a13f2bcbae5c6a6c860e5b15c622f0bcd4ad6f1b"
+    }
+  ],
+  "head": "797851476f13a4daa3ea3edbc9869cc6e0477a6f",
+  "runtime": "8.3.35",
+  "total_checks": 100,
+  "passed_checks": 100,
+  "failed_checks": [],
+  "seven_findings_fixed": true,
+  "findings": [
+    {
+      "id": "pending_privacy_http",
+      "before": "History list/backup/restore and completed-export download disclosed pending-deleted content",
+      "after": "All four independently seeded HTTP paths repair before reading; 404 does not roll back purge; valid download still works",
+      "fixed": true
+    },
+    {
+      "id": "rolling_report",
+      "before": "Daily report reused saved obsolete range and shifted next_at with execution",
+      "after": "Recent PV=1, exact next_at anchor, next interval anchored, comparison/coverage/watermark present",
+      "fixed": true
+    },
+    {
+      "id": "security_audit",
+      "before": "Token/share/member/invitation mutations wrote no audit actions",
+      "after": "Required audit actions recorded without raw bearer/share/invitation secrets",
+      "fixed": true
+    },
+    {
+      "id": "share_coverage_calendar",
+      "before": "coverage always 1, no civil-day declaration or unavailable metadata",
+      "after": "Actual coverage 0 and partial status preserved, 30 declared site calendar rows, daily PV2/UV1 across hours, unavailable days null",
+      "fixed": true
+    },
+    {
+      "id": "serp_alert",
+      "before": "Threshold/scope/freshness ignored",
+      "after": "Delta6 triggers threshold5, stale unrelated keyword/provider does not trigger",
+      "fixed": true
+    },
+    {
+      "id": "goal_alert_timezone",
+      "before": "Previous site-day event counted as today using UTC midnight",
+      "after": "Auckland prior site-day goal count0 and no false alert",
+      "fixed": true
+    },
+    {
+      "id": "traffic_alert_samples_uv",
+      "before": "26h-old site fired without seven daily samples; UV setting ignored",
+      "after": "Fresh site waits with sample1; 28 daily same-hour baselines UV1 versus currentUV2 trigger only after two hourly observations, while PV remains equal",
+      "fixed": true
+    }
+  ],
+  "execution_notes": [
+    "PHP-FPM test image exposes PHP 8.3.35 with full extensions; existing baize-php-http-test container reused, no docker run after disk recovery.",
+    "Each suite created an independently named random MySQL/MariaDB schema and dropped it in finally; outbound transport replaced with local fixture.",
+    "No production deployment, no external account/API calls, no FPM8109 interaction, no repository edits.",
+    "Initial launch attempts were blocked before test execution by ENOSPC. Parent reclaimed redundant CLI layers and resumed the existing test container.",
+    "First retest calendar assertion incorrectly assumed top-level range.from must be midnight. Original Node contract retains rolling 30-day range; only days use site civil dates. Corrected test expectations and reran governance on both engines. No source fix was requested for that false assertion.",
+    "Operations and Analytics changed between the first retest and evidence collection. All six suites were therefore rerun against current source; before/after SHA256 for Governance, Operations, External, Analytics, AnalysisEngine, and Sites are identical throughout that final run."
+  ],
+  "results": [
+    {
+      "suite": "history",
+      "port": 3307,
+      "checks": {
+        "history_list.pending_before_request": true,
+        "history_list.no_private_marker": true,
+        "history_list.privacy_applied_committed": true,
+        "history_list.no_history_manifests": true,
+        "history_list.no_restored_namespaces": true,
+        "history_list.no_sealed_history_file": true,
+        "history_list.no_export_file": true,
+        "history_list.expected_response": true,
+        "history_backup.pending_before_request": true,
+        "history_backup.no_private_marker": true,
+        "history_backup.privacy_applied_committed": true,
+        "history_backup.no_history_manifests": true,
+        "history_backup.no_restored_namespaces": true,
+        "history_backup.no_sealed_history_file": true,
+        "history_backup.no_export_file": true,
+        "history_backup.expected_response": true,
+        "history_restore.pending_before_request": true,
+        "history_restore.no_private_marker": true,
+        "history_restore.privacy_applied_committed": true,
+        "history_restore.no_history_manifests": true,
+        "history_restore.no_restored_namespaces": true,
+        "history_restore.no_sealed_history_file": true,
+        "history_restore.no_export_file": true,
+        "history_restore.expected_response": true,
+        "completed_export.pending_before_request": true,
+        "completed_export.no_private_marker": true,
+        "completed_export.privacy_applied_committed": true,
+        "completed_export.no_history_manifests": true,
+        "completed_export.no_restored_namespaces": true,
+        "completed_export.no_sealed_history_file": true,
+        "completed_export.no_export_file": true,
+        "completed_export.expected_response": true,
+        "completed_download_success_preserved": true
+      },
+      "cases": {
+        "history_list": {
+          "pending_before_request": true,
+          "status": 200,
+          "response": {
+            "authority": "mysql",
+            "configured": true,
+            "manifests": []
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "history_backup": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "history_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "history_restore": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "history_backup_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "completed_export": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "record_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        }
+      },
+      "fixed": true,
+      "database": "8.4.11"
+    },
+    {
+      "suite": "history",
+      "port": 3308,
+      "checks": {
+        "history_list.pending_before_request": true,
+        "history_list.no_private_marker": true,
+        "history_list.privacy_applied_committed": true,
+        "history_list.no_history_manifests": true,
+        "history_list.no_restored_namespaces": true,
+        "history_list.no_sealed_history_file": true,
+        "history_list.no_export_file": true,
+        "history_list.expected_response": true,
+        "history_backup.pending_before_request": true,
+        "history_backup.no_private_marker": true,
+        "history_backup.privacy_applied_committed": true,
+        "history_backup.no_history_manifests": true,
+        "history_backup.no_restored_namespaces": true,
+        "history_backup.no_sealed_history_file": true,
+        "history_backup.no_export_file": true,
+        "history_backup.expected_response": true,
+        "history_restore.pending_before_request": true,
+        "history_restore.no_private_marker": true,
+        "history_restore.privacy_applied_committed": true,
+        "history_restore.no_history_manifests": true,
+        "history_restore.no_restored_namespaces": true,
+        "history_restore.no_sealed_history_file": true,
+        "history_restore.no_export_file": true,
+        "history_restore.expected_response": true,
+        "completed_export.pending_before_request": true,
+        "completed_export.no_private_marker": true,
+        "completed_export.privacy_applied_committed": true,
+        "completed_export.no_history_manifests": true,
+        "completed_export.no_restored_namespaces": true,
+        "completed_export.no_sealed_history_file": true,
+        "completed_export.no_export_file": true,
+        "completed_export.expected_response": true,
+        "completed_download_success_preserved": true
+      },
+      "cases": {
+        "history_list": {
+          "pending_before_request": true,
+          "status": 200,
+          "response": {
+            "authority": "mysql",
+            "configured": true,
+            "manifests": []
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "history_backup": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "history_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "history_restore": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "history_backup_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        },
+        "completed_export": {
+          "pending_before_request": true,
+          "status": 404,
+          "response": {
+            "error": "record_missing"
+          },
+          "no_private_marker": true,
+          "privacy_applied_committed": true,
+          "no_history_manifests": true,
+          "no_restored_namespaces": true,
+          "no_sealed_history_file": true,
+          "no_export_file": true
+        }
+      },
+      "fixed": true,
+      "database": "11.4.13-MariaDB-ubu2404"
+    },
+    {
+      "suite": "governance",
+      "port": 3307,
+      "token_read": true,
+      "token_write_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "token_scope_denied"
+      },
+      "token_other_site_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "token_scope_denied"
+      },
+      "owner_removal_denied": {
+        "denied": true,
+        "status": 400,
+        "code": "owner_protected"
+      },
+      "viewer_admin_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "site_permission_denied"
+      },
+      "daily_report_expected_recent_pv": 1,
+      "daily_report_sent_payload": {
+        "title": "Daily report",
+        "aggregationEpoch": "e1b0f95fe89a0fbb5cf508a294c73ae12b2faf2acbf888ca4a1ba05338bf65ec",
+        "stats": {
+          "pv": 1,
+          "uv": 1,
+          "sessions": 1,
+          "bounceRate": 1,
+          "averageDuration": 0,
+          "visibleSeconds": 0,
+          "revenueCurrencyStatus": "supported",
+          "revenueCurrencyCoverage": 1,
+          "revenue": "0",
+          "revenueByCurrency": [],
+          "conversions": 0
+        },
+        "summary": {
+          "pv": 1,
+          "uv": 1,
+          "sessions": 1,
+          "bounceRate": 1,
+          "averageDuration": 0,
+          "visibleSeconds": 0,
+          "revenueCurrencyStatus": "supported",
+          "revenueCurrencyCoverage": 1,
+          "revenue": "0",
+          "revenueByCurrency": [],
+          "conversions": 0
+        },
+        "comparison": {
+          "from": "2026-10-13T17:51:29.000Z",
+          "to": "2026-10-14T17:51:29.000Z",
+          "stats": {
+            "pv": 0,
+            "uv": 0,
+            "sessions": 0,
+            "bounceRate": 0,
+            "averageDuration": 0,
+            "visibleSeconds": 0,
+            "revenueCurrencyStatus": "supported",
+            "revenueCurrencyCoverage": 1,
+            "revenue": "0",
+            "revenueByCurrency": [],
+            "conversions": 0
+          },
+          "coverage": 1,
+          "rangeStatus": "complete"
+        },
+        "top_changes": [
+          {
+            "dimension": "channel",
+            "value": "direct",
+            "current": 1,
+            "previous": 0,
+            "delta": 1
+          },
+          {
+            "dimension": "path",
+            "value": "/recent",
+            "current": 1,
+            "previous": 0,
+            "delta": 1
+          }
+        ],
+        "range": {
+          "from": "2026-10-14T17:51:29.000Z",
+          "to": "2026-10-15T17:51:29.000Z",
+          "effectiveFrom": "2026-10-14T17:51:29.000Z",
+          "effectiveTo": "2026-10-15T17:51:29.000Z",
+          "rangeStatus": "complete",
+          "unavailableHours": [],
+          "precision": "exact"
+        },
+        "period": {
+          "from": "2026-10-14T17:51:29.000Z",
+          "to": "2026-10-15T17:51:29.000Z"
+        },
+        "watermark": "2026-10-15T16:51:30+00:00",
+        "coverage": 1,
+        "filters": {
+          "path": "/recent"
+        },
+        "filterMethod": "retained_event_rebuild",
+        "uvStatus": "supported",
+        "limitations": [
+          "收入采用十进制字符串精确累加；多个币种不合并为一个金额。",
+          "可见时长仅累计已收到且去重的前台心跳，不估算丢失区间。",
+          "保留期外仅使用完整、已持久化的小时聚合；缺失和非整点区间明确不可用。",
+          "保留期边界可能截断的会话不返回完整会话指标。"
+        ]
+      },
+      "daily_schedule_original_next_at": "2026-10-15T17:51:29+00:00",
+      "daily_schedule_after_tick": "2026-10-16T17:51:29.000Z",
+      "audit_actions_after_security_mutations": [
+        "token.create",
+        "report.create",
+        "channel.create",
+        "schedule.create",
+        "share.create",
+        "member.invite",
+        "invite.accept",
+        "member.role",
+        "token.revoke",
+        "share.revoke"
+      ],
+      "calendar_daily_pv": 2,
+      "calendar_daily_uv": 1,
+      "calendarRange": {
+        "from": "2026-09-17",
+        "to": "2026-10-16",
+        "timezone": "Pacific/Auckland"
+      },
+      "share_reported_coverage": 0,
+      "share_actual_stats_coverage": 0,
+      "share_actual_range_status": "partial_unavailable",
+      "share_calendar_bounds": {
+        "from": "2026-09-15T17:51:31.450Z",
+        "to": "2026-10-15T17:51:31.450Z"
+      },
+      "share_has_daysRange": true,
+      "share_has_rangeStatus": true,
+      "checks": {
+        "scoped_permission_boundaries_preserved": true,
+        "rolling_daily_pv": true,
+        "rolling_daily_exact_anchor": true,
+        "schedule_no_execution_drift": true,
+        "report_comparison_coverage_watermark": true,
+        "all_security_audits_present": true,
+        "audits_omit_bearer_share_and_invite_secrets": true,
+        "share_coverage_truthful": true,
+        "share_calendar_boundaries": true,
+        "share_daily_uv_exact_across_hours": true,
+        "share_unavailable_days_are_null": true,
+        "share_includes_watermark": true
+      },
+      "fixed": true,
+      "database": "8.4.11"
+    },
+    {
+      "suite": "governance",
+      "port": 3308,
+      "token_read": true,
+      "token_write_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "token_scope_denied"
+      },
+      "token_other_site_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "token_scope_denied"
+      },
+      "owner_removal_denied": {
+        "denied": true,
+        "status": 400,
+        "code": "owner_protected"
+      },
+      "viewer_admin_denied": {
+        "denied": true,
+        "status": 403,
+        "code": "site_permission_denied"
+      },
+      "daily_report_expected_recent_pv": 1,
+      "daily_report_sent_payload": {
+        "title": "Daily report",
+        "aggregationEpoch": "f048d1fcb605b1ac2db1bcb37908f48bfc24a322bfa020af4348a9ed155d853d",
+        "stats": {
+          "pv": 1,
+          "uv": 1,
+          "sessions": 1,
+          "bounceRate": 1,
+          "averageDuration": 0,
+          "visibleSeconds": 0,
+          "revenueCurrencyStatus": "supported",
+          "revenueCurrencyCoverage": 1,
+          "revenue": "0",
+          "revenueByCurrency": [],
+          "conversions": 0
+        },
+        "summary": {
+          "pv": 1,
+          "uv": 1,
+          "sessions": 1,
+          "bounceRate": 1,
+          "averageDuration": 0,
+          "visibleSeconds": 0,
+          "revenueCurrencyStatus": "supported",
+          "revenueCurrencyCoverage": 1,
+          "revenue": "0",
+          "revenueByCurrency": [],
+          "conversions": 0
+        },
+        "comparison": {
+          "from": "2026-10-13T17:51:29.000Z",
+          "to": "2026-10-14T17:51:29.000Z",
+          "stats": {
+            "pv": 0,
+            "uv": 0,
+            "sessions": 0,
+            "bounceRate": 0,
+            "averageDuration": 0,
+            "visibleSeconds": 0,
+            "revenueCurrencyStatus": "supported",
+            "revenueCurrencyCoverage": 1,
+            "revenue": "0",
+            "revenueByCurrency": [],
+            "conversions": 0
+          },
+          "coverage": 1,
+          "rangeStatus": "complete"
+        },
+        "top_changes": [
+          {
+            "dimension": "channel",
+            "value": "direct",
+            "current": 1,
+            "previous": 0,
+            "delta": 1
+          },
+          {
+            "dimension": "path",
+            "value": "/recent",
+            "current": 1,
+            "previous": 0,
+            "delta": 1
+          }
+        ],
+        "range": {
+          "from": "2026-10-14T17:51:29.000Z",
+          "to": "2026-10-15T17:51:29.000Z",
+          "effectiveFrom": "2026-10-14T17:51:29.000Z",
+          "effectiveTo": "2026-10-15T17:51:29.000Z",
+          "rangeStatus": "complete",
+          "unavailableHours": [],
+          "precision": "exact"
+        },
+        "period": {
+          "from": "2026-10-14T17:51:29.000Z",
+          "to": "2026-10-15T17:51:29.000Z"
+        },
+        "watermark": "2026-10-15T16:51:30+00:00",
+        "coverage": 1,
+        "filters": {
+          "path": "/recent"
+        },
+        "filterMethod": "retained_event_rebuild",
+        "uvStatus": "supported",
+        "limitations": [
+          "收入采用十进制字符串精确累加；多个币种不合并为一个金额。",
+          "可见时长仅累计已收到且去重的前台心跳，不估算丢失区间。",
+          "保留期外仅使用完整、已持久化的小时聚合；缺失和非整点区间明确不可用。",
+          "保留期边界可能截断的会话不返回完整会话指标。"
+        ]
+      },
+      "daily_schedule_original_next_at": "2026-10-15T17:51:29+00:00",
+      "daily_schedule_after_tick": "2026-10-16T17:51:29.000Z",
+      "audit_actions_after_security_mutations": [
+        "token.create",
+        "report.create",
+        "channel.create",
+        "schedule.create",
+        "share.create",
+        "member.invite",
+        "invite.accept",
+        "member.role",
+        "token.revoke",
+        "share.revoke"
+      ],
+      "calendar_daily_pv": 2,
+      "calendar_daily_uv": 1,
+      "calendarRange": {
+        "from": "2026-09-17",
+        "to": "2026-10-16",
+        "timezone": "Pacific/Auckland"
+      },
+      "share_reported_coverage": 0,
+      "share_actual_stats_coverage": 0,
+      "share_actual_range_status": "partial_unavailable",
+      "share_calendar_bounds": {
+        "from": "2026-09-15T17:51:31.341Z",
+        "to": "2026-10-15T17:51:31.341Z"
+      },
+      "share_has_daysRange": true,
+      "share_has_rangeStatus": true,
+      "checks": {
+        "scoped_permission_boundaries_preserved": true,
+        "rolling_daily_pv": true,
+        "rolling_daily_exact_anchor": true,
+        "schedule_no_execution_drift": true,
+        "report_comparison_coverage_watermark": true,
+        "all_security_audits_present": true,
+        "audits_omit_bearer_share_and_invite_secrets": true,
+        "share_coverage_truthful": true,
+        "share_calendar_boundaries": true,
+        "share_daily_uv_exact_across_hours": true,
+        "share_unavailable_days_are_null": true,
+        "share_includes_watermark": true
+      },
+      "fixed": true,
+      "database": "11.4.13-MariaDB-ubu2404"
+    },
+    {
+      "suite": "alert",
+      "port": 3307,
+      "goal_timezone_correct_conversions": 0,
+      "goal_timezone_event": "2026-10-15T05:30:00+00:00",
+      "goal_timezone_local_start": "2026-10-15T11:00:00+00:00",
+      "serp_threshold5_delta6_triggered": true,
+      "serp_2020_unrelated_keyword_triggered": false,
+      "goal_timezone_triggered": false,
+      "goal_timezone_payload": null,
+      "fresh26h_traffic_without_7day_samples_triggered": false,
+      "traffic_payload": null,
+      "uv_first_observation_has_no_alert": true,
+      "uv_second_observation": {
+        "title": "白泽告警",
+        "rule_id": "ce438886-5df7-4acd-b5ef-b1235c963e3f",
+        "aggregationEpoch": "5a0f24e8b73be2e41337d7648e78b260653aa0fad06ba40cdf183295c3f5ba87",
+        "kind": "traffic",
+        "metric": "uv",
+        "current": 2,
+        "mean": 1,
+        "z_score": null,
+        "observed_hour": "2026-10-15T16:00:00.000Z",
+        "baseline_days": 28,
+        "baseline_samples": 28,
+        "coverage": 1,
+        "watermark": "2026-10-15T17:51:31.099Z",
+        "processed_generation": 1,
+        "current_generation": 1,
+        "coverage_method": "published_snapshot_matching_intake_generation",
+        "distinct_method": "exact_per_hour_set"
+      },
+      "traffic_evaluation": {
+        "status": "awaiting_complete_coverage",
+        "kind": "traffic",
+        "metric": "uv",
+        "current": 0,
+        "mean": 1,
+        "z_score": null,
+        "observed_hour": "2026-10-15T16:00:00.000Z",
+        "baseline_days": 28,
+        "baseline_samples": 1,
+        "coverage": 0,
+        "watermark": "2026-10-15T17:51:31.045Z",
+        "processed_generation": 1,
+        "current_generation": 1,
+        "coverage_method": "published_snapshot_matching_intake_generation",
+        "distinct_method": "exact_per_hour_set"
+      },
+      "checks": {
+        "traffic_uv_configuration_applied": true,
+        "serp_threshold5_delta6_triggers": true,
+        "serp_stale_unrelated_scope_rejected": true,
+        "goal_uses_site_civil_day": true,
+        "traffic_requires_seven_history_samples": true
+      },
+      "fixed": true,
+      "database": "8.4.11"
+    },
+    {
+      "suite": "alert",
+      "port": 3308,
+      "goal_timezone_correct_conversions": 0,
+      "goal_timezone_event": "2026-10-15T05:30:00+00:00",
+      "goal_timezone_local_start": "2026-10-15T11:00:00+00:00",
+      "serp_threshold5_delta6_triggered": true,
+      "serp_2020_unrelated_keyword_triggered": false,
+      "goal_timezone_triggered": false,
+      "goal_timezone_payload": null,
+      "fresh26h_traffic_without_7day_samples_triggered": false,
+      "traffic_payload": null,
+      "uv_first_observation_has_no_alert": true,
+      "uv_second_observation": {
+        "title": "白泽告警",
+        "rule_id": "ef32d22f-ab35-4efc-a743-a9649d66ef7a",
+        "aggregationEpoch": "998f91e361d6e8da95aeff70d3e777edd0fb267be4ddbc81bb0b0cc70eb285ca",
+        "kind": "traffic",
+        "metric": "uv",
+        "current": 2,
+        "mean": 1,
+        "z_score": null,
+        "observed_hour": "2026-10-15T16:00:00.000Z",
+        "baseline_days": 28,
+        "baseline_samples": 28,
+        "coverage": 1,
+        "watermark": "2026-10-15T17:51:31.098Z",
+        "processed_generation": 1,
+        "current_generation": 1,
+        "coverage_method": "published_snapshot_matching_intake_generation",
+        "distinct_method": "exact_per_hour_set"
+      },
+      "traffic_evaluation": {
+        "status": "awaiting_complete_coverage",
+        "kind": "traffic",
+        "metric": "uv",
+        "current": 0,
+        "mean": 1,
+        "z_score": null,
+        "observed_hour": "2026-10-15T16:00:00.000Z",
+        "baseline_days": 28,
+        "baseline_samples": 1,
+        "coverage": 0,
+        "watermark": "2026-10-15T17:51:31.042Z",
+        "processed_generation": 1,
+        "current_generation": 1,
+        "coverage_method": "published_snapshot_matching_intake_generation",
+        "distinct_method": "exact_per_hour_set"
+      },
+      "checks": {
+        "traffic_uv_configuration_applied": true,
+        "serp_threshold5_delta6_triggers": true,
+        "serp_stale_unrelated_scope_rejected": true,
+        "goal_uses_site_civil_day": true,
+        "traffic_requires_seven_history_samples": true
+      },
+      "fixed": true,
+      "database": "11.4.13-MariaDB-ubu2404"
+    }
+  ],
+  "source_hashes_before_run": {
+    "php/src/Governance.php": "c7deffa61a45e2045132c2fa58ae3bb8dc45f463eed6dd978164a3250f570a7f",
+    "php/src/Operations.php": "23de1af404ccf48e2aec9a4cd1c38dab009215bd86961d7f68909b9fb1106a1c",
+    "php/src/External.php": "feb8b1759af08380bbfc6390d6649177b7e980863215ea3f8fe4e81e19160580",
+    "php/src/Analytics.php": "c5b03f5f47abaab8f134b22cc1a5cccd8218813af8bd146815b27791d4c0c6bc",
+    "php/src/AnalysisEngine.php": "2f4b8c5704c917c5f489c8f36260bc08f56176d4f13cc11af70edd0d6bb67df2",
+    "php/src/Sites.php": "aa571070833c0e23b31eec496c2adde2c9ee84e92bd7385c7ff24079015a38fb"
+  },
+  "source_stable_during_final_run": true
+}

@@ -1,5 +1,8 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
-import {api,requireUserResponse} from '../../src/web/api.js';
+import {api,apiReadMetadata,requireUserResponse} from '../../src/web/api.js';
+import {createElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {ApiReadNotice} from '../../src/web/ApiReadNotice.js';
 beforeEach(()=>vi.stubGlobal('localStorage',{getItem:()=> 'zh-CN'}));
 afterEach(()=>vi.unstubAllGlobals());
 describe('API response integrity and authenticated workspace',()=>{
@@ -8,4 +11,5 @@ describe('API response integrity and authenticated workspace',()=>{
  it('keeps legitimate arrays and empty 204 responses usable',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('[{"id":"record"}]',{status:200})));expect(await api('/api/rows')).toEqual([{id:'record'}]);vi.stubGlobal('fetch',vi.fn(async()=>new Response(null,{status:204})));expect(await api('/api/logout',{},'POST')).toBeUndefined();});
  it('validates the authenticated user before rendering permission-dependent navigation',()=>{for(const invalid of [{},null,{user:null},{user:{id:'id',email:'a@example.test',name:'A',is_admin:'false'}}])expect(()=>requireUserResponse(invalid)).toThrow();expect(requireUserResponse({user:{id:'id',email:'a@example.test',name:'A',is_admin:false}}).is_admin).toBe(false);});
  it('signals expired sessions even when the response body is malformed',async()=>{const dispatchEvent=vi.fn();vi.stubGlobal('window',{location:{pathname:'/app'},dispatchEvent});vi.stubGlobal('fetch',vi.fn(async()=>new Response('<html>expired</html>',{status:401})));await expect(api('/api/me')).rejects.toMatchObject({status:401});expect(dispatchEvent).toHaveBeenCalledOnce();});
+ it('preserves missing-evidence headers without changing array contracts or hiding the missing history from the user',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('[]',{headers:{'X-Baize-Read-Coverage':'0','X-Baize-Read-Status':'historical_heatmap_coverage_unavailable','X-Baize-Evidence-From':'2026-01-01T00:00:00Z'}})));const partial=await api('/heatmap');expect(partial).toEqual([]);expect(JSON.stringify(partial)).toBe('[]');expect(apiReadMetadata(partial)).toMatchObject({coverage:0,status:'historical_heatmap_coverage_unavailable',evidenceFrom:'2026-01-01T00:00:00Z'});expect(renderToStaticMarkup(createElement(ApiReadNotice,{data:partial,kind:'heatmap'}))).toContain('空白不能证明历史访问为零');vi.stubGlobal('fetch',vi.fn(async()=>new Response('[]')));const complete=await api('/other');expect(apiReadMetadata(complete)).toBeUndefined();expect(renderToStaticMarkup(createElement(ApiReadNotice,{data:complete,kind:'heatmap'}))).toBe('');});
 });

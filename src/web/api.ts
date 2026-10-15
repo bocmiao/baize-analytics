@@ -2,6 +2,9 @@ import {apiErrorMessage,localizedErrorCode} from './errorMessages';
 export class ApiError extends Error {
  constructor(message:string,readonly status:number,readonly code?:string){super(message);this.name='ApiError';}
 }
+export type ApiReadMetadata={coverage?:number;status?:string;method?:string;evidenceFrom?:string;watermark?:string;truncated?:boolean};
+const readMetadata=new WeakMap<object,ApiReadMetadata>();
+export function apiReadMetadata(value:unknown):ApiReadMetadata|undefined{return value!==null&&typeof value==='object'?readMetadata.get(value):undefined;}
 export function safeWorkspaceReturn(value:string|null,origin:string):string {
  if(!value||value.length>8192||!value.startsWith('/')||value.startsWith('//')||value.includes('\\'))return '/app';
  try{const target=new URL(value,origin);return target.origin===origin&&target.pathname==='/app'?target.pathname+target.search:'/app';}catch{return '/app';}
@@ -17,6 +20,8 @@ export async function api<T = Record<string, unknown>>(path:string, body?:unknow
   const error=new ApiError(apiErrorMessage(errorBody,response.status),response.status,typeof errorBody.code==='string'?errorBody.code:undefined);
   throw error;
  }
+ const coverage=response.headers.get('X-Baize-Read-Coverage'),status=response.headers.get('X-Baize-Read-Status'),truncated=response.headers.get('X-Baize-Truncated');
+ if(coverage!==null||status!==null||truncated!==null){const parsed=coverage===null?NaN:Number(coverage);readMetadata.set(result,{...(Number.isFinite(parsed)&&parsed>=0&&parsed<=1?{coverage:parsed}:{}),...(status?{status:status.slice(0,200)}:{}),...(truncated==='true'||truncated==='false'?{truncated:truncated==='true'}:{}),...Object.fromEntries([['method','X-Baize-Read-Method'],['evidenceFrom','X-Baize-Evidence-From'],['watermark','X-Baize-Watermark']].flatMap(([key,header])=>{const value=response.headers.get(header!);return value?[[key!,value.slice(0,200)]]:[];}))});}
  return result as T;
 }
 export type Row = Record<string, unknown>;

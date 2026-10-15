@@ -18,6 +18,7 @@ const from=new Date(now-3600000).toISOString(),to=new Date(Date.now()).toISOStri
 const stats=await json('/api/v1/sites/'+site+'/stats'+query);check(stats.status===200&&stats.result.totals.pv>=1,'Actual PHP stats returns persisted pageview');
 check(stats.result.coverage===1,'Actual PHP stats marks exact retained read');
 const revenue=await json('/api/v1/sites/'+site+'/revenue'+query);check(revenue.status===200,'Actual PHP revenue endpoint');
+const usd=revenue.result.revenueByCurrency?.USD;check(typeof usd==='string'&&/^0\.0{15,}[1-9]\d*$/.test(usd)&&usd===stats.result.totals.revenueByCurrency?.USD,'Actual PHP preserves sub-cent decimal string consistently across stats and revenue');
 const invalidOrigin=await json('/api/collect',{method:'POST',anonymous:true,body:envelope,headers:{Origin:'https://unregistered.example.test'}});check(invalidOrigin.status===403,'Collector rejects unregistered origin');
 const denied=await json('/api/v1/sites/'+site+'/stats'+query,{anonymous:true});check(denied.status===401,'Unauthenticated analysis denied');
 const cross=await json('/api/v1/sites/'+site,{method:'PATCH',body:{name:'must not change'},headers:{Origin:'https://unregistered.example.test'}});check(cross.status===403,'Actual PHP CSRF origin enforced');

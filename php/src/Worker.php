@@ -28,9 +28,16 @@ final class Worker
             $sessions=Sessionizer::rebuild($app,$siteId);
             if(!class_exists(AnalysisEngine::class)||!method_exists(AnalysisEngine::class,'buckets'))throw new \RuntimeException('analysis_engine_unavailable');
             $goals=$app->store->list('goals',$siteId);$funnels=$app->store->list('funnels',$siteId);$buckets=AnalysisEngine::buckets($events,$sessions,$goals,$funnels);
-            $cutoff=microtime(true)*1000-(int)($site['retention_days']??365)*86400000;$hours=[];
+            // Publish from evidence that still exists, before a new retention
+            // policy removes it. A configured cutoff is not proof of prior pruning.
+            $cutoff=Analytics::rawEvidenceBoundary($app,$siteId,$site);$hours=[];$now=microtime(true)*1000;
             self::updateCrossingContributions($app,$siteId,$sessions,$goals,$funnels,$cutoff);
-            foreach($buckets as $hour=>$data){$id=$siteId.':'.$hour;$old=$app->store->get('stats_hourly',$id);$start=EventPrivacy::millis($hour);if($start<$cutoff&&$old)continue;$app->store->put('stats_hourly',$id,['id'=>$id,'site_id'=>$siteId,'hour'=>$hour,'data'=>$data,'complete'=>$start>=$cutoff&&$start+3600000<=microtime(true)*1000,'updated_at'=>Store::now()],$siteId);$hours[$hour]=true;}
+            $existing=[];foreach($app->store->list('stats_hourly',$siteId) as $row)$existing[$row['hour']]=$row;
+            $readCursor=(int)($app->store->get('realtime_cursor',$siteId)['value']??0);$lateHours=[];
+            foreach($events as $event){$hour=AnalysisEngine::hour($event);$old=$existing[$hour]??null;if($old&&EventPrivacy::millis($hour)<$cutoff&&(int)($event['cursor_id']??0)>(int)($old['read_cursor']??-1))$lateHours[$hour]=true;}
+            $empty=AnalysisEngine::emptyBucket();
+            for($start=ceil($cutoff/3600000)*3600000;$start+3600000<=$now;$start+=3600000){$hour=EventPrivacy::iso($start);if(isset($buckets[$hour]))continue;$old=$existing[$hour]??null;if($old&&($old['complete']??false)&&$old['data']===$empty){$hours[$hour]=true;continue;}$buckets[$hour]=$empty;}
+            foreach($buckets as $hour=>$data){$id=$siteId.':'.$hour;$old=$existing[$hour]??null;$start=EventPrivacy::millis($hour);if($start<$cutoff&&$old){if(isset($lateHours[$hour])){$old['data']['unavailable']='late_event_after_raw_retirement';$old['complete']=false;$old['read_cursor']=$readCursor;$old['updated_at']=Store::now();$app->store->put('stats_hourly',$id,$old,$siteId);}$hours[$hour]=true;continue;}$app->store->put('stats_hourly',$id,['id'=>$id,'site_id'=>$siteId,'hour'=>$hour,'data'=>$data,'complete'=>$start>=$cutoff&&$start+3600000<=$now,'read_cursor'=>$readCursor,'updated_at'=>Store::now()],$siteId);$hours[$hour]=true;}
             // Removed in-retention events must remove stale derived buckets on rebuild.
             foreach($app->store->list('stats_hourly',$siteId) as $row)if(EventPrivacy::millis($row['hour'])>=$cutoff&&!isset($hours[$row['hour']]))$app->store->delete('stats_hourly',$row['id']??$siteId.':'.$row['hour']);
             $state=$app->store->get('aggregation_state',$siteId)??['id'=>$siteId,'site_id'=>$siteId];$state['generation']??=0;$state=array_replace($state,['watermark'=>Store::now(),'processed_events'=>count($events),'processed_generation'=>$state['generation'],'sessions'=>count($sessions),'attempts'=>0,'last_error'=>null,'dead_letter_at'=>null,'updated_at'=>Store::now()]);$app->store->put('aggregation_state',$siteId,$state,$siteId);
@@ -62,11 +69,11 @@ final class Worker
         return $app->db->transaction(function()use($app,$siteId){
             $app->db->lock('site:'.$siteId);$site=$app->store->get('sites',$siteId);if(!$site)return ['deleted'=>0];
             // Publish complete old hours before removing raw source; the boundary hour stays explicit.
-            self::aggregate($app,$siteId);$before=microtime(true)*1000-(int)($site['retention_days']??365)*86400000;
+            self::aggregate($app,$siteId);$before=Analytics::rawBoundary($app,$siteId,$site);
             Sessionizer::retainContext($app,$siteId,Sessionizer::rebuild($app,$siteId),$before);
             if(!class_exists(Governance::class))throw new \RuntimeException('privacy_journal_unavailable');
             Governance::configure($app->config,$app->store);$pruned=Governance::retention($app,$siteId,EventPrivacy::iso($before));$deleted=$pruned['deleted'];
-            $replayBefore=microtime(true)*1000-min(30,(int)($site['retention_days']??365))*86400000;
+            $replayBefore=Analytics::replayBoundary($app,$siteId,$site);
             if($replayBefore>$before+1000){$replayPruned=Governance::retention($app,$siteId,EventPrivacy::iso($replayBefore),true);$deleted+=$replayPruned['deleted'];}
             foreach($app->store->list('intake_rate',$siteId) as $row)if(isset($row['expires_at'])&&EventPrivacy::millis($row['expires_at'])<microtime(true)*1000)$app->store->delete('intake_rate',$row['id']??'');
             // Rebuild surviving sessions from surviving events, never erase a whole crossing session.
