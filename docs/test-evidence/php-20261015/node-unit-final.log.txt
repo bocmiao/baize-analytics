@@ -7,9 +7,9 @@
 
 
  Test Files  110 passed (110)
-      Tests  578 passed (578)
-   Start at  17:19:26
-   Duration  41.64s (transform 2.51s, setup 0ms, import 11.41s, tests 17.02s, environment 11ms)
+      Tests  579 passed (579)
+   Start at  17:42:27
+   Duration  38.68s (transform 2.29s, setup 0ms, import 10.37s, tests 15.87s, environment 11ms)
 
 npm notice
 npm notice New major version of npm available! 11.9.0 -> 12.2.0

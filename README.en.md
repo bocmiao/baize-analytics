@@ -36,7 +36,7 @@ These screenshots show the running application with synthetic demonstration data
 | Original Node application | [Docker and precompiled packages](docs/deployment-methods.md), [Node hosting in 1Panel/Baota](docs/PANEL_INSTALLATION.md) | The PostgreSQL Standard application and existing SQLite Lite profile remain available |
 | Independent PHP application | [PHP + database web installation](docs/PHP_INSTALLATION.md) | Separate `php/` implementation for PHP-FPM, MySQL and 1Panel; see its guide for implementation coverage and actual validation |
 
-The PHP application follows the full Standard feature scope and is maintained separately from Node Lite. Use its own installer, database migrations and maintenance commands. The original Node application, SDK, migrations and tests remain in the repository.
+The PHP application targets the Standard feature scope and is maintained separately from Node Lite; [tested coverage and runtime differences](docs/PHP_PARITY_MATRIX_20261015.md) are documented explicitly. Use its own installer, database migrations and maintenance commands. The original Node application, SDK, migrations and tests remain in the repository.
 
 ## Original Node application: Standard or Lite?
 

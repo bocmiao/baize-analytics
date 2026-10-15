@@ -1,0 +1,77 @@
+{
+  "reportedStaticCheckpoint": "7c66bb9520b569cc5ea5e1a2ef0f1ace540bc030",
+  "negativeHttpRuntime": {
+    "sourceHashes": {
+      "Collect": "601f2b6bb9fee3f28d4505c1f20c0d8d8bb4cd1e613145a4d237c158aa9c03b2",
+      "Governance": "f37f5aa9585fdf2ecab243bd945b50fdbd89c22fec778cbf042c5a8160a987c2",
+      "Operations": "e04512feb126c45cf5a0cca3b4eb58bec93bcbb5e7c1340a16425fb3d84a3a72"
+    },
+    "manifestRevision": "f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6",
+    "manifestWorkingTreeChanges": true,
+    "note": "Immutable earlier dirty preview package; relevant receipt/export behavior matches the reported old implementation. It is not the final delivery."
+  },
+  "fixedSourceHashes": {
+    "Collect": "3763aaeaade33f70aa869aea5781cf010916760951d1f90dc93cb69213503dc2",
+    "Governance": "df41afbd8f2ab1ad1e80777231681fc956ed64c4aa7a63569417644b35203e44",
+    "Operations": "7d40aaf59388abc62d1a6fbf51fa48b97d37644f37a3d43118d31c59b1986265"
+  },
+  "before": {
+    "mode": "negative archived-preview reproduction",
+    "baseUrl": "http://127.0.0.1:8109",
+    "syntheticFixture": true,
+    "liveExternalCalls": false,
+    "realHttp": true,
+    "siteId": "4ab5860d37f2808fbfade8cf",
+    "collected": 1,
+    "duplicateBeforeDeletion": 1,
+    "newFullExportsAfterDeletion": [
+      {
+        "format": "json",
+        "status": 200,
+        "deletedMarkerPresent": true,
+        "internalNamespaces": [
+          "event_keys",
+          "privacy_tombstones",
+          "replay_keys"
+        ],
+        "checkedEveryNamespace": true
+      },
+      {
+        "format": "csv",
+        "status": 200,
+        "deletedMarkerPresent": true,
+        "internalNamespaces": [],
+        "checkedEveryNamespace": true
+      }
+    ],
+    "retryAfterDeletionAccepted": 0
+  },
+  "after": {
+    "mode": "fixed candidate regression",
+    "baseUrl": "http://127.0.0.1:8099",
+    "syntheticFixture": true,
+    "liveExternalCalls": false,
+    "realHttp": true,
+    "siteId": "44be7e9a52eaddb8ab6f54e7",
+    "collected": 1,
+    "duplicateBeforeDeletion": 1,
+    "newFullExportsAfterDeletion": [
+      {
+        "format": "json",
+        "status": 200,
+        "deletedMarkerPresent": false,
+        "internalNamespaces": [],
+        "checkedEveryNamespace": true
+      },
+      {
+        "format": "csv",
+        "status": 200,
+        "deletedMarkerPresent": false,
+        "internalNamespaces": [],
+        "checkedEveryNamespace": true
+      }
+    ],
+    "retryAfterDeletionAccepted": 0
+  },
+  "scope": "Real HTTP collector, delete-visitor, newly created full JSON and CSV exports, all namespaces searched; no response stubs or live external services."
+}

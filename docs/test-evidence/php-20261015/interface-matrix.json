@@ -1,7 +1,7 @@
 {
   "nodeBaseline": "f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6",
   "sourceCheckpoint": "797851476f13a4daa3ea3edbc9869cc6e0477a6f",
-  "status": "Final review in progress; subsequent fixes supersede checkpoint semantics. See PHP parity document and final commit.",
+  "status": "Final frozen candidate: 11 suites passed on each real database, 961 assertions per engine; package runtime receipt follows separately.",
   "actualNodeRegistrations": 157,
   "actualPhpRegistrations": 152,
   "interfaces": [
@@ -2357,11 +2357,12 @@
         "php/tests/analytics.php",
         "php/tests/collect.php",
         "php/tests/http.mjs",
-        "php/tests/browser.mjs"
+        "php/tests/browser.mjs",
+        "php/tests/browser-read-metadata.mjs"
       ],
       "assessment": "implemented-group-regression",
-      "semantics": "精确保留明细/完整小时档案；统一统计、转化、留存、路径、收入、身份、回放、实验及SSE。",
-      "remaining": "读取保留事件预算100000/站点；其他明确限制见统计语义表；完整Node统计差分未穷举。",
+      "semantics": "Accepted-transaction persistent all-time coordinate counts; dedupe, late intake, retention, privacy and backup restore tested; coverage headers are shown in UI.",
+      "remaining": "Legacy missing raw history or privacy-invalidated counts are explicitly unavailable; no production capacity parity proof.",
       "verificationScope": "Group tests exercise assertions; not a claim that every endpoint and input has independent differential parity."
     },
     {
@@ -2486,7 +2487,7 @@
       ],
       "assessment": "implemented-group-regression",
       "semantics": "真实采集阶段、bot规则、持久队列/租约/死信及管理员重放。",
-      "remaining": "1Panel调度器本身未操作；CLI/Supervisor示例与真实worker已测。",
+      "remaining": "1Panel调度器本身未操作；CLI/Supervisor示例与真实worker已测。 PHP clips frames and exposes truncated/coverage headers in UI; behavior differs from Node whole-chunk reads.",
       "verificationScope": "Group tests exercise assertions; not a claim that every endpoint and input has independent differential parity."
     },
     {
@@ -2710,7 +2711,7 @@
       ],
       "assessment": "implemented-group-regression",
       "semantics": "精确保留明细/完整小时档案；统一统计、转化、留存、路径、收入、身份、回放、实验及SSE。",
-      "remaining": "读取保留事件预算100000/站点；其他明确限制见统计语义表；完整Node统计差分未穷举。",
+      "remaining": "读取保留事件预算100000/站点；其他明确限制见统计语义表；完整Node统计差分未穷举。 PHP clips frames and exposes truncated/coverage headers in UI; behavior differs from Node whole-chunk reads.",
       "verificationScope": "Group tests exercise assertions; not a claim that every endpoint and input has independent differential parity."
     },
     {
@@ -3198,7 +3199,7 @@
       ],
       "assessment": "intentional-runtime-difference",
       "semantics": "返回真实MySQL权威和实际水位。",
-      "remaining": "Node ClickHouse启用/切换/replay命令返回409 php_mysql_authority；不是CH等价实现。",
+      "remaining": "Node ClickHouse启用/切换/replay命令返回409 php_mysql_authority；不是CH等价实现。 PHP clips frames and exposes truncated/coverage headers in UI; behavior differs from Node whole-chunk reads.",
       "verificationScope": "Group tests exercise assertions; not a claim that every endpoint and input has independent differential parity."
     },
     {
@@ -3686,5 +3687,36 @@
       "remaining": "不是PHP动态路由；须按public webroot配置Nginx。",
       "verificationScope": "Group tests exercise assertions; not a claim that every endpoint and input has independent differential parity."
     }
-  ]
+  ],
+  "sourceCheckpoints": [
+    "797851476f13a4daa3ea3edbc9869cc6e0477a6f",
+    "7c66bb9520b569cc5ea5e1a2ef0f1ace540bc030"
+  ],
+  "fullDifferentialParityVerified": false,
+  "databases": [
+    {
+      "engine": "MySQL",
+      "version": "8.4.11",
+      "assertions": 961
+    },
+    {
+      "engine": "MariaDB",
+      "version": "11.4.13",
+      "assertions": 961
+    }
+  ],
+  "statisticalDifferences": [
+    "Raw-backed analytics has a site-wide retained-event budget of 100000, even for a shorter date range.",
+    "PHP uses verified hourly history, without Node relational member facts or ClickHouse partition/capacity proof.",
+    "A late event in a retired partial boundary hour invalidates that historical hour rather than inventing unknown retired facts.",
+    "Money returns exact decimal strings rather than Node Number; currencies are not combined.",
+    "Replay is clipped by frame timestamps; SSE reconnects short streams rather than retaining Node long-lived streams.",
+    "VItals retain exact type7 raw samples; Node uses TDigest compression."
+  ],
+  "securityFollowup": {
+    "receiptExports": "Real HTTP negative JSON/CSV leak reproduced; current candidate all-table JSON/CSV scans passed, minimal legacy receipts and internal exclusion.",
+    "history": "Exact non-retention deletion watermark permits clean recaptures and ordinary retention; later deletion and namespace collisions rejected.",
+    "queue": "Two independent default-RR connections: locking current reads preserve newer revision/payload and revoked leases.",
+    "ai": "Different provider request stages use stable independent idempotency keys; cache-enforcing transport regression passed."
+  }
 }

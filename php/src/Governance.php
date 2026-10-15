@@ -9,7 +9,7 @@ final class Governance
     private static array $journalCache=[],$recordCache=[];
     public static function configure(array $config,?Store $store=null):void
     {
-        if(!is_file($config['key_dir'].'/privacy-journal-identity.json')&&$store&&($store->get('privacy_journal_identity','active')||$store->list('privacy_tombstones')||$store->list('privacy_applied')))throw new \RuntimeException('privacy_journal_identity_missing');self::$config=$config;self::$journalCache=[];self::$recordCache=[];self::journal($config);if($store)self::verifyDatabaseIdentity($config,$store);
+        if(!is_file($config['key_dir'].'/privacy-journal-identity.json')&&$store&&($store->get('privacy_journal_identity','active')||$store->list('privacy_tombstones')||$store->list('privacy_applied')))throw new \RuntimeException('privacy_journal_identity_missing');self::$config=$config;self::$journalCache=[];self::$recordCache=[];self::journal($config);if($store){self::verifyDatabaseIdentity($config,$store);self::upgradeReceipts($store);}
     }
     private static function verifyDatabaseIdentity(array $config,Store $store):void
     {
@@ -63,16 +63,34 @@ final class Governance
     {
         $frames=$event['payload']['replay']??$event['payload']??[];if(!is_array($frames))return [];return array_values(array_filter($frames,static function($frame)use($record,$event){if(!is_array($frame)||!is_numeric($frame['timestamp']??null))return false;return !self::matches($record,array_replace($event,['ts'=>$frame['timestamp'],'type'=>'replay']));}));
     }
+    /** Startup migration also covers legacy sites without an existing deletion record. */
+    private static function upgradeReceipts(Store $store):void
+    {
+        if(($store->get('privacy_receipts_schema','global-v1')['version']??0)>=1)return;$store->db->transaction(function()use($store){$store->db->lock('privacy:receipt-schema:v1');if(($store->get('privacy_receipts_schema','global-v1')['version']??0)>=1)return;foreach($store->db->all("SELECT kind,id,site_id,body FROM documents WHERE kind IN ('event_keys','replay_keys')") as $row){$value=json_decode($row['body'],true,512,JSON_THROW_ON_ERROR);$minimal=self::minimalReceipt($row['kind'],$value);if($minimal!==$value)$store->put($row['kind'],$row['id'],$minimal,$row['site_id']);}$store->put('privacy_receipts_schema','global-v1',['version'=>1]);});
+    }
+    /** Body fields read by the intake protocol; the compatibility row key remains unchanged. */
+    public static function minimalReceipt(string $kind,array $value):array
+    {
+        return match($kind){'event_keys'=>array_intersect_key($value,array_flip(['hash','alias_of'])),'replay_keys'=>array_intersect_key($value,array_flip(['event_id','payload_hash'])),default=>$value};
+    }
+    /** One-time upgrade for already-applied deletion records from older PHP builds. Site lock required. */
+    private static function minimizeReceipts(App $app,string $site):void
+    {
+        if(($app->store->get('privacy_receipts_schema',$site)['version']??0)>=1)return;
+        foreach($app->db->all("SELECT kind,id,body FROM documents WHERE site_id=? AND kind IN ('event_keys','replay_keys')",[$site]) as $row){$value=json_decode($row['body'],true,512,JSON_THROW_ON_ERROR);$minimal=self::minimalReceipt($row['kind'],$value);if($minimal!==$value)$app->store->put($row['kind'],$row['id'],$minimal,$site);}
+        $app->store->put('privacy_receipts_schema',$site,['version'=>1],$site);
+    }
     public static function applyRecord(App $app,array $record,bool $force=false):array
     {
         self::$recordCache=[];
-        return $app->db->transaction(function()use($app,$record,$force){$site=$record['site_id'];$app->db->lock('site:'.$site);$prior=$app->store->get('privacy_applied',$record['id']);if($prior&&!$force)return ['id'=>$record['id'],'already_applied'=>true,'deleted'=>0];$app->store->put('privacy_tombstones',$record['id'],$record,$site);$deleted=0;
+        return $app->db->transaction(function()use($app,$record,$force){$site=$record['site_id'];$app->db->lock('site:'.$site);$prior=$app->store->get('privacy_applied',$record['id']);if($prior&&!$force){self::minimizeReceipts($app,$site);return ['id'=>$record['id'],'already_applied'=>true,'deleted'=>0];}$app->store->put('privacy_tombstones',$record['id'],$record,$site);$deleted=0;
             $raw=['events','replays','identity_bindings','identity_map','visitor_first_seen','sessions','revenue_orders','experiment_assignments','experiment_contributions','outbox','online_visitors'];
-            $preserve=['sites','reports','report_schedules','notification_channels','alert_rules','share_links','api_tokens','site_members','site_invites','goals','funnels','annotations','experiments','external_connections','gsc_stats','gsc_stats_windows','gsc_import_windows','ga_import','ga_import_windows','ga4_windows','ga4_rows','rank_history','seo_scans','manual_search_imports','manual_search_rows','manual_search_digests','ai_budget','ai_reservations','privacy_tombstones','privacy_applied','realtime_cursor','privacy_state','audit_logs','aggregation_state','event_keys','replay_keys','replay_chunk_keys','order_keys'];
+            $preserve=['sites','reports','report_schedules','notification_channels','alert_rules','share_links','api_tokens','site_members','site_invites','goals','funnels','annotations','experiments','external_connections','gsc_stats','gsc_stats_windows','gsc_import_windows','ga_import','ga_import_windows','ga4_windows','ga4_rows','rank_history','seo_scans','manual_search_imports','manual_search_rows','manual_search_digests','ai_budget','ai_reservations','privacy_tombstones','privacy_applied','privacy_receipts_schema','realtime_cursor','privacy_state','audit_logs','aggregation_state','event_keys','replay_keys','replay_chunk_keys','order_keys'];
             $privateFiles=[];foreach($app->store->list('export_jobs',$site) as $job)if(isset($job['path']))$privateFiles[]=$job['path'];if($record['type']!=='retention')foreach($app->store->list('history_backups',$site) as $backup)if(isset($backup['path']))$privateFiles[]=$backup['path'];
             foreach($privateFiles as $path)self::removePrivateFile($app,$path);
             foreach(glob($app->config['data_dir'].'/history/*')?:[] as $path)if(is_file($path)){try{$history=json_decode(Security::unseal((string)file_get_contents($path),$app->config),true,512,JSON_THROW_ON_ERROR);if(($history['site_id']??null)===$site&&$record['type']!=='retention')self::removePrivateFile($app,$path);}catch(\Throwable){throw new \RuntimeException('history_cleanup_verification_failed');}}
             foreach($app->db->all('SELECT kind,id,body FROM documents WHERE site_id=?',[$site]) as $row){$kind=$row['kind'];$v=json_decode($row['body'],true,512,JSON_THROW_ON_ERROR);
+                if(in_array($kind,['event_keys','replay_keys'],true)){$minimal=self::minimalReceipt($kind,$v);if($minimal!==$v)$app->store->put($kind,$row['id'],$minimal,$site);continue;}
                 if(in_array($kind,$raw,true)){if($record['type']==='retention'&&in_array($kind,['experiment_contributions','experiment_assignments'],true))continue;
                     $isReplay=$kind==='replays'||($kind==='events'&&($v['type']??'')==='replay');if(($record['replay_only']??false)&&!$isReplay)continue;
                     if($isReplay){$before=$kind==='replays'?($v['payload']??[]):($v['payload']['replay']??[]);$frames=self::redactFrames($record,$v);if(count($frames)!==count($before)){if(!$frames){$app->store->delete($kind,$row['id']);$deleted++;continue;}if($kind==='replays'){$v['payload']=$frames;$times=array_column($frames,'timestamp');$v['started_at']=EventPrivacy::iso(min($times));$v['ended_at']=EventPrivacy::iso(max($times));}else $v['payload']['replay']=$frames;$app->store->put($kind,$row['id'],$v,$site);}continue;}
@@ -84,12 +102,25 @@ final class Governance
                 if(!in_array($kind,$preserve,true)&&($record['type']!=='retention'||$kind==='export_jobs')){$app->store->delete($kind,$row['id']);$deleted++;}
             }
             $state=$app->store->get('aggregation_state',$site)??[];$state=array_replace($state,['id'=>$site,'site_id'=>$site,'generation'=>(int)($state['generation']??0)+1,'epoch'=>Store::uuid(),'status'=>'pending','privacy_boundary'=>'原始保留明细已删除；已失效的历史派生统计不能恢复','updated_at'=>Store::now()]);$app->store->put('aggregation_state',$site,$state,$site);$app->store->put('privacy_state',$site,['id'=>$site,'site_id'=>$site,'epoch'=>Store::uuid(),'updated_at'=>Store::now()],$site);
+            $app->store->put('privacy_receipts_schema',$site,['version'=>1],$site);
             $app->store->put('privacy_applied',$record['id'],['id'=>$record['id'],'site_id'=>$site,'applied_at'=>Store::now(),'record_sha256'=>hash('sha256',json_encode($record,JSON_THROW_ON_ERROR))],$site);return ['id'=>$record['id'],'deleted'=>$deleted,'already_applied'=>false];});
     }
     private static function removePrivateFile(App $app,string $path):void {$base=realpath($app->config['data_dir']);$real=realpath($path);if($real!==false&&$base!==false&&str_starts_with($real,$base.DIRECTORY_SEPARATOR)&&is_file($real))unlink($real);}
     public static function replayJournal(App $app,bool $force=false):array {$results=[];foreach(self::journal($app->config,true) as $record)$results[]=self::applyRecord($app,$record,$force);return $results;}
     /** Repair pending durable deletions before reading any historical/notification material. */
-    public static function ensureApplied(App $app,string $siteId):void {if(self::$config===null||(self::$config['data_dir']??null)!==$app->config['data_dir'])self::configure($app->config,$app->store);self::verifyDatabaseIdentity($app->config,$app->store);foreach(self::journal($app->config) as $record)if($record['site_id']===$siteId&&!$app->store->get('privacy_applied',$record['id']))self::applyRecord($app,$record);}
+    public static function ensureApplied(App $app,string $siteId):void
+    {
+        if(self::$config===null||(self::$config['data_dir']??null)!==$app->config['data_dir'])self::configure($app->config,$app->store);self::verifyDatabaseIdentity($app->config,$app->store);$hasPrivacy=false;foreach(self::journal($app->config) as $record)if($record['site_id']===$siteId){$hasPrivacy=true;if(!$app->store->get('privacy_applied',$record['id']))self::applyRecord($app,$record);}if($hasPrivacy)self::minimizeReceipts($app,$siteId);
+    }
+    /** A content-addressed deletion frontier, independent of wall clocks and retention maintenance. */
+    public static function historyPrivacyWatermark(App $app,string $siteId):array
+    {
+        self::ensureApplied($app,$siteId);$records=[];foreach(array_merge(self::journal($app->config),$app->store->list('privacy_tombstones',$siteId)) as $record){if(($record['site_id']??null)!==$siteId||($record['type']??null)==='retention')continue;$hash=hash('sha256',json_encode($record,JSON_THROW_ON_ERROR));$id=(string)$record['id'];if(isset($records[$id])&&!hash_equals($records[$id],$hash))throw new \RuntimeException('privacy_record_conflict');$applied=$app->store->get('privacy_applied',$id);if(!$applied||!hash_equals((string)($applied['record_sha256']??''),$hash))Http::error(409,'history_privacy_unverified');$records[$id]=$hash;}ksort($records,SORT_STRING);$proof=[];foreach($records as $id=>$hash)$proof[]=['id'=>$id,'sha256'=>$hash];return ['version'=>1,'journalId'=>self::journalIdentity($app->config),'records'=>$proof];
+    }
+    public static function historyPrivacyValid(App $app,string $siteId,array $manifest):bool
+    {
+        $current=self::historyPrivacyWatermark($app,$siteId);$proof=$manifest['privacyWatermark']??null;if($proof===null)return $current['records']===[];return is_array($proof)&&($proof['version']??null)===1&&is_string($proof['journalId']??null)&&hash_equals($current['journalId'],$proof['journalId'])&&is_array($proof['records']??null)&&$proof['records']===$current['records'];
+    }
     public static function deleteVisitor(App $app,string $site,array $input,?string $actor=null):array
     {
         return $app->db->transaction(function()use($app,$site,$input,$actor){$app->db->lock('site:'.$site);$settings=$app->store->get('sites',$site);if(!$settings)Http::error(404,'site_missing');$records=[];$base=['site_id'=>$site,'created_at'=>Store::now()];

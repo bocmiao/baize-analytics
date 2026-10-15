@@ -28,7 +28,7 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 ## 在 1Panel 安装
 
 1. 创建 PHP 8.3+ 网站和独立数据库。解压安装包，将网站运行目录设为包内 `public/`；配置 HTTPS。命令行解压使用 `tar --same-permissions -xzf baize-php.tar.gz -C /your/new/directory` 保留包内权限；面板解压后按清单检查代码可读、私有目录为700。Nginx 规则参考包内 `deploy/nginx.conf.example`，其 PHP-FPM 地址需换为该站点现有运行环境的地址。
-2. 为网站进程准备私有配置及数据目录。可使用默认 `private/`，或在 PHP-FPM 与 CLI 共同设置 `BAIZE_CONFIG_PATH=/var/lib/baize-php/config.php`。不要通过 URL 读取配置、nonce 或主密钥。
+2. 为网站进程准备私有配置及数据目录，所有者设置为该网站实际PHP运行用户；目录700、配置和密钥文件600。代码保持目录755、文件644，不要将整个包改为私密或可写。可使用默认 `private/`，或在 PHP-FPM 与 CLI 共同设置 `BAIZE_CONFIG_PATH=/var/lib/baize-php/config.php`。不要通过 URL 读取配置、nonce 或主密钥。
 3. 以 PHP-FPM 网站的同一运行用户，在同一 PHP 环境执行 `php bin/install.php --prepare`。命令显示私有安装凭据文件的位置；从服务器上读取后，在自己的 HTTPS 安装页输入。凭据不得放在查询字符串中。
 4. 打开 `/install.php`，填写数据库连接、公开 HTTPS 地址、安装凭据和管理员信息。安装提交使用持久状态与数据库事务完成管理员认领。完成后安装入口关闭；删除所有用户也不能重新开放安装。
 5. 登录后创建站点，按页面说明安装 tracker，再发送一个真实页面访问验证采集、统计、时区和隐私模式。

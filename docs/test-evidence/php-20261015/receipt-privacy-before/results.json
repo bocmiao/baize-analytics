@@ -1,0 +1,31 @@
+{
+  "mode": "negative archived-preview reproduction",
+  "baseUrl": "http://127.0.0.1:8109",
+  "syntheticFixture": true,
+  "liveExternalCalls": false,
+  "realHttp": true,
+  "siteId": "4ab5860d37f2808fbfade8cf",
+  "collected": 1,
+  "duplicateBeforeDeletion": 1,
+  "newFullExportsAfterDeletion": [
+    {
+      "format": "json",
+      "status": 200,
+      "deletedMarkerPresent": true,
+      "internalNamespaces": [
+        "event_keys",
+        "privacy_tombstones",
+        "replay_keys"
+      ],
+      "checkedEveryNamespace": true
+    },
+    {
+      "format": "csv",
+      "status": 200,
+      "deletedMarkerPresent": true,
+      "internalNamespaces": [],
+      "checkedEveryNamespace": true
+    }
+  ],
+  "retryAfterDeletionAccepted": 0
+}

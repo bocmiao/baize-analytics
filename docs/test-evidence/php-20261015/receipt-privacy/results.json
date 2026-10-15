@@ -1,0 +1,27 @@
+{
+  "mode": "fixed candidate regression",
+  "baseUrl": "http://127.0.0.1:8099",
+  "syntheticFixture": true,
+  "liveExternalCalls": false,
+  "realHttp": true,
+  "siteId": "44be7e9a52eaddb8ab6f54e7",
+  "collected": 1,
+  "duplicateBeforeDeletion": 1,
+  "newFullExportsAfterDeletion": [
+    {
+      "format": "json",
+      "status": 200,
+      "deletedMarkerPresent": false,
+      "internalNamespaces": [],
+      "checkedEveryNamespace": true
+    },
+    {
+      "format": "csv",
+      "status": 200,
+      "deletedMarkerPresent": false,
+      "internalNamespaces": [],
+      "checkedEveryNamespace": true
+    }
+  ],
+  "retryAfterDeletionAccepted": 0
+}

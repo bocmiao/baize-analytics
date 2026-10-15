@@ -105,6 +105,41 @@ try{
     $leaseId=Queue::enqueue($app,'test',$site['id'],[],'expired-lease');$lease=Queue::claim($app,'old-worker');$job=$app->store->get('queue_jobs',$leaseId);$job['lease_until']=EventPrivacy::iso(microtime(true)*1000-1000);$app->store->put('queue_jobs',$leaseId,$job,$site['id']);$assert(!Queue::complete($app,$lease,'old-worker')&&!Queue::renew($app,$lease,'old-worker'),'expired lease cannot acknowledge or renew');$replacement=Queue::claim($app,'new-worker');$assert($replacement['id']===$leaseId&&$replacement['lease_token']!==$lease['lease_token'],'expired work reclaimed with fresh token');$assert(!Queue::fail($app,$lease,'old-worker','late failure'),'stale worker cannot mark newer work failed');Queue::complete($app,$replacement,'new-worker');
     $deadId=Queue::enqueue($app,'test',$site['id'],[],'dead-lease');$dead=$app->store->get('queue_jobs',$deadId);$dead['attempts']=7;$app->store->put('queue_jobs',$deadId,$dead,$site['id']);$claim=Queue::claim($app,'failing');Queue::fail($app,$claim,'failing','test_failure');$assert($app->store->get('queue_jobs',$deadId)['status']==='dead','eight failures become dead letter');$db->transaction(fn()=>Queue::replay($app,$site['id']));$retry=Queue::claim($app,'recovery');$assert($retry['id']===$deadId&&$retry['attempts']===1&&$retry['revision']>$claim['revision'],'admin replay revokes lease and resets attempts');Queue::complete($app,$retry,'recovery');
     $jobsBefore=count($app->store->list('queue_jobs'));Worker::schedule($app);$assert(count($app->store->list('queue_jobs'))===$jobsBefore,'completed maintenance is not immediately repeated');
+    // Two independent RR connections: A's old plain-read snapshot must never overwrite B's enqueue.
+    $dbB=new Database(['dsn'=>"mysql:host=127.0.0.1;port=$port;dbname=$name;charset=utf8mb4",'user'=>'root','password'=>'']);$appB=new App($app->config,$dbB);
+    foreach([$db,$dbB] as $connection){$isolation=$connection->one("SHOW VARIABLES LIKE 'transaction_isolation'")??$connection->one("SHOW VARIABLES LIKE 'tx_isolation'");$assert(strtoupper(str_replace('_','-',$isolation['Value']))==='REPEATABLE-READ','queue interleave uses unchanged default REPEATABLE READ');}
+    try{$app->store->getForUpdate('queue_jobs','outside-transaction');$assert(false,'locking read requires transaction');}catch(LogicException){$assert(true,'locking read rejects nontransactional use');}
+    $finishQueue=function()use($appB){foreach($appB->store->list('queue_jobs') as $row){$row['status']='complete';$appB->store->put('queue_jobs',$row['id'],$row,$row['site_id']);}};$finishQueue();
+    $interleaveKey='rr-claim';$interleaveId=Queue::enqueue($app,'test',$site['id'],['value'=>'revision-one'],$interleaveKey);
+    $interleavedClaim=$db->transaction(function()use($app,$appB,$site,$interleaveId,$interleaveKey,$assert){
+        $app->store->list('queue_jobs');Queue::enqueue($appB,'test',$site['id'],['value'=>'revision-two'],$interleaveKey);
+        $assert($app->store->get('queue_jobs',$interleaveId)['revision']===1,'A plain read demonstrably retains its old queue snapshot');
+        $claim=Queue::claim($app,'rr-claimer');$assert($claim['id']===$interleaveId&&$claim['revision']===2&&$claim['payload']['value']==='revision-two','claim uses B committed revision and payload despite A old snapshot');return $claim;
+    });
+    $persisted=$appB->store->get('queue_jobs',$interleaveId);$assert($persisted['revision']===2&&$persisted['payload']['value']==='revision-two'&&$persisted['status']==='running','claim persists the newer enqueue without a lost update');Queue::complete($app,$interleavedClaim,'rr-claimer');
+    // An old completed candidate must not hide a newly pending revision of that same job.
+    $db->transaction(function()use($app,$appB,$site,$interleaveId,$interleaveKey,$assert){$app->store->list('queue_jobs');Queue::enqueue($appB,'test',$site['id'],['value'=>'revision-three'],$interleaveKey);$claim=Queue::claim($app,'rr-completed-candidate');$assert($claim['id']===$interleaveId&&$claim['revision']===3&&$claim['payload']['value']==='revision-three','claim rechecks a previously completed candidate using the current row');});$finishQueue();
+    foreach(['enqueue','complete','fail','renew','replay'] as $operation){
+        $dedupe='rr-'.$operation;$id=Queue::enqueue($app,'test',$site['id'],['value'=>'old'],$dedupe);$owned=$operation==='enqueue'?null:Queue::claim($app,'rr-owner');
+        $db->transaction(function()use($app,$appB,$site,$operation,$dedupe,$id,$owned,$assert){
+            $app->store->list('queue_jobs');Queue::enqueue($appB,'test',$site['id'],['value'=>'B-committed'],$dedupe);
+            $assert($app->store->get('queue_jobs',$id)['revision']===1,$operation.' test retains an actual stale RR snapshot');
+            $result=match($operation){'enqueue'=>Queue::enqueue($app,'test',$site['id'],['value'=>'A-newest'],$dedupe),'complete'=>Queue::complete($app,$owned,'rr-owner'),'fail'=>Queue::fail($app,$owned,'rr-owner','TEST_FAILURE'),'renew'=>Queue::renew($app,$owned,'rr-owner'),'replay'=>Queue::replay($app,$site['id'])};
+            $assert($operation==='enqueue'?$result===$id:($operation==='replay'?$result===1:$result===true),$operation.' completes against the current locked row');
+        });
+        $storedJob=$appB->store->get('queue_jobs',$id);$expectedRevision=in_array($operation,['enqueue','replay'],true)?3:2;$expectedPayload=$operation==='enqueue'?'A-newest':'B-committed';
+        $assert($storedJob['revision']===$expectedRevision&&$storedJob['payload']['value']===$expectedPayload,$operation.' preserves committed payload and monotonic revision');
+        if(in_array($operation,['complete','fail'],true))$assert($storedJob['status']==='pending',$operation.' leaves newer enqueue pending');
+        if($operation==='renew')$assert($storedJob['status']==='running'&&$storedJob['lease_token']===$owned['lease_token'],'heartbeat preserves the active owner and newer revision');
+        if($operation==='replay')$assert($storedJob['status']==='pending'&&$storedJob['lease_token']===null,'replay revokes the current lease while preserving newer payload');
+        $finishQueue();
+    }
+    $revokedId=Queue::enqueue($app,'test',$site['id'],['value'=>'fence'],'rr-revoked');$revoked=Queue::claim($app,'revoked-owner');
+    $db->transaction(function()use($dbB,$app,$appB,$site,$revoked,$assert){$app->store->list('queue_jobs');$dbB->transaction(fn()=>Queue::replay($appB,$site['id']));$assert(!Queue::renew($app,$revoked,'revoked-owner')&&!Queue::complete($app,$revoked,'revoked-owner')&&!Queue::fail($app,$revoked,'revoked-owner','STALE_FAILURE'),'old snapshot cannot resurrect or acknowledge a revoked lease');});
+    $assert($appB->store->get('queue_jobs',$revokedId)['revision']===2&&$appB->store->get('queue_jobs',$revokedId)['lease_token']===null,'revoked lease remains fenced in persisted current row');$finishQueue();
+    $expiredId=Queue::enqueue($app,'test',$site['id'],['value'=>'expire'],'rr-expired');$expired=Queue::claim($app,'expired-owner');
+    $db->transaction(function()use($app,$appB,$dbB,$expiredId,$expired,$assert){$app->store->list('queue_jobs');$dbB->transaction(function()use($appB,$dbB,$expiredId){$dbB->lock('queue:'.$expiredId);$row=$appB->store->getForUpdate('queue_jobs',$expiredId);$row['lease_until']=EventPrivacy::iso(microtime(true)*1000-1000);$appB->store->put('queue_jobs',$expiredId,$row,$row['site_id']);});$assert(!Queue::renew($app,$expired,'expired-owner'),'old snapshot never extends an expired current lease');});
+    $assert(EventPrivacy::millis($appB->store->get('queue_jobs',$expiredId)['lease_until'])<microtime(true)*1000,'expired current lease remains expired');$finishQueue();
     // Two independent PHP processes race the same event against real InnoDB site gates.
     foreach($app->store->list('intake_rate',$site['id']) as $rate)$app->store->delete('intake_rate',$rate['id']);
     $raceEvent=$event(['visitor_id'=>Store::uuid()]);$raceEnvelope=['protocol_version'=>1,'site_id'=>$site['id'],'sdk'=>'race','sent_at'=>$now,'events'=>[$raceEvent]];

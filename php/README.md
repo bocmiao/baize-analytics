@@ -8,3 +8,5 @@
 - PHP 不直接执行 Node 的 PostgreSQL 迁移或恢复其存档；保留原实例及所有旧存档，按验证记录处理迁移边界。
 
 测试使用独立的本地 MySQL 3307 / MariaDB 3308 测试服务，构建 `php/tests/Dockerfile` 后可运行 `scripts/verify-php.sh`。每个套件使用专用测试库；不得指向正式数据库。
+
+逐接口、统计口径、安全验证及明确差异：[Node → PHP 对照](../docs/PHP_PARITY_MATRIX_20261015.md)。

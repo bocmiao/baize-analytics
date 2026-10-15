@@ -82,7 +82,7 @@ final class Analytics
                 if (!$manifest || ($manifest['site_id'] ?? null) !== $siteId || ($manifest['status'] ?? null) !== 'published') Http::error(404, 'history_namespace_missing');
                 $json = json_encode($manifest['tables'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
                 if (!hash_equals($manifest['sha256'] ?? '', hash('sha256', $json))) Http::error(409, 'history_integrity_invalid');
-                foreach (array_merge($app->store->list('privacy_tombstones', $siteId), Governance::journal($app->config)) as $record) if ($record['site_id'] === $siteId && $record['type'] !== 'retention') Http::error(409, 'history_privacy_invalidated', '存在访客删除记录，历史聚合不能逐人验证，需从已过滤明细重新捕获');
+                if (!Governance::historyPrivacyValid($app, $siteId, $manifest)) Http::error(409, 'history_privacy_invalidated', '捕获后的删除记录尚未反映在历史聚合中，请从已过滤明细重新捕获');
                 $snapshotSite = $manifest['site_snapshot'] ?? $manifest['site'] ?? [];
                 $capturedAt = $manifest['captured_at'] ?? $manifest['source_created_at'] ?? $manifest['created_at'];
                 $read['site'] = $snapshotSite + $read['site']; unset($read['site']['_session_context']); $read['events'] = []; $now = min($now, AnalysisEngine::ms($capturedAt));

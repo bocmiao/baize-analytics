@@ -34,7 +34,7 @@
 | 运行时 | 安装入口 | 数据库与功能范围 |
 | --- | --- | --- |
 | 原 Node 版 | [Docker／预编译包](docs/deployment-methods.md)、[1Panel／宝塔 Node 托管](docs/PANEL_INSTALLATION.md) | 保留 Node 标准版的 PostgreSQL 体系及原有 Lite SQLite 选项 |
-| 独立 PHP 安装版 | [PHP + 数据库网页安装](docs/PHP_INSTALLATION.md) | 独立 `php/`，面向 PHP-FPM + MySQL 与 1Panel；完整标准功能的实现和实测覆盖见专属指南 |
+| 独立 PHP 安装版 | [PHP + 数据库网页安装](docs/PHP_INSTALLATION.md) | 独立 `php/`，面向 PHP-FPM + MySQL 与 1Panel；标准功能范围、实测覆盖与运行时差异见专属指南 |
 
 PHP 安装版与 Node Lite 分开维护。PHP 的安装包、数据库迁移和运维命令使用自己的入口；原 Node 应用、SDK、迁移和测试继续保留。
 
@@ -109,7 +109,7 @@ bash scripts/release-start.sh --env-file /绝对路径/私有配置.env
 
 ## 常见问题
 
-**需要注册云服务吗？** 核心统计不需要。标准版需要 PostgreSQL；Lite 使用本地 SQLite。GeoIP、搜索、邮件、SSO 和 AI 等外部功能按需配置。
+**需要注册云服务吗？** 核心统计不需要。原Node标准版需要 PostgreSQL，独立PHP安装版使用MySQL；Node Lite 使用本地 SQLite。GeoIP、搜索、邮件、SSO 和 AI 等外部功能按需配置。
 
 **不用 AI，会发送数据给模型服务吗？** 不会因核心统计自动启用 AI。BYOK 需要管理员配置；它表示使用自己的服务密钥，不表示本地推理。Lite 每次手动调用还需明确允许外发。外部模型输出是辅助建议，不保证事实或效果。
 
