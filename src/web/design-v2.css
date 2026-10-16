@@ -117,17 +117,17 @@ html[data-theme="dark"] .role-badge{color:var(--gold);background:var(--side)}
 .landing{background:radial-gradient(circle at 0 0,rgba(194,154,78,.16),transparent 32%),var(--bg)}
 .landing h1{letter-spacing:.02em}
 .feature-grid article h2:before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:2px;background:var(--gold);vertical-align:middle}
-.auth{max-width:1120px}
+.auth.auth-entry{max-width:1120px}
 .lart{display:none}
 @media(min-width:960px){
- .auth{max-width:none;min-height:100vh;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,520px)}
+ .auth.auth-entry{max-width:none;min-height:100vh;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,520px)}
  .lart{display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding:64px;background:radial-gradient(circle at 30% 18%,#245A50,#0B1D1A 70%);color:#F4EFE2;position:relative;overflow:hidden}
  .lart strong{font-size:34px;letter-spacing:.2em;font-weight:650}
  .lart p{color:#C9D8D2;font-size:16px;line-height:1.8;max-width:28em}
  .lart ul{margin:8px 0 0;padding:0;list-style:none;color:#E7F2EE;line-height:2}
  .lart:after{content:"";position:absolute;right:-120px;bottom:-140px;width:420px;height:420px;border:1px solid rgba(217,182,106,.35);border-radius:50%;box-shadow:0 0 0 48px rgba(217,182,106,.08),0 0 0 96px rgba(217,182,106,.05)}
- .auth>.brand{position:absolute;left:28px;top:24px;color:#F4EFE2;z-index:1}
- .auth>section.panel{margin:0;border:0;border-radius:0;box-shadow:none;background:var(--bg2);padding:72px 56px;display:flex;flex-direction:column;justify-content:center}
+ .auth.auth-entry>.brand{position:absolute;left:28px;top:24px;color:#F4EFE2;z-index:1}
+ .auth.auth-entry>section.panel{margin:0;border:0;border-radius:0;box-shadow:none;background:var(--bg2);padding:72px 56px;display:flex;flex-direction:column;justify-content:center}
 }
 .auth .iprog{height:4px;background:var(--line);border-radius:3px;overflow:hidden;margin:0 0 16px}
 .auth .iprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--jade),var(--gold));transform-origin:left;animation:baize-grow var(--dur-draw) var(--ease-out) both}
@@ -150,14 +150,13 @@ html[data-theme="dark"] .product-promise{color:var(--gold)}
 .date-presets button[aria-pressed="true"]{background:var(--jade);color:#fff}
 html[data-theme="dark"] .date-presets button{background:transparent;color:var(--ink2)}
 html[data-theme="dark"] .date-presets button[aria-pressed="true"]{background:var(--jade);color:#08110F}
-.compare-toggle{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;color:var(--gold);font-size:12px;white-space:nowrap}
-.compare-toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.compare-toggle{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:36px;margin:0 8px 0 0;color:var(--ink2);font-size:12px;white-space:nowrap}
+.compare-toggle input{position:absolute;inset:0;z-index:1;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
 .compare-toggle i{width:28px;height:16px;border-radius:8px;background:var(--line);position:relative;display:inline-block}
 .compare-toggle i:after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform var(--dur-base) var(--ease-spring)}
 .compare-toggle input:checked+i{background:var(--gold)}
 .compare-toggle input:checked+i:after{transform:translateX(12px)}
 .compare-toggle input:focus-visible+i{outline:3px solid var(--jade);outline-offset:3px}
-.workspace.compare-off .overview-metrics tbody tr:not(.overview-current-values){display:none}
 #workspace-main.refreshing .panel,#workspace-main.refreshing .overview-realtime{opacity:.45;filter:saturate(.55);transition:opacity var(--dur-fast),filter var(--dur-fast)}
 .approved-overview .panel,.overview-realtime{animation:baize-rise var(--dur-slow) var(--ease-out) both}
 .approved-overview .panel:nth-of-type(2){animation-delay:40ms}
@@ -175,7 +174,7 @@ html[data-theme="dark"] .date-presets button[aria-pressed="true"]{background:var
 .insbar .lnk{margin-left:auto;color:var(--jade);white-space:nowrap;font-size:12px}
 
 @media(max-width:767px){
- .date-presets,.compare-toggle,.workspace-toolbar .theme-toggle{display:none}
+ .date-presets,.workspace-toolbar .theme-toggle{display:none}
  .phone-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--card);border-top:1px solid var(--line);padding:6px 2px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(20,48,44,.06)}
  .phone-tabs a,.phone-tabs button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;color:var(--ink2);border:0;border-radius:8px;padding:4px 2px;font-size:10px;font-weight:600}
  .phone-tabs a[aria-current="page"],.phone-tabs a[aria-current="page"] span{color:var(--jade)}
@@ -197,7 +196,7 @@ html[data-theme="dark"] .date-presets button[aria-pressed="true"]{background:var
 html.rm *,html.rm *:before,html.rm *:after,html[data-motion="off"] *,html[data-motion="off"] *:before,html[data-motion="off"] *:after{animation:none!important;transition:none!important}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 
-html[data-theme="dark"] body,html[data-theme="dark"] .workspace,html[data-theme="dark"] .landing,html[data-theme="dark"] .auth>section.panel{background:var(--bg);color:var(--ink)}
+html[data-theme="dark"] body,html[data-theme="dark"] .workspace,html[data-theme="dark"] .landing,html[data-theme="dark"] .auth.auth-entry>section.panel{background:var(--bg);color:var(--ink)}
 html[data-theme="dark"] .panel,html[data-theme="dark"] .feature-section,html[data-theme="dark"] .feature-grid article,html[data-theme="dark"] .approved-overview .panel,html[data-theme="dark"] .update-release,html[data-theme="dark"] .update-operation,html[data-theme="dark"] .feature-disclosure,html[data-theme="dark"] .query-health details[open],html[data-theme="dark"] .overview-insight-dialog,html[data-theme="dark"] .modal{background:var(--card);color:var(--ink);border-color:var(--line)}
 html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea,html[data-theme="dark"] .workspace-toolbar .date-range,html[data-theme="dark"] .workspace-toolbar .toolbar-preferences>summary,html[data-theme="dark"] .site-context-details>summary,html[data-theme="dark"] .workspace-toolbar .toolbar-preferences[open],html[data-theme="dark"] th{background:var(--bg2);color:var(--ink);border-color:var(--line)}
 html[data-theme="dark"] td{border-color:var(--line);color:var(--ink)}
@@ -209,3 +208,8 @@ html[data-theme="dark"] .approved-overview table thead th,html[data-theme="dark"
 html[data-theme="dark"] .overview-mobile-metrics>div{border-color:var(--line)}
 html[data-theme="dark"] .phone-tabs{background:var(--card)}
 html[data-theme="dark"] .lart{background:radial-gradient(circle at 30% 18%,#173F38,#050C0B 72%)}
+
+/* Shared controls and evidence text must stay readable in both palettes. */
+.workspace button.overview-insight-toggle{background:var(--card);color:var(--jade);border-color:var(--line)}
+.workspace main>.panel:has(>.segment-filters)>summary{background:var(--card);color:var(--ink2)}
+.workspace .overview-insight-evidence p,.workspace .overview-insight-note{color:var(--ink2)}

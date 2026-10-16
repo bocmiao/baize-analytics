@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-16",
+  "baseRevision": "c087b64b112faf9caefd810b66b37736b8b91fd6",
+  "originalPrHead": "52579f1f162d49524d88f0c1e7227881d2d85bf5",
+  "frontendIndexSha256": "727b05cf98835a08e3c2d48406a3d69349b593d263460e0ff2b119d44468282f",
+  "actualPhpHttp": {
+    "baseUrl": "http://127.0.0.1:8099",
+    "indexSha256": "727b05cf98835a08e3c2d48406a3d69349b593d263460e0ff2b119d44468282f",
+    "inlineScripts": false,
+    "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'",
+    "assets": [
+      {
+        "path": "/assets/index-02fyXjIe.js",
+        "status": 200,
+        "sha256": "341c0edf32403e2cffccb7b12c1b22a741cd71caef1c83e92af4910fcf6c065c",
+        "bytes": 667426
+      },
+      {
+        "path": "/assets/index-BEyyYUgB.css",
+        "status": 200,
+        "sha256": "fa156fb1b67a1323944dea35b028697af0abbd55ed574dda825fb0a1f9901404",
+        "bytes": 75944
+      }
+    ]
+  },
+  "sourceHashes": {
+    "index.html": "420bb9eb239445dfbc8be23d742d6cd539e1f9f6c8da77f29d2834e52864c7af",
+    "src/web/Charts.tsx": "e2764a64d3f37c94b667b91f24ee3dc173834818d160070e9357e3ff4538cca9",
+    "src/web/OverviewDashboard.tsx": "a9b59df15231c5c3470dbcf9eb00a663c2f8fb8907dc728edea48604952320e4",
+    "src/web/ThemeToggle.tsx": "5976ddae6a04c9113f0038baf17bc09b7233a82e5e38d0216f2b21f7284441bb",
+    "src/web/design-v2.css": "9a327ee8dd86f15f55899ee13d8f73e52335ecc1d3a5b2dd82b478e1883e67cf",
+    "src/web/i18n.ts": "8b254aed79271a4d6b1a88f4887c8fb8160acc01d74ad831e9e579041cacae7b",
+    "src/web/main.tsx": "552fb422b4514371e8d891715398f96909307d33fca169eacb049c91285716f4",
+    "src/web/theme.ts": "cc0d3ada6a63d41203b4112f49cadaf8a9a467329164e2d34a2d526e065ea50e",
+    "src/web/evidenceTooltip.ts": "d786147403a462312e21cecb768c341726f8bec92df1cb43bb4ae9277c5dc888",
+    "php/tests/browser.mjs": "cd2367a38fe5b0420d7cb5e3ddcb4203485f453282914656ab3dced3bcc6f221",
+    "tests/e2e/pr2-jade-ui.spec.ts": "8c65876e3db18983c794a7964df6e9ef143dddde058e36017d792ee218d4597d",
+    "tests/unit/web-evidence-tooltip.test.ts": "a870c6e55ac2e388a211832a5ed73b21b8109063ddeddf92cf5faf26ae30ab6c"
+  },
+  "suites": {
+    "focused": {
+      "startTime": "2026-10-16T17:07:10.039Z",
+      "duration": 18070.709,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "regression": {
+      "startTime": "2026-10-16T17:04:21.187Z",
+      "duration": 78764.262,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "phpLight": {
+      "views": 94,
+      "passed": 94,
+      "failed": 0,
+      "pageErrors": 0,
+      "contractFailures": 0,
+      "semanticFailures": 0,
+      "bodyOverflow": 0,
+      "anonymousDenied": true
+    },
+    "phpDark": {
+      "views": 94,
+      "passed": 94,
+      "failed": 0,
+      "pageErrors": 0,
+      "contractFailures": 0,
+      "semanticFailures": 0,
+      "bodyOverflow": 0,
+      "anonymousDenied": true
+    }
+  },
+  "nodeUnitPassed": 584,
+  "nodePublisherPassed": 9,
+  "phpPublisherPassed": 18,
+  "phpHttpPassed": 29,
+  "backendCodeChanged": false,
+  "trackerProtocolChanged": false,
+  "profileCapabilitiesChanged": false,
+  "liveExternalCalls": false,
+  "productionDeployment": false,
+  "actionsOrCnbTriggered": false,
+  "negativeEvidence": "negative-baseline.json",
+  "limits": [
+    "PHP CLI 961-per-database and Node full integration from 2026-10-15 were not rerun or counted in this UI-only task.",
+    "Raw-event budgets, migration differences and production/external conditions remain as documented in the PHP parity matrix."
+  ]
+}

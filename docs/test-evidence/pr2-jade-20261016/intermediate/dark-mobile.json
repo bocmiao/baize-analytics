@@ -1,0 +1,19 @@
+{
+  "syntheticFixture": true,
+  "controlledStats": true,
+  "backend": "Real SQLite authentication/site APIs with explicitly controlled statistics",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "sha256": "c3c9fcf47ba750849d1bbd69ba2850e317e07e92d04a4fd174197075cec70e92",
+  "frontendIndexSha256": "e2c50c51ef176c3f0ed0a2829a8d05a2a712c463aaabb0e7153077bde1fa193e",
+  "sourceSha256": {
+    "src/web/theme.ts": "cc0d3ada6a63d41203b4112f49cadaf8a9a467329164e2d34a2d526e065ea50e",
+    "src/web/ThemeToggle.tsx": "5976ddae6a04c9113f0038baf17bc09b7233a82e5e38d0216f2b21f7284441bb",
+    "src/web/OverviewDashboard.tsx": "8ad697544e64e7424b4b8fabf75ed4d4769651071e708336b73a6c3bcf648cae",
+    "src/web/evidenceTooltip.ts": "d786147403a462312e21cecb768c341726f8bec92df1cb43bb4ae9277c5dc888",
+    "src/web/design-v2.css": "83f00cd153da47cfabc2929194fbe89a1f84f1fa9b474d653201e9f841d5eb88",
+    "src/web/main.tsx": "552fb422b4514371e8d891715398f96909307d33fca169eacb049c91285716f4"
+  }
+}

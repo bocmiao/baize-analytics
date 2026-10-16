@@ -1,0 +1,79 @@
+{
+  "reviewer": "root",
+  "date": "2026-10-16",
+  "method": "Independently opened each listed final image using view_image; inspected complete page, controls, text, grouping and local/global overflow.",
+  "images": [
+    {
+      "path": "fixed/dark-desktop.png",
+      "sha256": "3aec9d1599ba6d80382d0faf41e16f4dd837c58d6336adc7b650055b33d4a915",
+      "width": 1440,
+      "height": 1369
+    },
+    {
+      "path": "fixed/dark-mobile.png",
+      "sha256": "f218b4e2dd5c02345815db2e37c1795dd17f343556a8487dd42b2f07d1a27ab7",
+      "width": 390,
+      "height": 2266
+    },
+    {
+      "path": "fixed/comparison-off-mobile.png",
+      "sha256": "17593e54ba4e37a424555eca58c0179d62fb510805be347b01c0619b19289184",
+      "width": 390,
+      "height": 2158
+    },
+    {
+      "path": "fixed/unfinished-today-tooltip.png",
+      "sha256": "41fc2aa697eb31ab6a91fd272f4b1b61342f3c639dd8f248d9bb0b9e32889999",
+      "width": 1440,
+      "height": 1369
+    },
+    {
+      "path": "fixed/share-desktop.png",
+      "sha256": "810cb796d236a11d5befb4153fb67dfa6c60264024d9484df87dc6483ee9c4e1",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "path": "fixed/share-mobile.png",
+      "sha256": "65f19d45dac45905d07deab19757f3845daa8f623c79386a53169adbf0543528",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "fixed/invite-dark-desktop.png",
+      "sha256": "3aff993f885c5cf733868629a8ea985cea35dc322d3861f16c049e022f0d84f5",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "path": "fixed/login-mobile.png",
+      "sha256": "22dd56634665e2177297a15d7359c3dfd545e45e995e92992a10a43f7bd4ea2d",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "regression/overview-empty-unconfigured-controlled.png",
+      "sha256": "f0567b20cc34204a15e7c7208166dc8e1075f0c29b498fe427a203813d125ca5",
+      "width": 1440,
+      "height": 1187
+    },
+    {
+      "path": "php-browser-dark/browser-jade-dark-mobile-few-overview.png",
+      "sha256": "8e8fb3bd6879f725cfb04df8bbe6a766f186c7e3ff3e9b5cf06037f0298a57e4",
+      "width": 390,
+      "height": 2687
+    }
+  ],
+  "observations": [
+    "Jade/ink overview retains current metrics, page comparisons, source/geography/device grouping and local mobile table scroll.",
+    "Off removes previous facts and gold comparison line; unfinished last-bin text is visible in the actual canvas tooltip without comparison.",
+    "Ink axes, evidence text, filter control and compare text now remain readable. Four targeted text classes also pass actual RGBA contrast assertions.",
+    "Share and invitation are centered single-column pages; login splits only on desktop. Empty share retains the pre-existing empty 300px chart, without pretending it contains data.",
+    "PHP ink overview shows actual tiny revenue without rounding it to zero."
+  ],
+  "limits": [
+    "Synthetic data, controlled aggregate cases explicitly labelled.",
+    "No screen reader, physical device, production load or live provider claim.",
+    "PNG fixed bottom bars are captured at the screenshot viewport; full-page images do not imply they remain in the middle during normal scrolling."
+  ]
+}

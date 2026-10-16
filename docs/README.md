@@ -10,6 +10,7 @@
 | 备份、升级或迁移 | [迁移与恢复](migration.md)、[实例增量更新](INSTANCE_INCREMENTAL_UPDATES.md)、[Lite → Node 标准版](lite-migration.md) |
 | 使用 API 与连接器 | [API 手册](api.md)、[MCP](mcp.md)、[手动搜索导入](MANUAL_SEARCH_IMPORT.md) |
 | 修改源码与核对实现 | [开发](development.md)、[项目规格](PROJECT_SPEC.md)、[逐项实现清单](IMPLEMENTATION_CHECKLIST.md)、[当前状态](STATUS.md) |
+| 核对青玉／墨玉UI集成 | [PR2修复与跨运行时验收](PR2_JADE_UI_INTEGRATION_20261016.md) |
 | 查旧版本与原始证据 | [历史文档归档与原路径映射](archive/README.md)、[仓库整理说明](REPOSITORY_ORGANIZATION_20261015.md) |
 | 阅读英文手册 | [English guides](en/README.md) |
 

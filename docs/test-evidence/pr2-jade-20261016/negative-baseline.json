@@ -1,0 +1,10 @@
+{
+  "renderedRevision": "52579f1f162d49524d88f0c1e7227881d2d85bf5",
+  "base": "c087b64b112faf9caefd810b66b37736b8b91fd6",
+  "method": "git archive of PR2 src/packages/index built by Vite and served by actual local Node/Lite application; UI fixes were not included in this build",
+  "firstRunFailed": 6,
+  "desktopRerun": "keyboard activates original checkbox successfully; chart still retained 3 comparison points after off, expected 0",
+  "beforeFrontendWasBuiltFrom": "/tmp/baize-pr2-before",
+  "expectedFailures": true,
+  "noLiveProviderCalls": true
+}
