@@ -7,6 +7,7 @@ if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Only
 const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-http/session.json','utf8'));
 if(!/^[a-zA-Z0-9_-]{1,128}$/.test(fixture.siteId)||!fixture.cookie?.startsWith('baize_session='))throw Error('Private PHP HTTP fixture is unavailable');
 const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015';mkdirSync(output,{recursive:true});
+const theme=process.env.BAIZE_PHP_BROWSER_THEME||'light';if(!['light','dark'].includes(theme))throw Error('Invalid browser theme');
 const pass=process.env.BAIZE_PHP_BROWSER_PASS||'initial';if(!/^[a-z0-9-]{1,40}$/.test(pass))throw Error('Invalid evidence pass name');
 const source=readFileSync('src/web/workspaceRoute.ts','utf8');
 const grouped=[...source.matchAll(/reports:\[([^\]]+)\]/g)].flatMap(m=>[...m[1].matchAll(/'([^']+)'/g)].map(x=>x[1]));
@@ -14,7 +15,7 @@ const reports=['overview','realtime',...grouped];if(reports.length!==39||new Set
 const day=offset=>new Date(Date.now()+offset*86400000).toISOString().slice(0,10);
 const scenarios=[{name:'few',from:day(-6),to:day(0)},{name:'empty',from:day(-14),to:day(-14)}];
 const assets=[...readFileSync('php/public/index.html','utf8').matchAll(/(?:src|href)="(\/assets\/[^"?]+)"/g)].map(m=>({path:m[1],sha256:existsSync('php/public'+m[1])?createHash('sha256').update(readFileSync('php/public'+m[1])).digest('hex'):null}));
-const evidence={startedAt:new Date().toISOString(),pass,baseUrl:base,backend:'real PHP HTTP + MySQL',frontendAssets:assets,testSourceSha256:createHash('sha256').update(readFileSync(new URL(import.meta.url))).digest('hex'),syntheticFixture:true,interceptedBackendResponses:false,externalCallsRequested:false,reports,scenarios,views:[],screenshots:[],limitations:['No live provider calls, notification sends, destructive actions or purchases are requested.','The few-data fixture does not populate every management namespace. Empty lists are tested as empty lists, without pretending to test record editing.','Views requiring an existing report, identity, funnel, replay session or export ID are tested only through their workspace entry and available fixture records.','The updates workspace is observed read-only; the PHP runtime uses manual release upgrade instructions.']};
+const evidence={startedAt:new Date().toISOString(),pass,theme,baseUrl:base,backend:'real PHP HTTP + MySQL',frontendAssets:assets,testSourceSha256:createHash('sha256').update(readFileSync(new URL(import.meta.url))).digest('hex'),syntheticFixture:true,interceptedBackendResponses:false,externalCallsRequested:false,reports,scenarios,views:[],screenshots:[],limitations:['No live provider calls, notification sends, destructive actions or purchases are requested.','The few-data fixture does not populate every management namespace. Empty lists are tested as empty lists, without pretending to test record editing.','Views requiring an existing report, identity, funnel, replay session or export ID are tested only through their workspace entry and available fixture records.','The updates workspace is observed read-only; the PHP runtime uses manual release upgrade instructions.']};
 const evidencePath=`${output}/browser-${pass}-results.json`;
 const persist=()=>writeFileSync(evidencePath,JSON.stringify(evidence,null,2)+'\n');
 const redact=text=>String(text).replace(/baize_session=[^;\s"']+/g,'baize_session=[redacted]').slice(0,3000);
@@ -49,6 +50,7 @@ const browser=await chromium.launch({headless:true,executablePath:process.env.PL
 evidence.browserVersion=browser.version();
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+ await context.addInitScript(selected=>localStorage.setItem('baize-theme',selected),theme);
  await context.addCookies([{name:'baize_session',value:fixture.cookie.split('=').slice(1).join('='),url:base,httpOnly:true,sameSite:'Lax'}]);
  const page=await context.newPage();
  async function view(report,scenario,viewport='desktop'){
@@ -65,6 +67,7 @@ try{
   const started=Date.now();
   try{
    await page.goto(base+'/app?'+new URLSearchParams({site:fixture.siteId,report,from:scenario.from,to:scenario.to}),{waitUntil:'domcontentloaded'});
+   row.renderedTheme=await page.locator('html').getAttribute('data-theme');if(row.renderedTheme!==theme)row.semanticFailures.push('Requested theme did not render: '+theme);
    await page.locator('h1').first().waitFor({state:'visible',timeout:10000});
    for(let n=0;n<80;n++){await page.waitForTimeout(100);if(active===0&&Date.now()-lastResponse>=300)break;}
    await Promise.allSettled([...pending]);await page.waitForTimeout(180);

@@ -1,0 +1,61 @@
+
+Running 5 tests using 1 worker
+
+(node:4954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Approved collapsed card metrics: {"height":248.6875,"minBlockSize":"auto","fontFamily":"\"PingFang SC\", \"Noto Sans SC\", \"Noto Sans CJK SC\", \"Microsoft YaHei\", system-ui, sans-serif","fontSize":"16px","lineHeight":"normal","fontsReady":"loaded"}
+  ✓  1 tests/e2e/approved-ui.spec.ts:36:1 › approved dashboard actual thirty-day facts, on-demand insights and mobile navigation preserve all entries (21.6s)
+(node:4954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/e2e/overview-layout.spec.ts:9:1 › overview groups period facts and keeps page comparisons readable at content breakpoints (4.4s)
+  ✓  3 tests/e2e/overview-money-format.spec.ts:10:1 › exact decimal money remains readable across overview, revenue, identities and source reports (3.8s)
+  ✘  4 tests/e2e/overview-redesign.spec.ts:13:1 › balanced overview uses real synthetic API facts and handles responsive and unavailable states (24.4s)
+(node:5714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 tests/e2e/overview-redesign.spec.ts:88:1 › Lite uses the existing period metrics without requesting unsupported live windows (2.4s)
+
+
+  1) tests/e2e/overview-redesign.spec.ts:13:1 › balanced overview uses real synthetic API facts and handles responsive and unavailable states 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 250
+    Received:   263.125
+
+      72 |   // Controlled response cases are separated from the real-API screenshot evidence above.
+      73 |   let fixture={...stats,totals:{pv:0,uv:0,sessions:0,bounceRate:0,averageDuration:0,conversions:0},trend:[],sources:[],pages:[],audience:{country:{unknown:0},device:{}},goals:{},funnels:{}};
+    > 74 |   await page.route('**/api/v1/sites/*/stats?**',route=>route.fulfill({json:fixture}));await page.route('**/healthz',route=>route.fulfill({json:{ok:true,geoip:'unavailable'}}));await page.getByRole('button',{name:'刷新',exact:true}).click();await expect(page.locator('.overview-metrics strong').first()).toHaveText('0');await expect(page.locator('.overview-geography-compact')).toBeVisible();await page.getByRole('button',{name:'按入口次数',exact:true}).click();await expect(page.locator('.overview-content-panel')).toContainText('未返回会话入口');await page.getByRole('button',{name:'按浏览量',exact:true}).click();await expect(page.locator('.overview-device-panel')).toContainText('没有可用设备');await page.setViewportSize({width:1440,height:1000});await capture('overview-empty-unconfigured-controlled');await page.setViewportSize({width:390,height:844});await capture('overview-empty-mobile-controlled');await page.setViewportSize({width:1440,height:1000});expect((await bounds('.overview-trend-panel')).height).toBeLessThan(250);
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^
+      75 |   fixture={...fixture,coverage:0};await page.getByRole('button',{name:'刷新',exact:true}).click();await expect(page.locator('.overview-metrics strong').first()).toHaveText('—');await expect(page.locator('.overview-empty-trend')).toContainText('趋势尚不可用');expect((await bounds('.overview-observations-panel')).height).toBeLessThan(140);expect((await bounds('.overview-trend-panel')).height).toBeLessThan(300);await capture('overview-unavailable-controlled');
+      76 |   fixture={...stats,pages:[stats.pages[0]],sources:[stats.sources[0]],audience:{country:{unknown:stats.totals.pv},device:{desktop:stats.totals.pv}},goals:{},funnels:{}};await page.getByRole('button',{name:'刷新',exact:true}).click();await expect(page.locator('.overview-content-panel tbody tr')).toHaveCount(1);await capture('overview-few-desktop-controlled');await page.setViewportSize({width:390,height:844});await capture('overview-few-mobile-controlled');
+      77 |   fixture={...stats,pages:Array.from({length:50},(_,n)=>({...stats.pages[0],path:'/中文长路径/关于网站统计和隐私保护的完整使用说明与常见问题解答/LongUnbrokenReferenceIdentifierForAnalyticsAndPrivacy/'+n,entries:n+1})),sources:Array.from({length:30},(_,n)=>({channel:'非常长的中文自定义来源名称以及活动说明'+n,pv:3})),audience:stats.audience};await page.getByRole('button',{name:'刷新',exact:true}).click();await expect(page.locator('.overview-content-panel tbody tr')).toHaveCount(6);await expect(page.locator('.overview-source-panel tbody tr')).toHaveCount(6);for(const name of ['.overview-content-panel tbody th','.overview-source-panel tbody th'])for(const cell of await page.locator(name).all())expect(await cell.evaluate(element=>element.scrollWidth<=element.clientWidth+1)).toBe(true);for(const width of [1440,1024,768,390,320]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);if([1440,390,320].includes(width))await capture(`overview-long-chinese-${width}-controlled`);}
+        at /workspace/baize-analytics/tests/e2e/overview-redesign.spec.ts:74:993
+
+    Error Context: .baize/overview-browser-artifacts/____overview-redesign_overview-layout_approved-ui_overview-money-format__spec_ts/overview-redesign-balanced-0e4c2-sive-and-unavailable-states/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    .baize/overview-browser-artifacts/____overview-redesign_overview-layout_approved-ui_overview-money-format__spec_ts/overview-redesign-balanced-0e4c2-sive-and-unavailable-states/trace.zip
+    Usage:
+
+        npx playwright show-trace .baize/overview-browser-artifacts/____overview-redesign_overview-layout_approved-ui_overview-money-format__spec_ts/overview-redesign-balanced-0e4c2-sive-and-unavailable-states/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/overview-redesign.spec.ts:13:1 › balanced overview uses real synthetic API facts and handles responsive and unavailable states 
+  4 passed (1.0m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

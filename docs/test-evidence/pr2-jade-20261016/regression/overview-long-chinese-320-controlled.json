@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "mockedStats": true,
+  "fixture": "controlled aggregate response with actual standard backend session",
+  "geoIsSyntheticNotIpLookup": true,
+  "siteId": "10b3c632a521d98bd1fd688b",
+  "seedExpectedPv": 681,
+  "seedStatsTotals": {
+    "pv": 681,
+    "uv": 184,
+    "sessions": 271,
+    "bounceRate": 0.03690036900369004,
+    "averageDuration": 36.55350553505535,
+    "visibleSeconds": 7260,
+    "revenueCurrencyStatus": "supported",
+    "revenueCurrencyCoverage": 1,
+    "revenue": 0,
+    "revenueByCurrency": {},
+    "conversions": 64
+  },
+  "displayedMetrics": [
+    "681",
+    "184",
+    "271",
+    "3.7%",
+    "36.6",
+    "64"
+  ],
+  "sourceSha256": {
+    "src/web/OverviewDashboard.tsx": "a9b59df15231c5c3470dbcf9eb00a663c2f8fb8907dc728edea48604952320e4",
+    "src/web/OverviewInsights.tsx": "70a788708a1e47818db1002407771b91d55c5a480a8dffd9e0cd77243838279f",
+    "src/web/overview.css": "58e065b92d03864ef743e63c3db189e0bcd4572019014b65f10bc4b0c288ecf2",
+    "dist/web/index.html": "727b05cf98835a08e3c2d48406a3d69349b593d263460e0ff2b119d44468282f"
+  },
+  "viewport": {
+    "width": 320,
+    "height": 1000
+  },
+  "fullPage": true,
+  "bytes": 363191,
+  "sha256": "bf31ae3a507e4baeefe606a7b8bee1bc8424861f4099ca2c4b28489f3d61dd86"
+}

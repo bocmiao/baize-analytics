@@ -1,8 +1,10 @@
 # 白泽当前状态
 
-更新时间：2026-10-15 UTC。本页随源码版本说明实现及边界；交付 SHA、远端 main、实际测试次数、包体 bytes/SHA256 和平台结果，以同批发布清单及验收报告为准。旧状态原文完整保存在 [历史状态](archive/validation/STATUS_HISTORY_20261012.md)，不改写失败或累加不同源码测试次数。
+更新时间：2026-10-16 UTC。本页随源码版本说明实现及边界；交付 SHA、远端 main、实际测试次数、包体 bytes/SHA256 和平台结果，以同批发布清单及验收报告为准。旧状态原文完整保存在 [历史状态](archive/validation/STATUS_HISTORY_20261012.md)，不改写失败或累加不同源码测试次数。
 
 ## 本轮新增
+
+PR2青玉／墨玉UI保留原结构和能力，修复两端对比、未完结提示、主题同步及分享／邀请作用域；另修PHP CSP兼容与关联可读性。专项6组、原Node／Lite5组、PHP两主题各94状态及HTTP29项通过，见 [PR2集成验收](PR2_JADE_UI_INTEGRATION_20261016.md)。本轮584单测通过，后端接口与数据库模型未改。
 
 保留原Node标准版，新增独立PHP + MySQL网页安装版，接收服务器只需PHP-FPM、数据库及CLI队列；MariaDB另行实测。安装入口、备份所需密钥与独立删除日志、旧Node数据边界见 [PHP安装说明](PHP_INSTALLATION.md)，业务套件、真实浏览器及隔离Nginx/FPM验证见 [本轮PHP记录](PHP_VALIDATION_20261015.md)，最终包修订、SHA256、每库29项HTTP及94状态浏览器见 [最终交付收据](PHP_DELIVERY_20261015.md)。没有将PHP版作为Lite profile，也没有承诺直接打开旧PG/CH存档或相同大规模吞吐。
 

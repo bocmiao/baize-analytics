@@ -1,0 +1,30 @@
+
+Running 5 tests using 1 worker
+
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Approved collapsed card metrics: {"height":248.6875,"minBlockSize":"auto","fontFamily":"\"PingFang SC\", \"Noto Sans SC\", \"Noto Sans CJK SC\", \"Microsoft YaHei\", system-ui, sans-serif","fontSize":"16px","lineHeight":"normal","fontsReady":"loaded"}
+  ✓  1 tests/e2e/approved-ui.spec.ts:36:1 › approved dashboard actual thirty-day facts, on-demand insights and mobile navigation preserve all entries (30.9s)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/e2e/overview-layout.spec.ts:9:1 › overview groups period facts and keeps page comparisons readable at content breakpoints (3.8s)
+  ✓  3 tests/e2e/overview-money-format.spec.ts:10:1 › exact decimal money remains readable across overview, revenue, identities and source reports (4.7s)
+  ✓  4 tests/e2e/overview-redesign.spec.ts:13:1 › balanced overview uses real synthetic API facts and handles responsive and unavailable states (33.8s)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 tests/e2e/overview-redesign.spec.ts:88:1 › Lite uses the existing period metrics without requesting unsupported live windows (2.6s)
+
+  5 passed (1.3m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
