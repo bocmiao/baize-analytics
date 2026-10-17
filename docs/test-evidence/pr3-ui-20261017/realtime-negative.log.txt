@@ -1,0 +1,39 @@
+
+Running 1 test using 1 worker
+
+(node:96472) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown (6.6s)
+
+
+  1) tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.minute-bars i')
+    Expected: 30
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.minute-bars i') with timeout 5000ms
+      - waiting for locator('.minute-bars i')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      56 |   await runWorkerOnce(runtime.ctx.pool);const live=await (await page.request.get(`/api/v1/sites/${siteId}/realtime`)).json();expect(live.events).toHaveLength(3);expect(typeof live.events[0].ts).toBe('string');expect(live.events[0].ts).toMatch(/T.*Z$/);
+      57 |   const day=new Date().toISOString().slice(0,10);await page.goto(`/app?site=${siteId}&report=realtime&from=${day}&to=${day}`);await expect(page.locator('.visit-stream li')).toHaveCount(3);await capture(page,'realtime-desktop',{actualTimestampType:typeof live.events[0].ts,actualTimestampExample:live.events[0].ts});
+    > 58 |   await expect(page.locator('.minute-bars i')).toHaveCount(30);await expect(page.locator('.visit-stream time').first()).not.toHaveText('—');await expect(page.getByTestId('realtime-total')).toHaveText('3');
+         |                                                ^
+      59 |   await page.setViewportSize({width:320,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,'realtime-mobile-320');
+      60 |   await page.route('**/api/v1/sites/*/realtime',route=>route.fulfill({json:{...live,online:99,onlineCoverage:0}}));await page.reload();await expect(page.locator('.realtime-online strong')).toHaveText('—');
+      61 |   const summary=page.getByRole('heading',{name:'实时完整窗口汇总',exact:true}).locator('..');await expect(summary).not.toContainText('99');
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:58:48
+        at fixture (/workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:21:3)
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:53:2
+
+    Error Context: test-results/pr3-ui-regressions-real-IS-52d97--online-count-stays-unknown/error-context.md
+
+  1 failed
+    tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown

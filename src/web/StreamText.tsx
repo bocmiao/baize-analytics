@@ -22,6 +22,8 @@ export function StreamText({text,className}:{text:string;className?:string}){
 /** Rolls a displayed metric to the exact formatted string already produced by the view. */
 export function CountText({text}:{text:string}){
  const [shown,setShown]=useState(text);
+ const [epoch,setEpoch]=useState(0);
+ useEffect(()=>{const replay=()=>setEpoch(value=>value+1);window.addEventListener('baize-replay',replay);return()=>window.removeEventListener('baize-replay',replay);},[]);
  useEffect(()=>{
   const match=/^([\d,]+)(\.\d+)?(%?)$/.exec(text);
   if(!match||document.documentElement.dataset.motion==='off'){setShown(text);return;}
@@ -43,6 +45,6 @@ export function CountText({text}:{text:string}){
   };
   frame=requestAnimationFrame(tick);
   return()=>cancelAnimationFrame(frame);
- },[text]);
+ },[text,epoch]);
  return <>{shown}</>;
 }

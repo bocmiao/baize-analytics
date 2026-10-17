@@ -1,0 +1,66 @@
+
+Running 13 tests using 1 worker
+
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Approved collapsed card metrics: {"height":248.6875,"minBlockSize":"auto","fontFamily":"\"Noto Sans SC\", \"PingFang SC\", \"Noto Sans CJK SC\", \"Microsoft YaHei\", system-ui, sans-serif","fontSize":"16px","lineHeight":"normal","fontsReady":"loaded"}
+  ✓   1 tests/e2e/approved-ui.spec.ts:36:1 › approved dashboard actual thirty-day facts, on-demand insights and mobile navigation preserve all entries (18.8s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 tests/e2e/overview-layout.spec.ts:9:1 › overview groups period facts and keeps page comparisons readable at content breakpoints (2.7s)
+  ✓   3 tests/e2e/overview-redesign.spec.ts:13:1 › balanced overview uses real synthetic API facts and handles responsive and unavailable states (33.7s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 tests/e2e/overview-redesign.spec.ts:88:1 › Lite uses the existing period metrics without requesting unsupported live windows (1.9s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 tests/e2e/pr2-jade-ui.spec.ts:72:1 › comparison controls current/previous facts, chart and legend together on desktop (2.5s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 tests/e2e/pr2-jade-ui.spec.ts:79:1 › comparison stays operable on a narrow screen and preserves current metrics (1.9s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 tests/e2e/pr2-jade-ui.spec.ts:84:1 › unfinished today renders a real canvas tooltip with no comparison series (1.6s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 tests/e2e/pr2-jade-ui.spec.ts:91:1 › every theme control and live chart follow same-page and cross-tab changes (3.0s)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 tests/e2e/pr2-jade-ui.spec.ts:99:1 › denied browser storage does not break startup, toggling or URL-selected dark theme (2.3s)
+  ✓  10 tests/e2e/pr2-jade-ui.spec.ts:104:1 › only login/setup use the split artwork; real share and invitation flows remain single column (2.9s)
+  ✓  11 tests/e2e/pr3-ui-regressions.spec.ts:30:1 › one-time invitation survives member reload failure, offline retry and narrow layout; viewer writes stay forbidden (2.8s)
+  ✓  12 tests/e2e/pr3-ui-regressions.spec.ts:52:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown (2.9s)
+  ✓  13 tests/e2e/seo-gsc-evidence.spec.ts:11:1 › real local HTTP crawler and PG show SEO boundaries/recheck; explicit simulated Google shows GSC truncation and PT (5.5s)
+
+  13 passed (1.4m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

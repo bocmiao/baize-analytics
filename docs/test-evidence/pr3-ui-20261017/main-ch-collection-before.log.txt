@@ -1,0 +1,55 @@
+
+ RUN  v4.1.11 /tmp/baize-pr3-delivery-20261017
+
+ ❯ tests/integration/canonical-backup.test.ts (0 test)
+ ❯ tests/integration/stats-replica-budget.test.ts (0 test)
+ ❯ tests/integration/restore-replica.test.ts (0 test)
+ ❯ tests/integration/canonical-replay-retention-proof.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/canonical-backup.test.ts [ tests/integration/canonical-backup.test.ts ]
+TypeError: Invalid URL
+ ❯ tests/integration/canonical-backup.test.ts:13:514
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/canonical-replay-retention-proof.test.ts [ tests/integration/canonical-replay-retention-proof.test.ts ]
+TypeError: Invalid URL
+ ❯ tests/integration/canonical-replay-retention-proof.test.ts:18:61
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/restore-replica.test.ts [ tests/integration/restore-replica.test.ts ]
+TypeError: Invalid URL
+ ❯ new ClickHouseStore src/server/clickhouse-store.ts:16:19
+     14|  private readonly endpoint: URL;
+     15|  constructor(private readonly config: ClickHouseStoreConfig) {
+     16|   this.endpoint = new URL(config.url);
+       |                   ^
+     17|   if (!['http:', 'https:'].includes(this.endpoint.protocol) || this.en…
+     18|  }
+ ❯ tests/integration/restore-replica.test.ts:10:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/stats-replica-budget.test.ts [ tests/integration/stats-replica-budget.test.ts ]
+TypeError: Invalid URL
+ ❯ new ClickHouseStore src/server/clickhouse-store.ts:16:19
+     14|  private readonly endpoint: URL;
+     15|  constructor(private readonly config: ClickHouseStoreConfig) {
+     16|   this.endpoint = new URL(config.url);
+       |                   ^
+     17|   if (!['http:', 'https:'].includes(this.endpoint.protocol) || this.en…
+     18|  }
+ ❯ tests/integration/stats-replica-budget.test.ts:20:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  no tests
+   Start at  03:23:58
+   Duration  4.23s (transform 1.68s, setup 0ms, import 0ms, tests 0ms, environment 0ms)
