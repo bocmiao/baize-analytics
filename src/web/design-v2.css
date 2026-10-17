@@ -1,4 +1,8 @@
 /* Baize v2: 青玉 / 墨玉 / 鎏金 / 朱砂. Product structure stays; this layer replaces the indigo surface. */
+@font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:400;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-latin-400-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2190-2193,U+2212,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:700;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-latin-700-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2190-2193,U+2212,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:400;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2") format("woff2");unicode-range:U+3000-303F,U+3400-4DBF,U+4E00-9FFF,U+F900-FAFF,U+FF00-FFEF}
+@font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:700;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff2") format("woff2");unicode-range:U+3000-303F,U+3400-4DBF,U+4E00-9FFF,U+F900-FAFF,U+FF00-FFEF}
 :root{
  --bg:#EEF1EC;--bg2:#FBFCF9;--card:#FFFFFF;--ink:#14302C;--ink2:#4B5F5A;--ink3:#3E514C;
  --line:#E1E7E1;--jade:#2F7D6D;--jade-ink:#14302C;--jade2:#E3F0EB;--gold:#C29A4E;--cinnabar:#C2553F;
@@ -10,7 +14,7 @@
  --accent:var(--jade);--accent-soft:var(--jade2);--text:var(--ink);--text-secondary:var(--ink2);
  --canvas:var(--bg);--surface:var(--card);--border:var(--line);
  color-scheme:light;
- font-family:"PingFang SC","Noto Sans SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
+ font-family:"Noto Sans SC","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
 }
 html[data-theme="dark"]{
  --bg:#0C1716;--bg2:#101E1C;--card:#13231F;--ink:#E3ECE8;--ink2:#A5B8B2;--ink3:#A5B8B2;
@@ -138,9 +142,11 @@ html[data-theme="dark"] .product-promise{color:var(--gold)}
 .steps-inline .on{outline:1.5px solid var(--gold);color:var(--ink)}
 .steps-inline .done{color:var(--ink)}
 
-.skel i{display:block;height:14px;margin:0 0 12px;border-radius:7px;background:linear-gradient(90deg,var(--line) 25%,var(--bg2) 50%,var(--line) 75%);background-size:200% 100%;animation:baize-shimmer 1.4s linear infinite}
-.skel i:nth-child(2){width:86%}.skel i:nth-child(3){width:64%}
-.baize-loading p{margin-top:0}
+.baize-loading{min-height:320px;display:flex;flex-direction:column;gap:16px}
+.baize-loading p{margin:0}
+.skel{flex:1;display:flex;flex-direction:column;gap:12px;min-height:240px}
+.skel i{display:block;flex:1;height:auto;min-height:72px;margin:0;border-radius:12px;background:linear-gradient(90deg,var(--line) 25%,var(--bg2) 50%,var(--line) 75%);background-size:200% 100%;animation:baize-shimmer 1.4s linear infinite}
+.skel i:nth-child(2),.skel i:nth-child(3){width:100%}
 .stream-caret{display:inline-block;width:2px;height:.9em;margin-left:2px;background:var(--gold);vertical-align:-1px;animation:baize-blink .8s steps(1) infinite}
 .theme-toggle{display:inline-grid;place-items:center;width:36px;height:36px;padding:0;border-radius:9px}
 .theme-toggle svg{display:block}
@@ -174,7 +180,11 @@ html[data-theme="dark"] .date-presets button[aria-pressed="true"]{background:var
 .insbar .lnk{margin-left:auto;color:var(--jade);white-space:nowrap;font-size:12px}
 
 @media(max-width:767px){
- .date-presets,.workspace-toolbar .theme-toggle{display:none}
+ .workspace-toolbar .theme-toggle{display:none}
+ .date-presets{display:inline-flex;flex:0 0 auto;margin:0;order:2;align-self:center}
+ .workspace-toolbar{gap:6px}
+ .workspace-toolbar .date-range{order:2;flex:1 1 0;width:auto;min-width:0;height:36px}
+ .date-presets button{min-height:32px;padding:2px 6px}
  .phone-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--card);border-top:1px solid var(--line);padding:6px 2px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(20,48,44,.06)}
  .phone-tabs a,.phone-tabs button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;color:var(--ink2);border:0;border-radius:8px;padding:4px 2px;font-size:10px;font-weight:600}
  .phone-tabs a[aria-current="page"],.phone-tabs a[aria-current="page"] span{color:var(--jade)}
@@ -183,8 +193,6 @@ html[data-theme="dark"] .date-presets button[aria-pressed="true"]{background:var
  .workspace main{padding-bottom:84px}
  .workspace:has(#workspace-navigation.drawer-open) .phone-tabs{visibility:hidden}
 }
-@media(min-width:768px) and (max-width:900px){.date-presets{display:none}}
-
 @keyframes baize-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes baize-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes baize-ring{0%{transform:scale(.45);opacity:.9}100%{transform:scale(1.7);opacity:0}}
@@ -213,3 +221,56 @@ html[data-theme="dark"] .lart{background:radial-gradient(circle at 30% 18%,#173F
 .workspace button.overview-insight-toggle{background:var(--card);color:var(--jade);border-color:var(--line)}
 .workspace main>.panel:has(>.segment-filters)>summary{background:var(--card);color:var(--ink2)}
 .workspace .overview-insight-evidence p,.workspace .overview-insight-note{color:var(--ink2)}
+.auth>section.panel h1{font-size:40px;line-height:1.15;letter-spacing:.01em}
+.steps-inline li{transition:background-color var(--dur-base) var(--ease-out),outline-color var(--dur-base)}
+.steps-inline .on{background:var(--card)}
+.settings-group{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.settings-group h3{margin:0 0 12px;font-size:13px;letter-spacing:.14em}
+.ai-thread{min-height:140px;margin:0 0 16px;padding:16px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.ai-thread .empty{margin:0}
+.member-roster{margin:0 0 16px}
+.seo-severity{display:grid;gap:12px;margin:12px 0}
+.seo-severity section{padding:12px;border-radius:12px;background:var(--bg)}
+.seo-severity h4{margin:0 0 8px}
+.error-lead{display:block;font-weight:650;margin-bottom:4px}
+.baize-tip{padding:10px 12px;line-height:1.55;min-width:168px}
+.baize-tip b{font-size:18px;font-weight:700}
+.baize-tip-date b{font-size:13px;font-weight:650}
+.realtime-online{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.realtime-online strong{font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.minute-bars{display:flex;align-items:flex-end;gap:3px;height:72px}
+.minute-bars i{flex:1 1 0;min-width:0;display:block;background:var(--jade);border-radius:3px 3px 0 0;transform-origin:bottom;animation:baize-grow-y var(--dur-draw) var(--ease-out) both}
+.visit-stream{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.visit-stream li{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:10px;background:var(--bg2);animation:baize-visit var(--dur-slow) var(--ease-out) both}
+.visit-stream li:first-child{box-shadow:inset 3px 0 0 var(--gold)}
+.funnel-hbar ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.funnel-hbar li{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:8px;align-items:center}
+.funnel-hbar i{display:block;height:14px;border-radius:7px;background:var(--jade2);overflow:hidden}
+.funnel-hbar b{display:block;height:100%;background:var(--jade);transform-origin:left;animation:baize-grow var(--dur-draw) var(--ease-out) both}
+.overview-trend-panel:has(.overview-empty-trend){padding-top:10px;padding-bottom:8px}
+.overview-trend-panel:has(.overview-empty-trend) .overview-trend-header{margin-bottom:2px;gap:4px 12px}
+.overview-empty-trend{margin:0;line-height:1.35}
+.approved-overview .overview-comparison-panel,.approved-overview .overview-comparison-scroll{min-width:0;max-width:100%}
+.approved-overview .overview-comparison-scroll{overflow-x:auto}
+.approved-overview .overview-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));min-width:0;width:100%;column-gap:10px;row-gap:0;position:relative}
+.approved-overview .overview-metrics thead,.approved-overview .overview-metrics tbody,.approved-overview .overview-metrics tr{display:contents}
+.approved-overview .overview-metrics thead th:first-child,.approved-overview .overview-metrics tbody th{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.approved-overview .overview-metrics thead th:nth-child(n+2),.approved-overview .overview-metrics td{background:var(--card);border:1px solid var(--line);border-bottom:0;padding:8px 10px;text-align:left;white-space:normal}
+.approved-overview .overview-metrics thead th:nth-child(n+2){border-radius:12px 12px 0 0;font-size:12px}
+.approved-overview .overview-metrics tbody tr:nth-child(3) td{border-bottom:1px solid var(--line);border-radius:0 0 12px 12px}
+.approved-overview .overview-metrics strong{font-size:36px;line-height:1.05;font-weight:650;letter-spacing:-.04em}
+html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(n+2),html[data-theme="dark"] .approved-overview .overview-metrics td{background:var(--card);color:var(--ink)}
+@media(max-width:650px){
+ .overview-comparison-panel{position:relative;overflow:hidden}
+ .overview-comparison-scroll{display:block;position:absolute;left:0;top:0;width:100%;height:180px;margin:0;z-index:0}
+ .overview-mobile-metrics{position:relative;z-index:1;background:var(--card)}
+ .approved-overview .overview-metrics{min-width:680px}
+ .approved-overview .overview-metrics strong{font-size:22px}
+ .overview-mobile-metrics strong{font-size:32px;line-height:1.1}
+ .overview-mobile-metrics>div{padding:6px 8px}
+ .overview-mobile-metrics dd{margin-top:2px;gap:1px}
+ .overview-realtime{padding:8px 10px}
+}
+@media(max-width:767px){.auth>section.panel h1{font-size:32px}.mobile-workspace-bar{min-height:44px;padding:6px 10px}.workspace main{padding-top:8px}.workspace-toolbar{padding-top:0;padding-bottom:0;margin-bottom:4px}}
+@keyframes baize-grow-y{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes baize-visit{from{opacity:0;transform:translateY(-10px);background:color-mix(in srgb,var(--gold) 28%,var(--card))}to{opacity:1;transform:none;background:var(--bg2)}}

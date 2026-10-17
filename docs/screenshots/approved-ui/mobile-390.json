@@ -1,10 +1,10 @@
 {
-  "webSourceTreeSha256": "d7d9a91422cfefbc69027f2ed569d23fd5241ce85a1d47a5b5e20492127c9ca5",
+  "webSourceTreeSha256": "8b8cade318f146b60398a5d1b9a9f50fbf08d95585c9275a5f810bab170b939d",
   "sourceMeaning": "actual source tree digest; SOURCE_SHA is base commit only when worktree changes exist",
-  "siteId": "ede97a6310d4da6f598e6d84",
+  "siteId": "7470e7384e85294eefe5a0fb",
   "timezone": "UTC",
-  "from": "2026-09-12",
-  "to": "2026-10-11",
+  "from": "2026-09-17",
+  "to": "2026-10-16",
   "expectedPv": 511,
   "expectedUv": 30,
   "fixtureDays": 60,
@@ -13,12 +13,12 @@
   "fixtureHourUtc": 12,
   "expectedChange": "325.8%",
   "screenshot": "mobile-390.png",
-  "sha256": "bab2af0e9bc2278cdc32416b9092fc5ca7fef374162fbf24abe5ade09241393f",
+  "sha256": "79a043981db891ac16ea14f2136825c49c13c95c14bfeb48cf561bc058d57680",
   "viewport": {
     "width": 390,
     "height": 844
   },
-  "sourceSha": "949526a42879e1d283e8a408a8cfdcb2b3e0bb24",
+  "sourceSha": null,
   "guidelinesSha": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234",
   "fixture": "actual-api-collector-60-days-query30-pg-v1",
   "mocked": false
