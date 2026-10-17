@@ -1,7 +1,7 @@
 {
-  "webSourceTreeSha256": "8b8cade318f146b60398a5d1b9a9f50fbf08d95585c9275a5f810bab170b939d",
+  "webSourceTreeSha256": "6f3b758298480c364fa67fb76e2c691688bc12c40299312b0d6f9cdf3ce6120c",
   "sourceMeaning": "actual source tree digest; SOURCE_SHA is base commit only when worktree changes exist",
-  "siteId": "d0d2981955428f0c53aa21ec",
+  "siteId": "74e1c8c91fa6ea0515ec7d29",
   "timezone": "UTC",
   "from": "2026-09-17",
   "to": "2026-10-16",
@@ -15,7 +15,7 @@
   "emptySite": true,
   "eventsAccepted": 0,
   "screenshot": "desktop-empty-site.png",
-  "sha256": "06ad3a2cb6fb295b2aad1ab0157f30b5a40c4584091846f52fed265a0c4e1972",
+  "sha256": "986ea50cc867ae204bc908836a91df4e4b02a08702036322d2c3373bb23abdac",
   "viewport": {
     "width": 1440,
     "height": 1000
