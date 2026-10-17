@@ -1,0 +1,73 @@
+
+ RUN  v4.1.11 /tmp/baize-pr3-delivery-20261017
+
+ ❯ tests/integration/tracker-browser.test.ts (4 tests | 2 failed) 41708ms
+     × consent gates IDs and events, SPA owns a distinct page and retries identical bodies 20006ms
+   × rrweb records masked browser structure only and heatmap requires opt-in 20008ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tracker-browser.test.ts > tracker in Chromium > consent gates IDs and events, SPA owns a distinct page and retries identical bodies
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/tracker-browser.test.ts:5:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/tracker-browser.test.ts > rrweb records masked browser structure only and heatmap requires opt-in
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/tracker-browser.test.ts:6:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: ENOENT: no such file or directory, open 'public/tracker.js'
+ ❯ open node:internal/fs/promises:697:25
+ ❯ readFile node:internal/fs/promises:1348:14
+ ❯ tests/integration/tracker-browser.test.ts:5:936
+
+ ❯ RouteHandler._handleInternal ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61680:27
+ ❯ RouteHandler._handleImpl ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61649:18
+ ❯ RouteHandler.handle ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61643:16
+ ❯ _Page._onRoute ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:62963:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+[Serialized driver object omitted: disposable connection details]
+This error originated in "tests/integration/tracker-browser.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "consent gates IDs and events, SPA owns a distinct page and retries identical bodies". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: ENOENT: no such file or directory, open 'public/tracker.js'
+ ❯ open node:internal/fs/promises:697:25
+ ❯ readFile node:internal/fs/promises:1348:14
+ ❯ tests/integration/tracker-browser.test.ts:6:921
+
+ ❯ RouteHandler._handleInternal ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61680:27
+ ❯ RouteHandler._handleImpl ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61649:18
+ ❯ RouteHandler.handle ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:61643:16
+ ❯ _Page._onRoute ../../workspace/baize-analytics/node_modules/playwright-core/lib/coreBundle.js:62963:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+[Serialized driver object omitted: disposable connection details]
+This error originated in "tests/integration/tracker-browser.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "rrweb records masked browser structure only and heatmap requires opt-in". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 108 passed | 96 skipped (205)
+      Tests  2 failed | 319 passed | 303 skipped (624)
+     Errors  2 errors
+   Start at  03:27:07
+   Duration  348.58s (transform 5.00s, setup 0ms, import 87.63s, tests 231.12s, environment 18ms)

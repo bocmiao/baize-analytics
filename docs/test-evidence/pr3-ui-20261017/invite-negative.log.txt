@@ -1,0 +1,62 @@
+
+Running 2 tests using 1 worker
+
+(node:95781) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/pr3-ui-regressions.spec.ts:29:1 › one-time invitation survives member reload failure, offline retry and narrow layout; viewer writes stay forbidden (7.6s)
+(node:96304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown (1.1s)
+
+
+  1) tests/e2e/pr3-ui-regressions.spec.ts:29:1 › one-time invitation survives member reload failure, offline retry and narrow layout; viewer writes stay forbidden
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: getByRole('heading', { name: '待接受邀请', exact: true }).locator('..').getByRole('link')
+    Expected: "[synthetic invite URL redacted]"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" getByRole('heading', { name: '待接受邀请', exact: true }).locator('..').getByRole('link') with timeout 5000ms
+      - waiting for getByRole('heading', { name: '待接受邀请', exact: true }).locator('..').getByRole('link')
+
+
+      39 |   await expect(page.getByRole('button',{name:'重试当前视图',exact:true})).toBeVisible();
+      40 |   await capture(page,'members-reload-error');
+    > 41 |   const link=editor.getByRole('link');await expect(link).toHaveAttribute('href',invitation.url);
+         |                                                          ^
+      42 |   failRead=false;await page.getByRole('button',{name:'重试当前视图',exact:true}).click();await expect(page.locator('.member-roster')).toContainText('pr3-owner@example.test');await expect(link).toHaveAttribute('href',invitation.url);
+      43 |   await page.setViewportSize({width:320,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,'members-mobile-320');
+      44 |   // A failed invite request must keep form input and the previous one-time link.
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:41:58
+        at fixture (/workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:21:3)
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:31:2
+
+    Error Context: test-results/pr3-ui-regressions-one-tim-4077e-iewer-writes-stay-forbidden/error-context.md
+
+  2) tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown
+
+    TypeError: pool.query is not a function
+
+       at ../../src/server/worker.ts:10
+
+       8 | import {pruneUnreferencedFactRuns} from './fact-member-query.js';
+       9 | export interface Claim {site_id:string;generation:string;epoch:string;lease_owner:string}
+    > 10 | export async function claimSite(pool:Pool,leaseSeconds=60):Promise<Claim|null>{const owner=randomUUID();const r=await pool.query(`UPDATE aggregation_state SET lease_owner=$1,lease_until=now()+($2::int*interval '1 second'),last_claimed_at=clock_timestamp() WHERE site_id=(SELECT site_id FROM aggregation_state WHERE attempts<3 AND processed_generation<generation AND (lease_until IS NULL OR lease_until<now()) ORDER BY last_claimed_at NULLS FIRST,site_id FOR UPDATE SKIP LOCKED LIMIT 1) RETURNING site_id,generation::text,epoch::text,lease_owner::text`,[owner,leaseSeconds]);return r.rows[0]||null;}
+         |                                                                                                                            ^
+      11 | export async function rebuildSite(pool:Pool,claim:Claim,hooks:WorkerFactHooks={}):Promise<boolean>{return rebuildSiteFacts(pool,claim,hooks);}
+      12 | const retainedWindowErrors=new Set(['FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN','FACT_RAW_RETIREMENT_ORIGIN_SEAL_INVALID','FACT_RAW_RETIREMENT_SEAL_INVALID','FACT_RAW_RETIREMENT_NAMESPACE','FACT_RETAINED_WINDOW_EXPANSION_UNPROVEN','FACT_RETAINED_WINDOW_BASELINE_UNAVAILABLE']);
+      13 | /** Persist only fixed known errors or native five-character PG codes. Accessors
+        at claimSite (/workspace/baize-pr3-20261017/src/server/worker.ts:10:124)
+        at runWorkerOnce (/workspace/baize-pr3-20261017/src/server/worker.ts:20:83)
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:56:9
+        at fixture (/workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:21:3)
+        at /workspace/baize-pr3-20261017/tests/e2e/pr3-ui-regressions.spec.ts:53:2
+
+    Error Context: test-results/pr3-ui-regressions-real-IS-52d97--online-count-stays-unknown/error-context.md
+
+  2 failed
+    tests/e2e/pr3-ui-regressions.spec.ts:29:1 › one-time invitation survives member reload failure, offline retry and narrow layout; viewer writes stay forbidden
+    tests/e2e/pr3-ui-regressions.spec.ts:51:1 › real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown

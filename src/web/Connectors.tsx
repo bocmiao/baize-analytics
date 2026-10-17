@@ -76,7 +76,7 @@ catch (err) {
 export function InviteEditor({ siteId, onSaved }: {
     siteId: string;
     onSaved: () => void;
-}) { const [result, setResult] = useState(''); const [error, setError] = useState(''); return <section className="panel feature-section connector-section"><h2>{t("待接受邀请")}</h2><p className="hint">{t("服务器不返回此前发出、尚未接受的邀请。本次生成的链接只显示一次，刷新后不再列出。")}</p>{result?<p role="status">{t("将此链接发送给成员：")}<a href={result}>{result}</a></p>:<p className="empty">{t("这次还没有新的邀请链接。")}</p>}<h3>{t("邀请成员")}</h3><form onSubmit={async (e) => { e.preventDefault(); const f = Object.fromEntries(new FormData(e.currentTarget)); try {
+}) { const [result, setResult] = useState(''); const [error, setError] = useState(''); const [busy,setBusy]=useState(false); const busyRef=useRef(false); return <section className="panel feature-section connector-section"><h2>{t("待接受邀请")}</h2><p className="hint">{t("服务器不返回此前发出、尚未接受的邀请。本次生成的链接只显示一次，刷新后不再列出。")}</p>{result?<p role="status" className="invite-result">{t("将此链接发送给成员：")}<a href={result}>{result}</a></p>:<p className="empty">{t("这次还没有新的邀请链接。")}</p>}<h3>{t("邀请成员")}</h3><form onSubmit={async (e) => { e.preventDefault(); if(busyRef.current)return;busyRef.current=true;setBusy(true);setError(''); const f = Object.fromEntries(new FormData(e.currentTarget)); try {
     const r = await api<{
         url: string;
     }>(`/api/v1/sites/${siteId}/invites`, f);
@@ -85,7 +85,7 @@ export function InviteEditor({ siteId, onSaved }: {
 }
 catch (err) {
     setError((err as Error).message);
-} }}><label>{t("成员邮箱")}<input name="email" type="email" required/></label><label>{t("站点角色")}<select name="role"><option value="viewer">{t("只读 · 仅查看分析")}</option><option value="analyst">{t("分析师 · 编辑目标与报表")}</option><option value="admin">{t("管理员 · 站点治理")}</option></select></label><button>{t("生成邀请链接")}</button></form>{error && <p role="alert" className="error">{error}</p>}</section>; }
+} finally {busyRef.current=false;setBusy(false);} }}><label>{t("成员邮箱")}<input name="email" type="email" required/></label><label>{t("站点角色")}<select name="role"><option value="viewer">{t("只读 · 仅查看分析")}</option><option value="analyst">{t("分析师 · 编辑目标与报表")}</option><option value="admin">{t("管理员 · 站点治理")}</option></select></label><button disabled={busy}>{t("生成邀请链接")}</button></form>{error && <p role="alert" className="error">{error}</p>}</section>; }
 export function PrivacyFeatures({ siteId, initial = {}, onSaved }: {
     siteId: string;
     initial?: Row;

@@ -262,7 +262,7 @@ html[data-theme="dark"] .lart{background:radial-gradient(circle at 30% 18%,#173F
 html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(n+2),html[data-theme="dark"] .approved-overview .overview-metrics td{background:var(--card);color:var(--ink)}
 @media(max-width:650px){
  .overview-comparison-panel{position:relative;overflow:hidden}
- .overview-comparison-scroll{display:block;position:absolute;left:0;top:0;width:100%;height:180px;margin:0;z-index:0}
+ .overview-comparison-scroll{display:none}
  .overview-mobile-metrics{position:relative;z-index:1;background:var(--card)}
  .approved-overview .overview-metrics{min-width:680px}
  .approved-overview .overview-metrics strong{font-size:22px}
@@ -275,3 +275,12 @@ html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(
 @media(max-width:360px){.workspace-toolbar .date-range{flex:1 1 100%;width:100%;min-width:0;order:3}.workspace-toolbar .date-range input{min-width:0}}
 @keyframes baize-grow-y{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes baize-visit{from{opacity:0;transform:translateY(-10px);background:color-mix(in srgb,var(--gold) 28%,var(--card))}to{opacity:1;transform:none;background:var(--bg2)}}
+
+.invite-result a{overflow-wrap:anywhere}
+
+@media(max-width:650px){
+ .visit-stream li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:start}
+ .visit-stream time{grid-column:1;white-space:nowrap}
+ .visit-stream small{grid-column:2;grid-row:1}
+ .visit-stream li>span{grid-column:1/-1;grid-row:2;min-width:0;overflow-wrap:anywhere}
+}

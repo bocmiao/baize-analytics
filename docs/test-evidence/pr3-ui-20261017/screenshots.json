@@ -1,0 +1,210 @@
+[
+  {
+    "file": "overview-light-desktop.png",
+    "label": "桌面总览 / 青玉 / 真实30天采集",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 1000
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "eb51dee589df72af0fcd28ba6ac71aeaf4429e859fb5dde374a673379b0c270f"
+  },
+  {
+    "file": "overview-light-mobile.png",
+    "label": "手机总览 / 青玉 / 真实30天采集",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "pngPixels": {
+      "width": 390,
+      "height": 844
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "93e1a812cf339552d9f6108a6409870a2151ae00780637b4b082976da058d45e"
+  },
+  {
+    "file": "overview-dark-desktop.png",
+    "label": "桌面总览 / 墨玉 / 明确受控统计与真实SQLite鉴权",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 1374
+    },
+    "controlledStatistics": true,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "3778144ca7fad39fb324a1d58dd32325bdf673787b56d0e6b8cd63d056e4206c"
+  },
+  {
+    "file": "overview-dark-mobile.png",
+    "label": "手机总览 / 墨玉 / 明确受控统计与真实SQLite鉴权",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "pngPixels": {
+      "width": 390,
+      "height": 2200
+    },
+    "controlledStatistics": true,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "3e441cbbd2daa5f26034a678e826b69cabab598b794678e87440ca7d8ed18357"
+  },
+  {
+    "file": "realtime-iso-desktop.png",
+    "label": "实时 / 真实PostgreSQL ISO字符串事件",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 1721
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "873024d733e8595ce7b43ae89253742b4fd8fcc6f8f3582e35c4876c469152e3"
+  },
+  {
+    "file": "realtime-iso-mobile-320.png",
+    "label": "实时 / 真实PostgreSQL / 320px",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "pngPixels": {
+      "width": 320,
+      "height": 2053
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "9690f76daec8aab92c7354d851de6fea4bae557a4fa275e6fa5af54e5fd93cd0"
+  },
+  {
+    "file": "members-error-preserved-link.png",
+    "label": "成员 / 列表503时一次性链接仍保留（链接已遮罩）",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 1000
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "ff9413e46fe207f4af99b5d3178c12aa9a16a35709491a3cc9e7ee518986e5f9"
+  },
+  {
+    "file": "members-mobile-320.png",
+    "label": "成员 / 长链接换行（链接已遮罩）",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "pngPixels": {
+      "width": 320,
+      "height": 1569
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "625e2974710c6946d778d75bb022da9ad5f3068760744514d6413b069247074b"
+  },
+  {
+    "file": "seo-real-html-desktop.png",
+    "label": "SEO / 真实本地HTML与robots抓取，Google传输明确模拟",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 3988
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "803ced5e12cd0febf1feb45548e392d5e9725108389c23134c5bdf71dac86381"
+  },
+  {
+    "file": "seo-real-html-mobile.png",
+    "label": "SEO / 真实本地HTML / 390px",
+    "viewport": {
+      "width": 390,
+      "height": 900
+    },
+    "pngPixels": {
+      "width": 390,
+      "height": 5004
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "442175e7eb9e90f72c745f72616933b7d42cd528edee3bbe6bb85d01ac85d983"
+  },
+  {
+    "file": "php-settings-light-desktop.png",
+    "label": "站点设置 / 最终前端 + 未修改PHP/MySQL API",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 3743
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "244698df3d8275a19d684cc25ca45c151b2b3d30b030ff4cc2656b03963fc3b6"
+  },
+  {
+    "file": "php-revenue-dark-desktop.png",
+    "label": "收入 / 墨玉 / 最终前端 + 未修改PHP/MySQL API",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "pngPixels": {
+      "width": 1440,
+      "height": 1290
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "965ffb7380f957b13f5df3e949761f605540738fa5c76c5c2d651c93cf02871c"
+  },
+  {
+    "file": "revenue-dark-axis-colors-node.png",
+    "label": "收入 / 真实Node PostgreSQL / 墨玉canvas轴文字语义色",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "controlledStatistics": false,
+    "synthetic": true,
+    "frontendIndexSha256": "7a4bf682e714561f53ccea889435902023465037fa050753b539fb8089f68234",
+    "sha256": "758696ee3e39f41d7d10413041e69ea4f4fad67270cd9060336924f1bd75749d",
+    "pngPixels": {
+      "width": 1440,
+      "height": 1158
+    }
+  }
+]

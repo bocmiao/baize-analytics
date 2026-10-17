@@ -1,0 +1,276 @@
+{
+  "actualApiSyntheticFacts": true,
+  "expectedPv": 681,
+  "statsTotals": {
+    "pv": 681,
+    "uv": 184,
+    "sessions": 271,
+    "bounceRate": 0.03690036900369004,
+    "averageDuration": 36.55350553505535,
+    "visibleSeconds": 7260,
+    "revenueCurrencyStatus": "supported",
+    "revenueCurrencyCoverage": 1,
+    "revenue": 0,
+    "revenueByCurrency": {},
+    "conversions": 64
+  },
+  "statsSources": [
+    {
+      "channel": "direct",
+      "pv": 90
+    },
+    {
+      "channel": "email",
+      "pv": 138
+    },
+    {
+      "channel": "paid",
+      "pv": 63
+    },
+    {
+      "channel": "referral",
+      "pv": 82
+    },
+    {
+      "channel": "search",
+      "pv": 298
+    },
+    {
+      "channel": "social",
+      "pv": 10
+    }
+  ],
+  "statsPages": [
+    {
+      "path": "/blog/privacy",
+      "pv": 55,
+      "visible_ms": 722000,
+      "entries": 55,
+      "exits": 10,
+      "bounces": 10,
+      "completed": 0,
+      "uv": 40,
+      "averageDuration": 13.127272727272729,
+      "bounceRate": 0.18181818181818182,
+      "completionRate": 0
+    },
+    {
+      "path": "/contact",
+      "pv": 62,
+      "visible_ms": 468000,
+      "entries": 0,
+      "exits": 62,
+      "bounces": 0,
+      "completed": 0,
+      "uv": 30,
+      "averageDuration": 7.548387096774193,
+      "bounceRate": 0,
+      "completionRate": 0
+    },
+    {
+      "path": "/docs/getting-started",
+      "pv": 219,
+      "visible_ms": 2766000,
+      "entries": 46,
+      "exits": 173,
+      "bounces": 0,
+      "completed": 0,
+      "uv": 142,
+      "averageDuration": 12.63013698630137,
+      "bounceRate": 0,
+      "completionRate": 0
+    },
+    {
+      "path": "/download",
+      "pv": 46,
+      "visible_ms": 238000,
+      "entries": 0,
+      "exits": 0,
+      "bounces": 0,
+      "completed": 0,
+      "uv": 36,
+      "averageDuration": 5.173913043478261,
+      "bounceRate": 0,
+      "completionRate": 0
+    },
+    {
+      "path": "/pricing",
+      "pv": 129,
+      "visible_ms": 1482000,
+      "entries": 21,
+      "exits": 26,
+      "bounces": 0,
+      "completed": 0,
+      "uv": 88,
+      "averageDuration": 11.488372093023255,
+      "bounceRate": 0,
+      "completionRate": 0
+    },
+    {
+      "path": "/product",
+      "pv": 170,
+      "visible_ms": 1584000,
+      "entries": 149,
+      "exits": 0,
+      "bounces": 0,
+      "completed": 0,
+      "uv": 113,
+      "averageDuration": 9.31764705882353,
+      "bounceRate": 0,
+      "completionRate": 0
+    }
+  ],
+  "statsAudience": {
+    "ad_click_source": {
+      "": 681
+    },
+    "browser": {
+      "Chrome": 681
+    },
+    "channel": {
+      "direct": 90,
+      "email": 138,
+      "paid": 63,
+      "referral": 82,
+      "search": 298,
+      "social": 10
+    },
+    "city": {
+      "unknown": 681
+    },
+    "country": {
+      "CN": 336,
+      "GB": 63,
+      "SG": 138,
+      "US": 82,
+      "unknown": 52,
+      "JP": 10
+    },
+    "device": {
+      "desktop": 450,
+      "mobile": 231
+    },
+    "device_pixel_ratio": {
+      "null": 681
+    },
+    "ip_truncated": {
+      "127.0.0.0": 681
+    },
+    "keyword": {
+      "": 383,
+      "privacy analytics": 52,
+      "website analytics": 246
+    },
+    "language": {
+      "unknown": 681
+    },
+    "os": {
+      "Android": 231,
+      "Windows": 450
+    },
+    "referrer": {
+      "": 291,
+      "partners.example.test": 82,
+      "www.bing.com": 52,
+      "www.google.com": 246,
+      "weibo.com": 10
+    },
+    "region": {
+      "unknown": 681
+    },
+    "screen": {
+      "unknown": 681
+    },
+    "utm_campaign": {
+      "synthetic-overview-v2": 681
+    },
+    "utm_content": {
+      "": 681
+    },
+    "utm_medium": {
+      "": 90,
+      "cpc": 63,
+      "email": 138,
+      "organic": 298,
+      "referral": 82,
+      "social": 10
+    },
+    "utm_source": {
+      "": 90,
+      "bing": 52,
+      "campaign": 63,
+      "google": 246,
+      "newsletter": 138,
+      "partner": 82,
+      "social": 10
+    },
+    "utm_term": {
+      "": 681
+    }
+  },
+  "fixedSeed": "sha256-labeled-identities/profile-visits-v2",
+  "grids": {
+    "trend": {
+      "x": 250,
+      "y": 369.296875,
+      "width": 1168,
+      "height": 487.53125
+    },
+    "insights": {
+      "x": 267,
+      "y": 727.296875,
+      "width": 1134,
+      "height": 112.53125
+    },
+    "source": {
+      "x": 250,
+      "y": 1283.171875,
+      "width": 378.65625,
+      "height": 393
+    },
+    "content": {
+      "x": 250,
+      "y": 872.828125,
+      "width": 1168,
+      "height": 394.34375
+    },
+    "geo": {
+      "x": 644.65625,
+      "y": 1283.171875,
+      "width": 378.671875,
+      "height": 411.6875
+    },
+    "device": {
+      "x": 1039.328125,
+      "y": 1283.171875,
+      "width": 378.65625,
+      "height": 204.09375
+    }
+  },
+  "chartInstanceRetainedAcrossFiveMetricSwitches": true,
+  "staleRealtimeResponseCancelled": true,
+  "desktopAndMobileDialogKeyboard": true,
+  "reducedMotion": true,
+  "noOverflowWidths": [
+    1440,
+    1024,
+    768,
+    390,
+    320
+  ],
+  "pageComparisonColumnsAlwaysPresent": 5,
+  "sessionEntrySortVerified": true,
+  "actualViewerReadAndForbiddenWrite": true,
+  "controlledCases": [
+    "zero",
+    "partial unavailable values remain unknown",
+    "one page and source",
+    "unconfigured geography",
+    "50 long Chinese pages",
+    "30 long Chinese sources",
+    "delayed loading",
+    "503 and successful retry"
+  ],
+  "consoleErrors": [],
+  "failedRequests": []
+}
