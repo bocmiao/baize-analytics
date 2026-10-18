@@ -681,3 +681,63 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
  .workspace main[data-tab="members"],
  .workspace main[data-tab="channels"]{display:block}
 }
+
+/* 修正：长报表页改用分栏流（columns），内容依次填满两列，不再按行对齐留下空洞 */
+.workspace main[data-tab="seo"],
+.workspace main[data-tab="settings"],
+.workspace main[data-tab="ga4"],
+.workspace main[data-tab="reports"],
+.workspace main[data-tab="ai"],
+.workspace main[data-tab="members"],
+.workspace main[data-tab="channels"]{display:block;columns:2;column-gap:16px}
+.workspace main[data-tab="seo"]>section.panel,
+.workspace main[data-tab="settings"]>section.panel,
+.workspace main[data-tab="ga4"]>section.panel,
+.workspace main[data-tab="reports"]>section.panel,
+.workspace main[data-tab="ai"]>section.panel,
+.workspace main[data-tab="members"]>section.panel,
+.workspace main[data-tab="channels"]>section.panel{break-inside:avoid;margin:0 0 16px}
+.workspace main[data-tab="seo"]>.workspace-toolbar,
+.workspace main[data-tab="seo"]>.page-header,
+.workspace main[data-tab="seo"]>.scope-context,
+.workspace main[data-tab="settings"]>.workspace-toolbar,
+.workspace main[data-tab="settings"]>.page-header,
+.workspace main[data-tab="settings"]>.scope-context,
+.workspace main[data-tab="ga4"]>.workspace-toolbar,
+.workspace main[data-tab="ga4"]>.page-header,
+.workspace main[data-tab="ga4"]>.scope-context,
+.workspace main[data-tab="reports"]>.workspace-toolbar,
+.workspace main[data-tab="reports"]>.page-header,
+.workspace main[data-tab="reports"]>.scope-context,
+.workspace main[data-tab="ai"]>.workspace-toolbar,
+.workspace main[data-tab="ai"]>.page-header,
+.workspace main[data-tab="ai"]>.scope-context,
+.workspace main[data-tab="members"]>.workspace-toolbar,
+.workspace main[data-tab="members"]>.page-header,
+.workspace main[data-tab="members"]>.scope-context,
+.workspace main[data-tab="channels"]>.workspace-toolbar,
+.workspace main[data-tab="channels"]>.page-header,
+.workspace main[data-tab="channels"]>.scope-context{column-span:all}
+@media(max-width:1100px){
+ .workspace main[data-tab="seo"],
+ .workspace main[data-tab="settings"],
+ .workspace main[data-tab="ga4"],
+ .workspace main[data-tab="reports"],
+ .workspace main[data-tab="ai"],
+ .workspace main[data-tab="members"],
+ .workspace main[data-tab="channels"]{columns:1}
+}
+
+/* 折叠面板的摘要样式 */
+.panel>summary{cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px;padding:2px 0}
+.panel>summary::-webkit-details-marker{display:none}
+.panel>summary::before{content:"▸";font-size:11px;color:var(--ink2);transition:transform var(--dur-fast)}
+.panel[open]>summary::before{transform:rotate(90deg)}
+.panel>summary+*{margin-top:14px}
+
+/* 站点设置：面板内部再分两栏（分组不跨栏） */
+.workspace main[data-tab="settings"]>section.panel{columns:2;column-gap:22px}
+.workspace main[data-tab="settings"] .settings-group{break-inside:avoid;margin:0 0 18px}
+.workspace main[data-tab="settings"]>section.panel>h2,
+.workspace main[data-tab="settings"]>section.panel>.product-promise{column-span:all}
+@media(max-width:1100px){.workspace main[data-tab="settings"]>section.panel{columns:1}}
