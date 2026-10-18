@@ -344,3 +344,9 @@ html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(
 .table-wrap th.numeric,.table-wrap td.numeric{text-align:right;font-variant-numeric:tabular-nums}
 .table-wrap.compact{max-width:680px}
 .table-wrap.compact td:first-child{overflow-wrap:anywhere}
+
+/* Landing: full-bleed backdrop (no seam at the container edge) and a tighter hero */
+.landing{max-width:1320px;background:transparent}
+.landing::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 0 0,rgba(194,154,78,.16),transparent 34%),var(--bg)}
+.landing .hero{grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:40px}
+@media(max-width:1080px){.landing .hero{grid-template-columns:1fr;gap:36px}}
