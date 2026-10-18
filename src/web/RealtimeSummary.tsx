@@ -1,10 +1,24 @@
 import {ownValue} from './dictionary';
 import {language,t} from './i18n';
-import {rows,type Row} from './api';
+import {rows,type Row,type Site} from './api';
 
 import {minuteBuckets,realtimeTimestamp} from './realtimeTime';
 
-export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
+const channelLabels:Record<string,string>={direct:'直接访问',search:'自然搜索',referral:'外部网站',social:'社交网络',email:'邮件',paid:'付费推广',internal:'站内跳转',unknown:'未知'};
+const deviceLabels:Record<string,string>={desktop:'电脑',mobile:'手机',tablet:'平板',unknown:'未知'};
+const geoLabels:Record<string,string>={unknown:'未知'};
+const eventLabels:Record<string,string>={pageview:'页面浏览',heartbeat:'停留心跳',custom:'自定义事件',click:'点击',outbound:'外链点击',form:'表单提交'};
+
+function humanize(dimension:string, value:unknown, en:boolean) {
+ const text = String(value);
+ if (en) return text;
+ if (dimension === 'channel' || dimension === 'channel_group') return channelLabels[text] || text;
+ if (dimension === 'device') return deviceLabels[text] || text;
+ if (dimension === 'country' || dimension === 'region' || dimension === 'city') return geoLabels[text] || text;
+ return text;
+}
+
+export function RealtimeSummary({data,timezone,site}:{data:Row;timezone?:string;site?:Site}) {
  const metadata=(data.realtime||{}) as Row;
  const complete=metadata.status==='complete'&&metadata.coverage===1;
  const labels:Record<string,string>={path:t('页面'),channel:t('渠道'),referrer:t('来源'),country:t('国家'),region:t('区域'),city:t('城市'),pv:t('浏览量'),uv:t('访客')};
@@ -16,6 +30,10 @@ export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
  const clock=(value:unknown)=>{const ts=realtimeTimestamp(value);return ts!==null?new Date(ts).toLocaleTimeString(en?'en':'zh-CN',{timeZone:timezone,hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}):'—';};
  // 窗口时间按站点时区显示，不能把 UTC 的 ISO 串直接打到界面上。
  const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);if(ts===null)return '—';return new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
+ const origin=site?.domain?(/^https?:\/\//i.test(site.domain)?site.domain.replace(/\/+$/,''):`https://${site.domain.replace(/\/+$/,'')}`):'';
+ const pageLink=(path:unknown)=>{const text=String(path??'/');if(!origin)return text;return <a href={`${origin}${text.startsWith('/')?text:`/${text}`}`} target="_blank" rel="noopener noreferrer">{text}</a>;};
+ // 心跳只是停留时长的心跳包，不是一次访问；把它混进访问列表会让人以为有 8 次访问。
+ const pageviews=events.filter(event=>String(event.type||'')!=='heartbeat');
  const tops:[string,string][]=[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']];
  const anyTop=tops.some(([key])=>Array.isArray(data[key])&&(data[key] as Row[]).length>0);
  const range=`${stamp(metadata.from)} — ${stamp(metadata.to)}${timezone?`（${timezone}）`:''}`;
@@ -49,12 +67,13 @@ export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
   </section>
   <section className="panel rt-card rt-visits">
    <h3>{en?'Recent visits':'最近访问'}</h3>
-   {events.length?<ol className="visit-stream">{events.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{String(event.type||'')}</small></li>)}</ol>:<p className="empty">{en?'The visit stream is empty.':'访问流是空的。'}</p>}
+   {pageviews.length?<ol className="visit-stream">{pageviews.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{en?String(event.type||''):(eventLabels[String(event.type||'')]||String(event.type||''))}</small></li>)}</ol>
+    :<p className="empty">{en?'Only presence heartbeats so far — no page views yet.':'目前只有停留心跳，还没有页面浏览事件。'}</p>}
   </section>
   {!complete?<section className="panel rt-card rt-wide"><p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p></section>
-   :anyTop?tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];return <section className="panel rt-card rt-top" key={key} aria-label={t(title)}>
+   :anyTop?tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];const isPages=key==='topPages';return <section className="panel rt-card rt-top" key={key} aria-label={t(title)}>
     <h3>{t(title)}</h3>
-    {list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.values(row).map((value,cell)=><td key={cell}>{value===null?'—':String(value)}</td>)}</tr>)}</tbody></table></div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}
+    {list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.entries(row).map(([name,value])=><td key={name}>{value===null?'—':isPages&&name==='path'?pageLink(value):humanize(name,value,en)}</td>)}</tr>)}</tbody></table></div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}
    </section>;})
    :<section className="panel rt-card rt-wide"><p className="empty">{en?'No breakdown available for this window.':'该窗口暂无细分数据。'}</p></section>}
  </div>;

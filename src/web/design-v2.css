@@ -522,3 +522,12 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .rt-kpi-main .livecount{font-size:clamp(34px,4vw,48px)}
 /* 访问流限高内部滚动，避免把整行撑高 */
 .rt-visits .visit-stream{max-height:320px;overflow:auto;padding-right:2px}
+
+/* 新版本提示条：出现在底部中间，不遮挡操作 */
+.build-update-notice{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:13px;box-shadow:0 8px 24px rgba(20,48,44,.28);animation:landing-rise var(--dur-base) var(--ease-out) both}
+.build-update-notice button{border:0;background:var(--jade);color:#fff;border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}
+.build-update-notice button:hover{filter:brightness(1.05)}
+
+/* 实时 Top 页面里的路径是外链，给一点可见的交互反馈 */
+.rt-top a{color:var(--jade);text-decoration:none;border-bottom:1px solid rgba(47,125,109,.35)}
+.rt-top a:hover{border-bottom-color:var(--jade)}
