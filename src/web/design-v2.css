@@ -537,3 +537,19 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 /* 宽表格不许把面板撑出容器（页面报表列很多） */
 .workspace main,.workspace main>*, .workspace main .panel{min-width:0}
 .table-wrap{max-width:100%;overflow-x:auto}
+
+/* 维度小表排成响应式网格，避免一行一张、右侧大片空白 */
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px 20px;align-items:start;margin-top:8px}
+.dim-grid>section{min-width:0;margin:0}
+.dim-grid>section>h3{margin:0 0 8px;font-size:13px;color:var(--ink2);font-weight:600}
+.dim-grid .table-wrap{max-width:none}
+
+/* 页面报表：主表收紧、维度分组、详情图不再占满屏 */
+.pages-table th{font-size:12px;color:var(--ink2);font-weight:600;padding:10px 12px}
+.pages-table td{padding:12px;vertical-align:middle}
+.pages-table code{font-size:13px}
+.page-detail .chart{height:260px}
+.page-detail h2{margin-bottom:12px}
+.dim-more{margin-top:18px}
+.dim-more>summary{cursor:pointer;font-size:13px;color:var(--ink2);padding:4px 0}
+.dim-more[open]>summary{margin-bottom:12px}
