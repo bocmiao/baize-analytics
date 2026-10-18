@@ -1,0 +1,21 @@
+# Prepare an independently verified initial --updatable PHP release and private
+# directories as uid 1000. Never mount the Docker socket into this service.
+services:
+  baize:
+    image: ${BAIZE_PHP_SUPERVISOR_IMAGE:?Pin the reviewed companion image digest}
+    user: "1000:1000"
+    restart: unless-stopped
+    ports: ["127.0.0.1:${BAIZE_PORT:-3000}:3000"]
+    volumes:
+      - ./private/updater.json:/run/secrets/updater.json:ro
+      - ./private/runtime.env:/run/secrets/runtime.env:ro
+      - ./private/config.php:/run/secrets/config.php:ro
+      - ./releases:/var/lib/baize/releases
+      - ./state:/var/lib/baize/updater
+      - ./data:/var/lib/baize/data
+      - ./keys:/var/lib/baize/keys
+      - ./offline:/var/lib/baize/offline
+    read_only: true
+    tmpfs: ["/tmp:rw,nosuid,noexec,size=128m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]

@@ -3,7 +3,7 @@ import {mkdirSync,copyFileSync,readFileSync,existsSync,writeFileSync} from 'node
 import {join} from 'node:path';
 mkdirSync('dist/updater',{recursive:true});
 const roots=new Set<string>();
-for(const [entry,name]of [['src/update/cli.ts','baize-updater.mjs'],['src/update/docker-agent.ts','baize-docker-updater.mjs']]){
+for(const [entry,name]of [['src/update/cli.ts','baize-updater.mjs'],['src/update/docker-agent.ts','baize-docker-updater.mjs'],['src/update/offline.ts','baize-import-update.mjs'],['src/update/php-distribution.ts','baize-php-distribution.mjs']]){
  const result=await build({entryPoints:[entry!],outfile:'dist/updater/'+name,bundle:true,platform:'node',target:'node24',format:'esm',external:['pg-native'],metafile:true,banner:{js:"import {createRequire as updaterCreateRequire} from 'node:module';const require=updaterCreateRequire(import.meta.url);"}});
  for(const input of Object.keys(result.metafile.inputs)){const parts=input.split('/'),index=parts.lastIndexOf('node_modules');if(index<0)continue;roots.add(parts.slice(0,index+(parts[index+1]!.startsWith('@')?3:2)).join('/'));}
 }

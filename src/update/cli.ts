@@ -4,12 +4,13 @@ import {existsSync,lstatSync,unlinkSync,chmodSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {z} from 'zod';
 import {UpdateAgent,agentConfigSchema} from './agent.js';
+import {PhpRuntime} from './php-runtime.js';
 import {NativeRuntime} from './runtime.js';
 import {trustedJSON} from './state.js';
 
 export async function runExecutor(configPath:string){
  if(configPath!==resolve(configPath))throw Error('UPDATE_CONFIG_ABSOLUTE_PATH_REQUIRED');const stat=lstatSync(configPath);if((stat.mode&0o777)!==0o600)throw Error('UPDATE_CONFIG_MUST_BE_PRIVATE');
- const config=agentConfigSchema.parse(trustedJSON(configPath)),agent=new UpdateAgent(config,new NativeRuntime(config));await agent.open();
+ const config=agentConfigSchema.parse(trustedJSON(configPath)),agent=new UpdateAgent(config,config.php?new PhpRuntime(config):new NativeRuntime(config));await agent.open();
  const socket=join(config.agentDir,'executor.sock');if(existsSync(socket)){if(!lstatSync(socket).isSocket())throw Error('UPDATE_SOCKET_PATH_OCCUPIED');unlinkSync(socket);}
  const command=z.object({action:z.enum(['check','apply','rollback']),actorId:z.uuid(),operationId:z.uuid().optional(),expectedRevision:z.string().regex(/^[a-f0-9]{40}$/).optional(),expectedManifestSha256:z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict();
  const server=createServer(async(req,res)=>{const send=(status:number,value:unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};

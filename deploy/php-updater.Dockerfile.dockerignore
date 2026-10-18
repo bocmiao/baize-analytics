@@ -1,0 +1,6 @@
+**
+!dist
+!dist/updater
+!dist/updater/**
+!deploy
+!deploy/php-updater.Dockerfile
