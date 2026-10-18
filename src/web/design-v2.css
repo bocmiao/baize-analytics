@@ -350,3 +350,52 @@ html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(
 .landing::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 0 0,rgba(194,154,78,.16),transparent 34%),var(--bg)}
 .landing .hero{grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:40px}
 @media(max-width:1080px){.landing .hero{grid-template-columns:1fr;gap:36px}}
+
+/* ============ Interaction & motion layer ============ */
+html{scroll-behavior:smooth}
+::selection{background:rgba(47,125,109,.18)}
+
+/* Motion tokens are already defined; make every interactive surface feel responsive. */
+button,.button,.secondary,a.button{transition:transform var(--dur-instant) var(--ease-out),filter var(--dur-fast) var(--ease-out),background-color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast)}
+button:hover:not(:disabled),.button:hover{filter:brightness(.97);box-shadow:0 4px 14px rgba(20,48,44,.10)}
+button:active:not(:disabled),.button:active{transform:translateY(1px);box-shadow:none}
+input,select,textarea{transition:border-color var(--dur-fast),box-shadow var(--dur-fast)}
+input:focus,select:focus,textarea:focus{border-color:var(--jade);box-shadow:0 0 0 3px rgba(47,125,109,.14);outline:none}
+
+/* Landing: sticky translucent header, staggered hero, tactile cards. */
+.landing header{position:sticky;top:0;z-index:30;background:var(--bg);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid transparent}
+.landing header nav a:not(.button){position:relative;padding-bottom:2px}
+.landing header nav a:not(.button):after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1.5px;background:var(--jade);transition:right var(--dur-base) var(--ease-out)}
+.landing header nav a:not(.button):hover:after{right:0}
+.landing .hero-copy>*{animation:landing-rise var(--dur-slow) var(--ease-out) both}
+.landing .hero-copy>*:nth-child(1){animation-delay:20ms}
+.landing .hero-copy>*:nth-child(2){animation-delay:80ms}
+.landing .hero-copy>*:nth-child(3){animation-delay:140ms}
+.landing .hero-copy>*:nth-child(4){animation-delay:200ms}
+.landing .hero-copy>*:nth-child(5){animation-delay:260ms}
+.landing .hero-preview{animation:landing-rise var(--dur-slow) var(--ease-out) both;animation-delay:180ms}
+@keyframes landing-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.feature-grid article,.step-cards li{transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base)}
+.feature-grid article:hover,.step-cards li:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(20,48,44,.10);border-color:#cfdccf}
+html[data-theme="dark"] .feature-grid article:hover,html[data-theme="dark"] .step-cards li:hover{box-shadow:0 14px 30px rgba(0,0,0,.45);border-color:#22392f}
+
+/* App shell: panel entrance, row hover, nav feedback. */
+.workspace main .panel{animation:landing-rise var(--dur-base) var(--ease-out) both}
+.workspace main .panel:nth-of-type(2){animation-delay:40ms}
+.workspace main .panel:nth-of-type(3){animation-delay:80ms}
+.workspace main .panel:nth-of-type(4){animation-delay:120ms}
+.table-wrap tbody tr{transition:background-color var(--dur-instant) var(--ease-out)}
+.table-wrap tbody tr:hover{background:rgba(47,125,109,.05)}
+html[data-theme="dark"] .table-wrap tbody tr:hover{background:rgba(201,216,210,.06)}
+.workspace #workspace-navigation nav a{transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),padding-left var(--dur-fast) var(--ease-out)}
+.workspace #workspace-navigation nav a:hover{padding-left:12px}
+.overview-metrics tr,.overview-mini-bar i{transition:width var(--dur-base) var(--ease-out)}
+
+/* Respect reduced motion everywhere; motion is decoration, never information. */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+
+/* KPI 数值不换行，避免 "20 分 32 秒" 这类带单位的数值被折成两行 */
+.overview-metrics td,.overview-metrics th{white-space:nowrap}

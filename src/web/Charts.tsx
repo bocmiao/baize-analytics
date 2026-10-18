@@ -10,6 +10,13 @@ import { LineChart, SankeyChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, MarkLineComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 echarts.use([LineChart, SankeyChart, GridComponent, TooltipComponent, LegendComponent, MarkLineComponent, CanvasRenderer]);
+function axisLabels(data: Row[]): string[] {
+  const labels: string[] = data.map(r => readable(r.time || r.day || r.hour || r.date) as string);
+  // 同一天的多个小时桶如果只显示日期，坐标轴会重复成 4 个 "10/18"。
+  const first: string = labels[0] ?? '';
+  const sameDay: boolean = labels.length > 1 && labels.every((label: string) => label.slice(0, 10) === first.slice(0, 10));
+  return sameDay ? labels.map((label: string) => (label.length > 11 ? label.slice(11, 16) : label)) : labels;
+}
 function readable(v: unknown): string { return String(v ?? '—'); }
 /** Element resizing also covers sidebar/panel changes without a window resize. */
 export function observeChartSize(element:HTMLElement,chart:{resize:()=>void}) {
