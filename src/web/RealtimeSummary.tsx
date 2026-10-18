@@ -31,8 +31,8 @@ export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
     <p>{t('最近30分钟浏览量')}<strong data-testid="realtime-total">{complete?String(metadata.pv):'—'}</strong></p>
     <p>{t('覆盖率')}<strong>{Math.round(Number(metadata.coverage||0)*100)}%</strong></p>
    </div>
-   <p className="hint">{t('下方事件仅为最近200条预览，不能作为完整流量或Top统计。')}</p>
-   {!complete?<p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p>:anyTop?<div className="realtime-tops">{tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];return <section key={key} aria-label={t(title)}><h4>{t(title)}</h4>{list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.values(row).map((value,cell)=><td key={cell}>{value===null?'—':String(value)}</td>)}</tr>)}</tbody></table></div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}</section>;})}</div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}
+   {anyTop&&<p className="hint">{t('下方事件仅为最近200条预览，不能作为完整流量或Top统计。')}</p>}
+   {!complete?<p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p>:anyTop?<div className="realtime-tops">{tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];return <section key={key} aria-label={t(title)}><h4>{t(title)}</h4>{list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.values(row).map((value,cell)=><td key={cell}>{value===null?'—':String(value)}</td>)}</tr>)}</tbody></table></div>:<p className="empty realtime-empty">{en?'No events in this 30-minute window. Data appears as soon as the tracker reports a visit.':'这 30 分钟窗口内没有事件。埋点上报后这里会自动出现数据。'}</p>}</section>;})}</div>:<p className="empty realtime-empty">{en?'No events in this 30-minute window. Data appears as soon as the tracker reports a visit.':'这 30 分钟窗口内没有事件。埋点上报后这里会自动出现数据。'}</p>}
   </section>
  </>;
 }

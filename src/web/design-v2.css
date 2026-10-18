@@ -432,3 +432,21 @@ html[data-theme="dark"] .language select:hover{background:rgba(255,255,255,.06)}
 .realtime-tops{display:grid;gap:18px;margin-top:16px}
 .realtime-tops h4{margin:0 0 8px;font-size:13px;color:var(--ink2);font-weight:600}
 @media(max-width:900px){.realtime-stage{grid-template-columns:1fr}}
+
+/* 实时页区块要像卡片，不要裸文本飘在白底上 */
+.realtime-block{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.realtime-block h3{margin:0;font-size:13px;letter-spacing:.01em;color:var(--ink)}
+.realtime-block .hint{margin:0;line-height:1.6}
+.realtime-block .empty{margin:0;padding:18px 14px;border:1px dashed var(--line);border-radius:10px;text-align:center;font-size:13px;color:var(--ink2);background:transparent}
+.realtime-stage .minute-bars{margin-top:2px}
+.realtime-empty{margin:14px 0 0;padding:26px 18px;border:1px dashed var(--line);border-radius:12px;text-align:center;font-size:13px;color:var(--ink2);background:var(--bg)}
+.realtime-window .notice{margin:12px 0 0}
+html[data-theme="dark"] .realtime-block{background:rgba(255,255,255,.03)}
+html[data-theme="dark"] .realtime-empty{background:rgba(255,255,255,.03)}
+
+.realtime-page{display:grid;gap:16px;min-width:0}
+
+/* 实时页外层本来只是一个承载容器：去掉它的面板边框，避免面板套面板 */
+.panel:has(> .realtime-stage){background:transparent;border:0;padding:0;box-shadow:none}
+
+.realtime-window .realtime-empty,.panel .realtime-empty{border:1px dashed var(--line);background:var(--bg);color:var(--ink2);font-size:13px;text-align:center;padding:26px 18px;border-radius:12px;margin:14px 0 0}
