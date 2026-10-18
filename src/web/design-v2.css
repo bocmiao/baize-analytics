@@ -450,3 +450,9 @@ html[data-theme="dark"] .realtime-empty{background:rgba(255,255,255,.03)}
 .panel:has(> .realtime-stage){background:transparent;border:0;padding:0;box-shadow:none}
 
 .realtime-window .realtime-empty,.panel .realtime-empty{border:1px dashed var(--line);background:var(--bg);color:var(--ink2);font-size:13px;text-align:center;padding:26px 18px;border-radius:12px;margin:14px 0 0}
+
+/* 漏斗流失步骤：之前是裸 article，和实时页一样需要卡片承载 */
+.funnel-dropoff-step{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 10px}
+.funnel-dropoff-step h3{margin:0 0 8px;font-size:14px;color:var(--ink)}
+.funnel-dropoff-step:last-child{margin-bottom:0}
+html[data-theme="dark"] .funnel-dropoff-step{background:rgba(255,255,255,.03)}
