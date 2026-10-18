@@ -13,8 +13,16 @@ if(($_SERVER['REQUEST_METHOD']??'GET')==='POST'){
         if(($origin!==null&&!hash_equals($expected,$origin))||($_SERVER['HTTP_SEC_FETCH_SITE']??'')==='cross-site')Baize\Http::error(403,'csrf_origin_denied');
         if((int)($_SERVER['CONTENT_LENGTH']??0)>32768)Baize\Http::error(413,'request_too_large');
         $input=$_POST;$input['db_port']=(int)($input['db_port']??3306);$app=Baize\Installer::install($input,baize_config_path());header('Location: /app',true,303);return;
-    }catch(Baize\HttpError $e){http_response_code($e->status);$error=$e->getMessage();}
-    catch(Throwable $e){http_response_code(503);error_log('Baize installer failed: '.get_class($e));$error='安装未完成。请检查数据库连接、私有目录权限与安装凭据；已有配置时可从 /app 完成初始化。';}
+    }catch(Baize\HttpError $e){http_response_code($e->status);$error=$e->getMessage()!==''?$e->getMessage():$e->errorCode;}
+    catch(Throwable $e){
+        http_response_code(503);
+        $code=$e instanceof Baize\HttpError?$e->errorCode:(new ReflectionClass($e))->getShortName();
+        error_log('Baize installer failed: '.$code.' '.$e->getMessage());
+        $hint=$e instanceof PDOException
+            ? '数据库连接失败：主机名填容器/服务名（不是 127.0.0.1），库名必须已存在，用户名不要带面板显示的 @主机 后缀。'
+            : '请检查私有目录权限与安装凭据；已有配置时可从 /app 完成初始化。';
+        $error='安装未完成（'.$code.'）。'.$hint;
+    }
 }
 $noncePath=dirname(baize_config_path()).'/keys/install-nonce.json';
 ?><!doctype html>

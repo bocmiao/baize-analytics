@@ -38,6 +38,79 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 
 手动 CSV 导入允许5 MiB文件、最多100,000行；JSON封装需要较大的请求上限。示例使用 Nginx `client_max_body_size 32m`、PHP `post_max_size=32M`、`memory_limit=512M`、`max_execution_time=120`。采集接口仍在应用内限制为1 MiB。不要放宽私有文件的600/目录700权限来解决运行用户不同的问题。
 
+### 1Panel 实操要点（2026-10 实际部署记录）
+
+面板会自行生成站点 vhost，包内 `deploy/nginx.conf.example` 只作参考。以下六点来自一次真实的 1Panel + PHP-FPM 8.3 + MySQL 8.4 部署，都是从"能打开安装页"到"看到统计数据"之间实际卡住的地方。
+
+**① vhost 必须有 `try_files` 回退。** 面板生成的配置通常只有 `location ~ [^/]\.php(/|$)`，没有 `location /`，结果是 `/install.php` 能打开，但提交、`/app`、`/login`、`/api/*`、`/healthz` 全部由 nginx 直接 404（响应头 `Server: openresty`，PHP 日志里没有记录）。在站点配置里补：
+
+```nginx
+server {
+    client_max_body_size 32m;               # 手动导入 JSON 需要；默认 1m 会 413
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    location = /router.php { return 404; }  # 仅供 php -S 联调，不要对公网开放
+    location ~ [^/]\.php(/|$) {
+        include fastcgi_params;             # Debian 系的 fastcgi_params 已含 HTTPS 参数
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass <站点现有 PHP-FPM 地址>;
+    }
+}
+```
+
+缺少 `fastcgi_param HTTPS $https if_not_empty;` 时，安装页的 POST 会返回 `400 https_required`。
+
+**② 面板路径与容器路径是两套。** 1Panel 常见布局：宿主机 `/opt/1panel/1panel/www/sites/<域名>/index`，容器内 `/www/sites/<域名>/index`（用 `docker inspect <php容器> -f '{{range .Mounts}}{{.Source}} => {{.Destination}}{{"\n"}}{{end}}'` 核对）。所有 CLI 命令必须同时满足两点：
+
+- 用**容器内路径**，否则 `Could not open input file`；
+- 用 `-u <FPM用户>` 执行，且先 `chown -R <uid>:<gid>` 到该用户，否则 `private/` 归 root 所有，`--prepare` 会报 `mkdir(): Permission denied`。
+
+```bash
+docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --prepare
+docker exec -u www-data <php容器> cat /www/sites/<域名>/index/private/keys/install-nonce.json
+```
+
+**③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，直接用 `--stdin-json`：
+
+```bash
+read -rsp 'nonce: ' NONCE; echo
+read -rp  'db host: ' DBH        # 容器/服务名，如 mysql；不是 127.0.0.1
+read -rp  'db user: ' DBU        # 只填用户名，不要带面板显示的 @%
+read -rsp 'db pass: ' DBP; echo
+read -rp  'admin email: ' EMAIL
+read -rsp 'admin pass: ' ADMINPW; echo
+
+docker exec -i -u www-data \
+  -e NONCE="$NONCE" -e DBH="$DBH" -e DBU="$DBU" -e DBP="$DBP" -e EMAIL="$EMAIL" -e ADMINPW="$ADMINPW" -e DOMAIN="<域名>" \
+  <php容器> php -r 'echo json_encode(["installationNonce"=>getenv("NONCE"),"public_url"=>"https://".getenv("DOMAIN"),"db_host"=>getenv("DBH"),"db_port"=>3306,"db_name"=>"baize","db_user"=>getenv("DBU"),"db_password"=>getenv("DBP"),"name"=>"管理员","email"=>getenv("EMAIL"),"password"=>getenv("ADMINPW")],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);' \
+| docker exec -i -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --stdin-json
+```
+
+成功只打印 `安装完成。`。失败会打印错误码或异常信息（`--stdin-json` 与网页安装是同一套校验与事务，不会绕过任何安全检查）。
+
+**④ 队列必须有消费者。** 面板计划任务里加一条每分钟执行：
+
+```bash
+docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/worker.php --once
+```
+
+不配置时采集接口照样返回 `202`，事件停在 `queue_jobs` 里，看板永久为空。
+
+**⑤ 常见错误对照**
+
+| 输出 | 原因 | 处理 |
+| --- | --- | --- |
+| `400 https_required` | vhost 未传 HTTPS | 加 `fastcgi_param HTTPS $https if_not_empty;` |
+| `403 csrf_origin_denied` | 浏览器 Origin / Sec-Fetch-Site 不符 | 用 ③ 的 `--stdin-json` |
+| `mkdir(): Permission denied` | `private/` 属主不是 FPM 用户 | `chown -R <uid>:<gid> private && chmod 700 private` |
+| `[1045] Access denied for user 'baize@%'@...` | 用户名带了 `@%` | 只填 `baize` |
+| `[2002]` / `getaddrinfo failed` | 主机填了 `127.0.0.1` | 填面板显示的容器名（如 `mysql`） |
+| `/login` 返回 openresty 404 | 缺 `try_files` | 见 ① |
+| `database_unavailable` | 主机/库名/账号之一不对 | 用 `PDO` 单独连一次，看具体 SQLSTATE |
+
+**⑥ 追踪代码的同意开关。** 复制代码时勾选「包含同意横幅」会生成 `data-consent-required="true"`，访客点击同意前不会上报任何数据；自用站点建议不勾选。已误加的，删掉该属性并清理 CDN 缓存即可恢复采集。
+
 不要使用 PHP 内置开发服务器承载正式网站；本地联调可用 `php -S 127.0.0.1:8080 -t public public/router.php`。
 
 ## 备份、恢复、升级

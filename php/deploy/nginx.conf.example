@@ -1,5 +1,14 @@
 # 1Panel PHP site: point the document root at the extracted package's public/.
 # Replace the fastcgi_pass with the socket/address of the site's PHP 8.3+ runtime.
+#
+# Panel-generated vhosts (1Panel, Baota) already contain a PHP location and will
+# overwrite this file's contents on save. Copy these three directives into that
+# vhost instead of pasting this file verbatim:
+#   client_max_body_size 32m;
+#   location / { try_files $uri $uri/ /index.php?$query_string; }
+#   fastcgi_param HTTPS $https if_not_empty;   # inside the PHP location
+# Without try_files the site still serves /install.php but /login, /app and
+# /api/* answer with an openresty 404 and no PHP process ever sees them.
 server {
     listen 80;
     server_name analytics.example.com;
