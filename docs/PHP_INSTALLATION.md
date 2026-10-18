@@ -14,6 +14,26 @@ PHP 版使用独立的 InnoDB 文档表、事务锁行及队列租约，不执�
 - 使用自己的 HTTPS 域名完成网页安装。数据库密码、供应商密钥在自己的安装页填写，不要发到聊天、工单或公开日志。
 - 使用 PHP CLI 常驻队列，或 1Panel 每分钟执行一次计划任务。网站进程不承担可靠后台调度。
 
+## 三步装完（推荐路径）
+
+下面的命令在运行 PHP 的容器内执行（1Panel 用 `docker exec -it -u www-data <php容器>`），路径换成站点实际目录。
+
+```sh
+# 1. 自检：PHP 版本、扩展、私有目录；带上 BAIZE_DB_* 还能顺带测数据库连接
+BAIZE_DB_HOST=mysql BAIZE_DB_NAME=baize BAIZE_DB_USER=baize BAIZE_DB_PASS='…' \
+  php /www/sites/<域名>/index/bin/install.php --check
+
+# 2. 安装：终端里问几个问题，装完直接登录，不需要打开安装页
+php /www/sites/<域名>/index/bin/install.php --interactive
+
+# 3. 队列：每分钟把采集到的事件聚合成看板数据
+php /www/sites/<域名>/index/bin/worker.php --once
+```
+
+`--interactive` 依次询问公开访问地址、数据库四项、管理员姓名/邮箱/密码。所有项都可以用 `BAIZE_PUBLIC_URL`、`BAIZE_DB_*`、`BAIZE_ADMIN_*` 环境变量预置，便于脚本化；提示会回显输入的密码，优先用环境变量传入。
+
+想用网页安装时，先执行 `--prepare` 生成一次性 nonce，再打开 `https://<域名>/install.php`。页面顶部会显示环境自检结果，并给出需要执行的两条命令。nonce 的作用是证明你拥有服务器写权限，避免陌生人抢先认领实例；安装成功后立即作废，只需要做一次。
+
 ## 准备安装包
 
 这是发布端操作；只在有源码和 Node.js 的构建环境执行：
@@ -71,7 +91,7 @@ docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/install.ph
 docker exec -u www-data <php容器> cat /www/sites/<域名>/index/private/keys/install-nonce.json
 ```
 
-**③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，直接用 `--stdin-json`：
+**③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，用 `--interactive` 在终端逐项回答即可；需要脚本化时再用 `--stdin-json`：
 
 ```bash
 read -rsp 'nonce: ' NONCE; echo
