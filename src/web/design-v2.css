@@ -604,3 +604,11 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 /* 卡片内表格去掉多余留白，靠表头承担标题 */
 .dim-grid>section>.table-wrap{margin:0}
 .dim-grid>section>.table-wrap table{margin:0}
+
+/* 报表页通用排版：窄正文、限定控件宽度、空状态成框 */
+.workspace main .panel>p{max-width:72ch;margin:0 0 12px;line-height:1.75}
+.workspace main .panel>label{max-width:340px}
+.workspace main .panel>label>select{max-width:100%}
+.workspace main .panel>h3{margin:26px 0 10px;font-size:14px;letter-spacing:.01em;color:var(--ink2);font-weight:600}
+.workspace main .panel>h2{margin-bottom:14px}
+.workspace main .panel>.empty{margin:12px 0;padding:18px 16px;border:1px dashed var(--line);border-radius:10px;background:var(--bg);color:var(--ink2);font-size:13px;text-align:center}
