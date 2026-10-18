@@ -741,3 +741,11 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .workspace main[data-tab="settings"]>section.panel>h2,
 .workspace main[data-tab="settings"]>section.panel>.product-promise{column-span:all}
 @media(max-width:1100px){.workspace main[data-tab="settings"]>section.panel{columns:1}}
+
+/* 全面审计修正：设置页内部分栏、地域地图限高、长表单折叠 */
+.workspace main[data-tab="settings"]>section.panel{columns:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 22px;align-items:start}
+.workspace main[data-tab="settings"]>section.panel>.settings-group{min-width:0}
+.workspace main[data-tab="audience"] .geography-map{height:420px}
+
+/* 设置页：网格反而更高（行高被最高分组撑满），退回单列 */
+.workspace main[data-tab="settings"]>section.panel{display:block;columns:1}
