@@ -99,7 +99,7 @@ node /opt/baize-updater/baize-php-distribution.mjs --config /etc/baize/updater.j
 node /opt/baize-updater/baize-import-update.mjs --config /etc/baize/updater.json --bundle /absolute/received/delta
 ```
 
-导入先核验当前基础、签名、结构兼容和全部 blob，再原子发布本地 `latest.json`。中断的 `latest.pending` 保留并要求主机检查，不自动相信未完成导入。之后拥有者在后台检查更新、阅读发行说明与变化清单、确认维护窗口，再执行更新。页面显示目标与当前 revision、清单 SHA256、预计下载量、备份及各阶段结果；应用操作 UUID 和预览身份防止重复或换包。
+导入先核验当前基础、签名、结构兼容和全部 blob，再原子发布本地 `latest.json`。中断的 `latest.pending` 保留并要求主机检查，不自动相信未完成导入。之后拥有者在后台检查更新、阅读发行说明与变化清单、确认维护窗口，再执行更新。PHP-FPM 先持久接收操作、完成网页响应，再确认执行；确认中断十秒后标为中断，保留旧服务并允许重新检查。执行器重启也不会执行未确认的请求。页面显示目标与当前 revision、清单 SHA256、预计下载量、备份及各阶段结果；应用操作 UUID 和预览身份防止重复或换包。
 
 联网模式把 `offlineDirectory` 换为固定 HTTPS `url`，两者只能选一；可配置私有 `authorizationFile`（0600，仅发送到固定 origin）。公钥不能从待验证更新站自行获取后直接信任。接收方仍会校验每个变化文件，断网/损坏包不会改用全包或切换旧实例。
 

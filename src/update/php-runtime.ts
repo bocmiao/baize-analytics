@@ -17,7 +17,7 @@ const fs=require('node:fs'),cp=require('node:child_process');
 const spec=JSON.parse(process.argv[1]);let stopping=false,failed=false;
 const children=spec.commands.map(command=>{const p=cp.spawn(command[0],command.slice(1),{env:spec.env,cwd:spec.cwd,detached:true,stdio:['ignore','ignore','inherit']});p.once('error',()=>{failed=true;stop();});p.once('exit',code=>{if(!stopping){if(spec.once&&code===0){stopping=true;}else{failed=true;stop();}}});return p;});
 function stop(){if(stopping)return;stopping=true;try{const f=fs.openSync(spec.gate+'.watchdog','w',0o600);fs.writeFileSync(f,JSON.stringify({version:1,maintenance:true,operationId:'executor-disconnected'}));fs.fsyncSync(f);fs.closeSync(f);fs.renameSync(spec.gate+'.watchdog',spec.gate);const d=fs.openSync(require('node:path').dirname(spec.gate),'r');fs.fsyncSync(d);fs.closeSync(d);}catch{failed=true;}
-for(let i=0;i<children.length;i++){const p=children[i];if(p.pid&&p.exitCode===null&&p.signalCode===null)try{process.kill(-p.pid,spec.signals[i]);}catch{}}
+for(let i=0;i<children.length;i++){const p=children[i];if(p.pid&&p.exitCode===null&&p.signalCode===null)try{process.kill(p.pid,spec.signals[i]);}catch{}}
 const timer=setTimeout(()=>{failed=true;for(const p of children)if(p.pid)try{process.kill(-p.pid,'SIGKILL');}catch{}},40000);timer.unref();}
 process.stdin.resume();process.stdin.on('end',stop);process.stdin.on('data',stop);process.on('SIGTERM',stop);process.on('SIGINT',stop);
 setInterval(()=>{if(stopping&&children.every(p=>p.exitCode!==null||p.signalCode!==null))process.exit(failed?1:0);},50);
@@ -37,7 +37,7 @@ export class PhpRuntime implements AgentRuntime {
  setActiveGuard(guard:()=>void){this.assertActive=guard;}
  private environment():NodeJS.ProcessEnv{return {...this.env,PATH:process.env.PATH,BAIZE_UPDATE_DATA_DIR:this.config.dataDir,BAIZE_UPDATE_KEY_DIR:this.config.keyDir,BAIZE_UPDATE_PUBLIC_URL:this.config.publicUrl,BAIZE_UPDATE_SOCKET:join(this.config.agentDir,'executor.sock'),BAIZE_UPDATE_GATE:join(this.config.agentDir,'maintenance.json'),BAIZE_UPDATE_LAUNCH_ID:this.launchId};}
  private async run(pointer:Pointer,commands:string[][],signals:string[],once=false){
-  this.assertActive();const record=join(this.directory,'watchdog.json');if(existsSync(record)){const old=trustedJSON<{pid:number;identity:string}>(record);for(let i=0;i<100;i++){let same=false;try{same=readFileSync('/proc/'+old.pid+'/stat','utf8').split(' ')[21]===old.identity;}catch{}if(!same)break;if(i===99)throw Error('UPDATE_PHP_PREVIOUS_SERVICE_RUNNING');await sleep(100);}}
+  this.assertActive();const record=join(this.directory,'watchdog.json');if(existsSync(record)){const old=trustedJSON<{pid:number;identity:string}>(record);for(let i=0;i<100;i++){let same=false;try{const fields=readFileSync('/proc/'+old.pid+'/stat','utf8').split(' ');same=fields[2]!=='Z'&&fields[21]===old.identity;}catch{}if(!same)break;if(i===99)throw Error('UPDATE_PHP_PREVIOUS_SERVICE_RUNNING');await sleep(100);}}
   const child=spawn(this.config.nodePath,['-e',watchdog,JSON.stringify({commands,signals,once,env:this.environment(),cwd:pointer.root,gate:join(this.config.agentDir,'maintenance.json')})],{stdio:['pipe','ignore','ignore']});this.child=child;
   await new Promise<void>((done,reject)=>{child.once('spawn',done);child.once('error',()=>reject(Error('UPDATE_PROCESS_START_FAILED')));});
   durableJSON(record,{pid:child.pid,identity:readFileSync('/proc/'+child.pid+'/stat','utf8').split(' ')[21]});return child;

@@ -37,7 +37,7 @@ final class UpdateBridge
     public static function status(App $a,Http $r):array
     {
         $u=self::owner($a,$r);try{$remote=self::request('status');if(($remote['ownerId']??null)!==$u['id'])Http::error(403,'UPDATE_INSTANCE_OWNER_REQUIRED');return ['configured'=>true]+$remote;}
-        catch(HttpError $e){throw $e;}catch(\Throwable $e){return ['configured'=>false,'runtime'=>'php','profile'=>'standard','phase'=>'idle','deploymentMode'=>'php-fpm-unmanaged','current'=>self::identity(),'reason'=>preg_match('/^UPDATE_[A-Z_]+$/D',$e->getMessage())?$e->getMessage():'UPDATE_EXECUTOR_UNAVAILABLE'];}
+        catch(HttpError $e){throw $e;}catch(\Throwable $e){return ['configured'=>false,'runtime'=>'php','profile'=>'standard','phase'=>'idle','deploymentMode'=>'php-fpm-unmanaged','mechanism'=>'file-delta','current'=>self::identity(),'reason'=>preg_match('/^UPDATE_[A-Z_]+$/D',$e->getMessage())?$e->getMessage():'UPDATE_EXECUTOR_UNAVAILABLE'];}
     }
     public static function command(App $a,Http $r,string $action):array
     {
@@ -45,7 +45,9 @@ final class UpdateBridge
         $u=self::owner($a,$r);$allowed=['operationId','expectedRevision','expectedManifestSha256'];foreach(array_keys($r->body) as $key)if(!in_array($key,$allowed,true))Http::error(400,'UPDATE_REQUEST_INVALID');
         $body=$r->body;if($action!=='check'&&(!is_string($body['operationId']??null)||!preg_match('/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/D',$body['operationId'])))Http::error(400,'update_operation_id_required');
         if($action==='apply'&&(!preg_match('/^[a-f0-9]{40}$/D',$body['expectedRevision']??'')||!preg_match('/^[a-f0-9]{64}$/D',$body['expectedManifestSha256']??'')))Http::error(400,'update_release_preview_required');
-        try{$remote=self::request('status');if(($remote['ownerId']??null)!==$u['id'])Http::error(403,'UPDATE_INSTANCE_OWNER_REQUIRED');$result=self::request($action,['actorId'=>$u['id']]+$body);$a->audit($u['id'],null,'instance_update_'.$action,['operationId'=>$body['operationId']??null]);return Http::json($result,202);}
+        try{$remote=self::request('status');if(($remote['ownerId']??null)!==$u['id'])Http::error(403,'UPDATE_INSTANCE_OWNER_REQUIRED');$defer=$action!=='check'&&function_exists('fastcgi_finish_request');$result=self::request($action,['actorId'=>$u['id'],'awaitResponse'=>$defer]+$body);$a->audit($u['id'],null,'instance_update_'.$action,['operationId'=>$body['operationId']??null]);
+            if(($result['awaitResponse']??false)&&$defer){register_shutdown_function(static function()use($u,$body):void{fastcgi_finish_request();try{self::request('acknowledge',['actorId'=>$u['id'],'operationId'=>$body['operationId']]);}catch(\Throwable){error_log('Baize update acknowledgement unavailable; inspect persisted operation status');}});}
+            return Http::json($result,202);}
         catch(HttpError $e){throw $e;}catch(\Throwable $e){$code=preg_match('/^UPDATE_[A-Z_]+$/D',$e->getMessage())?$e->getMessage():'UPDATE_EXECUTOR_UNAVAILABLE';Http::error($code==='UPDATE_BUSY'?409:503,$code);}
     }
 }

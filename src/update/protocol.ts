@@ -25,6 +25,7 @@ export interface SignedDelta {body:string;signature:string;keyId:string}
 export function parseRelease(bytes:string):UpdateRelease{
  const result=release.parse(JSON.parse(bytes));
  if(result.mechanismTest)throw Error('UPDATE_TEST_RELEASE_REJECTED');
+ if(result.variant==='php-fpm'&&([...result.files,...result.directories].some(e=>e.path==='private'||e.path.startsWith('private/'))||result.files.some(e=>e.type==='symlink')))throw Error('UPDATE_PHP_PRIVATE_OR_LINK_FORBIDDEN');
  const seen=new Set<string>();
  for(const e of result.files){
   if(e.path==='release-manifest.json'||seen.has(e.path))throw Error('UPDATE_DUPLICATE_PATH');seen.add(e.path);

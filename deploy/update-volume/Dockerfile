@@ -2,7 +2,7 @@
 FROM postgres:17-bookworm AS pgtools
 FROM node:24-bookworm-slim
 ENV NODE_ENV=production
-COPY dist/updater /opt/baize-updater
+COPY --chmod=0755 dist/updater /opt/baize-updater
 COPY --from=pgtools /usr/lib/postgresql/17 /opt/postgresql/17
 COPY --from=pgtools /usr/lib/x86_64-linux-gnu /opt/postgresql/lib
 USER node

@@ -1,4 +1,4 @@
-import {describe,it,expect} from 'vitest';
+import {describe,it,expect,vi} from 'vitest';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,readdirSync,lstatSync,chmodSync,existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
@@ -9,6 +9,9 @@ import {verifyUpdateRelease} from '../../src/update/release.js';
 import {importOffline} from '../../src/update/offline.js';
 import {publishPhpInstall,installPhpRelease} from '../../src/update/php-distribution.js';
 import {UpdateSource} from '../../src/update/source.js';
+import {runExecutor} from '../../src/update/cli.js';
+import {PhpRuntime} from '../../src/update/php-runtime.js';
+import {request} from 'node:http';
 
 function release(root:string,revision:string,text='before',sql='CREATE TABLE a(id int)'){
  mkdirSync(root,{recursive:true,mode:0o700});const contents={'src/Database.php':'<?php // fixed schema runner','migrations/001.sql':sql,'public/index.php':'<?php','public/index.html':'<div id="root">'+text+'</div>','bootstrap.php':'<?php','bin/worker.php':'<?php','bin/update-ops.php':'<?php','php-release-manifest.json':JSON.stringify({workingTreeChanges:false})},dirs=new Set<string>();
@@ -23,4 +26,16 @@ describe('PHP signed installation and offline incremental delivery',()=>{
  it('authenticates all blobs before offline publication and can check without network',async()=>{const f=setup();try{const bundle=join(f.root,'bundle');publishDelta({baseRoot:f.base,targetRoot:f.target,output:bundle,privateKey:f.privateKey,keyId:'isolated',label:'PHP verified target',notes:['real changes']});const hash=readdirSync(join(bundle,'blobs'))[0]!;const bytes=readFileSync(join(bundle,'blobs',hash));writeFileSync(join(bundle,'blobs',hash),'corrupt');expect(()=>importOffline(f.configPath,bundle)).toThrow('UPDATE_BLOB_INTEGRITY_FAILED');expect(existsSync(f.config.source.offlineDirectory)).toBe(false);writeFileSync(join(bundle,'blobs',hash),bytes);expect(importOffline(f.configPath,bundle).imported).toBe(true);const latest=await new UpdateSource(f.config.source).latest();expect(latest.delta.label).toBe('PHP verified target');expect(latest.delta.compatibility.variant).toBe('php-fpm');}finally{cleanup(f.root);}});
  it('installs a signed full package only to the pinned new directory and preserves config/data',()=>{const f=setup();try{const bundle=join(f.root,'install-bundle'),result=publishPhpInstall(f.target,bundle,f.key,'isolated'),config={...f.config,initialRoot:join(f.root,'releases/new'),initialManifestSha256:result.manifestSha256};writeFileSync(f.configPath,JSON.stringify(config),{mode:0o600});mkdirSync(config.dataDir,{mode:0o700});writeFileSync(join(config.dataDir,'retained'),'keep');const original=readFileSync(f.configPath);expect(installPhpRelease(f.configPath,bundle).installed).toBe(true);expect(verifyUpdateRelease(config.initialRoot).revision).toBe('b'.repeat(40));expect(readFileSync(join(config.dataDir,'retained'),'utf8')).toBe('keep');expect(readFileSync(f.configPath)).toEqual(original);expect(()=>installPhpRelease(f.configPath,bundle)).toThrow('UPDATE_INSTALL_TARGET_MUST_BE_NEW');}finally{cleanup(f.root);}});
  it('rejects unknown signer, tampered identity and modified installed files',()=>{const f=setup();try{const bundle=join(f.root,'install-bundle');publishPhpInstall(f.target,bundle,f.key,'unknown');const config={...f.config,initialRoot:join(f.root,'releases/new')};writeFileSync(f.configPath,JSON.stringify(config),{mode:0o600});expect(()=>installPhpRelease(f.configPath,bundle)).toThrow('UPDATE_SIGNING_KEY_UNKNOWN');expect(existsSync(config.initialRoot)).toBe(false);writeFileSync(join(f.base,'public/index.php'),'<?php // edited');expect(()=>verifyUpdateRelease(f.base)).toThrow('UPDATE_RELEASE_CONTENT_MISMATCH');}finally{cleanup(f.root);}});
+ it('persists admission before acknowledgement, blocks overlap, and never executes an unacknowledged restart',async()=>{
+  const f=setup();let service:Awaited<ReturnType<typeof runExecutor>>|undefined;
+  const send=(body:any)=>new Promise<any>((done,reject)=>{const bytes=JSON.stringify(body),r=request({socketPath:join(f.config.agentDir,'executor.sock'),path:'/commands',method:'POST',headers:{'content-type':'application/json','content-length':Buffer.byteLength(bytes)}},res=>{let s='';res.on('data',b=>s+=b);res.on('end',()=>done({status:res.statusCode,body:JSON.parse(s)}));});r.on('error',reject);r.end(bytes);});
+  try{
+   writeFileSync(f.config.php.configPath,'<?php return [];',{mode:0o600});writeFileSync(f.config.envFile,`DATA_DIR=${f.config.dataDir}\nKEYS_DIR=${f.config.keyDir}\nPUBLIC_URL=${f.config.publicUrl}\nBAIZE_CONFIG_PATH=${f.config.php.configPath}\nBAIZE_PHP_SINGLE_INSTANCE=1\n`,{mode:0o600});mkdirSync(f.config.dataDir,{mode:0o700});mkdirSync(f.config.keyDir,{mode:0o700});
+   vi.spyOn(PhpRuntime.prototype,'start').mockResolvedValue();vi.spyOn(PhpRuntime.prototype,'healthy').mockResolvedValue();vi.spyOn(PhpRuntime.prototype,'stop').mockResolvedValue();const latest=vi.spyOn(UpdateSource.prototype,'latest').mockRejectedValue(Error('UPDATE_SOURCE_NETWORK_FAILED'));
+   service=await runExecutor(f.configPath);const c={action:'apply',actorId:f.config.ownerId,operationId:randomUUID(),awaitResponse:true,expectedRevision:'b'.repeat(40),expectedManifestSha256:'1'.repeat(64)};
+   expect((await send(c)).body.awaitResponse).toBe(true);expect(service.agent.store.state.phase).toBe('preflight');expect(latest).not.toHaveBeenCalled();expect((await send({...c,operationId:randomUUID()})).status).toBe(409);
+   expect((await send({action:'acknowledge',actorId:c.actorId,operationId:c.operationId})).status).toBe(202);await expect.poll(()=>service!.agent.store.state.phase).toBe('failed');expect(latest).toHaveBeenCalledTimes(1);
+   const unacknowledged={...c,operationId:randomUUID()};await send(unacknowledged);await service.close();service=await runExecutor(f.configPath);expect(service.agent.store.state.phase).toBe('interrupted');expect(latest).toHaveBeenCalledTimes(1);expect((await send({action:'acknowledge',actorId:c.actorId,operationId:unacknowledged.operationId})).body.cached).toBe(true);expect(latest).toHaveBeenCalledTimes(1);
+  }finally{await service?.close();vi.restoreAllMocks();cleanup(f.root);}
+ });
 });
