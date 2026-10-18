@@ -612,3 +612,8 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .workspace main .panel>h3{margin:26px 0 10px;font-size:14px;letter-spacing:.01em;color:var(--ink2);font-weight:600}
 .workspace main .panel>h2{margin-bottom:14px}
 .workspace main .panel>.empty{margin:12px 0;padding:18px 16px;border:1px dashed var(--line);border-radius:10px;background:var(--bg);color:var(--ink2);font-size:13px;text-align:center}
+
+/* 审计发现：多个报表页的 select 仍被拉满整行（sources/audience 702px、ai 1353px 等） */
+.workspace main .panel select{max-width:340px}
+/* 报表页里未包在 .table-wrap 内的表格，兜底允许横向滚动 */
+.workspace main .panel>table{display:block;overflow-x:auto;max-width:100%}
