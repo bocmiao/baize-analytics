@@ -119,12 +119,17 @@ export async function createApp(options:AppOptions={}){
   const geoLicense=configuredGeo?configuredGeo.enabled?configuredGeo.licenseKey:undefined:process.env.MAXMIND_LICENSE_KEY;
   if(process.env.BAIZE_NATIVE_VALIDATE_ONLY!=='1'&&geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
   const updateIdentity=runningUpdateIdentity();
-  const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??false});
+  const trustedProxies=process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??[];
+  let proxyWarningShown=false;
+  const app=Fastify({logger:false,bodyLimit:1024*1024,trustProxy:trustedProxies.length?trustedProxies:false});
   await app.register(cookie);
   app.addHook('onRequest',async req=>{if(maintenanceActive()&&!['GET','HEAD','OPTIONS'].includes(req.method)&&!req.url.startsWith('/api/admin/updates/'))throw new HttpError(503,'update_maintenance_active');});
   if(options.performanceSink)app.addHook('onRequest',(req,reply,done)=>{const path=req.url.split('?')[0]!;const route=path==='/api/collect'?'collect':/^\/api\/v1\/sites\/[^/]+\/stats$/.test(path)?'stats':'other';withPerformanceObservation('http_request',options.performanceSink,()=>{const scope=getPerformanceScopeId();if(scope)reply.header('X-Baize-Performance-Scope',scope);done();},route);});
   app.addHook('onRequest',async(req,reply)=>{
     reply.header('X-Content-Type-Options','nosniff').header('Referrer-Policy','strict-origin-when-cross-origin');
+    // 反代存在但没配 TRUSTED_PROXIES 时，所有访客都会被记成代理地址；这里只提醒一次，
+    // 不去猜哪些代理可信（猜错等于允许伪造 IP）。
+    if(!proxyWarningShown&&trustedProxies.length===0&&req.headers['x-forwarded-for']){proxyWarningShown=true;console.warn('[baize] 收到 X-Forwarded-For 但未设置 TRUSTED_PROXIES：访客 IP 会全部记录为代理地址，地域/去重访客/限流都会失真。请把代理地址填入 TRUSTED_PROXIES 后重启。');}
     if(!req.url.startsWith('/embed/'))reply.header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
     if(!['GET','HEAD','OPTIONS'].includes(req.method)&&req.url!=='/api/collect'&&!req.url.startsWith('/api/v1/experiments/')&&!req.headers.authorization){
       const origin=req.headers.origin;if(origin&&origin!==new URL(config.publicUrl).origin)throw new HttpError(403,'跨站请求被拒绝');

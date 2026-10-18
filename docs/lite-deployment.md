@@ -45,3 +45,20 @@ journal and database tombstones, and does not switch traffic. Keep the original
 volumes until the restored target has passed integrity, statistics and deletion
 checks. Site retention uses an exact millisecond cutoff; incomplete retired
 boundary data and unprovable session history are shown as unavailable.
+
+## Behind a reverse proxy
+
+Lite binds to loopback only. When nginx, Caddy or a panel sits in front:
+
+- set `PUBLIC_URL` to the real HTTPS origin, otherwise session cookies are not
+  marked Secure and absolute links point at `http://localhost:3000`;
+- set `TRUSTED_PROXIES` to the proxy address (`127.0.0.1`, `172.17.0.1` or a
+  CIDR). Left empty, every visitor is recorded with the proxy address: geography
+  stays unknown, distinct visitors collapse to one and rate limits are shared;
+- proxy every path to the container port. Do not point the proxy at `dist/web`
+  as a document root: `/login`, `/app` and `/api/*` are produced by the app, and
+  a static root answers them with 404.
+
+The app logs a single warning on the first request carrying `X-Forwarded-For`
+while `TRUSTED_PROXIES` is empty. It does not guess which proxies are
+trustworthy, because a wrong guess allows callers to forge their own IP.
