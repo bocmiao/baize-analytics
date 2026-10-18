@@ -18,6 +18,21 @@ export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
  const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);if(ts===null)return '—';return new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
  const tops:[string,string][]=[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']];
  const anyTop=tops.some(([key])=>Array.isArray(data[key])&&(data[key] as Row[]).length>0);
+ // 没有事件时不该复用三栏布局：宽而扁的卡片正是"又空又没对齐"的来源。
+ const windowRange = `${stamp(metadata.from)} — ${stamp(metadata.to)}`;
+ const idle = events.length===0 && (!complete || Number(metadata.pv||0)===0);
+ if (idle) return <section className="panel realtime-idle" aria-label={en?'Realtime idle':'实时（空闲）'}>
+  <div className="realtime-idle-head">
+   <div className="realtime-online"><span className="overview-live-dot" aria-hidden="true"/><div><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div></div>
+   <p className="realtime-window-range">{windowRange}{timezone?`（${timezone}）`:''}</p>
+  </div>
+  <p className="realtime-idle-note">{en?'No events in the last 30 minutes. The live bars and visit stream appear here as soon as the tracker reports a visit.':'过去 30 分钟没有采集到事件。埋点上报后，实时曲线与访问流会自动出现在这里。'}</p>
+  <div className="realtime-window-metrics">
+   <p>{t('近 5 分钟活跃')}<strong>{online}</strong></p>
+   <p>{t('最近30分钟浏览量')}<strong>{complete?String(metadata.pv):'—'}</strong></p>
+   <p>{t('覆盖率')}<strong>{Math.round(Number(metadata.coverage||0)*100)}%</strong></p>
+  </div>
+ </section>;
  return <>
   <section className="panel realtime-stage" aria-label={en?'Live pulse':'实时脉冲'}>
    <div className="realtime-online"><span className="overview-live-dot" aria-hidden="true"/><div><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div></div>
