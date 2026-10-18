@@ -49,6 +49,8 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 
 输出目录必须是新目录。打包清单包含每个文件的长度、SHA-256及权限，记录源码修订和构建时是否有未提交改动。代码目录为755、文件为644、CLI文件为755，空私有目录为700，不受发布环境umask影响。校验应在安装前、未加入实例配置时执行。打包脚本不递归复制仓库、私有配置、数据库、测试证据或 `node_modules`。
 
+归档里的权限位由打包脚本统一写入，因此在 Windows/macOS 上打包同样可用：Windows 表达不了 POSIX 权限，脚本会在生成 tar 后重写头部权限字段，接收方用 `tar --same-permissions` 解出来就是 755/700/644，不需要再手工 `chmod`。
+
 ## 在 1Panel 安装
 
 1. 创建 PHP 8.3+ 网站和独立数据库。解压安装包，将网站运行目录设为包内 `public/`；配置 HTTPS。命令行解压使用 `tar --same-permissions -xzf baize-php.tar.gz -C /your/new/directory` 保留包内权限；面板解压后按清单检查代码可读、私有目录为700。Nginx 规则参考包内 `deploy/nginx.conf.example`，其 PHP-FPM 地址需换为该站点现有运行环境的地址。

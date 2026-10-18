@@ -5,6 +5,15 @@ require dirname(__DIR__).'/bootstrap.php';
 
 const BAIZE_REQUIRED_EXTENSIONS=['pdo_mysql','curl','mbstring','dom','Phar','openssl','zlib','intl'];
 
+/** 权限类失败最常见的修法：把私有目录交给当前 PHP 用户，并收回 077。 */
+function baize_repair_command(string $dir):string
+{
+    $uid=function_exists('posix_geteuid')?posix_geteuid():null;
+    $gid=function_exists('posix_getegid')?posix_getegid():null;
+    $owner=$uid!==null?$uid.':'.$gid:'<PHP运行用户>:<组>';
+    return 'chown -R '.$owner.' '.escapeshellarg($dir).' && chmod 700 '.escapeshellarg($dir);
+}
+
 /** 安装前自检：把网页安装会在提交时才暴露的问题提前打出来。 */
 function baize_cli_check(?array $db=null):int
 {
@@ -20,7 +29,10 @@ function baize_cli_check(?array $db=null):int
     $say($geo!=='','GeoIP 解码（bcmath 或 gmp）',$geo!==''?$geo:'两者都未启用，地域会显示未知');
     $privateDir=dirname(baize_config_path());
     try{Baize\Installer::privateDirectory($privateDir);$say(true,'私有配置目录',$privateDir);}
-    catch(Throwable $e){$say(false,'私有配置目录',$privateDir.' → '.$e->getMessage());}
+    catch(Throwable $e){
+        $say(false,'私有配置目录',$privateDir.' → '.$e->getMessage());
+        fwrite(STDOUT,'       修复（在宿主机以 root 执行）：'.baize_repair_command($privateDir)."\n");
+    }
     if(is_file(baize_config_path())){
         fwrite(STDOUT,"[info] 安装状态 — 已安装，直接登录 /app（本检查只评估环境，不改变实例状态）\n");
     }else{
@@ -70,7 +82,7 @@ try{
             'password'=>baize_cli_ask('管理员密码（至少 12 位，会回显）','BAIZE_ADMIN_PASSWORD'),
         ];
         Baize\Installer::install($input,baize_config_path());
-        fwrite(STDOUT,"安装完成。用刚才的邮箱和密码登录 /app。\n");exit(0);
+        fwrite(STDOUT,"安装完成。\n  登录：".$input['public_url']."/app\n  队列：每分钟执行一次 `php bin/worker.php --once`（面板计划任务里配置同一命令）\n");exit(0);
     }
     if(in_array('--prepare',$argv,true)){
         $dir=dirname(baize_config_path()).'/keys';$guard=Baize\Installer::prepareFiles($dir);fwrite(STDOUT,"已生成私有安装凭据。请在服务器读取 nonce（不要粘贴到聊天）：\n".$guard['path']."\n");exit(0);
@@ -88,5 +100,9 @@ try{
 }catch(Throwable $e){
     // CLI 运行在本机受信环境，必须把失败原因打出来；只返回类名会让排障无从下手。
     $detail=$e instanceof Baize\HttpError?$e->errorCode:trim(get_class($e).($e->getMessage()!==''?': '.$e->getMessage():''));
-    fwrite(STDERR,"安装未完成：".$detail."\n");exit(1);
+    fwrite(STDERR,"安装未完成：".$detail."\n");
+    if(preg_match('/INSTALL_DIRECTORY|PRIVATE_|MASTER_KEY|Permission denied/',$detail)===1){
+        fwrite(STDERR,'提示：私有目录必须归 PHP 运行用户所有且为 0700，可在宿主机以 root 执行 '.baize_repair_command(dirname(baize_config_path()))."\n");
+    }
+    exit(1);
 }
