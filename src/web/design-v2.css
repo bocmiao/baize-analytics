@@ -632,3 +632,52 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .workspace main>section.panel:has(>.settings-group)>h2,
 .workspace main>section.panel:has(>.settings-group)>.product-promise{grid-column:1/-1}
 .workspace main>section.panel:has(>.settings-group)>.settings-group{min-width:0}
+
+/* 长报表页：两栏网格，避免 6~8 个面板纵向堆成一条长带 */
+.workspace main[data-tab="seo"],
+.workspace main[data-tab="settings"],
+.workspace main[data-tab="ga4"],
+.workspace main[data-tab="reports"],
+.workspace main[data-tab="ai"],
+.workspace main[data-tab="members"],
+.workspace main[data-tab="channels"]{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.workspace main[data-tab="seo"]>*,
+.workspace main[data-tab="settings"]>*,
+.workspace main[data-tab="ga4"]>*,
+.workspace main[data-tab="reports"]>*,
+.workspace main[data-tab="ai"]>*,
+.workspace main[data-tab="members"]>*,
+.workspace main[data-tab="channels"]>*{min-width:0}
+.workspace main[data-tab="seo"]>.workspace-toolbar,
+.workspace main[data-tab="seo"]>.page-header,
+.workspace main[data-tab="seo"]>.scope-context,
+.workspace main[data-tab="settings"]>.workspace-toolbar,
+.workspace main[data-tab="settings"]>.page-header,
+.workspace main[data-tab="settings"]>.scope-context,
+.workspace main[data-tab="ga4"]>.workspace-toolbar,
+.workspace main[data-tab="ga4"]>.page-header,
+.workspace main[data-tab="ga4"]>.scope-context,
+.workspace main[data-tab="reports"]>.workspace-toolbar,
+.workspace main[data-tab="reports"]>.page-header,
+.workspace main[data-tab="reports"]>.scope-context,
+.workspace main[data-tab="ai"]>.workspace-toolbar,
+.workspace main[data-tab="ai"]>.page-header,
+.workspace main[data-tab="ai"]>.scope-context,
+.workspace main[data-tab="members"]>.workspace-toolbar,
+.workspace main[data-tab="members"]>.page-header,
+.workspace main[data-tab="members"]>.scope-context,
+.workspace main[data-tab="channels"]>.workspace-toolbar,
+.workspace main[data-tab="channels"]>.page-header,
+.workspace main[data-tab="channels"]>.scope-context{grid-column:1/-1}
+.workspace main[data-tab="seo"]>section.panel:first-of-type,
+.workspace main[data-tab="settings"]>section.panel:first-of-type,
+.workspace main[data-tab="ga4"]>section.panel:first-of-type{grid-column:1/-1}
+@media(max-width:1100px){
+ .workspace main[data-tab="seo"],
+ .workspace main[data-tab="settings"],
+ .workspace main[data-tab="ga4"],
+ .workspace main[data-tab="reports"],
+ .workspace main[data-tab="ai"],
+ .workspace main[data-tab="members"],
+ .workspace main[data-tab="channels"]{display:block}
+}
