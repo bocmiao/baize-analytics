@@ -31,9 +31,9 @@ export function RealtimeSummary({data,timezone,site}:{data:Row;timezone?:string;
  // 窗口时间按站点时区显示，不能把 UTC 的 ISO 串直接打到界面上。
  const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);if(ts===null)return '—';return new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
  const origin=site?.domain?(/^https?:\/\//i.test(site.domain)?site.domain.replace(/\/+$/,''):`https://${site.domain.replace(/\/+$/,'')}`):'';
- const pageLink=(path:unknown)=>{const text=String(path??'/');if(!origin)return text;return <a href={`${origin}${text.startsWith('/')?text:`/${text}`}`} target="_blank" rel="noopener noreferrer">{text}</a>;};
+ const host=(site?.domain||'').replace(/^https?:\/\//i,'').replace(/\/+$/,'');const pageLabel=(path:unknown)=>{const text=String(path??'/');if(!host)return text;return text==='/'?host:`${host}${text.startsWith('/')?text:`/${text}`}`;};const pageLink=(path:unknown)=>{const text=String(path??'/');if(!origin)return text;return <a href={`${origin}${text.startsWith('/')?text:`/${text}`}`} target="_blank" rel="noopener noreferrer">{pageLabel(path)}</a>;};
  // 心跳只是停留时长的心跳包，不是一次访问；把它混进访问列表会让人以为有 8 次访问。
- const pageviews=events.filter(event=>String(event.type||'')!=='heartbeat');
+ 
  const tops:[string,string][]=[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']];
  const anyTop=tops.some(([key])=>Array.isArray(data[key])&&(data[key] as Row[]).length>0);
  const range=`${stamp(metadata.from)} — ${stamp(metadata.to)}${timezone?`（${timezone}）`:''}`;
@@ -67,8 +67,8 @@ export function RealtimeSummary({data,timezone,site}:{data:Row;timezone?:string;
   </section>
   <section className="panel rt-card rt-visits">
    <h3>{en?'Recent visits':'最近访问'}</h3>
-   {pageviews.length?<ol className="visit-stream">{pageviews.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{en?String(event.type||''):(eventLabels[String(event.type||'')]||String(event.type||''))}</small></li>)}</ol>
-    :<p className="empty">{en?'Only presence heartbeats so far — no page views yet.':'目前只有停留心跳，还没有页面浏览事件。'}</p>}
+   <p className="rt-legend">{en?'A page view is one visit. A presence heartbeat is reported every 15s and only accumulates time on page.':'页面浏览代表一次访问；停留心跳每 15 秒上报一次，只用来累计停留时长，不代表新的访问。'}</p>{events.length?<ol className="visit-stream">{events.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{en?String(event.type||''):(eventLabels[String(event.type||'')]||String(event.type||''))}</small></li>)}</ol>
+    :<p className="empty">{en?'No events in this window.':'这段时间没有事件。'}</p>}
   </section>
   {!complete?<section className="panel rt-card rt-wide"><p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p></section>
    :anyTop?tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];const isPages=key==='topPages';return <section className="panel rt-card rt-top" key={key} aria-label={t(title)}>

@@ -531,3 +531,5 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 /* 实时 Top 页面里的路径是外链，给一点可见的交互反馈 */
 .rt-top a{color:var(--jade);text-decoration:none;border-bottom:1px solid rgba(47,125,109,.35)}
 .rt-top a:hover{border-bottom-color:var(--jade)}
+
+.rt-legend{margin:-2px 0 8px;font-size:12px;color:var(--ink2);line-height:1.6}
