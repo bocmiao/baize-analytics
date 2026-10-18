@@ -1,3 +1,4 @@
+import {formatChartTime} from './chartTime';
 import type {TrendAnnotation} from './annotationTrend';
 import { useEffect, useRef, useState } from 'react';
 import type { Row } from './api';
@@ -17,7 +18,7 @@ function axisLabels(data: Row[]): string[] {
   const sameDay: boolean = labels.length > 1 && labels.every((label: string) => label.slice(0, 10) === first.slice(0, 10));
   return sameDay ? labels.map((label: string) => (label.length > 11 ? label.slice(11, 16) : label)) : labels;
 }
-function readable(v: unknown): string { return String(v ?? '—'); }
+function readable(v: unknown): string { return formatChartTime(v); }
 /** Element resizing also covers sidebar/panel changes without a window resize. */
 export function observeChartSize(element:HTMLElement,chart:{resize:()=>void}) {
  let frame:number|undefined;
