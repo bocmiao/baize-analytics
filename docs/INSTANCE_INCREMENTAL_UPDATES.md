@@ -86,3 +86,8 @@ Lite依照独立运行树prune开发依赖，不携带标准版所需tsx/esbuild
 
 
 最新验收与六包清单见 [2026-10-14 最终复核](validation/INCREMENTAL_UPDATE_CLOSURE_20261014.md)。当前包分发因 Library 工具网络失败尚未完成；代码、清单和真实截图从现有私库获取。不要以历史包或本地路径替代最终下载交付。
+
+
+## PHP/MySQL 后台更新
+
+独立 PHP 运行时已增加真实后台更新入口，复用签名文件增量和持久事务；PHP-FPM、Nginx 与 worker 由独立伴随进程监管。签名完整包安装、离线导入、原生与 Docker 持久版本目录、数据保护及 MySQL 受控迁移见 [PHP 后台更新指南](PHP_BACKGROUND_UPDATES.md)。正式签名发行源尚未发布。

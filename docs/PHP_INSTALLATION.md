@@ -40,6 +40,10 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 
 不要使用 PHP 内置开发服务器承载正式网站；本地联调可用 `php -S 127.0.0.1:8080 -t public public/router.php`。
 
+## 后台更新
+
+签名完整包安装、后台检查与确认、独立 PHP-FPM/worker 监管、Docker 持久版本目录、离线导入和受控迁移见 [PHP 后台更新指南](PHP_BACKGROUND_UPDATES.md)。首次接入需主机操作者安装独立伴随执行器，原始旧包不能通过其 409 接口自行完成首次安装。
+
 ## 备份、恢复、升级
 
 备份不只包括数据库，还需要当前及历史主密钥、独立删除日志和配置。必须独立保留当前 `data_dir/privacy-deletions.jsonl`、`data_dir/privacy-watermark.json` 与 `key_dir/privacy-journal-identity.json`；这里的 `data_dir`、`key_dir` 指实例配置中的私有路径。数据库回滚后必须在对外服务之前重放保留下来的删除日志，防止旧备份使已经删除的访客、回放帧和派生内容重新出现。不得用旧备份覆盖较新的独立删除日志。恢复会验证删除日志身份；缺失日志或误建的空日志不能用于恢复旧备份，不能通过重新安装绕过。
