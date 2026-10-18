@@ -413,3 +413,22 @@ html[data-theme="dark"] .language select:hover{background:rgba(255,255,255,.06)}
 
 /* 核心指标表是 display:grid，colSpan 不生效；提示行必须显式跨列 */
 .overview-metrics td.hint{grid-column:1/-1;color:var(--ink2);font-size:13px;padding:10px 2px;border:0;background:transparent}
+
+/* 实时页：之前没有布局规则，三块内容和空 State 撑成一整屏 */
+.realtime-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 32px;align-items:start}
+.realtime-online{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.realtime-online>div{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.realtime-online span{color:var(--ink2);font-size:13px}
+.livecount{font-size:clamp(38px,5vw,56px);line-height:1;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+.realtime-block h3{font-size:14px;margin:0 0 6px;color:var(--ink)}
+.realtime-block .hint{margin:0 0 10px}
+.realtime-stage .minute-bars{height:56px}
+.realtime-window-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.realtime-window-head h3{margin:0}
+.realtime-window-head .hint{margin:0;font-variant-numeric:tabular-nums}
+.realtime-window-metrics{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.realtime-window-metrics p{display:grid;gap:2px;margin:0;padding:10px 16px;background:var(--bg);border-radius:10px;font-size:12px;color:var(--ink2)}
+.realtime-window-metrics strong{font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.realtime-tops{display:grid;gap:18px;margin-top:16px}
+.realtime-tops h4{margin:0 0 8px;font-size:13px;color:var(--ink2);font-weight:600}
+@media(max-width:900px){.realtime-stage{grid-template-columns:1fr}}
