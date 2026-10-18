@@ -553,3 +553,43 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .dim-more{margin-top:18px}
 .dim-more>summary{cursor:pointer;font-size:13px;color:var(--ink2);padding:4px 0}
 .dim-more[open]>summary{margin-bottom:12px}
+
+/* 页面页：顶部两块压缩，维度卡片同行等高 */
+.page-detail .chart{height:150px}
+.pages-table th{padding:8px 12px}
+.pages-table td{padding:9px 12px}
+.page-detail h2{margin:0 0 6px}
+.page-detail label{margin-bottom:6px}
+.page-detail>p{margin:4px 0 8px;font-size:12px}
+.page-detail h3{margin:10px 0 6px}
+.dim-grid{align-items:stretch}
+.dim-grid>section{display:flex;flex-direction:column;height:100%}
+.dim-grid>section>.table-wrap{flex:1}
+.dim-grid>section>h3{margin-bottom:6px}
+
+/* 来源与受众独立面板 */
+.page-dims h2{margin:0 0 10px;font-size:15px}
+.page-dims>h3{margin:0 0 6px}
+
+/* 页面页顶部两块并排，不再各占一横排 */
+.workspace main:has(> .panel .pages-table){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+.workspace main:has(> .panel .pages-table)>*{grid-column:1/-1}
+.workspace main:has(> .panel .pages-table)>.panel:has(.pages-table){grid-column:1}
+.workspace main:has(> .panel .pages-table)>.panel.page-detail{grid-column:2}
+.workspace main:has(> .panel .pages-table)>.panel.page-detail .chart{height:170px}
+@media(max-width:1100px){
+ .workspace main:has(> .panel .pages-table){display:block}
+}
+
+/* 恢复原尺寸：只并排，不压扁 */
+.page-detail .chart{height:260px}
+.workspace main:has(> .panel .pages-table)>.panel.page-detail .chart{height:260px}
+.pages-table th{padding:12px 14px}
+.pages-table td{padding:15px 14px}
+.page-detail>p{font-size:13px;margin:6px 0 12px}
+.page-detail h2{font-size:16px;margin:0 0 10px}
+
+/* 来源与受众铺满整行，模型：上排两栏、下排通栏 */
+.workspace main:has(> .panel .pages-table)>.panel.page-dims{grid-column:1/-1}
+.workspace main:has(> .panel .pages-table){grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr)}
+.page-dims h2{font-size:16px;margin:0 0 12px}
