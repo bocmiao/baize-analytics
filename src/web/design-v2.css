@@ -593,3 +593,14 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .workspace main:has(> .panel .pages-table)>.panel.page-dims{grid-column:1/-1}
 .workspace main:has(> .panel .pages-table){grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr)}
 .page-dims h2{font-size:16px;margin:0 0 12px}
+
+/* 上排两块等高：左栏拉伸到与右侧一致 */
+.workspace main:has(> .panel .pages-table){align-items:stretch}
+.workspace main:has(> .panel .pages-table)>.panel:has(.pages-table){height:100%}
+.workspace main:has(> .panel .pages-table)>.panel:has(.pages-table) .pages-table{height:auto}
+/* 页面来源作为网格中的一张卡片，和维度卡同排 */
+.dim-source{display:flex;flex-direction:column}
+.dim-source>.table-wrap{flex:1}
+/* 卡片内表格去掉多余留白，靠表头承担标题 */
+.dim-grid>section>.table-wrap{margin:0}
+.dim-grid>section>.table-wrap table{margin:0}
