@@ -474,3 +474,51 @@ html[data-theme="dark"] .realtime-idle-note{background:rgba(255,255,255,.03)}
 
 /* 空闲态同样不需要外层面板承载 */
 .panel:has(> .realtime-idle){background:transparent;border:0;padding:0;box-shadow:none}
+
+/* ============ 实时页：统一网格（参考 Plausible / Umami 的卡片网格） ============ */
+.rt-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:stretch}
+.rt-grid>.panel{margin:0}
+.rt-card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rt-card>h3{margin:0;font-size:13px;color:var(--ink2);font-weight:600;letter-spacing:.01em}
+.rt-card>.hint{margin:0}
+.rt-kpi{grid-column:span 2;justify-content:space-between}
+.rt-chart{grid-column:span 4}
+.rt-visits{grid-column:span 3}
+.rt-top{grid-column:span 3}
+.rt-wide{grid-column:span 6}
+.rt-kpi-main{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.rt-kpi-main>span{font-size:13px;color:var(--ink2)}
+.rt-kpi-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rt-kpi-meta p{display:grid;gap:2px;margin:0;padding:10px 12px;background:var(--bg);border-radius:10px}
+.rt-kpi-meta span{font-size:12px;color:var(--ink2)}
+.rt-kpi-meta strong{font-size:18px;font-variant-numeric:tabular-nums}
+.rt-range{margin:0;font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rt-chart .minute-bars{flex:1;min-height:96px;height:auto;margin-top:2px}
+.rt-chart .minute-bars i{background:var(--line);border-radius:3px 3px 0 0;min-height:3px}
+.rt-chart .minute-bars i.on{background:var(--jade)}
+.rt-visits .visit-stream{margin:0}
+.rt-top .table-wrap{max-width:none}
+.rt-idle{grid-column:span 6;max-width:820px;margin:0 auto;gap:14px}
+.rt-idle .rt-kpi{border:0;padding:0;background:transparent;grid-column:auto}
+.rt-idle-note{margin:0;padding:22px 18px;border:1px dashed var(--line);border-radius:12px;background:var(--bg);color:var(--ink2);font-size:13px;line-height:1.7;text-align:center}
+html[data-theme="dark"] .rt-kpi-meta p{background:rgba(255,255,255,.04)}
+html[data-theme="dark"] .rt-idle-note{background:rgba(255,255,255,.03)}
+@media(max-width:1180px){
+ .rt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rt-kpi,.rt-chart,.rt-visits,.rt-top,.rt-wide,.rt-idle{grid-column:span 2}
+}
+@media(max-width:720px){
+ .rt-grid{grid-template-columns:minmax(0,1fr)}
+ .rt-kpi,.rt-chart,.rt-visits,.rt-top,.rt-wide,.rt-idle{grid-column:span 1}
+}
+
+/* 分钟柱：空槽画成浅色轨道，整个 30 分钟窗口才有可读的骨架 */
+.rt-chart .minute-bars{align-items:flex-end;gap:2px}
+.rt-chart .minute-bars i{background:rgba(20,48,44,.07);border-radius:3px}
+.rt-chart .minute-bars i.on{background:var(--jade)}
+html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06)}
+/* KPI：标签在上、数字在下，左对齐 */
+.rt-kpi-main{flex-direction:column;align-items:flex-start;gap:2px}
+.rt-kpi-main .livecount{font-size:clamp(34px,4vw,48px)}
+/* 访问流限高内部滚动，避免把整行撑高 */
+.rt-visits .visit-stream{max-height:320px;overflow:auto;padding-right:2px}

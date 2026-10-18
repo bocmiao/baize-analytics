@@ -14,40 +14,48 @@ export function RealtimeSummary({data,timezone}:{data:Row;timezone?:string}) {
  const en=language()==='en';
  const online=typeof data.online==='number'&&data.onlineCoverage===1?data.online.toLocaleString(en?'en-US':'zh-CN'):'—';
  const clock=(value:unknown)=>{const ts=realtimeTimestamp(value);return ts!==null?new Date(ts).toLocaleTimeString(en?'en':'zh-CN',{timeZone:timezone,hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}):'—';};
- // 窗口时间也要按站点时区显示，不能把 UTC 的 ISO 串直接打到界面上。
+ // 窗口时间按站点时区显示，不能把 UTC 的 ISO 串直接打到界面上。
  const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);if(ts===null)return '—';return new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
  const tops:[string,string][]=[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']];
  const anyTop=tops.some(([key])=>Array.isArray(data[key])&&(data[key] as Row[]).length>0);
- // 没有事件时不该复用三栏布局：宽而扁的卡片正是"又空又没对齐"的来源。
- const windowRange = `${stamp(metadata.from)} — ${stamp(metadata.to)}`;
- const idle = events.length===0 && (!complete || Number(metadata.pv||0)===0);
- if (idle) return <section className="panel realtime-idle" aria-label={en?'Realtime idle':'实时（空闲）'}>
-  <div className="realtime-idle-head">
-   <div className="realtime-online"><span className="overview-live-dot" aria-hidden="true"/><div><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div></div>
-   <p className="realtime-window-range">{windowRange}{timezone?`（${timezone}）`:''}</p>
+ const range=`${stamp(metadata.from)} — ${stamp(metadata.to)}${timezone?`（${timezone}）`:''}`;
+ const pv=complete?String(metadata.pv):'—';
+ const coverage=`${Math.round(Number(metadata.coverage||0)*100)}%`;
+ const idle=events.length===0&&(!complete||Number(metadata.pv||0)===0);
+
+ // 所有卡片共用同一套外壳，网格保证同行的卡片等高、边缘对齐。
+ const kpi=<section className="panel rt-card rt-kpi" aria-label={en?'Live metrics':'实时指标'}>
+  <div className="rt-kpi-main"><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div>
+  <div className="rt-kpi-meta">
+   <p><span>{en?'Views (30m)':'近30分钟浏览量'}</span><strong data-testid="realtime-total">{pv}</strong></p>
+   <p><span>{en?'Coverage':'覆盖率'}</span><strong>{coverage}</strong></p>
   </div>
-  <p className="realtime-idle-note">{en?'No events in the last 30 minutes. The live bars and visit stream appear here as soon as the tracker reports a visit.':'过去 30 分钟没有采集到事件。埋点上报后，实时曲线与访问流会自动出现在这里。'}</p>
-  <div className="realtime-window-metrics">
-   <p>{t('近 5 分钟活跃')}<strong>{online}</strong></p>
-   <p>{t('最近30分钟浏览量')}<strong>{complete?String(metadata.pv):'—'}</strong></p>
-   <p>{t('覆盖率')}<strong>{Math.round(Number(metadata.coverage||0)*100)}%</strong></p>
-  </div>
+  <p className="rt-range">{range}</p>
  </section>;
- return <>
-  <section className="panel realtime-stage" aria-label={en?'Live pulse':'实时脉冲'}>
-   <div className="realtime-online"><span className="overview-live-dot" aria-hidden="true"/><div><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div></div>
-   <div className="realtime-block"><h3>{en?'Minutes in this preview':'这次预览的分钟柱'}</h3><p className="hint">{en?'Bars count only the latest events in this realtime response. They are not complete 30-minute traffic.':'分钟柱只统计本次接口返回的最近事件，不是完整 30 分钟流量。'}</p>{buckets.length?<div className="minute-bars" aria-hidden="true">{buckets.map(bucket=><i key={bucket.index} style={{height:`${Math.max(bucket.count?6:2,bucket.count/peak*100)}%`}}/>)}</div>:<p className="empty">{en?'No recent events were returned.':'没有返回最近事件。'}</p>}</div>
-   <div className="realtime-block"><h3>{en?'Recent visits':'最近访问'}</h3>{events.length?<ol className="visit-stream">{events.slice(0,12).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{String(event.type||'')}</small></li>)}</ol>:<p className="empty">{en?'The visit stream is empty.':'访问流是空的。'}</p>}</div>
+
+ if (idle) return <div className="rt-grid rt-grid-idle">
+  <section className="panel rt-card rt-idle">
+   {kpi}
+   <p className="rt-idle-note">{en?'No events in the last 30 minutes. The minute bars and visit stream appear here as soon as the tracker reports a visit.':'过去 30 分钟没有采集到事件。埋点上报后，分钟柱与访问流会自动出现在这里。'}</p>
   </section>
-  <section className="panel realtime-window">
-   <div className="realtime-window-head"><h3>{t('实时完整窗口汇总')}</h3><p className="hint">{stamp(metadata.from)} — {stamp(metadata.to)}{timezone?`（${timezone}）`:''}</p></div>
-   <div className="realtime-window-metrics">
-    <p>{t('近 5 分钟活跃')}<strong>{online}</strong></p>
-    <p>{t('最近30分钟浏览量')}<strong data-testid="realtime-total">{complete?String(metadata.pv):'—'}</strong></p>
-    <p>{t('覆盖率')}<strong>{Math.round(Number(metadata.coverage||0)*100)}%</strong></p>
-   </div>
-   {anyTop&&<p className="hint">{t('下方事件仅为最近200条预览，不能作为完整流量或Top统计。')}</p>}
-   {!complete?<p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p>:anyTop?<div className="realtime-tops">{tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];return <section key={key} aria-label={t(title)}><h4>{t(title)}</h4>{list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.values(row).map((value,cell)=><td key={cell}>{value===null?'—':String(value)}</td>)}</tr>)}</tbody></table></div>:<p className="empty realtime-empty">{en?'No events in this 30-minute window. Data appears as soon as the tracker reports a visit.':'这 30 分钟窗口内没有事件。埋点上报后这里会自动出现数据。'}</p>}</section>;})}</div>:<p className="empty realtime-empty">{en?'No events in this 30-minute window. Data appears as soon as the tracker reports a visit.':'这 30 分钟窗口内没有事件。埋点上报后这里会自动出现数据。'}</p>}
+ </div>;
+
+ return <div className="rt-grid">
+  {kpi}
+  <section className="panel rt-card rt-chart">
+   <h3>{en?'Minutes in this window':'这次预览的分钟柱'}</h3>
+   <p className="hint">{en?'Bars count only the latest events returned by this realtime response.':'分钟柱只统计本次接口返回的最近事件。'}</p>
+   <div className="minute-bars" aria-hidden="true">{buckets.map(bucket=><i key={bucket.index} className={bucket.count?'on':undefined} style={{height:bucket.count?`${Math.max(10,bucket.count/peak*100)}%`:'100%'}}/>)}</div>
   </section>
- </>;
+  <section className="panel rt-card rt-visits">
+   <h3>{en?'Recent visits':'最近访问'}</h3>
+   {events.length?<ol className="visit-stream">{events.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{String(event.type||'')}</small></li>)}</ol>:<p className="empty">{en?'The visit stream is empty.':'访问流是空的。'}</p>}
+  </section>
+  {!complete?<section className="panel rt-card rt-wide"><p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p></section>
+   :anyTop?tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];return <section className="panel rt-card rt-top" key={key} aria-label={t(title)}>
+    <h3>{t(title)}</h3>
+    {list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.values(row).map((value,cell)=><td key={cell}>{value===null?'—':String(value)}</td>)}</tr>)}</tbody></table></div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}
+   </section>;})
+   :<section className="panel rt-card rt-wide"><p className="empty">{en?'No breakdown available for this window.':'该窗口暂无细分数据。'}</p></section>}
+ </div>;
 }
