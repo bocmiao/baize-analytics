@@ -1,4 +1,4 @@
-/* Baize v2: 青玉 / 墨玉 / 鎏金 / 朱砂. Product structure stays; this layer replaces the indigo surface. */
+/* Baize v2: 闈掔帀 / 澧ㄧ帀 / 閹忛噾 / 鏈辩爞. Product structure stays; this layer replaces the indigo surface. */
 @font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:400;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-latin-400-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2190-2193,U+2212,U+FEFF,U+FFFD}
 @font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:700;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-latin-700-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2190-2193,U+2212,U+FEFF,U+FFFD}
 @font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:400;font-display:swap;src:url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2") format("woff2");unicode-range:U+3000-303F,U+3400-4DBF,U+4E00-9FFF,U+F900-FAFF,U+FF00-FFEF}
@@ -308,14 +308,14 @@ html[data-theme="dark"] .approved-overview .overview-metrics thead th:nth-child(
 .preview-rows{display:grid;gap:6px;font-size:13px}
 .preview-rows div{display:flex;justify-content:space-between;gap:12px;color:var(--ink2);border-top:1px solid var(--line);padding-top:6px}
 .preview-rows b{color:var(--ink);font-weight:600}
-.preview-note{margin:12px 0 0;font-size:11px;color:var(--mist)}
+.preview-note{margin:12px 0 0;font-size:12px;color:var(--ink2)}
 .landing .feature-grid{margin-top:72px}
 .feature-grid article{position:relative;padding-top:30px}
-.feature-index{position:absolute;top:16px;right:20px;font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gold)}
+.feature-index{position:absolute;top:16px;right:20px;font-size:12px;font-weight:700;letter-spacing:.12em;color:#8A6A2F}
 .landing .steps{margin-top:72px;padding:0}
 .step-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0 0;padding:0;list-style:none}
 .step-cards li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
-.step-number{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.step-number{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;color:#8A6A2F;margin-bottom:8px}
 .step-cards strong{display:block;font-size:15px;margin-bottom:6px;color:var(--ink)}
 .step-cards p{margin:0;font-size:13px;color:var(--ink2);line-height:1.6}
 .landing footer{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
