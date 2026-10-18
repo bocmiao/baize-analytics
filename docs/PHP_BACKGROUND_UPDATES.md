@@ -109,7 +109,7 @@ node /opt/baize-updater/baize-import-update.mjs --config /etc/baize/updater.json
 docker build -f deploy/php-updater.Dockerfile -t YOUR_PRIVATE_SUPERVISOR_IMAGE .
 ```
 
-首次接入前固定并独立核验镜像 digest。使用 `deploy/php-update-compose.example.yml`，把已验证的初始版本与私有目录准备为 UID 1000，配置内采用容器绝对路径（如 `/var/lib/baize/releases`、`/run/secrets/config.php`），二进制路径为 `/usr/local/bin/node`、`/usr/local/bin/php`、`/usr/local/sbin/php-fpm`、`/usr/sbin/nginx`；环境 `HOST=0.0.0.0`。只绑定本机发布端口，现有 HTTPS 代理在外层。MySQL 地址必须是实例专属数据库的实际地址。Web 和容器均不挂 Docker socket，不授予 Docker daemon 权限。
+首次接入前固定并独立核验镜像 digest。使用 `deploy/php-update-compose.example.yml`，把已验证的初始版本与私有目录准备为 UID 1000，配置内采用容器绝对路径（如 `/var/lib/baize/releases`、`/run/baize-config/config.php`），二进制路径为 `/usr/local/bin/node`、`/usr/local/bin/php`、`/usr/local/sbin/php-fpm`、`/usr/sbin/nginx`；将只包含既有 `config.php` 的 `instance-config/` 目录以 UID 1000、0700 准备并只读挂载；PHP 要求配置父目录也私有，不能只把单个文件挂进公开可遍历的 `/run/secrets`。环境 `HOST=0.0.0.0`。只绑定本机发布端口，现有 HTTPS 代理在外层。MySQL 地址必须是实例专属数据库的实际地址。Web 和容器均不挂 Docker socket，不授予 Docker daemon 权限。
 
 应用版本、状态、数据、密钥是独立持久挂载。停止并重新创建同一个固定伴随容器，执行器仍从持久 `current.json` 启动已确认版本，不回到镜像内旧代码。旧 image-owned Node 布局保持现有宿主层更新器；不能直接换本模板冒充无损迁移。Docker 数据卷首次迁移必须由操作者停写、备份并在隔离副本验证。
 

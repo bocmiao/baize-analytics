@@ -9,7 +9,7 @@ services:
     volumes:
       - ./private/updater.json:/run/secrets/updater.json:ro
       - ./private/runtime.env:/run/secrets/runtime.env:ro
-      - ./private/config.php:/run/secrets/config.php:ro
+      - ./instance-config:/run/baize-config:ro
       - ./releases:/var/lib/baize/releases
       - ./state:/var/lib/baize/updater
       - ./data:/var/lib/baize/data
