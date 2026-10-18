@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends nginx libicu-de
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/LICENSE /opt/baize-updater/NODE-LICENSE
 COPY --chmod=0755 dist/updater /opt/baize-updater
+STOPSIGNAL SIGTERM
 USER 1000:1000
 WORKDIR /opt/baize-updater
 ENTRYPOINT ["node","/opt/baize-updater/baize-updater.mjs"]

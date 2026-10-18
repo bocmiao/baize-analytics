@@ -1,0 +1,37 @@
+{
+  "fixture": true,
+  "sourceRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+  "upgradeSha256": "532730f6a5b96f04ebb9dacedec58f9dfbf3490022683656707e89d1f0250682",
+  "backupManifestSha256": "1465321f312c2fff5aa53f86e234dcd6b887e304207d24c6e87db45bbddbec9c",
+  "checks": [
+    {
+      "name": "actual updater backup restored to an isolated database with latest journal and original keys",
+      "secretRetained": true,
+      "sessionsRevoked": true,
+      "fileRetained": true
+    },
+    {
+      "name": "reviewed plan and verified backup required before real MySQL DDL",
+      "wrongPlanDenied": true,
+      "missingStoppedSourceAckDenied": true,
+      "tableExists": true,
+      "versions": [
+        "001_documents.sql",
+        "002_fixture.sql"
+      ]
+    },
+    {
+      "name": "partially committed DDL remains uncertain, blocks runtime/preflight, and cannot be automatically rerun or rolled back",
+      "intentStatus": "applying",
+      "retryDenied": true,
+      "preflightDenied": true,
+      "partialTableExists": true,
+      "migrationNotClaimed": true,
+      "runtimeBlocked": true
+    },
+    {
+      "name": "source instance keys and source database were never restored or migrated",
+      "sourceConfigUnchanged": true
+    }
+  ]
+}

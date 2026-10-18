@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {chromium} from '@playwright/test';
 import {digest} from '../../src/update/protocol.js';
-const root=resolve('/workspace/baize-isolated/node-volume'),output=resolve('docs/test-evidence/php-background-updates-20261018'),screenshots=join(output,'screenshots');mkdirSync(screenshots,{recursive:true});
+const root=resolve(process.env.BAIZE_NODE_VOLUME_ROOT??'/workspace/baize-isolated/node-volume-final155'),output=resolve('docs/test-evidence/php-background-updates-20261018'),screenshots=join(output,'screenshots');mkdirSync(screenshots,{recursive:true});
 const report:any={fixture:true,executorSha256:digest(readFileSync('dist/updater/baize-updater.mjs')),sourceRevision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),profiles:[]};const save=()=>writeFileSync(join(output,'node-version-volume.json'),JSON.stringify(report,null,2)+'\n');const wait=(n:number)=>new Promise(r=>setTimeout(r,n));async function until(fn:()=>any,description:string,timeout=90000){const end=Date.now()+timeout;while(Date.now()<end){try{const x=await fn();if(x)return x;}catch{}await wait(100);}throw Error('timeout '+description);}
 const browser=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium'});
 try{for(const profile of ['standard','lite']){

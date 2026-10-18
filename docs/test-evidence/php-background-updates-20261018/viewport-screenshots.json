@@ -1,0 +1,26 @@
+[
+  {
+    "profile": "php",
+    "width": 320,
+    "height": 900,
+    "top": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-320-viewport-top.png",
+    "controls": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-320-viewport-controls.png",
+    "horizontalOverflow": false
+  },
+  {
+    "profile": "standard",
+    "width": 320,
+    "height": 900,
+    "top": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/standard-320-viewport-top.png",
+    "controls": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/standard-320-viewport-controls.png",
+    "horizontalOverflow": false
+  },
+  {
+    "profile": "lite",
+    "width": 320,
+    "height": 900,
+    "top": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/lite-320-viewport-top.png",
+    "controls": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/lite-320-viewport-controls.png",
+    "horizontalOverflow": false
+  }
+]

@@ -1,0 +1,380 @@
+[
+  {
+    "id": "0384d572jr3bu9j5tm11wuk2u",
+    "created": "2026-10-18 01:57:08.332513844 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "0fwqqg6z3nkgx8r7rirvlw6ay",
+    "created": "2026-10-18 01:57:08.308746629 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "0mm9v44e3urbeiuv6ovu7jmyg",
+    "created": "2026-10-18 01:23:47.094381 +0000 UTC",
+    "description": "pulled from docker.io/library/node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n0mm9v44e3urbeiuv6ovu7jmyg               \ttrue \t\t0B        \t35 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "1k232ui05by4nim5xzkc9h8cv",
+    "created": "2026-10-18 01:23:15.110479091 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "46qcnz8ucznpgcqizl03f8ata",
+    "created": "2026-10-18 01:52:18.28101167 +0000 UTC",
+    "description": "[stage-1 5/5] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n46qcnz8ucznpgcqizl03f8ata               \ttrue \t\t0B        \t4 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "5ry20tcvag2c6b5yxv8gg5w0n",
+    "created": "2026-10-18 01:25:55.26993709 +0000 UTC",
+    "description": "[stage-1 5/5] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n5ry20tcvag2c6b5yxv8gg5w0n               \ttrue \t\t0B        \t33 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "alkq398qn11m9b06s8mfoj91u",
+    "created": "2026-10-18 01:23:15.116446174 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "dxve9befxew9y1tk409f59hkg",
+    "created": "2026-10-18 01:57:08.312959809 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "egbyt7m2wiyzkgdby46jcd6xb",
+    "created": "2026-10-18 01:34:47.893074323 +0000 UTC",
+    "description": "[stage-1 5/5] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\negbyt7m2wiyzkgdby46jcd6xb               \ttrue \t\t0B        \t23 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "evab4ox9ize5j10234ecsow8a",
+    "created": "2026-10-18 01:57:08.325456423 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "fdn3hnorwoa9xcv1z8bjfl9r9",
+    "created": "2026-10-18 01:57:08.316011153 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "g8709ammiay8brqqdh20tunte",
+    "created": "2026-10-18 01:57:08.305376573 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "gvdvkvx34cetmuklnu4usd3gj",
+    "created": "2026-10-18 01:23:15.021478825 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "ixcoyimtu2t7dmd3iwk2dxu4f",
+    "created": "2026-10-18 01:23:15.048522523 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "lrsdkpoule54p4yw4elrrcwlx",
+    "created": "2026-10-18 01:23:47.102497583 +0000 UTC",
+    "description": "pulled from docker.io/library/node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nlrsdkpoule54p4yw4elrrcwlx               \ttrue \t\t0B        \t35 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "lzfb5awd2110n1ok3n3kh2j1g",
+    "created": "2026-10-18 01:23:15.035367949 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "mqdnud2cl386g3wp11jjdnyi1",
+    "created": "2026-10-18 01:23:15.101915651 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "mw69powlv3215r39u94bj1q1n",
+    "created": "2026-10-18 01:57:23.409658568 +0000 UTC",
+    "description": "[stage-1 7/7] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "mybewn1s37cfnqxh24hirxzns",
+    "created": "2026-10-18 01:57:08.318679317 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "oegel4woj4obhxjadfbft6njo",
+    "created": "2026-10-18 01:57:08.321612091 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "oxa4fmv8b1xtcbnqjhomjy226",
+    "created": "2026-10-18 01:23:15.071824515 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "q93f06avqgpll7ta7tr3en3p7",
+    "created": "2026-10-18 01:23:15.013369632 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "qims8cxvr1btuy2ev8pqblv6p",
+    "created": "2026-10-18 01:57:08.302056043 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "qqu2hv91ycg6z72qtqs1zzg23",
+    "created": "2026-10-18 01:57:08.298625126 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "qz4iif79d6xd7jrhygfgnqpir",
+    "created": "2026-10-18 01:23:15.094955428 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "rt9tjyf8rgk8f1je74h4mnych",
+    "created": "2026-10-18 01:57:36.664979402 +0000 UTC",
+    "description": "[stage-1 6/6] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "sdy9b153ae1cnes9ayg0rgihk",
+    "created": "2026-10-18 01:42:12.054253311 +0000 UTC",
+    "description": "[stage-1 5/5] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nsdy9b153ae1cnes9ayg0rgihk               \ttrue \t\t0B        \t17 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "sj2v2h3wmcl22txvtp6difyct",
+    "created": "2026-10-18 01:57:08.329255518 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "syvwk6bk62bc11wjftm7kyfkk",
+    "created": "2026-10-18 01:23:47.108798293 +0000 UTC",
+    "description": "pulled from docker.io/library/node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nsyvwk6bk62bc11wjftm7kyfkk               \ttrue \t\t0B        \tAbout a minute ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "u6dus7xb5byu68gkpnkry11ta",
+    "created": "2026-10-18 01:57:08.288363535 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "u6n67pskce37k2n1cxem0iwwz",
+    "created": "2026-10-18 01:23:15.083769027 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "ucs7u7j70uau6yqqw9aqmx47v",
+    "created": "2026-10-18 01:57:08.295462934 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "v6lz79cacez2j9pjmx81109z1",
+    "created": "2026-10-18 01:23:15.090815886 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "v7jbei4ojwrpnsxs9xccmjgit",
+    "created": "2026-10-18 01:40:12.300016686 +0000 UTC",
+    "description": "[stage-1 5/5] WORKDIR /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nv7jbei4ojwrpnsxs9xccmjgit               \ttrue \t\t0B        \t19 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "vpzelbp1exnai1rlr1w0bh9s8",
+    "created": "2026-10-18 01:23:15.062599862 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "vwiyj5sugqnz7a8m48bvrgr3q",
+    "created": "2026-10-18 01:23:47.090483111 +0000 UTC",
+    "description": "pulled from docker.io/library/node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nvwiyj5sugqnz7a8m48bvrgr3q               \ttrue \t\t0B        \t35 minutes ago\nTotal:\t0B\n"
+  },
+  {
+    "id": "wgzbx05hdjyx9jmnku4sog6m4",
+    "created": "2026-10-18 01:57:08.291093212 +0000 UTC",
+    "description": "from local ",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "zvfobymhpasu582cob4gikwax",
+    "created": "2026-10-18 01:57:15.890008782 +0000 UTC",
+    "description": "[stage-1 4/7] COPY --from=node /usr/lib/x86_64-linux-gnu/libatomic.so.1* /usr/local/lib/",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "kmdf7fypt8a1t7xzhxf1g3cr1",
+    "created": "2026-10-18 01:23:14.986542374 +0000 UTC",
+    "description": "local source for context",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nkmdf7fypt8a1t7xzhxf1g3cr1*              \ttrue \t\t180B      \t36 minutes ago\nTotal:\t180B\n"
+  },
+  {
+    "id": "x5rq1iukapr8x0taahufj0s8r",
+    "created": "2026-10-18 01:23:12.853254352 +0000 UTC",
+    "description": "local source for dockerfile",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nx5rq1iukapr8x0taahufj0s8r*              \ttrue \t\t631B      \tAbout a minute ago\nTotal:\t631B\n"
+  },
+  {
+    "id": "mocancjsvg3shxvsg6ueqy44y",
+    "created": "2026-10-18 01:57:22.31926416 +0000 UTC",
+    "description": "mount / from exec /bin/sh -c ldconfig && node --version && pg_dump --version && command -v flock",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "p5krrth4zpf2e3di1qotva2g2",
+    "created": "2026-10-18 01:57:13.279249578 +0000 UTC",
+    "description": "[stage-1 3/7] COPY --from=node /usr/local/LICENSE /opt/baize-updater/NODE-LICENSE",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "qy6n8h9vp32f165b4socgg0w8",
+    "created": "2026-10-18 01:57:34.619489829 +0000 UTC",
+    "description": "[stage-1 4/6] COPY --from=node /usr/local/LICENSE /opt/baize-updater/NODE-LICENSE",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "ttinc9a2c211bp7uubmtsxxo8",
+    "created": "2026-10-18 01:23:15.050667779 +0000 UTC",
+    "description": "local source for context",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nttinc9a2c211bp7uubmtsxxo8*              \ttrue \t\t2.785MB   \tAbout a minute ago\nTotal:\t2.785MB\n"
+  },
+  {
+    "id": "ksmg32lp3dld87vygdbapreul",
+    "created": "2026-10-18 01:25:54.555089979 +0000 UTC",
+    "description": "[stage-1 4/5] COPY dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nksmg32lp3dld87vygdbapreul               \ttrue \t\t3.599MB   \t33 minutes ago\nTotal:\t3.599MB\n"
+  },
+  {
+    "id": "zligvz8yipcuro5zey86u8trz",
+    "created": "2026-10-18 01:34:47.432496204 +0000 UTC",
+    "description": "[stage-1 4/5] COPY dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nzligvz8yipcuro5zey86u8trz               \ttrue \t\t3.6MB     \t24 minutes ago\nTotal:\t3.6MB\n"
+  },
+  {
+    "id": "vn8gsggeoqjp7yg0tuts9i69a",
+    "created": "2026-10-18 01:40:11.776840969 +0000 UTC",
+    "description": "[stage-1 4/5] COPY --chmod=0755 dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nvn8gsggeoqjp7yg0tuts9i69a               \ttrue \t\t3.603MB   \t19 minutes ago\nTotal:\t3.603MB\n"
+  },
+  {
+    "id": "xjfyud3gfokksl5dyhi2i2b9i",
+    "created": "2026-10-18 01:42:11.409042969 +0000 UTC",
+    "description": "[stage-1 4/5] COPY --chmod=0755 dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nxjfyud3gfokksl5dyhi2i2b9i               \ttrue \t\t3.604MB   \t17 minutes ago\nTotal:\t3.604MB\n"
+  },
+  {
+    "id": "1cjbuij5uv6odbh59cf5bd7iy",
+    "created": "2026-10-18 01:52:17.496436449 +0000 UTC",
+    "description": "[stage-1 4/5] COPY --chmod=0755 dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\n1cjbuij5uv6odbh59cf5bd7iy               \ttrue \t\t3.605MB   \t6 minutes ago\nTotal:\t3.605MB\n"
+  },
+  {
+    "id": "1fdq3agyqt79dlnrtwt9qgr8y",
+    "created": "2026-10-18 01:57:35.597592511 +0000 UTC",
+    "description": "[stage-1 5/6] COPY --chmod=0755 dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "lpvfawje1c0nmwzp4f0el1qmt",
+    "created": "2026-10-18 01:57:18.86312823 +0000 UTC",
+    "description": "[stage-1 5/7] COPY --chmod=0755 dist/updater /opt/baize-updater",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "3n0rx8g7hvvbllessvz7dkxel",
+    "created": "2026-10-18 01:25:50.757953525 +0000 UTC",
+    "description": "mount / from exec /bin/sh -c apt-get update && apt-get install -y --no-install-recommends nginx libicu-dev  && docker-php-ext-install -j2 pdo_mysql pcntl bcmath intl  && rm -rf /var/lib/apt/lists/*",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "aztot0x4zedteilw3fekw5kkx",
+    "created": "2026-10-18 01:57:11.067818036 +0000 UTC",
+    "description": "[stage-1 2/7] COPY --from=node /usr/local/bin/node /usr/local/bin/node",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  },
+  {
+    "id": "w3dqnfzvdh1h3c669ukos4qjg",
+    "created": "2026-10-18 01:25:52.97130726 +0000 UTC",
+    "description": "[stage-1 3/5] COPY --from=node /usr/local/bin/node /usr/local/bin/node",
+    "exitCode": 0,
+    "result": "Total:\t0B\n"
+  }
+]

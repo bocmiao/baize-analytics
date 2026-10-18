@@ -1,25 +1,23 @@
 # Opt-in migration from image-owned /app code to sealed application-version storage.
-# This example is not an automatic migration or an installed host service.
+# Verified layout; first migration remains an explicit host operation.
+# Prepare bind directories as uid 1000 / mode 0700; private JSON/env files 0600.
 services:
   updater:
     image: ${BAIZE_UPDATE_SUPERVISOR_IMAGE:?Use an independently verified supervisor image digest}
     user: "1000:1000"
     restart: unless-stopped
+    stop_grace_period: 60s
     ports: ["127.0.0.1:${BAIZE_PORT:-3000}:3000"]
     volumes:
       - ./private/updater.json:/run/secrets/updater.json:ro
       - ./private/runtime.env:/run/secrets/runtime.env:ro
-      - ./private/source.token:/run/secrets/source.token:ro
-      - releases:/var/lib/baize/releases
-      - updater_state:/var/lib/baize/updater
-      - app_data:/var/lib/baize/data
-      - app_keys:/var/lib/baize/keys
+      # Private HTTPS sources may additionally bind a 0600 authorizationFile.
+      - ./releases:/var/lib/baize/releases
+      - ./state:/var/lib/baize/updater
+      - ./data:/var/lib/baize/data
+      - ./keys:/var/lib/baize/keys
+      - ./offline:/var/lib/baize/offline
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
     read_only: true
     tmpfs: ["/tmp:rw,noexec,nosuid,size=128m"]
-volumes:
-  releases:
-  updater_state:
-  app_data:
-  app_keys:

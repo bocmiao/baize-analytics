@@ -1,0 +1,134 @@
+[
+  {
+    "port": 3307,
+    "suite": "kernel",
+    "exitCode": 0,
+    "seconds": 0.78
+  },
+  {
+    "port": 3307,
+    "suite": "collect",
+    "exitCode": 0,
+    "seconds": 1.65
+  },
+  {
+    "port": 3307,
+    "suite": "analytics",
+    "exitCode": 0,
+    "seconds": 7.42
+  },
+  {
+    "port": 3307,
+    "suite": "governance",
+    "exitCode": 0,
+    "seconds": 10.5
+  },
+  {
+    "port": 3307,
+    "suite": "providers",
+    "exitCode": 0,
+    "seconds": 0.21
+  },
+  {
+    "port": 3307,
+    "suite": "manual-search",
+    "exitCode": 0,
+    "seconds": 0.51
+  },
+  {
+    "port": 3307,
+    "suite": "mcp",
+    "exitCode": 0,
+    "seconds": 0.5
+  },
+  {
+    "port": 3307,
+    "suite": "annotations",
+    "exitCode": 0,
+    "seconds": 0.47
+  },
+  {
+    "port": 3307,
+    "suite": "keyring",
+    "exitCode": 0,
+    "seconds": 0.09
+  },
+  {
+    "port": 3307,
+    "suite": "platform",
+    "exitCode": 0,
+    "seconds": 0.15
+  },
+  {
+    "port": 3307,
+    "suite": "sso",
+    "exitCode": 0,
+    "seconds": 0.08
+  },
+  {
+    "port": 3308,
+    "suite": "kernel",
+    "exitCode": 0,
+    "seconds": 0.61
+  },
+  {
+    "port": 3308,
+    "suite": "collect",
+    "exitCode": 0,
+    "seconds": 0.76
+  },
+  {
+    "port": 3308,
+    "suite": "analytics",
+    "exitCode": 0,
+    "seconds": 3.83
+  },
+  {
+    "port": 3308,
+    "suite": "governance",
+    "exitCode": 0,
+    "seconds": 10.21
+  },
+  {
+    "port": 3308,
+    "suite": "providers",
+    "exitCode": 0,
+    "seconds": 0.24
+  },
+  {
+    "port": 3308,
+    "suite": "manual-search",
+    "exitCode": 0,
+    "seconds": 0.27
+  },
+  {
+    "port": 3308,
+    "suite": "mcp",
+    "exitCode": 0,
+    "seconds": 0.35
+  },
+  {
+    "port": 3308,
+    "suite": "annotations",
+    "exitCode": 0,
+    "seconds": 0.25
+  },
+  {
+    "port": 3308,
+    "suite": "keyring",
+    "exitCode": 0,
+    "seconds": 0.1
+  },
+  {
+    "port": 3308,
+    "suite": "platform",
+    "exitCode": 0,
+    "seconds": 0.13
+  },
+  {
+    "port": 3308,
+    "suite": "sso",
+    "exitCode": 0,
+    "seconds": 0.07
+  }
+]

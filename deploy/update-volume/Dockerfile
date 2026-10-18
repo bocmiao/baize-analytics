@@ -7,6 +7,7 @@ COPY --from=node /usr/local/LICENSE /opt/baize-updater/NODE-LICENSE
 COPY --from=node /usr/lib/x86_64-linux-gnu/libatomic.so.1* /usr/local/lib/
 COPY --chmod=0755 dist/updater /opt/baize-updater
 RUN ldconfig && node --version && pg_dump --version && command -v flock
+STOPSIGNAL SIGTERM
 USER 1000:1000
 WORKDIR /opt/baize-updater
 ENTRYPOINT ["node","/opt/baize-updater/baize-updater.mjs"]

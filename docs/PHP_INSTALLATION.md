@@ -54,13 +54,14 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 php bin/backup.php /private/backups/baize-php.enc
 php bin/restore.php /private/backups/baize-php.enc --replace
 php bin/export.php SITE_ID /private/exports/site.json
-php bin/upgrade.php
+php bin/upgrade.php --plan
+# 审查计划并按 PHP_BACKGROUND_UPDATES.md 完成停写、备份与隔离恢复演练后再显式 --apply。
 ```
 
 这些命令使用与网站相同的配置和运行用户；示例路径需替换为自己的私有目录。`--replace` 会替换目标实例数据，恢复前停止对外访问及队列，先保存当前完整副本。CLI worker在执行导出、通知或外部任务前先修复持久删除日志，避免数据库事务回滚后泄露已删除的数据。
 
 ## 兼容边界
 
-PHP 存储采用文档记录与按站点锁定的事务，可保存原始明细和配置；其吞吐与原版 PostgreSQL / ClickHouse 的容量模型不同。本次测试数据量只能证明所记录的业务条件，不能外推到原版压测规模。需要原版的大规模权威存储、实例增量更新协议或已有 Node 数据库原位升级时，继续使用 Node 标准版。
+PHP 存储采用文档记录与按站点锁定的事务，可保存原始明细和配置；其吞吐与原版 PostgreSQL / ClickHouse 的容量模型不同。本次测试数据量只能证明所记录的业务条件，不能外推到原版压测规模。需要原版的大规模权威存储或已有 Node 数据库原位升级时，继续使用 Node 标准版。PHP 的签名后台更新使用独立 PHP 包和受控迁移边界，见上述后台更新指南。
 
 旧 Node scrypt 密码需要经过验证的重哈希迁移或独立重置；PHP 不会将不能验证的旧哈希当作有效密码。AES-GCM 历史信封只能在密钥与格式均明确时解密，不能据此承诺所有历史数据库直接兼容。外部供应商调用需要用户自己配置凭据；模拟提供商测试不等于真实账号联通。

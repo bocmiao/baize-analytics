@@ -1,0 +1,54 @@
+{
+  "fixtureOnly": true,
+  "runtimeSourceRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+  "executorSha256": "2e2a6a67a22ee93be04641cf7096fcf656deb26bf7875bc0baa900f8f4a31b15",
+  "fullRegression": {
+    "total": 1221,
+    "passed": 919,
+    "failed": 0,
+    "skipped": 302,
+    "success": true
+  },
+  "phpRegression": {
+    "suites": 22,
+    "failed": 0,
+    "engines": [
+      "MySQL 8.4.11",
+      "MariaDB 11.4.13"
+    ]
+  },
+  "syntax": {
+    "phpFiles": 61,
+    "failed": 0
+  },
+  "checks": {
+    "build": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "targetedTests": 47
+  },
+  "acceptance": {
+    "phpNative": "passed",
+    "phpDocker": "passed",
+    "nodeStandardNative": "passed",
+    "nodeLiteNative": "passed",
+    "nodeStandardVersionVolumeDocker": "passed",
+    "nodeLiteVersionVolumeDocker": "passed",
+    "backupRestoreAndControlledMigration": "passed"
+  },
+  "browser": {
+    "engine": "Chromium",
+    "screenshots": 19,
+    "widths": [
+      1440,
+      390,
+      320
+    ],
+    "pageErrors": 0,
+    "horizontalOverflow": false
+  },
+  "formalReleaseAvailable": false,
+  "productionDeployed": false,
+  "productionSigningCredentialsCreated": false,
+  "hostedCiTriggered": false
+}

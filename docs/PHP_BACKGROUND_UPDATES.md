@@ -131,3 +131,5 @@ PHP 没有 ClickHouse 权威库；Node Full 配置外部 ClickHouse/历史 sidec
 自动 PHP 备份当前只覆盖经核对的 `001_documents.sql` 文档布局：实际表、列类型、索引、JSON 约束与 InnoDB 引擎均核对，额外表、视图、触发器、事件或例程会拒绝，不能称为已完整备份。所有业务命名空间在 documents 中；锁行不承担业务数据。未来引入其他物理存储的版本需要先交付独立全库备份/恢复方案并更新维护适配；本控制入口不冒充覆盖未来布局的后续迁移。
 
 部分 DDL 失败后的恢复路径是保留原失败实例及意图，保持停写；在全新的数据库、数据目录和私有配置中，用已验证的旧结构代码恢复升级前恢复点，并合并最新独立删除日志及其身份，完成真实健康与业务复核后再由操作者明确切换。未完成意图属于原失败数据库，继续保存在原实例供核查；不删除原意图，也不将切换克隆称为在原数据库自动 down migration。
+
+Docker 初始安装或离线导入时，配置中的路径属于容器。使用同一固定伴随镜像的一次性 CLI，例如 `docker compose run --rm --entrypoint node -v /absolute/received/delta:/run/update-import:ro baize /opt/baize-updater/baize-import-update.mjs --config /run/secrets/updater.json --bundle /run/update-import`；完整初始目录改用 `baize-php-distribution.mjs` 和相应安装目录。导入容器仍以 UID 1000 执行，复用已准备的持久挂载，不启动网站或更改账号。Docker 固定伴随服务显式使用 `STOPSIGNAL SIGTERM` 和 60 秒停止窗口，不继承 PHP-FPM 镜像的 SIGQUIT。

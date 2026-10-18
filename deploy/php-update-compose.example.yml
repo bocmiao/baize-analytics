@@ -5,6 +5,7 @@ services:
     image: ${BAIZE_PHP_SUPERVISOR_IMAGE:?Pin the reviewed companion image digest}
     user: "1000:1000"
     restart: unless-stopped
+    stop_grace_period: 60s
     ports: ["127.0.0.1:${BAIZE_PORT:-3000}:3000"]
     volumes:
       - ./private/updater.json:/run/secrets/updater.json:ro
