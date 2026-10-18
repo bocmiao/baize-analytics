@@ -1,0 +1,398 @@
+[
+  {
+    "path": "tests/server/release-native-ops.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/ai-fact-source.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/cache-body-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/cache-centroid-rebuild.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/cache-store.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-authority-flow.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-backup.test.ts",
+    "skipped": 7
+  },
+  {
+    "path": "tests/integration/canonical-clickhouse.test.ts",
+    "skipped": 6
+  },
+  {
+    "path": "tests/integration/canonical-daily-authority-flow.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-daily-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-deletion.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-heatmap.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-identity.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-ingest.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/canonical-new-revenue.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-operations-api.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-privacy-cleanup.test.ts",
+    "skipped": 5
+  },
+  {
+    "path": "tests/integration/canonical-raw-backup-readiness.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-read-snapshot.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-replay-collect.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-replay-deletion.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-replay-history-retention.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-replay-retention-proof.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-replay-retention.test.ts",
+    "skipped": 5
+  },
+  {
+    "path": "tests/integration/canonical-retention.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/canonical-revenue-receipt.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/canonical-shadow-provenance.test.ts",
+    "skipped": 5
+  },
+  {
+    "path": "tests/integration/canonical-shadow-validation.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/canonical-site-export.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/canonical-startup-privacy.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/clickhouse-app.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/clickhouse-incremental.test.ts",
+    "skipped": 7
+  },
+  {
+    "path": "tests/integration/clickhouse-select-budget.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/clickhouse.test.ts",
+    "skipped": 16
+  },
+  {
+    "path": "tests/integration/cutover-receipt.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/cutover-worker.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/deletion-authorization.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/deletion-same-transaction.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/durable-inbox-canonical-publisher.test.ts",
+    "skipped": 18
+  },
+  {
+    "path": "tests/integration/fact-backup-v1-upgrade.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/fact-body-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/fact-closure-pruned-owner.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/fact-coverage-selected-runs.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/fact-deletion-api.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/fact-identity-elision.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/fact-publication-pipeline.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/fact-response-budget.test.ts",
+    "skipped": 9
+  },
+  {
+    "path": "tests/integration/fact-source-batch-cte.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/fact-store-source.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/fact-store-worker.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/fact-store.test.ts",
+    "skipped": 12
+  },
+  {
+    "path": "tests/integration/fact-triple-read.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/fact-validation-manifest.test.ts",
+    "skipped": 16
+  },
+  {
+    "path": "tests/integration/governance-canonical.test.ts",
+    "skipped": 7
+  },
+  {
+    "path": "tests/integration/header-deletion-api.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/history-app.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/history-backup-snapshot.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/history-cache-store-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/history-replay-retention-restore.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/history-response-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/history-security.test.ts",
+    "skipped": 12
+  },
+  {
+    "path": "tests/integration/history-store.test.ts",
+    "skipped": 13
+  },
+  {
+    "path": "tests/integration/history-strict-fact-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/incremental-session-archived-owner.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/incremental-session-coverage-witness.test.ts",
+    "skipped": 8
+  },
+  {
+    "path": "tests/integration/incremental-session-publication-faults.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/incremental-session-restore.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/incremental-session-strict-boundaries.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/incremental-session-strict.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/incremental-visitor-metadata-deletion.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/partition-replica-race.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/provenance-lifecycle.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/remaining-body-backup-daily.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-body-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-deletion.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-full-deletion.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-grouped-read.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-members.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-partial-deletion.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/remaining-fact-source.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-store.test.ts",
+    "skipped": 12
+  },
+  {
+    "path": "tests/integration/remaining-fact-unavailable.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-fact-worker.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/remaining-historical-identity.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/replica-pool-capacity.test.ts",
+    "skipped": 3
+  },
+  {
+    "path": "tests/integration/restore-replica.test.ts",
+    "skipped": 2
+  },
+  {
+    "path": "tests/integration/retention-analysis.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/session-header-backup.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/session-header-canonical-worker.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/session-header-orphans.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/session-header-reuse.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/session-header-source.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/site-fact-config.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/stats-read-budget.test.ts",
+    "skipped": 11
+  },
+  {
+    "path": "tests/integration/stats-read-snapshot.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/stats-replica-budget.test.ts",
+    "skipped": 4
+  },
+  {
+    "path": "tests/integration/strict-fact-worker.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/strict-identity-api.test.ts",
+    "skipped": 1
+  },
+  {
+    "path": "tests/integration/strict-identity-restore.test.ts",
+    "skipped": 1
+  }
+]

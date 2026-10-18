@@ -1,0 +1,265 @@
+{
+  "fixture": true,
+  "sourceRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+  "executorSha256": "e7fdc79eee2566744337a95cbadbe21ccabbe7bd1e2b3f9c9dc35084b03efc57",
+  "checks": [
+    {
+      "name": "signed offline import",
+      "base": {
+        "root": "/workspace/baize-isolated/docker/releases/base36",
+        "revision": "36d29128db03725c34e4f24f229ef818db2f48b8",
+        "manifestSha256": "3252a3c907b605843045c1b6ee80d2e829f447a8afe752fd0b0d813b864798cc"
+      },
+      "published": {
+        "sourceRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "baseRevision": "36d29128db03725c34e4f24f229ef818db2f48b8",
+        "payloadBytes": 1699973,
+        "metadataBytes": 26355,
+        "changedFiles": [
+          "bin/upgrade.php",
+          "php-release-manifest.json",
+          "public/assets/Charts-DY5ZBz0A.js",
+          "public/assets/GeographicMap-z1SfvKyB.js",
+          "public/assets/index-CLcflrK_.js",
+          "public/assets/install-Db95I0GE.js",
+          "public/assets/ReplayViewer-DaPnmS6I.js",
+          "public/index.html",
+          "README.md",
+          "src/UpdateBridge.php",
+          "VALIDATION.md"
+        ],
+        "unchangedFiles": [
+          "bin/backup.php",
+          "bin/export.php",
+          "bin/install.php",
+          "bin/migrate.php",
+          "bin/restore.php",
+          "bin/routes.php",
+          "bin/update-ops.php",
+          "bin/worker.php",
+          "bootstrap.php",
+          "deploy/cron.example",
+          "deploy/nginx.conf.example",
+          "deploy/php.ini.example",
+          "deploy/worker.supervisor.conf.example",
+          "LICENSE",
+          "migrations/001_documents.sql",
+          "public/.htaccess",
+          "public/assets/anhui-BSaniTrc.js",
+          "public/assets/aomen-DXLsqBrz.js",
+          "public/assets/beijing-6J6D0v26.js",
+          "public/assets/chongqing-Cl1EA9FX.js",
+          "public/assets/fujian-CnXpqkhe.js",
+          "public/assets/gansu-Bi_VQQwS.js",
+          "public/assets/guangdong-CX_QD5Pr.js",
+          "public/assets/guangxi-B63_XU_1.js",
+          "public/assets/guizhou-BUdXZdgN.js",
+          "public/assets/hainan-ByIDMKTK.js",
+          "public/assets/hebei-T7l9OzzS.js",
+          "public/assets/heilongjiang-BpPsHrM9.js",
+          "public/assets/henan-ByBj5SKi.js",
+          "public/assets/hubei-CbKDql3J.js",
+          "public/assets/hunan-CWxspgVh.js",
+          "public/assets/index-aaNwmcps.css",
+          "public/assets/jiangsu-CfAV2ncg.js",
+          "public/assets/jiangxi-CMNmFB4L.js",
+          "public/assets/jilin-i0ZAtsll.js",
+          "public/assets/liaoning-CQP2PqVX.js",
+          "public/assets/neimenggu-CwzZW05h.js",
+          "public/assets/ningxia-Bpe_w3T9.js",
+          "public/assets/noto-sans-sc-chinese-simplified-400-normal-DS5SpWNO.woff2",
+          "public/assets/noto-sans-sc-chinese-simplified-700-normal-BmuLCgFi.woff2",
+          "public/assets/noto-sans-sc-latin-400-normal-DXM2Kafd.woff2",
+          "public/assets/noto-sans-sc-latin-700-normal-VDMCSKHX.woff2",
+          "public/assets/noto-sans-sc.LICENSE.txt",
+          "public/assets/qinghai-Bql4kmYY.js",
+          "public/assets/shandong-G1nzS6sL.js",
+          "public/assets/shanghai-D5fADUyQ.js",
+          "public/assets/shanxi-sF6r9BMA.js",
+          "public/assets/shanxi1-B0i8biAP.js",
+          "public/assets/sichuan-BiKg7TEf.js",
+          "public/assets/taiwan-DuhSbPaK.js",
+          "public/assets/tianjin-BIND3J0Y.js",
+          "public/assets/xianggang-B-GwqNoD.js",
+          "public/assets/xinjiang-CVqQoyx6.js",
+          "public/assets/xizang-C9xTaVmy.js",
+          "public/assets/yunnan-z_D5KTxc.js",
+          "public/assets/zhejiang-DSbk7J7A.js",
+          "public/index.php",
+          "public/install.php",
+          "public/router.php",
+          "public/tracker-consent.js",
+          "public/tracker-consent.js.gz",
+          "public/tracker-heatmap.js",
+          "public/tracker-heatmap.js.gz",
+          "public/tracker-min.js",
+          "public/tracker-min.js.gz",
+          "public/tracker-replay.js",
+          "public/tracker-replay.js.gz",
+          "public/tracker-sizes.json",
+          "public/tracker-vitals.js",
+          "public/tracker-vitals.js.gz",
+          "public/tracker.js",
+          "public/tracker.js.gz",
+          "public/tracker.LICENSE.txt",
+          "resources/bot-rules.json",
+          "resources/bot-rules.NOTICE",
+          "resources/build-psl.mjs",
+          "resources/LICENSE.public-suffix-list",
+          "resources/public_suffix_list.ascii.dat",
+          "resources/public_suffix_list.dat",
+          "resources/public-suffix-source.json",
+          "src/AnalysisEngine.php",
+          "src/Analytics.php",
+          "src/Annotations.php",
+          "src/App.php",
+          "src/Auth.php",
+          "src/Collect.php",
+          "src/Database.php",
+          "src/Decimal.php",
+          "src/Diagnostics.php",
+          "src/EventPrivacy.php",
+          "src/External.php",
+          "src/GeoIP.php",
+          "src/Governance.php",
+          "src/Http.php",
+          "src/Installer.php",
+          "src/Keyring.php",
+          "src/Maintenance.php",
+          "src/ManualSearch.php",
+          "src/Mcp.php",
+          "src/Operations.php",
+          "src/Outbound.php",
+          "src/ProviderReports.php",
+          "src/Queue.php",
+          "src/Router.php",
+          "src/Security.php",
+          "src/Sessionizer.php",
+          "src/Sites.php",
+          "src/SSO.php",
+          "src/Store.php",
+          "src/Worker.php",
+          "third_party/maxmind-db/composer.json",
+          "third_party/maxmind-db/LICENSE",
+          "third_party/maxmind-db/PROVENANCE.json",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Decoder.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/InvalidDatabaseException.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Metadata.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Util.php"
+        ],
+        "deletedFiles": [
+          "public/assets/Charts-Cfit8DPQ.js",
+          "public/assets/GeographicMap-DQyVbfn-.js",
+          "public/assets/ReplayViewer-Bw7g4pwe.js",
+          "public/assets/index-Bt7d60f0.js",
+          "public/assets/install-CBCowYmk.js"
+        ],
+        "deletedDirectories": [],
+        "fullReleaseBytes": 7468429,
+        "fullFallbackAvailable": false
+      }
+    },
+    {
+      "name": "browser-confirmed update continued after browser closed",
+      "backupCreated": true,
+      "current": {
+        "root": "/workspace/baize-isolated/docker/releases/8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482-b81623a8-6bea-4fae-b95f-c6e478126c03",
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93"
+      }
+    },
+    {
+      "name": "real version volume runtime policy",
+      "containerId": "e310a84c4600ece958378503bc45410cc6cc2b03ddb5a62f441f32fafcfedfc9",
+      "imageId": "sha256:b2315b32866d23e26cf16aa4144ce2695ed41c5f839f475d27dacef282f4ce47",
+      "readOnlyRoot": true,
+      "user": "1000:1000",
+      "noDockerSocket": true
+    },
+    {
+      "name": "SIGKILL and container recreation retained confirmed target",
+      "oldContainer": "e310a84c4600ece958378503bc45410cc6cc2b03ddb5a62f441f32fafcfedfc9",
+      "newContainer": "a403ef2fdde18aaef73137cf066ed7abc96349e4f34b8fe4f24b3f11448bb0ce",
+      "before": {
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93",
+        "launchId": "b2d10d6d-c660-4b66-811e-59a010bea065"
+      },
+      "after": {
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93",
+        "launchId": "92184386-556d-4149-b394-f4680d80ef3e"
+      }
+    },
+    {
+      "name": "Docker code rollback retained post-update MySQL writes"
+    },
+    {
+      "name": "original config, master key and data retained",
+      "hashes": {
+        "config": "635b591f200882450a0aa1da78d07bef75f7ea445130dd7592a1e1655deb84c6",
+        "masterKey": "936992bc72e8c2f2bf5f21afbf855d6d8fddb034e08c75db283b29c9d8b2f979",
+        "retainedFile": "c7fc371810952b466fe0e0542df5cef8d5e66d241f7b5093aa67d2c1ac8dec70"
+      }
+    },
+    {
+      "name": "real desktop/mobile final UI",
+      "pageErrors": []
+    },
+    {
+      "name": "signature failure remains recoverable in browser and exact installed release reports current",
+      "phase": "current",
+      "plannedPayloadBytes": 0
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-preview-1440.png",
+      "width": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-preview-390.png",
+      "width": 390,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-preview-320.png",
+      "width": 320,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-completed-1440.png",
+      "width": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-completed-390.png",
+      "width": 390,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-completed-320.png",
+      "width": 320,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-failure-recoverable-320.png",
+      "width": 320,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-current-1440.png",
+      "width": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/php-docker-current-320.png",
+      "width": 320,
+      "horizontalOverflow": false
+    }
+  ],
+  "startedAt": "2026-10-18T01:59:48.915Z",
+  "finishedAt": "2026-10-18T02:00:01.163Z"
+}

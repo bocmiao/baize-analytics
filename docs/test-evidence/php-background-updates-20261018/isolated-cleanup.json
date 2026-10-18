@@ -1,0 +1,32 @@
+[
+  {
+    "imageId": "sha256:be73ae1f332e753fd74d7c6ed42cceeab27a1ac2edf04e48390178ee2f5c609d",
+    "created": "2026-10-18T01:52:18.28101167Z",
+    "reason": "superseded isolated companion build; executable source retained in repository and final image",
+    "exitCode": 0
+  },
+  {
+    "imageId": "sha256:308f909315f2b3f6cc8bd242db7fc03636d7ba1c6baef45a44122eaa6772b5ed",
+    "created": "2026-10-18T01:42:12.054253311Z",
+    "reason": "superseded isolated companion build; executable source retained in repository and final image",
+    "exitCode": 0
+  },
+  {
+    "imageId": "sha256:dc33b046a8c595e13b7cf440c66f3e210c94b9c8f8a5c5967928786152e50a01",
+    "created": "2026-10-18T01:40:12.300016686Z",
+    "reason": "superseded isolated companion build; executable source retained in repository and final image",
+    "exitCode": 0
+  },
+  {
+    "imageId": "sha256:fbd8e8a52eb5b8a715e1731cd956d62ef3aaeb8a1b5d4bde696f9e9a258ac5b1",
+    "created": "2026-10-18T01:34:47.893074323Z",
+    "reason": "superseded isolated companion build; executable source retained in repository and final image",
+    "exitCode": 0
+  },
+  {
+    "imageId": "sha256:fa84b1888eba38c1f5fcc27b7db979398861824a6ba86dbeee77e839352876a3",
+    "created": "2026-10-18T01:25:55.26993709Z",
+    "reason": "superseded isolated companion build; executable source retained in repository and final image",
+    "exitCode": 0
+  }
+]

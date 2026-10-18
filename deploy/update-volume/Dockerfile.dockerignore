@@ -1,0 +1,7 @@
+**
+!dist
+!dist/updater
+!dist/updater/**
+!deploy
+!deploy/update-volume
+!deploy/update-volume/Dockerfile

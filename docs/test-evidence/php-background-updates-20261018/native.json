@@ -1,0 +1,523 @@
+{
+  "fixture": true,
+  "sourceRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+  "executorSha256": "2e2a6a67a22ee93be04641cf7096fcf656deb26bf7875bc0baa900f8f4a31b15",
+  "checks": [
+    {
+      "name": "signed full install booted with original 80bda57 data",
+      "base": {
+        "root": "/tmp/baize-php-native-final/releases/8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482-1ca03e5f-9b8f-4284-97f2-04072758dd6a",
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93"
+      },
+      "currentHealth": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "database": "ready",
+          "runtime": "php",
+          "schemaVersion": 1,
+          "updateIdentity": {
+            "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+            "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93",
+            "launchId": "c6227ac0-7719-41b3-aebc-be92cc6de8cc"
+          }
+        }
+      },
+      "published": {
+        "sourceRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+        "baseRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "payloadBytes": 66443,
+        "metadataBytes": 26015,
+        "changedFiles": [
+          "bin/migrate.php",
+          "bin/update-ops.php",
+          "bin/upgrade.php",
+          "bin/worker.php",
+          "php-release-manifest.json",
+          "README.md",
+          "src/App.php",
+          "src/UpdateBridge.php",
+          "src/UpdateSchema.php",
+          "VALIDATION.md"
+        ],
+        "unchangedFiles": [
+          "bin/backup.php",
+          "bin/export.php",
+          "bin/install.php",
+          "bin/restore.php",
+          "bin/routes.php",
+          "bootstrap.php",
+          "deploy/cron.example",
+          "deploy/nginx.conf.example",
+          "deploy/php.ini.example",
+          "deploy/worker.supervisor.conf.example",
+          "LICENSE",
+          "migrations/001_documents.sql",
+          "public/.htaccess",
+          "public/assets/anhui-BSaniTrc.js",
+          "public/assets/aomen-DXLsqBrz.js",
+          "public/assets/beijing-6J6D0v26.js",
+          "public/assets/Charts-DY5ZBz0A.js",
+          "public/assets/chongqing-Cl1EA9FX.js",
+          "public/assets/fujian-CnXpqkhe.js",
+          "public/assets/gansu-Bi_VQQwS.js",
+          "public/assets/GeographicMap-z1SfvKyB.js",
+          "public/assets/guangdong-CX_QD5Pr.js",
+          "public/assets/guangxi-B63_XU_1.js",
+          "public/assets/guizhou-BUdXZdgN.js",
+          "public/assets/hainan-ByIDMKTK.js",
+          "public/assets/hebei-T7l9OzzS.js",
+          "public/assets/heilongjiang-BpPsHrM9.js",
+          "public/assets/henan-ByBj5SKi.js",
+          "public/assets/hubei-CbKDql3J.js",
+          "public/assets/hunan-CWxspgVh.js",
+          "public/assets/index-aaNwmcps.css",
+          "public/assets/index-CLcflrK_.js",
+          "public/assets/install-Db95I0GE.js",
+          "public/assets/jiangsu-CfAV2ncg.js",
+          "public/assets/jiangxi-CMNmFB4L.js",
+          "public/assets/jilin-i0ZAtsll.js",
+          "public/assets/liaoning-CQP2PqVX.js",
+          "public/assets/neimenggu-CwzZW05h.js",
+          "public/assets/ningxia-Bpe_w3T9.js",
+          "public/assets/noto-sans-sc-chinese-simplified-400-normal-DS5SpWNO.woff2",
+          "public/assets/noto-sans-sc-chinese-simplified-700-normal-BmuLCgFi.woff2",
+          "public/assets/noto-sans-sc-latin-400-normal-DXM2Kafd.woff2",
+          "public/assets/noto-sans-sc-latin-700-normal-VDMCSKHX.woff2",
+          "public/assets/noto-sans-sc.LICENSE.txt",
+          "public/assets/qinghai-Bql4kmYY.js",
+          "public/assets/ReplayViewer-DaPnmS6I.js",
+          "public/assets/shandong-G1nzS6sL.js",
+          "public/assets/shanghai-D5fADUyQ.js",
+          "public/assets/shanxi-sF6r9BMA.js",
+          "public/assets/shanxi1-B0i8biAP.js",
+          "public/assets/sichuan-BiKg7TEf.js",
+          "public/assets/taiwan-DuhSbPaK.js",
+          "public/assets/tianjin-BIND3J0Y.js",
+          "public/assets/xianggang-B-GwqNoD.js",
+          "public/assets/xinjiang-CVqQoyx6.js",
+          "public/assets/xizang-C9xTaVmy.js",
+          "public/assets/yunnan-z_D5KTxc.js",
+          "public/assets/zhejiang-DSbk7J7A.js",
+          "public/index.html",
+          "public/index.php",
+          "public/install.php",
+          "public/router.php",
+          "public/tracker-consent.js",
+          "public/tracker-consent.js.gz",
+          "public/tracker-heatmap.js",
+          "public/tracker-heatmap.js.gz",
+          "public/tracker-min.js",
+          "public/tracker-min.js.gz",
+          "public/tracker-replay.js",
+          "public/tracker-replay.js.gz",
+          "public/tracker-sizes.json",
+          "public/tracker-vitals.js",
+          "public/tracker-vitals.js.gz",
+          "public/tracker.js",
+          "public/tracker.js.gz",
+          "public/tracker.LICENSE.txt",
+          "resources/bot-rules.json",
+          "resources/bot-rules.NOTICE",
+          "resources/build-psl.mjs",
+          "resources/LICENSE.public-suffix-list",
+          "resources/public_suffix_list.ascii.dat",
+          "resources/public_suffix_list.dat",
+          "resources/public-suffix-source.json",
+          "src/AnalysisEngine.php",
+          "src/Analytics.php",
+          "src/Annotations.php",
+          "src/Auth.php",
+          "src/Collect.php",
+          "src/Database.php",
+          "src/Decimal.php",
+          "src/Diagnostics.php",
+          "src/EventPrivacy.php",
+          "src/External.php",
+          "src/GeoIP.php",
+          "src/Governance.php",
+          "src/Http.php",
+          "src/Installer.php",
+          "src/Keyring.php",
+          "src/Maintenance.php",
+          "src/ManualSearch.php",
+          "src/Mcp.php",
+          "src/Operations.php",
+          "src/Outbound.php",
+          "src/ProviderReports.php",
+          "src/Queue.php",
+          "src/Router.php",
+          "src/Security.php",
+          "src/Sessionizer.php",
+          "src/Sites.php",
+          "src/SSO.php",
+          "src/Store.php",
+          "src/Worker.php",
+          "third_party/maxmind-db/composer.json",
+          "third_party/maxmind-db/LICENSE",
+          "third_party/maxmind-db/PROVENANCE.json",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Decoder.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/InvalidDatabaseException.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Metadata.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Util.php"
+        ],
+        "deletedFiles": [],
+        "deletedDirectories": [],
+        "fullReleaseBytes": 7473982,
+        "fullFallbackAvailable": false
+      }
+    },
+    {
+      "name": "denied other administrator",
+      "status": 403
+    },
+    {
+      "name": "denied API token",
+      "status": 403
+    },
+    {
+      "name": "denied cross-origin",
+      "status": 403
+    },
+    {
+      "name": "denied missing origin",
+      "status": 403
+    },
+    {
+      "name": "denied unknown command field",
+      "status": 400
+    },
+    {
+      "name": "signed preview",
+      "availableRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+      "notes": [
+        "受控隔离实例：真实 PHP-FPM、MySQL 与新版本代码。"
+      ]
+    },
+    {
+      "name": "rejected corrupt",
+      "error": "UPDATE_BLOB_INTEGRITY_FAILED",
+      "current": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482"
+    },
+    {
+      "name": "rejected network",
+      "error": "UPDATE_SOURCE_NETWORK_FAILED",
+      "current": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482"
+    },
+    {
+      "name": "executor-only SIGKILL download recovery",
+      "phase": "interrupted",
+      "error": "UPDATE_INTERRUPTED_BEFORE_SWITCH"
+    },
+    {
+      "name": "real native update and backup",
+      "current": {
+        "root": "/tmp/baize-php-native-final/releases/155bed07bc3da2a96dfd89a85736b38b34d4ac13-2395786a-d461-4724-891e-1a4efed76601",
+        "revision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+        "manifestSha256": "5c0c30b9f43658cd94418eba7d4fdd5db0813fb427f2832564b31e93ea838731"
+      },
+      "backupCreated": true,
+      "concurrentStatus": 409,
+      "idempotent": true
+    },
+    {
+      "name": "code rollback retained post-update MySQL writes"
+    },
+    {
+      "name": "real unhealthy PHP release rolled back",
+      "error": "UPDATE_HEALTH_IDENTITY_FAILED",
+      "steps": {
+        "preflight": "passed",
+        "download": "passed",
+        "backup": "passed",
+        "update": "passed",
+        "health": "running",
+        "rollback": "passed"
+      }
+    },
+    {
+      "name": "executor-only SIGKILL during health recovered old code",
+      "phase": "interrupted"
+    },
+    {
+      "name": "final target installed and healthy",
+      "identity": {
+        "revision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+        "manifestSha256": "5c0c30b9f43658cd94418eba7d4fdd5db0813fb427f2832564b31e93ea838731",
+        "launchId": "9fe88ae8-08f9-4699-ad50-a59013edbe37"
+      },
+      "backups": "/tmp/baize-php-native-final/state/backups/2e98d73d-b0da-4525-9ed1-1b269f28f11a"
+    },
+    {
+      "name": "original encrypted secret, key and data retained",
+      "secretRetained": true,
+      "fileRetained": true
+    },
+    {
+      "name": "signed installed target reports current with no payload",
+      "phase": "current",
+      "plannedPayloadBytes": 0
+    }
+  ],
+  "startedAt": "2026-10-18T02:12:31.159Z",
+  "downloads": [
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "corrupt"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "corrupt"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "network"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "hold"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "hold"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/475db0a7cbc8642bbf701bf363d92af458dc5706a48468609e216c30f3a8f8e2",
+      "bytes": 4091,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/532730f6a5b96f04ebb9dacedec58f9dfbf3490022683656707e89d1f0250682",
+      "bytes": 4117,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/65480c8ea2380bdf44d992d5a8b69ac0aeba231ef1c57a3b156562ad01f0f889",
+      "bytes": 1054,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/3dc9139dd896310dbb1a0cd9472073e09de144183092a8010e289167a8f82d47",
+      "bytes": 24739,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0d8cdb718b9768d524596ae12453b5cfe4f1210d5a08c4e57d8b2eebf929e5c4",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/cf3d38b8b6e9323182b10b9d993e1fff096e7fff200fb3de696b04b76ef7e649",
+      "bytes": 2900,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/42fc1f1b4f2b08d48881fcc40545aef7a3414ae9ec5bbaf03da79caaae965be2",
+      "bytes": 5628,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e1c55e15b556d4182456d00d7700cd14e4cdfaf73f755b0d191331a9ef7dfa6",
+      "bytes": 4119,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/4fd69656b218e79a186dc2c1ae28110cf8f720bc57136d4706fb3e129e2a5a7a",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 25958,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/475db0a7cbc8642bbf701bf363d92af458dc5706a48468609e216c30f3a8f8e2",
+      "bytes": 4091,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/532730f6a5b96f04ebb9dacedec58f9dfbf3490022683656707e89d1f0250682",
+      "bytes": 4117,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/65480c8ea2380bdf44d992d5a8b69ac0aeba231ef1c57a3b156562ad01f0f889",
+      "bytes": 1054,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/3dc9139dd896310dbb1a0cd9472073e09de144183092a8010e289167a8f82d47",
+      "bytes": 24739,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0d8cdb718b9768d524596ae12453b5cfe4f1210d5a08c4e57d8b2eebf929e5c4",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/746de21ea57c151f947475fe0c58f32f4b1ced45c3edd04122eb1573878b9e0c",
+      "bytes": 2904,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/42fc1f1b4f2b08d48881fcc40545aef7a3414ae9ec5bbaf03da79caaae965be2",
+      "bytes": 5628,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e1c55e15b556d4182456d00d7700cd14e4cdfaf73f755b0d191331a9ef7dfa6",
+      "bytes": 4119,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/4fd69656b218e79a186dc2c1ae28110cf8f720bc57136d4706fb3e129e2a5a7a",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 25958,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/475db0a7cbc8642bbf701bf363d92af458dc5706a48468609e216c30f3a8f8e2",
+      "bytes": 4091,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/532730f6a5b96f04ebb9dacedec58f9dfbf3490022683656707e89d1f0250682",
+      "bytes": 4117,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/65480c8ea2380bdf44d992d5a8b69ac0aeba231ef1c57a3b156562ad01f0f889",
+      "bytes": 1054,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/3dc9139dd896310dbb1a0cd9472073e09de144183092a8010e289167a8f82d47",
+      "bytes": 24739,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0d8cdb718b9768d524596ae12453b5cfe4f1210d5a08c4e57d8b2eebf929e5c4",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/746de21ea57c151f947475fe0c58f32f4b1ced45c3edd04122eb1573878b9e0c",
+      "bytes": 2904,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/42fc1f1b4f2b08d48881fcc40545aef7a3414ae9ec5bbaf03da79caaae965be2",
+      "bytes": 5628,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e1c55e15b556d4182456d00d7700cd14e4cdfaf73f755b0d191331a9ef7dfa6",
+      "bytes": 4119,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/4fd69656b218e79a186dc2c1ae28110cf8f720bc57136d4706fb3e129e2a5a7a",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/9a50fa9fd89b554d657f80fd8a888242776fab484183db67d2cebcf9c0989ffc",
+      "bytes": 164,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/475db0a7cbc8642bbf701bf363d92af458dc5706a48468609e216c30f3a8f8e2",
+      "bytes": 4091,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/532730f6a5b96f04ebb9dacedec58f9dfbf3490022683656707e89d1f0250682",
+      "bytes": 4117,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/65480c8ea2380bdf44d992d5a8b69ac0aeba231ef1c57a3b156562ad01f0f889",
+      "bytes": 1054,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/3dc9139dd896310dbb1a0cd9472073e09de144183092a8010e289167a8f82d47",
+      "bytes": 24739,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0d8cdb718b9768d524596ae12453b5cfe4f1210d5a08c4e57d8b2eebf929e5c4",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/cf3d38b8b6e9323182b10b9d993e1fff096e7fff200fb3de696b04b76ef7e649",
+      "bytes": 2900,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/42fc1f1b4f2b08d48881fcc40545aef7a3414ae9ec5bbaf03da79caaae965be2",
+      "bytes": 5628,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e1c55e15b556d4182456d00d7700cd14e4cdfaf73f755b0d191331a9ef7dfa6",
+      "bytes": 4119,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/4fd69656b218e79a186dc2c1ae28110cf8f720bc57136d4706fb3e129e2a5a7a",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26015,
+      "fault": "none"
+    }
+  ],
+  "finishedAt": "2026-10-18T02:13:10.513Z"
+}

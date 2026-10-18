@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 /workspace/baize-analytics
+
+
+ Test Files  4 passed (4)
+      Tests  47 passed (47)
+   Start at  02:10:38
+   Duration  1.55s (transform 224ms, setup 0ms, import 563ms, tests 577ms, environment 0ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

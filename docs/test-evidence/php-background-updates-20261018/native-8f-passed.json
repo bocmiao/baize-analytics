@@ -1,0 +1,518 @@
+{
+  "fixture": true,
+  "sourceRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+  "executorSha256": "e7fdc79eee2566744337a95cbadbe21ccabbe7bd1e2b3f9c9dc35084b03efc57",
+  "checks": [
+    {
+      "name": "signed full install booted with original 80bda57 data",
+      "base": {
+        "root": "/tmp/baize-php-native-final/releases/070c4f3ca41e0fac8be10ebbc7137531b4bbcbba-0f431957-758c-4d88-8810-1d1ed120bb2f",
+        "revision": "070c4f3ca41e0fac8be10ebbc7137531b4bbcbba",
+        "manifestSha256": "de66cf4890ecee706bec166711dfacd84660fd39c29db60d5a030e2698a31407"
+      },
+      "currentHealth": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "database": "ready",
+          "runtime": "php",
+          "schemaVersion": 1,
+          "updateIdentity": {
+            "revision": "070c4f3ca41e0fac8be10ebbc7137531b4bbcbba",
+            "manifestSha256": "de66cf4890ecee706bec166711dfacd84660fd39c29db60d5a030e2698a31407",
+            "launchId": "dd138d77-2022-435d-9b1a-d6fd9d19dfd4"
+          }
+        }
+      },
+      "published": {
+        "sourceRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "baseRevision": "070c4f3ca41e0fac8be10ebbc7137531b4bbcbba",
+        "payloadBytes": 1691126,
+        "metadataBytes": 26007,
+        "changedFiles": [
+          "php-release-manifest.json",
+          "public/assets/Charts-DY5ZBz0A.js",
+          "public/assets/GeographicMap-z1SfvKyB.js",
+          "public/assets/index-CLcflrK_.js",
+          "public/assets/install-Db95I0GE.js",
+          "public/assets/ReplayViewer-DaPnmS6I.js",
+          "public/index.html",
+          "README.md",
+          "VALIDATION.md"
+        ],
+        "unchangedFiles": [
+          "bin/backup.php",
+          "bin/export.php",
+          "bin/install.php",
+          "bin/migrate.php",
+          "bin/restore.php",
+          "bin/routes.php",
+          "bin/update-ops.php",
+          "bin/upgrade.php",
+          "bin/worker.php",
+          "bootstrap.php",
+          "deploy/cron.example",
+          "deploy/nginx.conf.example",
+          "deploy/php.ini.example",
+          "deploy/worker.supervisor.conf.example",
+          "LICENSE",
+          "migrations/001_documents.sql",
+          "public/.htaccess",
+          "public/assets/anhui-BSaniTrc.js",
+          "public/assets/aomen-DXLsqBrz.js",
+          "public/assets/beijing-6J6D0v26.js",
+          "public/assets/chongqing-Cl1EA9FX.js",
+          "public/assets/fujian-CnXpqkhe.js",
+          "public/assets/gansu-Bi_VQQwS.js",
+          "public/assets/guangdong-CX_QD5Pr.js",
+          "public/assets/guangxi-B63_XU_1.js",
+          "public/assets/guizhou-BUdXZdgN.js",
+          "public/assets/hainan-ByIDMKTK.js",
+          "public/assets/hebei-T7l9OzzS.js",
+          "public/assets/heilongjiang-BpPsHrM9.js",
+          "public/assets/henan-ByBj5SKi.js",
+          "public/assets/hubei-CbKDql3J.js",
+          "public/assets/hunan-CWxspgVh.js",
+          "public/assets/index-aaNwmcps.css",
+          "public/assets/jiangsu-CfAV2ncg.js",
+          "public/assets/jiangxi-CMNmFB4L.js",
+          "public/assets/jilin-i0ZAtsll.js",
+          "public/assets/liaoning-CQP2PqVX.js",
+          "public/assets/neimenggu-CwzZW05h.js",
+          "public/assets/ningxia-Bpe_w3T9.js",
+          "public/assets/noto-sans-sc-chinese-simplified-400-normal-DS5SpWNO.woff2",
+          "public/assets/noto-sans-sc-chinese-simplified-700-normal-BmuLCgFi.woff2",
+          "public/assets/noto-sans-sc-latin-400-normal-DXM2Kafd.woff2",
+          "public/assets/noto-sans-sc-latin-700-normal-VDMCSKHX.woff2",
+          "public/assets/noto-sans-sc.LICENSE.txt",
+          "public/assets/qinghai-Bql4kmYY.js",
+          "public/assets/shandong-G1nzS6sL.js",
+          "public/assets/shanghai-D5fADUyQ.js",
+          "public/assets/shanxi-sF6r9BMA.js",
+          "public/assets/shanxi1-B0i8biAP.js",
+          "public/assets/sichuan-BiKg7TEf.js",
+          "public/assets/taiwan-DuhSbPaK.js",
+          "public/assets/tianjin-BIND3J0Y.js",
+          "public/assets/xianggang-B-GwqNoD.js",
+          "public/assets/xinjiang-CVqQoyx6.js",
+          "public/assets/xizang-C9xTaVmy.js",
+          "public/assets/yunnan-z_D5KTxc.js",
+          "public/assets/zhejiang-DSbk7J7A.js",
+          "public/index.php",
+          "public/install.php",
+          "public/router.php",
+          "public/tracker-consent.js",
+          "public/tracker-consent.js.gz",
+          "public/tracker-heatmap.js",
+          "public/tracker-heatmap.js.gz",
+          "public/tracker-min.js",
+          "public/tracker-min.js.gz",
+          "public/tracker-replay.js",
+          "public/tracker-replay.js.gz",
+          "public/tracker-sizes.json",
+          "public/tracker-vitals.js",
+          "public/tracker-vitals.js.gz",
+          "public/tracker.js",
+          "public/tracker.js.gz",
+          "public/tracker.LICENSE.txt",
+          "resources/bot-rules.json",
+          "resources/bot-rules.NOTICE",
+          "resources/build-psl.mjs",
+          "resources/LICENSE.public-suffix-list",
+          "resources/public_suffix_list.ascii.dat",
+          "resources/public_suffix_list.dat",
+          "resources/public-suffix-source.json",
+          "src/AnalysisEngine.php",
+          "src/Analytics.php",
+          "src/Annotations.php",
+          "src/App.php",
+          "src/Auth.php",
+          "src/Collect.php",
+          "src/Database.php",
+          "src/Decimal.php",
+          "src/Diagnostics.php",
+          "src/EventPrivacy.php",
+          "src/External.php",
+          "src/GeoIP.php",
+          "src/Governance.php",
+          "src/Http.php",
+          "src/Installer.php",
+          "src/Keyring.php",
+          "src/Maintenance.php",
+          "src/ManualSearch.php",
+          "src/Mcp.php",
+          "src/Operations.php",
+          "src/Outbound.php",
+          "src/ProviderReports.php",
+          "src/Queue.php",
+          "src/Router.php",
+          "src/Security.php",
+          "src/Sessionizer.php",
+          "src/Sites.php",
+          "src/SSO.php",
+          "src/Store.php",
+          "src/UpdateBridge.php",
+          "src/Worker.php",
+          "third_party/maxmind-db/composer.json",
+          "third_party/maxmind-db/LICENSE",
+          "third_party/maxmind-db/PROVENANCE.json",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Decoder.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/InvalidDatabaseException.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Metadata.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Util.php"
+        ],
+        "deletedFiles": [
+          "public/assets/Charts-3xTlok1X.js",
+          "public/assets/GeographicMap-CRYmCf4w.js",
+          "public/assets/ReplayViewer-DcjkIUVA.js",
+          "public/assets/index-0oDPws9u.js",
+          "public/assets/install-Dh5oH0-V.js"
+        ],
+        "deletedDirectories": [],
+        "fullReleaseBytes": 7468429,
+        "fullFallbackAvailable": false
+      }
+    },
+    {
+      "name": "denied other administrator",
+      "status": 403
+    },
+    {
+      "name": "denied API token",
+      "status": 403
+    },
+    {
+      "name": "denied cross-origin",
+      "status": 403
+    },
+    {
+      "name": "denied missing origin",
+      "status": 403
+    },
+    {
+      "name": "denied unknown command field",
+      "status": 400
+    },
+    {
+      "name": "signed preview",
+      "availableRevision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+      "notes": [
+        "受控隔离实例：真实 PHP-FPM、MySQL 与新版本代码。"
+      ]
+    },
+    {
+      "name": "rejected corrupt",
+      "error": "UPDATE_BLOB_INTEGRITY_FAILED",
+      "current": "070c4f3ca41e0fac8be10ebbc7137531b4bbcbba"
+    },
+    {
+      "name": "rejected network",
+      "error": "UPDATE_SOURCE_NETWORK_FAILED",
+      "current": "070c4f3ca41e0fac8be10ebbc7137531b4bbcbba"
+    },
+    {
+      "name": "executor-only SIGKILL download recovery",
+      "phase": "interrupted",
+      "error": "UPDATE_INTERRUPTED_BEFORE_SWITCH"
+    },
+    {
+      "name": "real native update and backup",
+      "current": {
+        "root": "/tmp/baize-php-native-final/releases/8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482-2940470a-7fb5-4f02-9204-6de08a6c4d3f",
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93"
+      },
+      "backupCreated": true,
+      "concurrentStatus": 409,
+      "idempotent": true
+    },
+    {
+      "name": "code rollback retained post-update MySQL writes"
+    },
+    {
+      "name": "real unhealthy PHP release rolled back",
+      "error": "UPDATE_HEALTH_IDENTITY_FAILED",
+      "steps": {
+        "preflight": "passed",
+        "download": "passed",
+        "backup": "passed",
+        "update": "passed",
+        "health": "running",
+        "rollback": "passed"
+      }
+    },
+    {
+      "name": "executor-only SIGKILL during health recovered old code",
+      "phase": "interrupted"
+    },
+    {
+      "name": "final target installed and healthy",
+      "identity": {
+        "revision": "8f0bda3f4e5ca60cf7ccff85c6ab5826d9d2b482",
+        "manifestSha256": "63e53a470cb110d509d70413627b0307718e6cc0dfd1b8cc1b507758c54e6d93",
+        "launchId": "27a16edf-e2c1-45aa-9b35-d7a0a64a88ee"
+      },
+      "backups": "/tmp/baize-php-native-final/state/backups/1ca03e5f-9b8f-4284-97f2-04072758dd6a"
+    },
+    {
+      "name": "original encrypted secret, key and data retained",
+      "secretRetained": true,
+      "fileRetained": true
+    },
+    {
+      "name": "signed installed target reports current with no payload",
+      "phase": "current",
+      "plannedPayloadBytes": 0
+    }
+  ],
+  "startedAt": "2026-10-18T01:57:09.938Z",
+  "downloads": [
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "corrupt"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "corrupt"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "network"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "hold"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "hold"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/12830cb572648dd11ecf7a0fbb27e5f42b601c69b55882e9cf0c8940481d3cab",
+      "bytes": 143976,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/355ff2560fe014680c896356079ea13f6785db714c198d795f97e18ddb9c36a4",
+      "bytes": 127315,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/f87e26c856bc8e9bab8ed6aa1e4c0a12d495e479cc910cb1ecf77a08482bfcc5",
+      "bytes": 676928,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e64740f8a2e4c82b0e021a3ac4b232d929d1a315403e63bf4314692c266f4d7",
+      "bytes": 436238,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2c868b820f2e06f3abdc460e110d11aa7fb09fe18ea133d3b456409735f5bf0d",
+      "bytes": 262062,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/5606f613c6fa89aa61476e2a41a042da594d64164ddcb06e9574b8a65a7b901b",
+      "bytes": 411,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/c4aff99b16db612c5882274873963b7b18ad44ba47f2c1118cf4dfbe930151d7",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/8fcecbdd528de11bae92a20fcb4f9fee644306ea125e6598c080db68195508c4",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26085,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/12830cb572648dd11ecf7a0fbb27e5f42b601c69b55882e9cf0c8940481d3cab",
+      "bytes": 143976,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/355ff2560fe014680c896356079ea13f6785db714c198d795f97e18ddb9c36a4",
+      "bytes": 127315,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/f87e26c856bc8e9bab8ed6aa1e4c0a12d495e479cc910cb1ecf77a08482bfcc5",
+      "bytes": 676928,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e64740f8a2e4c82b0e021a3ac4b232d929d1a315403e63bf4314692c266f4d7",
+      "bytes": 436238,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2c868b820f2e06f3abdc460e110d11aa7fb09fe18ea133d3b456409735f5bf0d",
+      "bytes": 262062,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/5606f613c6fa89aa61476e2a41a042da594d64164ddcb06e9574b8a65a7b901b",
+      "bytes": 411,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/c4aff99b16db612c5882274873963b7b18ad44ba47f2c1118cf4dfbe930151d7",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0337d8437e7b3809829779bbc313795e935e5c1e5cc42a75332c4553a79d4d6c",
+      "bytes": 2706,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/8fcecbdd528de11bae92a20fcb4f9fee644306ea125e6598c080db68195508c4",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26085,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/12830cb572648dd11ecf7a0fbb27e5f42b601c69b55882e9cf0c8940481d3cab",
+      "bytes": 143976,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/355ff2560fe014680c896356079ea13f6785db714c198d795f97e18ddb9c36a4",
+      "bytes": 127315,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/f87e26c856bc8e9bab8ed6aa1e4c0a12d495e479cc910cb1ecf77a08482bfcc5",
+      "bytes": 676928,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e64740f8a2e4c82b0e021a3ac4b232d929d1a315403e63bf4314692c266f4d7",
+      "bytes": 436238,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2c868b820f2e06f3abdc460e110d11aa7fb09fe18ea133d3b456409735f5bf0d",
+      "bytes": 262062,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/5606f613c6fa89aa61476e2a41a042da594d64164ddcb06e9574b8a65a7b901b",
+      "bytes": 411,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/c4aff99b16db612c5882274873963b7b18ad44ba47f2c1118cf4dfbe930151d7",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/0337d8437e7b3809829779bbc313795e935e5c1e5cc42a75332c4553a79d4d6c",
+      "bytes": 2706,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/8fcecbdd528de11bae92a20fcb4f9fee644306ea125e6598c080db68195508c4",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/e3dad0ce50ceeaf97349567d7b8e3208626a334d220536f369a61037a18b9ab1",
+      "bytes": 24565,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/12830cb572648dd11ecf7a0fbb27e5f42b601c69b55882e9cf0c8940481d3cab",
+      "bytes": 143976,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/355ff2560fe014680c896356079ea13f6785db714c198d795f97e18ddb9c36a4",
+      "bytes": 127315,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/f87e26c856bc8e9bab8ed6aa1e4c0a12d495e479cc910cb1ecf77a08482bfcc5",
+      "bytes": 676928,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2e64740f8a2e4c82b0e021a3ac4b232d929d1a315403e63bf4314692c266f4d7",
+      "bytes": 436238,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/2c868b820f2e06f3abdc460e110d11aa7fb09fe18ea133d3b456409735f5bf0d",
+      "bytes": 262062,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/5606f613c6fa89aa61476e2a41a042da594d64164ddcb06e9574b8a65a7b901b",
+      "bytes": 411,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/c4aff99b16db612c5882274873963b7b18ad44ba47f2c1118cf4dfbe930151d7",
+      "bytes": 7714,
+      "fault": "none"
+    },
+    {
+      "path": "/blobs/8fcecbdd528de11bae92a20fcb4f9fee644306ea125e6598c080db68195508c4",
+      "bytes": 11917,
+      "fault": "none"
+    },
+    {
+      "path": "/latest.json",
+      "bytes": 26007,
+      "fault": "none"
+    }
+  ],
+  "finishedAt": "2026-10-18T01:57:47.738Z"
+}

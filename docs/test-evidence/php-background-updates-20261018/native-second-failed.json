@@ -1,0 +1,227 @@
+{
+  "fixture": true,
+  "sourceRevision": "603624fe699f55dcb5e0b3f7bd63e6dc84b7f409",
+  "executorSha256": "8a9267900f78c777c14f0acef7230a16ca426eb03f55d9004c0c0ddc64907bcd",
+  "checks": [
+    {
+      "name": "signed full install booted with original 80bda57 data",
+      "base": {
+        "root": "/workspace/baize-isolated/native/releases/base36",
+        "revision": "36d29128db03725c34e4f24f229ef818db2f48b8",
+        "manifestSha256": "3252a3c907b605843045c1b6ee80d2e829f447a8afe752fd0b0d813b864798cc"
+      },
+      "currentHealth": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "database": "ready",
+          "runtime": "php",
+          "schemaVersion": 1,
+          "updateIdentity": {
+            "revision": "36d29128db03725c34e4f24f229ef818db2f48b8",
+            "manifestSha256": "3252a3c907b605843045c1b6ee80d2e829f447a8afe752fd0b0d813b864798cc",
+            "launchId": "87a606e2-115c-4ee5-bb8c-bfaae6936b76"
+          }
+        }
+      },
+      "published": {
+        "sourceRevision": "603624fe699f55dcb5e0b3f7bd63e6dc84b7f409",
+        "baseRevision": "36d29128db03725c34e4f24f229ef818db2f48b8",
+        "payloadBytes": 47913,
+        "metadataBytes": 25006,
+        "changedFiles": [
+          "bin/upgrade.php",
+          "php-release-manifest.json",
+          "README.md",
+          "VALIDATION.md"
+        ],
+        "unchangedFiles": [
+          "bin/backup.php",
+          "bin/export.php",
+          "bin/install.php",
+          "bin/migrate.php",
+          "bin/restore.php",
+          "bin/routes.php",
+          "bin/update-ops.php",
+          "bin/worker.php",
+          "bootstrap.php",
+          "deploy/cron.example",
+          "deploy/nginx.conf.example",
+          "deploy/php.ini.example",
+          "deploy/worker.supervisor.conf.example",
+          "LICENSE",
+          "migrations/001_documents.sql",
+          "public/.htaccess",
+          "public/assets/anhui-BSaniTrc.js",
+          "public/assets/aomen-DXLsqBrz.js",
+          "public/assets/beijing-6J6D0v26.js",
+          "public/assets/Charts-Cfit8DPQ.js",
+          "public/assets/chongqing-Cl1EA9FX.js",
+          "public/assets/fujian-CnXpqkhe.js",
+          "public/assets/gansu-Bi_VQQwS.js",
+          "public/assets/GeographicMap-DQyVbfn-.js",
+          "public/assets/guangdong-CX_QD5Pr.js",
+          "public/assets/guangxi-B63_XU_1.js",
+          "public/assets/guizhou-BUdXZdgN.js",
+          "public/assets/hainan-ByIDMKTK.js",
+          "public/assets/hebei-T7l9OzzS.js",
+          "public/assets/heilongjiang-BpPsHrM9.js",
+          "public/assets/henan-ByBj5SKi.js",
+          "public/assets/hubei-CbKDql3J.js",
+          "public/assets/hunan-CWxspgVh.js",
+          "public/assets/index-aaNwmcps.css",
+          "public/assets/index-Bt7d60f0.js",
+          "public/assets/install-CBCowYmk.js",
+          "public/assets/jiangsu-CfAV2ncg.js",
+          "public/assets/jiangxi-CMNmFB4L.js",
+          "public/assets/jilin-i0ZAtsll.js",
+          "public/assets/liaoning-CQP2PqVX.js",
+          "public/assets/neimenggu-CwzZW05h.js",
+          "public/assets/ningxia-Bpe_w3T9.js",
+          "public/assets/noto-sans-sc-chinese-simplified-400-normal-DS5SpWNO.woff2",
+          "public/assets/noto-sans-sc-chinese-simplified-700-normal-BmuLCgFi.woff2",
+          "public/assets/noto-sans-sc-latin-400-normal-DXM2Kafd.woff2",
+          "public/assets/noto-sans-sc-latin-700-normal-VDMCSKHX.woff2",
+          "public/assets/noto-sans-sc.LICENSE.txt",
+          "public/assets/qinghai-Bql4kmYY.js",
+          "public/assets/ReplayViewer-Bw7g4pwe.js",
+          "public/assets/shandong-G1nzS6sL.js",
+          "public/assets/shanghai-D5fADUyQ.js",
+          "public/assets/shanxi-sF6r9BMA.js",
+          "public/assets/shanxi1-B0i8biAP.js",
+          "public/assets/sichuan-BiKg7TEf.js",
+          "public/assets/taiwan-DuhSbPaK.js",
+          "public/assets/tianjin-BIND3J0Y.js",
+          "public/assets/xianggang-B-GwqNoD.js",
+          "public/assets/xinjiang-CVqQoyx6.js",
+          "public/assets/xizang-C9xTaVmy.js",
+          "public/assets/yunnan-z_D5KTxc.js",
+          "public/assets/zhejiang-DSbk7J7A.js",
+          "public/index.html",
+          "public/index.php",
+          "public/install.php",
+          "public/router.php",
+          "public/tracker-consent.js",
+          "public/tracker-consent.js.gz",
+          "public/tracker-heatmap.js",
+          "public/tracker-heatmap.js.gz",
+          "public/tracker-min.js",
+          "public/tracker-min.js.gz",
+          "public/tracker-replay.js",
+          "public/tracker-replay.js.gz",
+          "public/tracker-sizes.json",
+          "public/tracker-vitals.js",
+          "public/tracker-vitals.js.gz",
+          "public/tracker.js",
+          "public/tracker.js.gz",
+          "public/tracker.LICENSE.txt",
+          "resources/bot-rules.json",
+          "resources/bot-rules.NOTICE",
+          "resources/build-psl.mjs",
+          "resources/LICENSE.public-suffix-list",
+          "resources/public_suffix_list.ascii.dat",
+          "resources/public_suffix_list.dat",
+          "resources/public-suffix-source.json",
+          "src/AnalysisEngine.php",
+          "src/Analytics.php",
+          "src/Annotations.php",
+          "src/App.php",
+          "src/Auth.php",
+          "src/Collect.php",
+          "src/Database.php",
+          "src/Decimal.php",
+          "src/Diagnostics.php",
+          "src/EventPrivacy.php",
+          "src/External.php",
+          "src/GeoIP.php",
+          "src/Governance.php",
+          "src/Http.php",
+          "src/Installer.php",
+          "src/Keyring.php",
+          "src/Maintenance.php",
+          "src/ManualSearch.php",
+          "src/Mcp.php",
+          "src/Operations.php",
+          "src/Outbound.php",
+          "src/ProviderReports.php",
+          "src/Queue.php",
+          "src/Router.php",
+          "src/Security.php",
+          "src/Sessionizer.php",
+          "src/Sites.php",
+          "src/SSO.php",
+          "src/Store.php",
+          "src/UpdateBridge.php",
+          "src/Worker.php",
+          "third_party/maxmind-db/composer.json",
+          "third_party/maxmind-db/LICENSE",
+          "third_party/maxmind-db/PROVENANCE.json",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Decoder.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/InvalidDatabaseException.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Metadata.php",
+          "third_party/maxmind-db/src/MaxMind/Db/Reader/Util.php"
+        ],
+        "deletedFiles": [],
+        "deletedDirectories": [],
+        "fullReleaseBytes": 7467601,
+        "fullFallbackAvailable": false
+      }
+    },
+    {
+      "name": "denied other administrator",
+      "status": 403
+    },
+    {
+      "name": "denied API token",
+      "status": 403
+    },
+    {
+      "name": "denied cross-origin",
+      "status": 403
+    },
+    {
+      "name": "denied missing origin",
+      "status": 403
+    },
+    {
+      "name": "denied unknown command field",
+      "status": 400
+    },
+    {
+      "name": "signed preview",
+      "availableRevision": "603624fe699f55dcb5e0b3f7bd63e6dc84b7f409",
+      "notes": [
+        "受控隔离实例：真实 PHP-FPM、MySQL 与新版本代码。"
+      ]
+    },
+    {
+      "name": "rejected corrupt",
+      "error": "UPDATE_BLOB_INTEGRITY_FAILED",
+      "current": "36d29128db03725c34e4f24f229ef818db2f48b8"
+    },
+    {
+      "name": "rejected network",
+      "error": "UPDATE_SOURCE_NETWORK_FAILED",
+      "current": "36d29128db03725c34e4f24f229ef818db2f48b8"
+    },
+    {
+      "name": "executor-only SIGKILL download recovery",
+      "phase": "interrupted",
+      "error": "UPDATE_INTERRUPTED_BEFORE_SWITCH"
+    },
+    {
+      "name": "real native update and backup",
+      "current": {
+        "root": "/workspace/baize-isolated/native/releases/603624fe699f55dcb5e0b3f7bd63e6dc84b7f409-8c06e5db-5d57-44b1-8f5e-603b1dd6064e",
+        "revision": "603624fe699f55dcb5e0b3f7bd63e6dc84b7f409",
+        "manifestSha256": "c7925ee4c47efadf36cff200570f9cb06f3bad56609ebf8397cdf86de42ba4d9"
+      },
+      "backupCreated": true,
+      "concurrentStatus": 409,
+      "idempotent": true
+    }
+  ],
+  "startedAt": "2026-10-18T01:33:46.430Z",
+  "error": "SyntaxError: Unexpected token '<', \"<html>\r\n<h\"... is not valid JSON"
+}

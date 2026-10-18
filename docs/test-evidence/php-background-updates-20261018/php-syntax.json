@@ -1,0 +1,246 @@
+[
+  {
+    "path": "php/bootstrap.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/backup.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/export.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/install.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/migrate.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/restore.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/routes.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/upgrade.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/worker.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/bin/update-ops.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/public/index.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/public/install.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/public/router.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/AnalysisEngine.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Analytics.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Annotations.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/App.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Auth.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Collect.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Database.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Decimal.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Diagnostics.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/EventPrivacy.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/External.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/GeoIP.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Governance.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Http.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Installer.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Keyring.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Maintenance.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/ManualSearch.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Mcp.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Operations.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Outbound.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/ProviderReports.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Queue.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Router.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/SSO.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Security.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Sessionizer.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Sites.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Store.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/Worker.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/UpdateSchema.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/src/UpdateBridge.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/analytics.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/annotations.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/collect.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/governance.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/kernel.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/keyring.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/manual-search.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/mcp.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/platform.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/providers.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/tests/sso.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/third_party/maxmind-db/src/MaxMind/Db/Reader.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/third_party/maxmind-db/src/MaxMind/Db/Reader/Decoder.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/third_party/maxmind-db/src/MaxMind/Db/Reader/InvalidDatabaseException.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/third_party/maxmind-db/src/MaxMind/Db/Reader/Metadata.php",
+    "exitCode": 0
+  },
+  {
+    "path": "php/third_party/maxmind-db/src/MaxMind/Db/Reader/Util.php",
+    "exitCode": 0
+  }
+]

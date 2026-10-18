@@ -1,0 +1,41 @@
+{
+  "fixture": true,
+  "executorSha256": "e7fdc79eee2566744337a95cbadbe21ccabbe7bd1e2b3f9c9dc35084b03efc57",
+  "sourceRevision": "5f4d895e75763225193f25ddf653f169625490da",
+  "profiles": [
+    {
+      "profile": "standard",
+      "baseRevision": "d54e402564a90dec07650dfe50faa11cff8e024d",
+      "targetRevision": "6eb4032a3d2d20f13794ae4cfd957047b3f67117",
+      "checks": [
+        {
+          "name": "signed offline update with actual database backup",
+          "current": {
+            "root": "/workspace/baize-isolated/node-volume/standard/releases/6eb4032a3d2d20f13794ae4cfd957047b3f67117-84bbf578-168e-400f-9f3a-8922cff2638e",
+            "revision": "6eb4032a3d2d20f13794ae4cfd957047b3f67117",
+            "manifestSha256": "23d4feab66bc554b2996937400a2786b002ff750e855b01d980c03ed566e97d5"
+          },
+          "backupManifestSha256": "ad4c643637f9717b19b9c0946720df988705518220ccc42a5759b91d58b98c35"
+        },
+        {
+          "name": "SIGKILL/recreate retained the confirmed version and data",
+          "oldContainer": "2258bdf4d1913bd3eeaf7c32890bc7b51a79f8980d81a512f78886b5291bf512",
+          "newContainer": "0480e813bae4fa8a49618f833f37352bf16e7c485c7191cc36d7e6f5bd408b58",
+          "fixedImageId": "sha256:a84063ee1bca8d6f00f33d98589cad95109dfc886e87ea2396372f788be89d3b",
+          "before": {
+            "revision": "6eb4032a3d2d20f13794ae4cfd957047b3f67117",
+            "manifestSha256": "23d4feab66bc554b2996937400a2786b002ff750e855b01d980c03ed566e97d5",
+            "launchId": "5faeadc3-d428-4654-bc92-035955cee637"
+          },
+          "after": {
+            "revision": "6eb4032a3d2d20f13794ae4cfd957047b3f67117",
+            "manifestSha256": "23d4feab66bc554b2996937400a2786b002ff750e855b01d980c03ed566e97d5",
+            "launchId": "d8c97545-ce7b-45ad-8347-8ab1657f94c8"
+          }
+        }
+      ],
+      "screenshots": []
+    }
+  ],
+  "error": "Error: rollback failed UPDATE_PROCESS_DRAIN_FAILED"
+}

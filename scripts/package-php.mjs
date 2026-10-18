@@ -13,7 +13,7 @@ const verify=directory=>{
   const manifest=JSON.parse(readFileSync(join(directory,'php-release-manifest.json'),'utf8'));
   if(manifest.format!=='baize-php-release-v1'||manifest.runtime!=='php'||manifest.profile!=='standard')throw Error('PHP_RELEASE_MANIFEST_INVALID');
   const actual=[],directories=[];
-  const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name),name=relative(directory,path);if(name==='php-release-manifest.json')continue;const stat=lstatSync(path);if(stat.isDirectory()){directories.push({path:name,mode:stat.mode&0o777});walk(path);}else if(stat.isFile())actual.push({path:name,bytes:stat.size,sha256:sha256(readFileSync(path)),mode:stat.mode&0o777});else throw Error('PHP_RELEASE_NONREGULAR_FILE');}};
+  const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name),name=relative(directory,path);if(name==='php-release-manifest.json'||name==='release-manifest.json')continue;const stat=lstatSync(path);if(stat.isDirectory()){directories.push({path:name,mode:stat.mode&0o777});walk(path);}else if(stat.isFile())actual.push({path:name,bytes:stat.size,sha256:sha256(readFileSync(path)),mode:stat.mode&0o777});else throw Error('PHP_RELEASE_NONREGULAR_FILE');}};
   walk(directory);actual.sort((a,b)=>a.path.localeCompare(b.path));
   directories.sort((a,b)=>a.path.localeCompare(b.path));if((lstatSync(directory).mode&0o777)!==0o755||JSON.stringify(directories)!==JSON.stringify(manifest.directories)||JSON.stringify(actual)!==JSON.stringify(manifest.files))throw Error('PHP_RELEASE_CONTENT_MISMATCH');
   console.log(JSON.stringify({verified:true,files:actual.length,revision:manifest.revision,profile:manifest.profile}));
@@ -27,7 +27,7 @@ if(args.includes('--archive')&&within(resolve(at('--archive')),output))throw Err
 const revision=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
 if(existsSync(output))throw Error('PHP_RELEASE_OUTPUT_EXISTS');
 if(!existsSync(join(root,'dist/web/index.html'))||!existsSync(join(root,'public/tracker.js')))throw Error('BUILD_FRONTEND_AND_TRACKER_FIRST');
-for(const name of ['App','Auth','Installer','Sites','Collect','Worker','Analytics','AnalysisEngine','Governance','Operations','External','ProviderReports','ManualSearch','SSO','GeoIP','Diagnostics','Keyring','Maintenance','Mcp','Annotations'])if(!existsSync(join(root,'php/src',name+'.php')))throw Error('PHP_RELEASE_MODULE_MISSING:'+name);
+for(const name of ['App','Auth','Installer','Sites','Collect','Worker','Analytics','AnalysisEngine','Governance','Operations','External','ProviderReports','ManualSearch','SSO','GeoIP','Diagnostics','Keyring','Maintenance','UpdateBridge','UpdateSchema','Mcp','Annotations'])if(!existsSync(join(root,'php/src',name+'.php')))throw Error('PHP_RELEASE_MODULE_MISSING:'+name);
 mkdirSync(output,{recursive:true});chmodSync(output,0o755);
 const copy=(source,target)=>{
  const stat=lstatSync(source);if(stat.isSymbolicLink()||(!stat.isDirectory()&&!stat.isFile()))throw Error('PHP_RELEASE_NONREGULAR_SOURCE');
@@ -46,11 +46,18 @@ for(const [source,target] of Object.entries(documentMap)){
  const text=readFileSync(join(root,source),'utf8').replace(/\]\(([^\s)]+)\)/g,(match,href)=>{if(href.startsWith('#')||/^[a-z][a-z\d+.-]*:/i.test(href)||href.startsWith('//'))return match;const [pathname,suffix='']=href.split(/(?=[?#])/);const path=relative(root,resolve(root,dirname(source),pathname)).split('\\').join('/');if(path.startsWith('../'))throw Error('PHP_RELEASE_DOCUMENTATION_LINK_ESCAPE');const mapped=documentMap[path];return ']('+(mapped?mapped+suffix:'https://github.com/bocmiao/baize-analytics/blob/'+revision+'/'+path.split('/').map(encodeURIComponent).join('/')+suffix)+')';});
  writeFileSync(join(output,target),'> 本包运行与安装文件离线可用；源码和历史验收材料链接需要网络及仓库访问权限。\n\n'+text);
 }
-mkdirSync(join(output,'private'),{recursive:true,mode:0o700});
+if(!args.includes('--updatable'))mkdirSync(join(output,'private'),{recursive:true,mode:0o700});
 const files=[],directories=[];
 const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name);const name=relative(output,path);if(entry.isDirectory()){const mode=name==='private'?0o700:0o755;chmodSync(path,mode);directories.push({path:name,mode});walk(path);}else{if(!lstatSync(path).isFile())throw Error('PHP_RELEASE_NONREGULAR_FILE');const mode=name.startsWith('bin/')?0o755:0o644;chmodSync(path,mode);files.push({path:name,bytes:lstatSync(path).size,sha256:sha256(readFileSync(path)),mode});}}};
 walk(output);directories.sort((a,b)=>a.path.localeCompare(b.path));files.sort((a,b)=>a.path.localeCompare(b.path));
 const dirty=execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()!=='';
 writeFileSync(join(output,'php-release-manifest.json'),JSON.stringify({format:'baize-php-release-v1',runtime:'php',profile:'standard',revision,workingTreeChanges:dirty,builtAt:new Date().toISOString(),directories,requirements:['PHP >=8.3','pdo_mysql','curl','mbstring','dom','Phar','openssl','zlib','intl','bcmath or gmp for GeoIP','MySQL 8.4 or separately verified MariaDB'],files},null,2)+'\n');chmodSync(join(output,'php-release-manifest.json'),0o644);
 verify(output);
+if(args.includes('--updatable')){
+ const phpManifestPath=join(output,'php-release-manifest.json');
+ const phpManifestBytes=readFileSync(phpManifestPath);
+ const sealed={version:1,runtime:'php',profile:'standard',variant:'php-fpm',revision,platform:{os:'linux',architecture:'amd64'},files:[...files,{path:'php-release-manifest.json',bytes:phpManifestBytes.length,sha256:sha256(phpManifestBytes),mode:0o644}].sort((a,b)=>a.path.localeCompare(b.path)),directories};
+ writeFileSync(join(output,'release-manifest.json'),JSON.stringify(sealed)+'\n',{mode:0o644});
+ console.log(JSON.stringify({updatable:true,manifestSha256:sha256(readFileSync(join(output,'release-manifest.json'))),externalConfigRequired:true}));
+}
 if(args.includes('--archive')){const archive=resolve(at('--archive'));if(existsSync(archive))throw Error('PHP_RELEASE_ARCHIVE_EXISTS');execFileSync('tar',['-czf',archive,'-C',output,'.']);console.log(JSON.stringify({archive,sha256:sha256(readFileSync(archive)),bytes:lstatSync(archive).size}));}

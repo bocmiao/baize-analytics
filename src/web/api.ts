@@ -16,7 +16,8 @@ export async function api<T = Record<string, unknown>>(path:string, body?:unknow
  let result:unknown;try{result=await response.json();}catch(error){if(error instanceof Error&&error.name==='AbortError')throw error;throw new ApiError(localizedErrorCode('invalid_api_response',response.status),response.status,'invalid_api_response');}
  if(!result||typeof result!=='object')throw new ApiError(localizedErrorCode('invalid_api_response',response.status),response.status,'invalid_api_response');
  const errorBody=result as Record<string,unknown>;
- if(!response.ok||typeof errorBody.error==='string'){
+ const updateStatus=response.ok&&((path==='/api/admin/updates/status'&&typeof errorBody.phase==='string'&&typeof errorBody.configured==='boolean')||(/^\/api\/admin\/updates\/(check|apply|rollback)$/.test(path)&&errorBody.accepted===true));
+ if(!response.ok||typeof errorBody.error==='string'&&!updateStatus){
   const error=new ApiError(apiErrorMessage(errorBody,response.status),response.status,typeof errorBody.code==='string'?errorBody.code:undefined);
   throw error;
  }

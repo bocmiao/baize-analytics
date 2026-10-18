@@ -1,0 +1,8 @@
+{
+  "checkedDate": "2026-10-18",
+  "method": "connected GitHub read-only fetch",
+  "url": "https://api.github.com/repos/bocmiao/baize-analytics/releases",
+  "isError": false,
+  "response": [],
+  "productionReleaseAvailable": false
+}

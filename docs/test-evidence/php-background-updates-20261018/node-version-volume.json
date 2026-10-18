@@ -1,0 +1,120 @@
+{
+  "fixture": true,
+  "executorSha256": "2e2a6a67a22ee93be04641cf7096fcf656deb26bf7875bc0baa900f8f4a31b15",
+  "sourceRevision": "155bed07bc3da2a96dfd89a85736b38b34d4ac13",
+  "profiles": [
+    {
+      "profile": "standard",
+      "baseRevision": "22238d9e0319f20a5576c7bd68a8ae0a385e63c6",
+      "targetRevision": "adfa40cfb6a59b4f48fcbb676a1b722f0cc0f512",
+      "checks": [
+        {
+          "name": "signed offline update with actual database backup",
+          "current": {
+            "root": "/workspace/baize-isolated/node-volume-final155/standard/releases/adfa40cfb6a59b4f48fcbb676a1b722f0cc0f512-54146821-a215-4cff-938f-4b52f1ffe223",
+            "revision": "adfa40cfb6a59b4f48fcbb676a1b722f0cc0f512",
+            "manifestSha256": "620f3310c1c7c2cf675316dea1a9d8f7170a1ba3d8dd6aed735aa6c8e6579efb"
+          },
+          "backupManifestSha256": "416807494c14e7928321ced2e53cdc06f8d0db3f4d723747ac2d095046398565"
+        },
+        {
+          "name": "SIGKILL/recreate retained the confirmed version and data",
+          "oldContainer": "c397f2ae2d19d6edc4f989d637dec862dedeecd7ea935dbe9088f73b7abc08d2",
+          "newContainer": "f7aa29ae65f7404940b5101550432df88949591bf803f9844ac7f4ef686871f6",
+          "fixedImageId": "sha256:ef1c5920744c718fe43c186431f7d7ec89290468eaa9d547b9146fef425098cf",
+          "before": {
+            "revision": "adfa40cfb6a59b4f48fcbb676a1b722f0cc0f512",
+            "manifestSha256": "620f3310c1c7c2cf675316dea1a9d8f7170a1ba3d8dd6aed735aa6c8e6579efb",
+            "launchId": "6e06b9e2-610c-4583-b8c0-e1cac4703813"
+          },
+          "after": {
+            "revision": "adfa40cfb6a59b4f48fcbb676a1b722f0cc0f512",
+            "manifestSha256": "620f3310c1c7c2cf675316dea1a9d8f7170a1ba3d8dd6aed735aa6c8e6579efb",
+            "launchId": "e42539f7-a2e8-4102-b1cd-09bb7c329e17"
+          }
+        },
+        {
+          "name": "code rollback retained post-update writes"
+        },
+        {
+          "name": "signed installed target reports current",
+          "phase": "current",
+          "payloadBytes": 0
+        },
+        {
+          "name": "real desktop/mobile UI",
+          "pageErrors": []
+        }
+      ],
+      "screenshots": [
+        {
+          "width": 1440,
+          "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/node-volume-standard-1440.png",
+          "horizontalOverflow": false
+        },
+        {
+          "width": 320,
+          "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/node-volume-standard-320.png",
+          "horizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "profile": "lite",
+      "baseRevision": "febf9f0cff5104a6316e3b470ef96dabf6e2ca9d",
+      "targetRevision": "ba6bef448cf29883508ecd2d0ccb036cc7eeddfd",
+      "checks": [
+        {
+          "name": "signed offline update with actual database backup",
+          "current": {
+            "root": "/workspace/baize-isolated/node-volume-final155/lite/releases/ba6bef448cf29883508ecd2d0ccb036cc7eeddfd-ac3c194e-3843-4079-9f01-b78f6418651a",
+            "revision": "ba6bef448cf29883508ecd2d0ccb036cc7eeddfd",
+            "manifestSha256": "2e3cc56be1f0dd4617e88bbb2aa2e5bdf925d5fb9388e2b0903ac8660fed2001"
+          },
+          "backupManifestSha256": "992934fb1451661ec1dc1679d2611fedf3dfb7ed92fe30723ddbc94e9c749667"
+        },
+        {
+          "name": "SIGKILL/recreate retained the confirmed version and data",
+          "oldContainer": "16cbb10e8bdcde630ac5ddbe97dd32b98133a074be4b26488b7a1e34901056f3",
+          "newContainer": "7b66afe3ed48b2b5938a4096b3752082a600c4b1cffd2190b02637242ab794e8",
+          "fixedImageId": "sha256:ef1c5920744c718fe43c186431f7d7ec89290468eaa9d547b9146fef425098cf",
+          "before": {
+            "revision": "ba6bef448cf29883508ecd2d0ccb036cc7eeddfd",
+            "manifestSha256": "2e3cc56be1f0dd4617e88bbb2aa2e5bdf925d5fb9388e2b0903ac8660fed2001",
+            "launchId": "7c1834ca-7725-4e61-ae1d-043b7a794dc0"
+          },
+          "after": {
+            "revision": "ba6bef448cf29883508ecd2d0ccb036cc7eeddfd",
+            "manifestSha256": "2e3cc56be1f0dd4617e88bbb2aa2e5bdf925d5fb9388e2b0903ac8660fed2001",
+            "launchId": "30b4ebab-0b75-48dc-8555-c66c40927c67"
+          }
+        },
+        {
+          "name": "code rollback retained post-update writes"
+        },
+        {
+          "name": "signed installed target reports current",
+          "phase": "current",
+          "payloadBytes": 0
+        },
+        {
+          "name": "real desktop/mobile UI",
+          "pageErrors": []
+        }
+      ],
+      "screenshots": [
+        {
+          "width": 1440,
+          "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/node-volume-lite-1440.png",
+          "horizontalOverflow": false
+        },
+        {
+          "width": 320,
+          "path": "/workspace/baize-analytics/docs/test-evidence/php-background-updates-20261018/screenshots/node-volume-lite-320.png",
+          "horizontalOverflow": false
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-18T02:27:13.303Z"
+}

@@ -1,0 +1,9 @@
+import os,subprocess,pathlib,json,time
+root=pathlib.Path('/workspace/baize-analytics');out=root/'docs/test-evidence/php-background-updates-20261018/regression';out.mkdir(parents=True,exist_ok=True)
+results=[]
+for port in [3307,3308]:
+ for name in ['kernel','collect','analytics','governance','providers','manual-search','mcp','annotations','keyring','platform','sso']:
+  log=out/(str(port)+'-'+name+'.log');env=dict(os.environ,BAIZE_TEST_DB_PORT=str(port),BAIZE_TEST_PORT=str(port));start=time.time()
+  with log.open('w') as f:r=subprocess.run(['/workspace/baize-isolated/tools/bin/php','php/tests/'+name+'.php'],cwd=root,env=env,stdout=f,stderr=subprocess.STDOUT)
+  results.append(dict(port=port,suite=name,exitCode=r.returncode,seconds=round(time.time()-start,2)));print(results[-1],flush=True)
+  (out/'summary.json').write_text(json.dumps(results,indent=2)+'\n')

@@ -1,0 +1,8 @@
+{
+  "source": "/tmp/baize-node-native-final-070",
+  "archive": "/tmp/baize-node-native-070-passed.tar.gz",
+  "bytes": 357161754,
+  "sha256": "9956e5c17340b9040c686c7a468391e6c76ebfee6dbceaac276aa112864fcded",
+  "membersVerified": 86851,
+  "reason": "own completed runtime fixture; all executors stopped; final source tests use a fresh tree"
+}

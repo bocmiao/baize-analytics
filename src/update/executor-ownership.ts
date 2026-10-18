@@ -1,14 +1,15 @@
-import {existsSync,unlinkSync} from 'node:fs';
+import {existsSync,unlinkSync,readFileSync,readlinkSync} from 'node:fs';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {durableJSON,trustedJSON,syncDirectory} from './state.js';
+function processIdentity(pid:number){try{const stat=readFileSync('/proc/'+pid+'/stat','utf8'),fields=stat.slice(stat.lastIndexOf(')')+2).split(' ');if(fields[0]==='Z')return undefined;return [readFileSync('/proc/sys/kernel/random/boot_id','utf8').trim(),fields[19],readlinkSync('/proc/'+pid+'/ns/pid')].join(':');}catch(e){if(['ENOENT','ESRCH'].includes((e as NodeJS.ErrnoException).code??''))return undefined;throw Error('UPDATE_EXECUTOR_IDENTITY_UNAVAILABLE');}}
 /** Physical flock loss does not allow another executor to overlap a still-quiescing owner. */
 export class ExecutorOwnership {
  private readonly token=randomUUID();private claimed=false;private readonly path:string;
  constructor(private readonly directory:string){this.path=join(directory,'executor-owner.json');}
  claim(){
-  if(existsSync(this.path)){const old=trustedJSON<{version:number;pid:number;token:string}>(this.path);if(old.version!==1||!Number.isInteger(old.pid)||old.pid<=0||typeof old.token!=='string')throw Error('UPDATE_EXECUTOR_OWNER_CORRUPT');let alive=true;try{process.kill(old.pid,0);}catch(e){alive=(e as NodeJS.ErrnoException).code!=='ESRCH';}if(alive)throw Error('UPDATE_EXECUTOR_PREVIOUS_OWNER_RUNNING');}
-  durableJSON(this.path,{version:1,pid:process.pid,token:this.token});this.claimed=true;
+  if(existsSync(this.path)){const old=trustedJSON<{version:number;pid:number;token:string;identity?:string}>(this.path);if(old.version!==1||!Number.isInteger(old.pid)||old.pid<=0||typeof old.token!=='string'||old.identity!==undefined&&typeof old.identity!=='string')throw Error('UPDATE_EXECUTOR_OWNER_CORRUPT');let alive=true;try{process.kill(old.pid,0);}catch(e){alive=(e as NodeJS.ErrnoException).code!=='ESRCH';}if(alive&&(!old.identity||processIdentity(old.pid)===old.identity))throw Error('UPDATE_EXECUTOR_PREVIOUS_OWNER_RUNNING');}
+  durableJSON(this.path,{version:1,pid:process.pid,identity:processIdentity(process.pid),token:this.token});this.claimed=true;
  }
  owns(){return this.claimed&&existsSync(this.path)&&trustedJSON<{token:string}>(this.path).token===this.token;}
  assert(){if(!this.owns())throw Error('UPDATE_EXECUTOR_LOCK_LOST');}

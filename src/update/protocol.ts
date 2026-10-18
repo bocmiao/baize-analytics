@@ -15,15 +15,17 @@ export function safeReleasePath(value:string){
 const path=z.string().refine(safeReleasePath,'UPDATE_PATH_FORBIDDEN');
 const entry=z.object({path,bytes:z.number().int().min(0).max(128*1024*1024),sha256:hash,mode:z.number().int().refine(n=>[0o444,0o555,0o644,0o755,0o777].includes(n)),type:z.enum(['file','symlink']).optional(),target:z.string().max(1024).optional()}).strict();
 const directory=z.object({path,mode:z.number().int().refine(n=>[0o555,0o755].includes(n))}).strict();
-const release=z.object({version:z.literal(1),profile:z.enum(['standard','lite']),revision,imageId:z.string().regex(/^sha256:[a-f0-9]{64}$/),variant:z.enum(['node-ready','bundled-node']),platform:z.object({os:z.literal('linux'),architecture:z.literal('amd64')}).passthrough(),files:z.array(entry).max(100000),directories:z.array(directory).max(30000)}).passthrough();
+const variant=z.enum(['node-ready','bundled-node','php-fpm']);
+const release=z.object({version:z.literal(1),profile:z.enum(['standard','lite']),revision,imageId:z.string().regex(/^sha256:[a-f0-9]{64}$/).optional(),runtime:z.literal('php').optional(),variant,platform:z.object({os:z.literal('linux'),architecture:z.literal('amd64')}).passthrough(),files:z.array(entry).max(100000),directories:z.array(directory).max(30000)}).passthrough().refine(m=>m.variant==='php-fpm'?m.runtime==='php'&&m.profile==='standard'&&m.imageId===undefined:!!m.imageId&&m.runtime===undefined,'UPDATE_RUNTIME_MANIFEST_INVALID');
 export type UpdateEntry=z.infer<typeof entry>;
 export type UpdateRelease=z.infer<typeof release>;
-export const deltaSchema=z.object({format:z.literal('baize-file-delta-v1'),base:z.object({revision,manifestSha256:hash}).strict(),releaseManifest:z.string().max(16*1024*1024),label:z.string().min(1).max(80),notes:z.array(z.string().max(2000)).max(50),compatibility:z.object({profile:z.enum(['standard','lite']),variant:z.enum(['node-ready','bundled-node']),nodeMajor:z.literal(24),schema:z.literal('same-schema'),schemaFingerprint:hash}).strict(),changed:z.array(entry).max(100000),deletedFiles:z.array(path).max(100000),deletedDirectories:z.array(path).max(30000),fixture:z.boolean().optional()}).strict();
+export const deltaSchema=z.object({format:z.literal('baize-file-delta-v1'),base:z.object({revision,manifestSha256:hash}).strict(),releaseManifest:z.string().max(16*1024*1024),label:z.string().min(1).max(80),notes:z.array(z.string().max(2000)).max(50),compatibility:z.object({profile:z.enum(['standard','lite']),variant,nodeMajor:z.literal(24),schema:z.literal('same-schema'),schemaFingerprint:hash}).strict(),changed:z.array(entry).max(100000),deletedFiles:z.array(path).max(100000),deletedDirectories:z.array(path).max(30000),fixture:z.boolean().optional()}).strict();
 export type Delta=z.infer<typeof deltaSchema>;
 export interface SignedDelta {body:string;signature:string;keyId:string}
 export function parseRelease(bytes:string):UpdateRelease{
  const result=release.parse(JSON.parse(bytes));
  if(result.mechanismTest)throw Error('UPDATE_TEST_RELEASE_REJECTED');
+ if(result.variant==='php-fpm'&&([...result.files,...result.directories].some(e=>e.path==='private'||e.path.startsWith('private/'))||result.files.some(e=>e.type==='symlink')))throw Error('UPDATE_PHP_PRIVATE_OR_LINK_FORBIDDEN');
  const seen=new Set<string>();
  for(const e of result.files){
   if(e.path==='release-manifest.json'||seen.has(e.path))throw Error('UPDATE_DUPLICATE_PATH');seen.add(e.path);
@@ -42,6 +44,10 @@ export function difference(base:UpdateRelease,target:UpdateRelease){
 }
 /** Schema changes have no automatic restore/down path. Publishers must not declare them safe. */
 export function schemaFingerprint(m:UpdateRelease){
+ if(m.variant==='php-fpm'){
+  if(!m.files.some(e=>e.path==='src/Database.php')||!m.files.some(e=>e.path.startsWith('migrations/')))throw Error('UPDATE_SCHEMA_IDENTITY_MISSING');
+  return digest(JSON.stringify(m.files.filter(e=>e.path.startsWith('migrations/')||e.path==='src/Database.php').map(e=>[e.path,e.sha256]).sort((a,b)=>a[0]!.localeCompare(b[0]!))));
+ }
  const required=m.profile==='lite'?'dist/server/src/lite/schema.js':'dist/server/src/server/db.js';
  if(!m.files.some(e=>e.path===required))throw Error('UPDATE_SCHEMA_IDENTITY_MISSING');
  return digest(JSON.stringify(m.files.filter(e=>e.path.startsWith('db/migrations/')||e.path===required).map(e=>[e.path,e.sha256]).sort((a,b)=>a[0]!.localeCompare(b[0]!))));
