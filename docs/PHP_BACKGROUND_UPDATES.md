@@ -121,9 +121,13 @@ docker build -f deploy/php-updater.Dockerfile -t YOUR_PRIVATE_SUPERVISOR_IMAGE .
 
 **结构变化不属于自动升级/自动回滚范围。** MySQL DDL 可能逐语句提交。受控迁移流程：
 
-1. 停止所有 HTTP、worker、cron 和外部写入者，保留维护窗口；用旧版 `bin/update-ops.php backup 新私有目录` 创建并核验恢复点（设置与执行器相同的 `BAIZE_CONFIG_PATH`、`BAIZE_UPDATE_DATA_DIR`、`BAIZE_UPDATE_KEY_DIR`、`BAIZE_UPDATE_PUBLIC_URL`）。
+1. 停止独立更新执行器以及所有 HTTP、worker、cron 和外部写入者，保留维护窗口；用旧版 `bin/update-ops.php backup 新私有目录` 创建并核验恢复点（设置与执行器相同的 `BAIZE_CONFIG_PATH`、`BAIZE_UPDATE_DATA_DIR`、`BAIZE_UPDATE_KEY_DIR`、`BAIZE_UPDATE_PUBLIC_URL`）。
 2. 用独立数据库、配置、数据/密钥副本与保留的最新删除日志实际恢复；在该副本试迁移、核对功能、数据与回退方案，记录操作结果。
 3. 在准确目标代码上运行 `php bin/upgrade.php --plan`，审查 pending SQL 和计划 SHA256。操作者确认试迁移结果后，在仍停写的正式实例明确运行 `BAIZE_PHP_MIGRATION_SOURCE_STOPPED=1 php bin/upgrade.php --apply 计划SHA256 --backup-dir 已验证备份目录`。
 4. `bin/migrate.php` 也使用同一受控入口。CLI 核对现存结构、备份 schema/文件和计划，先持久记录意图后迁移。DDL 中断/失败保留未完成意图，不允许自动重跑或假称 down migration；操作者检查实际表结构，在克隆上恢复/修复，再制定明确接续步骤。应用、worker 和更新预检也会拒绝未完成或损坏的迁移意图。不得删除意图文件直接跳过检查。只有已验证目标通过健康与业务核对，才另行切换服务。
 
 PHP 没有 ClickHouse 权威库；Node Full 配置外部 ClickHouse/历史 sidecar 时，原生自动备份仍提前拒绝，PG dump 不能冒充外部数据恢复点。
+
+自动 PHP 备份当前只覆盖经核对的 `001_documents.sql` 文档布局：实际表、列类型、索引、JSON 约束与 InnoDB 引擎均核对，额外表、视图、触发器、事件或例程会拒绝，不能称为已完整备份。所有业务命名空间在 documents 中；锁行不承担业务数据。未来引入其他物理存储的版本需要先交付独立全库备份/恢复方案并更新维护适配；本控制入口不冒充覆盖未来布局的后续迁移。
+
+部分 DDL 失败后的恢复路径是保留原失败实例及意图，保持停写；在全新的数据库、数据目录和私有配置中，用已验证的旧结构代码恢复升级前恢复点，并合并最新独立删除日志及其身份，完成真实健康与业务复核后再由操作者明确切换。未完成意图属于原失败数据库，继续保存在原实例供核查；不删除原意图，也不将切换克隆称为在原数据库自动 down migration。

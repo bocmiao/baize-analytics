@@ -12,6 +12,7 @@ try{
     $app=new Baize\App($config);Baize\Governance::configure($app->config,$app->store);
     $expected=array_map('basename',glob(dirname(__DIR__).'/migrations/*.sql')?:[]);sort($expected);$actual=array_column($app->db->all('SELECT version FROM schema_migrations ORDER BY version'),'version');if($actual!==$expected)throw new RuntimeException('UPDATE_SCHEMA_CHANGE_REQUIRES_OPERATOR');
     if($argv[1]==='preflight'){echo json_encode(['ready'=>true]).PHP_EOL;exit(0);}
+    $maintenanceLock=Baize\UpdateSchema::lock($app->config);Baize\UpdateSchema::assertDocumentBackup($app);
     // The supervisor has drained and stopped its only HTTP/queue writers. Also reject
     // visible connections to this database; the operator must exclude external writers.
     $connections=$app->db->all('SELECT ID FROM information_schema.PROCESSLIST WHERE DB=DATABASE() AND ID<>CONNECTION_ID()');if($connections)throw new RuntimeException('UPDATE_PHP_OTHER_DATABASE_CONNECTIONS');
@@ -21,5 +22,5 @@ try{
     $copy($config['data_dir'],$destination.'/data');$copy($config['key_dir'],$destination.'/keys');$copy(baize_config_path(),$destination.'/config.php');
     $inventory[]=['path'=>'database.json','bytes'=>filesize($destination.'/database.json'),'sha256'=>hash_file('sha256',$destination.'/database.json')];
     foreach($inventory as $file)if(filesize($destination.'/'.$file['path'])!==$file['bytes']||!hash_equals($file['sha256'],hash_file('sha256',$destination.'/'.$file['path'])))throw new RuntimeException('UPDATE_BACKUP_VERIFY_FAILED');
-    Baize\Operations::writeFile($destination.'/manifest.json',json_encode(['format'=>'baize-php-update-backup-v1','files'=>$inventory,'schema'=>$actual,'codeOnlyRollback'=>true],JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES));echo json_encode(['backupCreated'=>true,'files'=>count($inventory)]).PHP_EOL;
+    Baize\Operations::writeFile($destination.'/manifest.json',json_encode(['format'=>'baize-php-update-backup-v1','files'=>$inventory,'schema'=>$actual,'scope'=>'document-layout-001','codeOnlyRollback'=>true],JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES));echo json_encode(['backupCreated'=>true,'files'=>count($inventory)]).PHP_EOL;
 }catch(Throwable $e){fwrite(STDERR,preg_match('/^UPDATE_[A-Z_]+$/D',$e->getMessage())?$e->getMessage().PHP_EOL:"UPDATE_PHP_OPERATION_FAILED\n");exit(1);}

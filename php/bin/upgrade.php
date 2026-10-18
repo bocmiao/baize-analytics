@@ -9,6 +9,8 @@ try{
     if($argc===2&&$argv[1]==='--plan'){echo json_encode(['planSha256'=>$hash]+$plan,JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES).PHP_EOL;exit(0);}
     if($argc!==5||$argv[1]!=='--apply'||$argv[3]!=='--backup-dir'||!hash_equals($hash,$argv[2]))throw new RuntimeException('MIGRATION_PLAN_CONFIRMATION_REQUIRED');
     if(getenv('BAIZE_PHP_MIGRATION_SOURCE_STOPPED')!=='1')throw new RuntimeException('MIGRATION_STOPPED_SOURCE_ACK_REQUIRED');
+    $maintenanceLock=Baize\UpdateSchema::lock($app->config);$state=$app->config['data_dir'].'/schema-migration-intent.json';if(file_exists($state)){$prior=json_decode((string)file_get_contents($state),true,32,JSON_THROW_ON_ERROR);if(($prior['status']??'')!=='completed')throw new RuntimeException('MIGRATION_UNCERTAIN_REQUIRES_OPERATOR_RECOVERY');}
+    Baize\UpdateSchema::assertDocumentBackup($app);
     if($app->db->all('SELECT ID FROM information_schema.PROCESSLIST WHERE DB=DATABASE() AND ID<>CONNECTION_ID()'))throw new RuntimeException('MIGRATION_OTHER_DATABASE_CONNECTIONS');
     $backup=realpath($argv[4]);if(!$backup||is_link($argv[4]))throw new RuntimeException('MIGRATION_BACKUP_INVALID');$manifest=json_decode((string)file_get_contents($backup.'/manifest.json'),true,64,JSON_THROW_ON_ERROR);
     if(($manifest['format']??'')!=='baize-php-update-backup-v1'||($manifest['schema']??null)!==$current)throw new RuntimeException('MIGRATION_BACKUP_SCHEMA_MISMATCH');

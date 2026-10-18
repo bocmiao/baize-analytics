@@ -27,7 +27,7 @@ if(args.includes('--archive')&&within(resolve(at('--archive')),output))throw Err
 const revision=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
 if(existsSync(output))throw Error('PHP_RELEASE_OUTPUT_EXISTS');
 if(!existsSync(join(root,'dist/web/index.html'))||!existsSync(join(root,'public/tracker.js')))throw Error('BUILD_FRONTEND_AND_TRACKER_FIRST');
-for(const name of ['App','Auth','Installer','Sites','Collect','Worker','Analytics','AnalysisEngine','Governance','Operations','External','ProviderReports','ManualSearch','SSO','GeoIP','Diagnostics','Keyring','Maintenance','Mcp','Annotations'])if(!existsSync(join(root,'php/src',name+'.php')))throw Error('PHP_RELEASE_MODULE_MISSING:'+name);
+for(const name of ['App','Auth','Installer','Sites','Collect','Worker','Analytics','AnalysisEngine','Governance','Operations','External','ProviderReports','ManualSearch','SSO','GeoIP','Diagnostics','Keyring','Maintenance','UpdateBridge','UpdateSchema','Mcp','Annotations'])if(!existsSync(join(root,'php/src',name+'.php')))throw Error('PHP_RELEASE_MODULE_MISSING:'+name);
 mkdirSync(output,{recursive:true});chmodSync(output,0o755);
 const copy=(source,target)=>{
  const stat=lstatSync(source);if(stat.isSymbolicLink()||(!stat.isDirectory()&&!stat.isFile()))throw Error('PHP_RELEASE_NONREGULAR_SOURCE');
