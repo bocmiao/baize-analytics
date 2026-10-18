@@ -410,3 +410,6 @@ html[data-theme="dark"] .table-wrap tbody tr:hover{background:rgba(201,216,210,.
 .workspace #workspace-navigation .nav-account-controls .language{color:var(--sideink)}
 .workspace #workspace-navigation .nav-account-controls .language select:hover{background:rgba(255,255,255,.08);border-color:transparent}
 html[data-theme="dark"] .language select:hover{background:rgba(255,255,255,.06)}
+
+/* 核心指标表是 display:grid，colSpan 不生效；提示行必须显式跨列 */
+.overview-metrics td.hint{grid-column:1/-1;color:var(--ink2);font-size:13px;padding:10px 2px;border:0;background:transparent}
