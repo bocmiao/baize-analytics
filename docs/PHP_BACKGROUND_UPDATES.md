@@ -124,6 +124,6 @@ docker build -f deploy/php-updater.Dockerfile -t YOUR_PRIVATE_SUPERVISOR_IMAGE .
 1. 停止所有 HTTP、worker、cron 和外部写入者，保留维护窗口；用旧版 `bin/update-ops.php backup 新私有目录` 创建并核验恢复点（设置与执行器相同的 `BAIZE_CONFIG_PATH`、`BAIZE_UPDATE_DATA_DIR`、`BAIZE_UPDATE_KEY_DIR`、`BAIZE_UPDATE_PUBLIC_URL`）。
 2. 用独立数据库、配置、数据/密钥副本与保留的最新删除日志实际恢复；在该副本试迁移、核对功能、数据与回退方案，记录操作结果。
 3. 在准确目标代码上运行 `php bin/upgrade.php --plan`，审查 pending SQL 和计划 SHA256。操作者确认试迁移结果后，在仍停写的正式实例明确运行 `BAIZE_PHP_MIGRATION_SOURCE_STOPPED=1 php bin/upgrade.php --apply 计划SHA256 --backup-dir 已验证备份目录`。
-4. CLI 核对现存结构、备份 schema/文件和计划，先持久记录意图后迁移。DDL 中断/失败保留未完成意图，不允许自动重跑或假称 down migration；操作者检查实际表结构，在克隆上恢复/修复，再制定明确接续步骤。不得删除意图文件直接跳过检查。只有已验证目标通过健康与业务核对，才另行切换服务。
+4. `bin/migrate.php` 也使用同一受控入口。CLI 核对现存结构、备份 schema/文件和计划，先持久记录意图后迁移。DDL 中断/失败保留未完成意图，不允许自动重跑或假称 down migration；操作者检查实际表结构，在克隆上恢复/修复，再制定明确接续步骤。应用、worker 和更新预检也会拒绝未完成或损坏的迁移意图。不得删除意图文件直接跳过检查。只有已验证目标通过健康与业务核对，才另行切换服务。
 
 PHP 没有 ClickHouse 权威库；Node Full 配置外部 ClickHouse/历史 sidecar 时，原生自动备份仍提前拒绝，PG dump 不能冒充外部数据恢复点。

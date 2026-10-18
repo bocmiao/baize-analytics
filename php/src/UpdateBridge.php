@@ -11,6 +11,11 @@ final class UpdateBridge
         $m=json_decode((string)file_get_contents($path),true,64,JSON_THROW_ON_ERROR);
         return ['revision'=>$m['revision']??null,'manifestSha256'=>hash_file('sha256',$path),'launchId'=>getenv('BAIZE_UPDATE_LAUNCH_ID')?:null];
     }
+    public static function schemaBlocked(array $config):bool
+    {
+        $path=($config['data_dir']??'').'/schema-migration-intent.json';if(!file_exists($path)&&!is_link($path))return false;
+        try{$s=lstat($path);if(!$s||is_link($path)||!is_file($path)||$s['nlink']!==1||$s['size']>65536||($s['mode']&0077)!==0)return true;$intent=json_decode((string)file_get_contents($path),true,32,JSON_THROW_ON_ERROR);return ($intent['status']??'')!=='completed';}catch(\Throwable){return true;}
+    }
     public static function maintenance():bool
     {
         $gate=getenv('BAIZE_UPDATE_GATE');return $gate!==false&&$gate!==''&&file_exists($gate);

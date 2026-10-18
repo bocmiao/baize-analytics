@@ -8,6 +8,7 @@ try{
     if($config['data_dir']!==getenv('BAIZE_UPDATE_DATA_DIR')||$config['key_dir']!==getenv('BAIZE_UPDATE_KEY_DIR')||$config['public_url']!==getenv('BAIZE_UPDATE_PUBLIC_URL'))throw new RuntimeException('UPDATE_PHP_CONFIG_BINDING_MISMATCH');
     if(PHP_VERSION_ID<80300||!function_exists('pcntl_async_signals'))throw new RuntimeException('UPDATE_PHP_RUNTIME_UNSUPPORTED');
     foreach(['pdo_mysql','curl','mbstring','dom','openssl','zlib','intl'] as $extension)if(!extension_loaded($extension))throw new RuntimeException('UPDATE_PHP_EXTENSION_MISSING');
+    if(Baize\UpdateBridge::schemaBlocked($config))throw new RuntimeException('UPDATE_SCHEMA_MIGRATION_UNCERTAIN');
     $app=new Baize\App($config);Baize\Governance::configure($app->config,$app->store);
     $expected=array_map('basename',glob(dirname(__DIR__).'/migrations/*.sql')?:[]);sort($expected);$actual=array_column($app->db->all('SELECT version FROM schema_migrations ORDER BY version'),'version');if($actual!==$expected)throw new RuntimeException('UPDATE_SCHEMA_CHANGE_REQUIRES_OPERATOR');
     if($argv[1]==='preflight'){echo json_encode(['ready'=>true]).PHP_EOL;exit(0);}

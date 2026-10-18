@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends nginx libicu-de
  && docker-php-ext-install -j2 pdo_mysql pcntl bcmath intl \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/LICENSE /opt/baize-updater/NODE-LICENSE
 COPY --chmod=0755 dist/updater /opt/baize-updater
 USER 1000:1000
 WORKDIR /opt/baize-updater

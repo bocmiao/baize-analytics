@@ -12,13 +12,13 @@ final class App
     {
         Auth::register($this,$this->router);Sites::register($this,$this->router);
         foreach(['Collect','Analytics','Governance','External','Operations','SSO','GeoIP','Diagnostics','ManualSearch','Mcp','Annotations','Keyring','Maintenance'] as $module){$class=__NAMESPACE__.'\\'.$module;if(class_exists($class))$class::register($this,$this->router);}
-        $this->router->add('GET','/healthz',function(){ $this->db->one('SELECT 1');return ['ok'=>true,'database'=>'ready','runtime'=>'php','schemaVersion'=>1,'updateIdentity'=>UpdateBridge::identity()]; });
+        $this->router->add('GET','/healthz',function(){ if(UpdateBridge::schemaBlocked($this->config))Http::error(503,'UPDATE_SCHEMA_MIGRATION_UNCERTAIN');$this->db->one('SELECT 1');return ['ok'=>true,'database'=>'ready','runtime'=>'php','schemaVersion'=>1,'updateIdentity'=>UpdateBridge::identity()]; });
     }
     public function audit(string $actorId,?string $siteId,string $action,mixed $target):void
     {
         $id=Store::uuid();$this->store->put('audit_logs',$id,['id'=>$id,'actor_id'=>$actorId,'site_id'=>$siteId,'action'=>$action,'target'=>$target,'created_at'=>Store::now()],$siteId);
     }
-    public function handle(Http $r):mixed{if(UpdateBridge::maintenance()&&$r->path!=='/healthz'&&!str_starts_with($r->path,'/api/admin/updates/'))Http::error(503,'UPDATE_MAINTENANCE');Security::csrf($r,$this->config);return $this->router->dispatch($r);}
+    public function handle(Http $r):mixed{if(UpdateBridge::schemaBlocked($this->config))Http::error(503,'UPDATE_SCHEMA_MIGRATION_UNCERTAIN');if(UpdateBridge::maintenance()&&$r->path!=='/healthz'&&!str_starts_with($r->path,'/api/admin/updates/'))Http::error(503,'UPDATE_MAINTENANCE');Security::csrf($r,$this->config);return $this->router->dispatch($r);}
     public function run():void
     {
         header('X-Content-Type-Options: nosniff');header('Referrer-Policy: strict-origin-when-cross-origin');header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");header('Cache-Control: no-store');
