@@ -617,3 +617,18 @@ html[data-theme="dark"] .rt-chart .minute-bars i{background:rgba(255,255,255,.06
 .workspace main .panel select{max-width:340px}
 /* 报表页里未包在 .table-wrap 内的表格，兜底允许横向滚动 */
 .workspace main .panel>table{display:block;overflow-x:auto;max-width:100%}
+
+/* 任务恢复：指标卡 + 折叠原始 JSON */
+.job-metrics{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.job-metrics article{display:grid;gap:2px;padding:12px 16px;background:var(--bg);border-radius:10px;min-width:120px}
+.job-metrics span{font-size:12px;color:var(--ink2)}
+.job-metrics strong{font-size:20px;font-variant-numeric:tabular-nums}
+.job-raw{margin-top:18px}
+.job-raw>summary{cursor:pointer;font-size:13px;color:var(--ink2)}
+.job-raw pre{max-height:320px;overflow:auto;background:var(--bg);padding:12px;border-radius:10px;font-size:12px;margin-top:10px}
+
+/* 站点设置：分组改成多列网格，长页面折半 */
+.workspace main>section.panel:has(>.settings-group){display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px 20px;align-items:start}
+.workspace main>section.panel:has(>.settings-group)>h2,
+.workspace main>section.panel:has(>.settings-group)>.product-promise{grid-column:1/-1}
+.workspace main>section.panel:has(>.settings-group)>.settings-group{min-width:0}
