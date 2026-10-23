@@ -309,3 +309,48 @@ main p:empty, main small:empty, main .hint:empty { display:none !important; }
 .workspace .approved-overview-layout .overview-report-grid > .overview-breakdown-grid{
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;
 }
+
+/* ===== 布局守卫：宽表格只能在自己的容器里滚动，不能把整页撑破 ===== */
+#workspace-main { overflow-x: clip; }
+#workspace-main section.panel,
+#workspace-main details.panel { max-width: 100%; box-sizing: border-box; }
+#workspace-main .table-wrap { max-width: 100%; overflow-x: auto; }
+#workspace-main .segment-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+#workspace-main .segment-filters label { min-width: 0; }
+#workspace-main .segment-filters input,
+#workspace-main .segment-filters select { max-width: 100%; }
+
+/* 更强的宽度守卫：面板一律等于内容宽度，宽表格在自身容器内滚动 */
+#workspace-main { display: block !important; grid-template-columns: none !important; }
+#workspace-main > * { min-width: 0; }
+#workspace-main section.panel,
+#workspace-main details.panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+}
+#workspace-main .table-wrap {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overscroll-behavior-x: contain;
+}
+#workspace-main .dim-grid,
+#workspace-main .overview-breakdown-grid { min-width: 0; }
+
+/* 图表画布与网格子项不得撑开容器 */
+#workspace-main canvas { max-width: 100% !important; }
+#workspace-main .approved-overview-layout > *,
+#workspace-main .overview-report-grid > *,
+#workspace-main div[class*="-grid"] > *,
+#workspace-main div[class*="-layout"] > * { min-width: 0; }
+/* 万一有超宽内容，就在面板内部滚动，而不是把整页推宽 */
+#workspace-main section.panel { overflow-x: auto; }
+
+/* 超长表格在卡片内部滚动，表头吸顶，避免整页被撑到几千像素 */
+#workspace-main .table-wrap { max-height: 68vh; overflow-y: auto; }
+#workspace-main .table-wrap thead th { position: sticky; top: 0; z-index: 1; background: #FFFFFF; }
+
+/* 滚动条宽度导致的 15px 假溢出：整页横向禁止滚动 */
+html, body { max-width: 100%; overflow-x: hidden; }
+.workspace { max-width: 100%; }

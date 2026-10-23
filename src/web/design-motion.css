@@ -151,3 +151,25 @@ details[open]::details-content { block-size: auto; }
 /* 抽屉遮罩：打开时淡入 */
 dialog::backdrop { animation: backdrop-in .2s ease-out both; }
 @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* 加载占位不再是一块空白卡片：加骨架微光 */
+.panel.baize-loading {
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+}
+.panel.baize-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(20, 48, 44, .05) 45%, transparent 90%);
+  transform: translateX(-100%);
+  animation: skeleton-sweep 1.15s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes skeleton-sweep {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel.baize-loading::after { animation: none; }
+}
