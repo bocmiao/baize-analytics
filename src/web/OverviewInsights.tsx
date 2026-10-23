@@ -8,10 +8,10 @@ const number=(value:unknown):value is number=>typeof value==='number'&&Number.is
 export function overviewInsights(data:Row):OverviewInsight[]{
  const en=language()==='en',totals=(data.totals||{}) as Row,items:OverviewInsight[]=[];
  const source=rows(data.sources).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
- if(source&&number(totals.pv)&&totals.pv>0){const share=((source.pv as number)/totals.pv*100).toFixed(1),channel=overviewChannelLabel(String(source.channel));items.push({title:en?`${channel}: ${share}% of pageviews`:`${channel}占 ${share}% 浏览量`,detail:en?'Share of pageviews in this scope, not distinct visitors.':'本范围内的浏览贡献，非独立访客占比。',report:'sources'});}
+ if(source&&number(totals.pv)&&totals.pv>0){const share=((source.pv as number)/totals.pv*100).toFixed(1),channel=overviewChannelLabel(String(source.channel));items.push({title:en?`${channel}: ${share}% of pageviews`:`${channel}占 ${share}% 浏览量`,detail:'',report:'sources'});}
  const page=rows(data.pages).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
  if(page)items.push({title:en?`${String(page.path)}: ${page.pv} pageviews`:`${String(page.path)} ${page.pv} 次浏览`,detail:en?'Observed pageviews in the selected scope.':'当前选定范围内的页面浏览。',report:'pages'});
- if(number(totals.conversions)&&!(data.coverage!==1&&totals.conversions===0))items.push({title:en?`${totals.conversions} goal completions`:`${totals.conversions} 次目标完成`,detail:en?'Configured goal completions, not distinct paying customers.':'按已配置目标计数，非独立付费人数。',report:'goals'});
+ if(number(totals.conversions)&&!(data.coverage!==1&&totals.conversions===0))items.push({title:en?`${totals.conversions} goal completions`:`${totals.conversions} 次目标完成`,detail:'',report:'goals'});
  return items;
 }
 

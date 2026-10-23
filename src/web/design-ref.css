@@ -1,0 +1,311 @@
+/* =========================================================================
+   设计层：对齐本机参考实现（127.0.0.1:5178，同仓库的既有视觉语言）
+   实测取色：
+     --bg #F5F6FA  --card #FFFFFF  --ink #1F2A3D  --ink2 #7C8698
+     --line #EAECEF  --accent #3370FF  --r 10px  --sh 0 1px 2px rgba(31,42,61,.05)
+   组件实测：
+     侧栏 192px、padding 16px 10px；菜单项高 36、字号 13、圆角 8
+     选中项 #E8F1FF / #3370FF / 600
+     h1 25px/650；h2 16px/700；面板 padding 20、圆角 10、边框 #EAECEF
+     表头 #FAFBFD / 13px/500 / #7C8698，单元格 13px、padding 8px 12px
+     工具栏 55px、底色同画布、位于标题之上
+   只改布局与表面样式，不动数据与交互逻辑。
+   ========================================================================= */
+
+html:not([data-theme="dark"]) {
+  --bg: #F5F6FA;
+  --bg2: #FAFBFD;
+  --card: #FFFFFF;
+  --line: #EAECEF;
+  --ink: #1F2A3D;
+  --ink2: #7C8698;
+  --ink3: #3D4757;
+  --jade: #3370FF;
+  --jade2: #E8F1FF;
+  --r: 10px;
+  --sh: 0 1px 2px rgba(31, 42, 61, .05);
+  --side: #FFFFFF;
+  --sideink: #3D4757;
+  --sidemuted: #8A94A6;
+  --accent: #3370FF;
+  --accent-soft: #E8F1FF;
+}
+
+/* ---------- 外壳：192px 白色侧栏 + 画布 ---------- */
+.workspace { grid-template-columns: 192px minmax(0, 1fr); }
+body { background: #F5F6FA; color: #1F2A3D; }
+.workspace #workspace-navigation {
+  background: #FFFFFF;
+  background-image: none;
+  color: #3D4757;
+  border: 0;
+  border-right: 1px solid #EAECEF;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 16px 10px;
+}
+#workspace-navigation .brand {
+  padding: 4px 8px 12px;
+  color: #1F2A3D;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+#workspace-navigation .brand-name { color: #1F2A3D; font-size: 25px; font-weight: 800; }
+#workspace-navigation .brand-name small { color: #8A94A6; font-size: 10px; letter-spacing: .14em; font-weight: 500; }
+#workspace-navigation .brand-symbol { color: #3370FF; }
+
+.workspace #workspace-navigation nav a {
+  color: #3D4757;
+  height: 36px;
+  min-height: 36px;
+  margin: 2px 0;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.workspace #workspace-navigation nav a:hover { background: #F3F6FC; color: #1F2A3D; }
+.workspace #workspace-navigation nav a.active,
+.workspace #workspace-navigation nav a.active:hover {
+  background: #E8F1FF;
+  color: #3370FF;
+  font-weight: 600;
+  box-shadow: none;
+}
+.workspace #workspace-navigation nav a.active .navigation-icon { color: #3370FF; }
+.workspace #workspace-navigation nav .navigation-group > button {
+  color: #8A94A6;
+  font-size: 12px;
+  font-weight: 600;
+  height: 36px;
+  min-height: 36px;
+  padding: 7px 8px;
+  border-radius: 9px;
+}
+.workspace #workspace-navigation nav .navigation-group > button:hover { background: #F3F6FC; color: #1F2A3D; }
+.workspace #workspace-navigation > .nav-account { border-top: 1px solid #EAECEF; }
+.workspace #workspace-navigation > .nav-account > summary { color: #7C8698; font-size: 13px; }
+.workspace #workspace-navigation .secondary {
+  background: #F5F7FB;
+  border: 1px solid #E3E7EF;
+  color: #3D4757;
+  border-radius: 9px;
+}
+
+/* ---------- 内容区 ---------- */
+.workspace main { padding: 16px 22px 28px; background: #F5F6FA; }
+
+/* 工具栏排在标题上方（参考实现 DOM 顺序），用 flex 顺序实现 */
+.workspace main { display: flex; flex-direction: column; }
+.workspace main > .workspace-toolbar { order: -1; }
+.workspace-toolbar {
+  position: static;
+  background: rgba(245, 246, 250, .88);
+  backdrop-filter: none;
+  margin: 0 0 4px;
+  padding: 8px 0;
+  min-height: 55px;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-header h1 { font-size: 25px; font-weight: 650; letter-spacing: 0; margin: 0 0 6px; color: #1F2A3D; }
+.page-header { margin-bottom: 4px; }
+.report-description { color: #7C8698; font-size: 13px; margin: 0; }
+
+/* ---------- 面板 ---------- */
+.panel,
+.feature-section,
+.feature-grid article,
+.update-release,
+.update-operation {
+  background: #FFFFFF;
+  border: 1px solid #EAECEF;
+  border-radius: 10px;
+  box-shadow: var(--sh);
+  padding: 20px;
+}
+.workspace main .panel > h2,
+.panel-heading h2 { font-size: 16px; font-weight: 700; color: #1F2A3D; margin: 0 0 10px; }
+.panel-heading { margin-bottom: 10px; }
+.workspace main .panel > h3 { font-size: 14px; font-weight: 600; color: #3D4757; margin: 18px 0 8px; }
+.workspace main .panel > p { color: #3D4757; font-size: 13px; line-height: 1.7; }
+.workspace main .panel > .hint,
+.workspace main .panel .hint { color: #8A94A6; font-size: 12px; }
+.panel-heading a, .workspace main .panel > h2 + a { color: #3370FF; font-size: 12px; text-decoration: none; }
+
+/* ---------- 表格 ---------- */
+.table-wrap table { border-collapse: collapse; width: 100%; }
+.table-wrap th {
+  background: #FAFBFD;
+  color: #7C8698;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-bottom: 1px solid #EAECEF;
+}
+.table-wrap td {
+  color: #1F2A3D;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #EAECEF;
+}
+.table-wrap tbody tr:hover { background: #FAFBFD; }
+.table-wrap td.numeric, .table-wrap th.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- 控件 ---------- */
+button, .button {
+  border-radius: 9px;
+  font-size: 13px;
+  padding: 7px 14px;
+  background: #3370FF;
+  color: #FFFFFF;
+}
+button.secondary, .secondary {
+  background: #F5F7FB;
+  border: 1px solid #E3E7EF;
+  color: #3D4757;
+}
+input, select, textarea {
+  background: #FAFBFD;
+  border: 1px solid #C9CFDB;
+  border-radius: 9px;
+  font-size: 12px;
+  color: #1F2A3D;
+  padding: 8px;
+}
+.workspace-toolbar .date-range,
+.workspace-toolbar .toolbar-preferences > summary,
+.site-context-details > summary {
+  background: #FAFBFD;
+  border: 1px solid #C9CFDB;
+  border-radius: 9px;
+  color: #1F2A3D;
+  font-size: 12px;
+}
+
+/* ---------- 指标矩阵：标签列 + 指标列，13px 层级 ---------- */
+.workspace .approved-overview .overview-metrics { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.workspace .approved-overview .overview-metrics th:first-child,
+.workspace .approved-overview .overview-metrics td:first-child {
+  display: table-cell !important;
+  position: static !important;
+  clip: auto !important;
+  color: #7C8698 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  padding: 8px 12px !important;
+  border-left: 0;
+}
+.workspace .approved-overview .overview-metrics th:not(:first-child) {
+  background: transparent;
+  color: #7C8698;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px 12px;
+  border-bottom: 1px solid #EAECEF;
+}
+.workspace .approved-overview .overview-metrics td:not(:first-child) {
+  color: #1F2A3D;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-bottom: 1px solid #EAECEF;
+}
+.workspace .approved-overview .overview-metrics tbody tr:nth-child(n+2) td:not(:first-child) {
+  font-size: 13px;
+  font-weight: 400;
+  color: #7C8698;
+}
+
+/* ---------- 深色主题：结构保持一致，颜色回到深色 ---------- */
+html[data-theme="dark"] .workspace main { background: #0C1716; }
+html[data-theme="dark"] .workspace-toolbar { background: rgba(12, 23, 22, .88); }
+html[data-theme="dark"] .panel { background: #13231F; border: 1px solid #22362F; }
+html[data-theme="dark"] .workspace #workspace-navigation { background: #08110F; border-right: 1px solid #22362F; }
+html[data-theme="dark"] #workspace-navigation .brand,
+html[data-theme="dark"] #workspace-navigation .brand-name { color: #F4EFE2; }
+html[data-theme="dark"] .workspace #workspace-navigation nav a { color: #C9D8D2; }
+html[data-theme="dark"] .workspace #workspace-navigation nav a.active { background: rgba(79, 179, 156, .18); color: #7FD6C0; }
+html[data-theme="dark"] .table-wrap th { background: #16281F; color: #A5B8B2; border-bottom: 1px solid #22362F; }
+html[data-theme="dark"] .table-wrap td { color: #E3ECE8; border-bottom: 1px solid #1B2D29; }
+html[data-theme="dark"] .page-header h1,
+html[data-theme="dark"] .workspace main .panel > h2,
+html[data-theme="dark"] .panel-heading h2 { color: #E3ECE8; }
+
+/* ===== 板块布局对齐（只动位置、宽度、间距、对齐，不改任何颜色/字体）===== */
+/* 1) 顶部指标区占满整行，消除右侧 230px 空洞 */
+.overview-summary-row{display:block!important;width:100%}
+.overview-comparison-panel{width:100%!important;min-width:0}
+
+/* 2) 二级栅格统一 20px 间距 */
+.overview-report-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.overview-breakdown-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:20px!important;
+  align-items:stretch!important;
+}
+.overview-breakdown-grid > *{min-width:0;align-self:stretch}
+.overview-breakdown-grid > .panel{height:100%}
+
+/* 3) 同一行卡片等高，底边对齐 */
+.overview-report-grid > .panel{align-self:stretch}
+
+/* 4) 三个榜单卡内部表格占满，避免右侧留白 */
+.overview-breakdown-grid .table-wrap{width:100%}
+.overview-breakdown-grid .table-wrap table{width:100%}
+
+/* 5) 内容宽度一致：概况内所有面板左右边界对齐 */
+.approved-overview-layout, .approved-overview-primary{width:100%}
+.approved-overview-layout > *, .approved-overview-primary > *{min-width:0}
+
+/* 说明性段落已删除，空段落不再占位 */
+main p:empty, main small:empty, main .hint:empty { display:none !important; }
+/* 地域未配置时整块隐藏，不留下空气 */
+.overview-geography-panel.overview-geography-compact { display:none !important; }
+
+/* ===== 概况页板块布局：按 51.la 概况页的三列结构 =====
+   第 1 行：核心指标（通栏）
+   第 2 行：访问趋势（2/3） + 页面表现（1/3）
+   第 3 行：来源贡献 / 地域分布 / 访问设备（各 1/3）
+   只改位置与宽度，不改任何颜色字体。 */
+.workspace .approved-overview-layout .overview-summary-row{
+  display:block!important;width:100%!important;
+}
+.workspace .approved-overview-layout .overview-report-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:20px!important;
+  align-items:start!important;
+}
+.workspace .approved-overview-layout .overview-report-grid > .overview-trend-panel{
+  grid-column:span 2!important;
+}
+.workspace .approved-overview-layout .overview-report-grid > .overview-content-panel{
+  grid-column:span 1!important;
+}
+.workspace .approved-overview-layout .overview-report-grid > .overview-breakdown-grid{
+  grid-column:1 / -1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:20px!important;
+  align-items:stretch!important;
+}
+.workspace .approved-overview-layout .overview-breakdown-grid > *{min-width:0;height:100%}
+@media (max-width:1100px){
+  .workspace .approved-overview-layout .overview-report-grid{grid-template-columns:minmax(0,1fr)!important}
+  .workspace .approved-overview-layout .overview-report-grid > *{grid-column:1 / -1!important}
+  .workspace .approved-overview-layout .overview-report-grid > .overview-breakdown-grid{grid-template-columns:minmax(0,1fr)!important}
+}
+
+/* 地域未配置时只剩两张卡：自动铺满两列，不留空位；有地域时自动三列 */
+.workspace .approved-overview-layout .overview-report-grid > .overview-breakdown-grid{
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;
+}

@@ -5,7 +5,7 @@ function percentage(value: unknown) { return typeof value === 'number' && Number
 export function ExperimentResults({ experiments, siteId, canAdmin, onSaved }: { experiments: Row[]; siteId:string; canAdmin:boolean; onSaved:()=>void }) {
     const [error,setError]=useState('');
     const groups = [...new Set(experiments.map(row => String(row.id)))];
-    return <section className="panel"><h2>{t('固定周期实验比较')}</h2><p>{t('请预先约定实验结束时间，不因中途显著而提前停止。置信区间与 p 值依赖实际分配访客，样本不足时不作结论；观察结果不证明因果。')}</p>{error&&<p role="alert" className="error">{error}</p>}{!groups.length && <p>{t('选定范围尚无实际数据。')}</p>}{groups.map(id => {
+    return <section className="panel"><h2>{t('固定周期实验比较')}</h2>{error&&<p role="alert" className="error">{error}</p>}{!groups.length && <p>{t('选定范围尚无实际数据。')}</p>}{groups.map(id => {
         const variants = experiments.filter(row => String(row.id) === id);
         const definition = variants[0]!;
         return <section key={id}><h3>{String(definition.name)}</h3><p>{t('真实转化事件名称')}：{String(definition.goal)} · {t('实验状态')}：{t(definition.enabled ? '采集中' : '已停止分配')}</p>{canAdmin&&<button className="secondary" onClick={()=>void api(`/api/v1/sites/${siteId}/experiments/${id}`,{enabled:!definition.enabled},'PATCH').then(()=>{setError('');onSaved();}).catch(e=>setError(e.message))}>{t(definition.enabled?'停止新访客分配':'继续访客分配')}</button>}<div className="table-wrap"><table><thead><tr>{['变体', '分配访客', '转化访客', '转化率', '绝对提升', '相对提升', '转化率 95% 区间', 'p 值', '统计状态'].map(label => <th key={label}>{t(label)}</th>)}</tr></thead><tbody>{variants.map((variant, i) => {
