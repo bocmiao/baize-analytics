@@ -1,7 +1,8 @@
 import type {MouseEvent} from 'react';
 import {language} from './i18n';
 import {rows,type Row} from './api';
-export function overviewChannelLabel(value:string){if(language()==='en')return value;const labels:Record<string,string>={direct:'直接访问',email:'邮件',unknown:'未知来源',search:'自然搜索',organic:'自然搜索',organic_search:'自然搜索',referral:'外部网站',social:'社交媒体',paid:'付费广告',paid_search:'付费搜索'};return Object.hasOwn(labels,value)?labels[value]!:value;}
+import {dimensionText} from './dimensionLabels';
+export function overviewChannelLabel(value:string){return dimensionText('channel',value);}
 export interface OverviewInsight {title:string;detail:string;report:string}
 const number=(value:unknown):value is number=>typeof value==='number'&&Number.isFinite(value);
 /** Descriptive facts from the returned scope only; no causal claims or model calls. */
@@ -10,7 +11,7 @@ export function overviewInsights(data:Row):OverviewInsight[]{
  const source=rows(data.sources).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
  if(source&&number(totals.pv)&&totals.pv>0){const share=((source.pv as number)/totals.pv*100).toFixed(1),channel=overviewChannelLabel(String(source.channel));items.push({title:en?`${channel}: ${share}% of pageviews`:`${channel}占 ${share}% 浏览量`,detail:en?'Share of pageviews in this scope, not distinct visitors.':'本范围内的浏览贡献，非独立访客占比。',report:'sources'});}
  const page=rows(data.pages).filter(row=>number(row.pv)).sort((a,b)=>(b.pv as number)-(a.pv as number))[0];
- if(page)items.push({title:en?`${String(page.path)}: ${page.pv} pageviews`:`${String(page.path)} ${page.pv} 次浏览`,detail:en?'Observed pageviews in the selected scope.':'当前选定范围内的页面浏览。',report:'pages'});
+ if(page){const path=dimensionText('path',page.path);items.push({title:en?`${path}: ${page.pv} pageviews`:`${path} ${page.pv} 次浏览`,detail:en?'Observed pageviews in the selected scope.':'当前选定范围内的页面浏览。',report:'pages'});}
  if(number(totals.conversions)&&!(data.coverage!==1&&totals.conversions===0))items.push({title:en?`${totals.conversions} goal completions`:`${totals.conversions} 次目标完成`,detail:en?'Configured goal completions, not distinct paying customers.':'按已配置目标计数，非独立付费人数。',report:'goals'});
  return items;
 }
