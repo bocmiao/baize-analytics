@@ -37,7 +37,7 @@ function journalWatermark(data:Buffer):JournalWatermark{return {records:journalR
 async function persistWatermark(dataDir:string,data:Buffer){
   const temp=join(dataDir,`tombstones.watermark.${randomUUID()}.tmp`),file=await open(temp,'wx',0o600);
   try{await file.writeFile(JSON.stringify(journalWatermark(data)));await file.sync();}finally{await file.close();}
-  await rename(temp,join(dataDir,'tombstones.watermark.json'));const directory=await open(dataDir,'r');try{await directory.sync();}finally{await directory.close();}
+  await rename(temp,join(dataDir,'tombstones.watermark.json'));if(process.platform!=='win32'){const directory=await open(dataDir,'r');try{await directory.sync();}finally{await directory.close();}}
 }
 export async function initializeJournal(dataDir:string,requireExisting=false){
   const path=join(dataDir,'tombstones.jsonl'),marker=join(dataDir,'tombstones.watermark.json');let data:Buffer|undefined,watermark:JournalWatermark|undefined;

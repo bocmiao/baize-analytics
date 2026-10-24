@@ -354,3 +354,36 @@ main p:empty, main small:empty, main .hint:empty { display:none !important; }
 /* 滚动条宽度导致的 15px 假溢出：整页横向禁止滚动 */
 html, body { max-width: 100%; overflow-x: hidden; }
 .workspace { max-width: 100%; }
+
+/* 修正：面板宽度用 max-width 约束，不再强制 100%（否则实时流量卡会被拉满整行） */
+#workspace-main section.panel,
+#workspace-main details.panel {
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* 概况首行：实时流量卡 + 指标矩阵 并排 */
+#workspace-main .overview-summary-row {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+}
+#workspace-main .overview-summary-row > * { min-width: 0; }
+#workspace-main .overview-summary-row:not(:has(> :nth-child(2))) {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+@media (max-width: 1100px) {
+  #workspace-main .overview-summary-row { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/* 明确首行两块的列位：左实时卡、右指标矩阵 */
+#workspace-main .overview-summary-row > .overview-realtime {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+#workspace-main .overview-summary-row > .overview-comparison-panel {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+}
