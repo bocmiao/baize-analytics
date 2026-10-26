@@ -1,4 +1,4 @@
-import {navigateWorkspace} from './navigation';
+import {navigateWorkspace,revealDateInputs} from './navigation';
 import {expect,test} from '@playwright/test';
 import {randomUUID} from 'node:crypto';
 test('complete realtime Top exceeds 200-row preview and retention never renders immature days as zero',async({page})=>{
@@ -11,7 +11,7 @@ test('complete realtime Top exceeds 200-row preview and retention never renders 
  await collect([...visitors.map(visitor=>event(visitor,at(-3),'/cohort')),event(visitors[0]!,at(-2),'/returned'),event(visitors[1]!,at(-1),'/returned')]);
  const range=`from=${day(-3)}T00:00:00.000Z&to=${new Date(now).toISOString()}`;
  await expect.poll(async()=>{const r=await page.request.get(`/api/v1/sites/${site.id}/stats?${range}`);const s=await r.json();return s.cohorts?.[day(-3)]?.observations?.['1']?.status==='complete';},{timeout:30000}).toBe(true);
- await page.goto('/app');await page.getByLabel('选择站点').selectOption(site.id);await page.getByLabel('开始',{exact:true}).fill(day(-3));await navigateWorkspace(page, "留存");
+ await page.goto('/app');await page.getByLabel('选择站点').selectOption(site.id);await (await revealDateInputs(page), page).getByLabel('开始',{exact:true}).fill(day(-3));await navigateWorkspace(page, "留存");
  const cohort=page.getByRole('heading',{name:'首访同期群留存热图'}).locator('..');const row=cohort.getByRole('row').filter({has:page.getByRole('rowheader',{name:day(-3),exact:true})});
  await expect(row.getByRole('cell',{name:'33.3%',exact:true})).toHaveCount(2);await expect(row.getByRole('cell').nth(3)).toHaveText('—');await expect(row.getByRole('cell').nth(3)).toHaveAttribute('title','尚未成熟');
  await navigateWorkspace(page, "实时");await expect(page.getByTestId('realtime-total')).toHaveText('0');

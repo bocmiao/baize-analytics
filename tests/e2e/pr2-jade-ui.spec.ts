@@ -7,7 +7,7 @@ import {createApp,fixtureInstallationNonce,prepareInstallationFixture} from '../
 import {createLiteApp} from '../../src/lite/app';
 import {runWorkerOnce} from '../../src/server/worker';
 import {isolatedTestConnectionString} from '../support/database-url';
-import {openWorkspaceAccount} from './navigation';
+import {openWorkspaceAccount,revealDateInputs} from './navigation';
 
 const out=process.env.BAIZE_OVERVIEW_EVIDENCE_DIR||'.baize/pr2-ui-evidence';
 type Options={standard?:boolean;storageBlocked?:boolean;unfinished?:boolean;controlledStats?:boolean};
@@ -47,12 +47,12 @@ async function capture(page:Page,name:string,controlledStats:boolean){
  if(process.env.BAIZE_UI_NEGATIVE==='1')return;
  await mkdir(out,{recursive:true});await page.evaluate(()=>document.fonts.ready);
  const bytes=await page.screenshot({path:join(out,name+'.png'),fullPage:true});
- await writeFile(join(out,name+'.json'),JSON.stringify({syntheticFixture:true,controlledStats,backend:controlledStats?'Real SQLite authentication/site APIs with explicitly controlled statistics':'Real Node PostgreSQL APIs; no intercepted responses',viewport:page.viewportSize(),sha256:createHash('sha256').update(bytes).digest('hex'),frontendIndexSha256:createHash('sha256').update(await readFile('dist/web/index.html')).digest('hex'),sourceSha256:Object.fromEntries(await Promise.all(['src/web/theme.ts','src/web/ThemeToggle.tsx','src/web/OverviewDashboard.tsx','src/web/evidenceTooltip.ts','src/web/design-v2.css','src/web/main.tsx'].map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])))},null,2)+'\n');
+ await writeFile(join(out,name+'.json'),JSON.stringify({syntheticFixture:true,controlledStats,backend:controlledStats?'Real SQLite authentication/site APIs with explicitly controlled statistics':'Real Node PostgreSQL APIs; no intercepted responses',viewport:page.viewportSize(),sha256:createHash('sha256').update(bytes).digest('hex'),frontendIndexSha256:createHash('sha256').update(await readFile('dist/web/index.html')).digest('hex'),sourceSha256:Object.fromEntries(await Promise.all(['src/web/theme.ts','src/web/ThemeToggle.tsx','src/web/OverviewDashboard.tsx','src/web/evidenceTooltip.ts','src/web/design-v3.css','src/web/main.tsx'].map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])))},null,2)+'\n');
 }
 async function openOverview(page:Page,url:string){await page.goto(url);await expect(page.locator('.approved-overview')).toBeVisible();await expect(page.locator('.chart canvas').first()).toBeVisible();}
 async function themeState(page:Page,dark:boolean){
  await expect(page.locator('html')).toHaveAttribute('data-theme',dark?'dark':'light');
- await expect.poll(()=>page.locator('.theme-toggle').evaluateAll(elements=>elements.map(element=>element.getAttribute('aria-pressed')))).toEqual([''+dark,''+dark,''+dark]);
+ await expect.poll(()=>page.locator('.theme-toggle').evaluateAll(elements=>elements.map(element=>element.getAttribute('aria-pressed')))).toEqual([''+dark,''+dark]);
  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content',dark?'#0A0A0A':'#FAFAFA');
  const contrast=await page.evaluate(()=>{
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1;const context=canvas.getContext('2d',{willReadFrequently:true})!;
@@ -72,13 +72,13 @@ async function themeState(page:Page,dark:boolean){
 test('comparison controls current/previous facts, chart and legend together on desktop',async({browser})=>{
  await workspace(browser,{controlledStats:true},async({page,url})=>{
   await openOverview(page,url);const chart=page.locator('[data-comparison-points]').first();await expect(chart).toHaveAttribute('data-comparison-points','3');
-  await page.getByRole('checkbox',{name:'对比',exact:true}).focus();await page.keyboard.press('Space');await expect(chart).toHaveAttribute('data-comparison-points','0');await expect(page.locator('.overview-trend-legend .previous')).toHaveCount(0);await expect(page.locator('.overview-metrics tbody tr')).toHaveCount(1);await expect(page.locator('.overview-metrics strong').first()).toHaveText('83');await expect(page.locator('.overview-mobile-metrics dd span')).toHaveCount(0);await capture(page,'comparison-off-desktop',true);
-  await page.getByRole('checkbox',{name:'对比',exact:true}).check();await expect(chart).toHaveAttribute('data-comparison-points','3');await expect(page.locator('.overview-metrics tbody tr')).toHaveCount(3);await expect(page.locator('.overview-trend-legend .previous')).toBeVisible();await capture(page,'comparison-on-desktop',true);
+  await revealDateInputs(page);await page.getByRole('checkbox',{name:'对比',exact:true}).focus();await page.keyboard.press('Space');await expect(chart).toHaveAttribute('data-comparison-points','0');await expect(page.locator('.overview-trend-legend .previous')).toHaveCount(0);await expect(page.locator('.overview-metrics .kpi')).toHaveCount(6);await expect(page.locator('.overview-metrics .metric-comparison')).toHaveCount(0);await expect(page.locator('.overview-metrics strong').first()).toHaveText('83');await capture(page,'comparison-off-desktop',true);
+  await page.getByRole('checkbox',{name:'对比',exact:true}).check();await expect(chart).toHaveAttribute('data-comparison-points','3');await expect(page.locator('.overview-metrics .metric-comparison')).toHaveCount(6);await expect(page.locator('.overview-trend-legend .previous')).toBeVisible();await capture(page,'comparison-on-desktop',true);
  });
 });
 test('comparison stays operable on a narrow screen and preserves current metrics',async({browser})=>{
  await workspace(browser,{controlledStats:true},async({page,url})=>{
-  await page.setViewportSize({width:390,height:844});await openOverview(page,url);await expect(page.locator('.overview-comparison-scroll')).toBeHidden();const toggle=page.getByRole('checkbox',{name:'对比',exact:true});await expect(toggle).toBeVisible();await toggle.focus();await page.keyboard.press('Space');await expect(toggle).not.toBeChecked();await expect(page.locator('[data-comparison-points]').first()).toHaveAttribute('data-comparison-points','0');await expect(page.locator('.overview-mobile-metrics dd span')).toHaveCount(0);await expect(page.locator('.overview-mobile-metrics strong').first()).toHaveText('83');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,'comparison-off-mobile',true);await toggle.check();await expect(page.locator('.overview-mobile-metrics dd span')).toHaveCount(6);await expect(page.locator('[data-comparison-points]').first()).toHaveAttribute('data-comparison-points','3');
+  await page.setViewportSize({width:390,height:844});await openOverview(page,url);await expect(page.locator('.date-range-trigger')).toBeVisible();await expect(page.locator('#date-range-sheet')).toBeHidden();await revealDateInputs(page);const toggle=page.getByRole('checkbox',{name:'对比',exact:true});await expect(toggle).toBeVisible();await toggle.focus();await page.keyboard.press('Space');await expect(toggle).not.toBeChecked();await expect(page.locator('[data-comparison-points]').first()).toHaveAttribute('data-comparison-points','0');await expect(page.locator('.overview-metrics .kpi')).toHaveCount(6);await expect(page.locator('.overview-metrics .metric-comparison')).toHaveCount(0);await expect(page.locator('.overview-metrics strong').first()).toHaveText('83');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,'comparison-off-mobile',true);await toggle.check();await expect(page.locator('.overview-metrics .metric-comparison')).toHaveCount(6);await expect(page.locator('[data-comparison-points]').first()).toHaveAttribute('data-comparison-points','3');
  });
 });
 test('unfinished today renders a real canvas tooltip with no comparison series',async({browser})=>{
@@ -91,14 +91,14 @@ test('unfinished today renders a real canvas tooltip with no comparison series',
 test('every theme control and live chart follow same-page and cross-tab changes',async({browser})=>{
  await workspace(browser,{controlledStats:true},async({page,url})=>{
   await openOverview(page,url);await themeState(page,false);const instance=await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_');
-  await page.locator('.workspace-toolbar .theme-toggle').click();await themeState(page,true);await capture(page,'dark-desktop',true);const account=await openWorkspaceAccount(page);await account.locator('.theme-toggle').click();await themeState(page,false);
-  const second=await page.context().newPage();await second.goto(url);await expect(second.locator('.approved-overview')).toBeVisible();await second.locator('.workspace-toolbar .theme-toggle').click();await themeState(second,true);await themeState(page,true);expect(await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_')).toBe(instance);await second.close();
+  await page.locator('.v3-header > .theme-toggle').click();await themeState(page,true);await capture(page,'dark-desktop',true);const account=await openWorkspaceAccount(page);await account.locator('.theme-toggle').click();await themeState(page,false);
+  const second=await page.context().newPage();await second.goto(url);await expect(second.locator('.approved-overview')).toBeVisible();await second.locator('.v3-header > .theme-toggle').click();await themeState(second,true);await themeState(page,true);expect(await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_')).toBe(instance);await second.close();
   await page.setViewportSize({width:390,height:844});await page.locator('.v3-header > .theme-toggle').click();await themeState(page,false);await page.locator('.v3-header > .theme-toggle').click();await themeState(page,true);await capture(page,'dark-mobile',true);
  });
 });
 test('denied browser storage does not break startup, toggling or URL-selected dark theme',async({browser})=>{
  await workspace(browser,{controlledStats:true,storageBlocked:true},async({page,url})=>{
-  await openOverview(page,url);await themeState(page,false);await page.locator('.workspace-toolbar .theme-toggle').click();await themeState(page,true);await page.locator('.workspace-toolbar .theme-toggle').click();await themeState(page,false);await page.goto(url+'&theme=dark');await expect(page.locator('.approved-overview')).toBeVisible();await themeState(page,true);await capture(page,'storage-denied-dark',true);
+  await openOverview(page,url);await themeState(page,false);await page.locator('.v3-header > .theme-toggle').click();await themeState(page,true);await page.locator('.v3-header > .theme-toggle').click();await themeState(page,false);await page.goto(url+'&theme=dark');await expect(page.locator('.approved-overview')).toBeVisible();await themeState(page,true);await capture(page,'storage-denied-dark',true);
  });
 });
 test('only login/setup use the split artwork; real share and invitation flows remain single column',async({browser})=>{

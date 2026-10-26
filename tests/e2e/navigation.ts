@@ -7,5 +7,16 @@ export async function selectWorkspaceSite(page:Page,id:string){const nav=page.lo
 /** Opens the real account disclosure through visible navigation controls. */
 export async function openWorkspaceAccount(page:Page){const nav=await openWorkspaceNavigation(page);const details=nav.locator('details.nav-account');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();await expect(details).toHaveAttribute('open','');return details;}
 
-export async function openWorkspacePreferences(page:Page){const details=page.locator('.workspace-toolbar details.toolbar-preferences');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();return details;}
+/** Opens the date layer, then returns the page so date fields and refresh can be used. */
+export async function revealDateInputs(page:Page){
+ const field=page.getByLabel(/^(开始|结束|From|To)$/).first();
+ if(await field.isVisible().catch(()=>false))return page;
+ const trigger=page.locator('.date-range-trigger');
+ await expect(trigger).toBeVisible();
+ if((await trigger.getAttribute('aria-expanded'))!=='true')await trigger.click();
+ await expect(field).toBeVisible();
+ return page;
+}
+
+export async function openWorkspacePreferences(page:Page){const account=await openWorkspaceAccount(page);const details=account.locator('details.toolbar-preferences');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();return details;}
 export async function openOverviewInterpretation(page:Page){const details=page.locator('.query-health > details');await expect(details).toBeAttached();if(!await details.isVisible())await openWorkspacePreferences(page);await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();return details;}
