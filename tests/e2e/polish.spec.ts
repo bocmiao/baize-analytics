@@ -24,6 +24,6 @@ test('exports poll until complete, stop on failed and allow retry after HTTP err
  const download=page.getByRole('link',{name:'下载fixture-export'});await expect(download).toBeVisible({timeout:12000});const doneReads=reads;
  await page.waitForTimeout(2300);expect(reads).toBe(doneReads);
  mode='failed';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(page.getByText('failed',{exact:true})).toBeVisible();const failedReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(failedReads);
- mode='error';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(page.getByRole('button',{name:'重试当前视图'})).toBeVisible();const errorReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(errorReads);
- mode='complete';await page.getByRole('button',{name:'重试当前视图'}).click();await expect(download).toBeVisible();
+ mode='error';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(page.locator('main').getByRole('button',{name:'重试',exact:true})).toBeVisible();const errorReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(errorReads);
+ mode='complete';await page.locator('main').getByRole('button',{name:'重试',exact:true}).click();await expect(download).toBeVisible();
 });

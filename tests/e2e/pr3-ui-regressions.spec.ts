@@ -37,10 +37,10 @@ test('one-time invitation survives member reload failure, offline retry and narr
   await page.route('**/api/v1/sites/*/members?**',async route=>{if(failRead)await route.fulfill({status:503,json:{error:'Synthetic member reload failure'}});else await route.continue();});
   const saved=page.waitForResponse(response=>response.request().method()==='POST'&&response.url().endsWith('/invites'));
   await editor.getByRole('button',{name:'生成邀请链接',exact:true}).click();const response=await saved;expect(response.status()).toBe(200);const invitation=await response.json();
-  await expect(page.getByRole('button',{name:'重试当前视图',exact:true})).toBeVisible();
+  await expect(page.locator('main').getByRole('button',{name:'重试',exact:true})).toBeVisible();
   await capture(page,'members-reload-error');
   const link=editor.getByRole('link');await expect(link).toHaveAttribute('href',invitation.url);
-  failRead=false;await page.getByRole('button',{name:'重试当前视图',exact:true}).click();await expect(page.locator('.member-roster')).toContainText('pr3-owner@example.test');await expect(link).toHaveAttribute('href',invitation.url);
+  failRead=false;await page.locator('main').getByRole('button',{name:'重试',exact:true}).click();await expect(page.locator('.member-roster')).toContainText('pr3-owner@example.test');await expect(link).toHaveAttribute('href',invitation.url);
   await page.setViewportSize({width:320,height:800});await capture(page,'members-mobile-320');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   // A failed invite request must keep form input and the previous one-time link.
   await editor.getByLabel('成员邮箱',{exact:true}).fill('pr3-retry@example.test');await page.context().setOffline(true);await editor.getByRole('button',{name:'生成邀请链接',exact:true}).click();await expect(editor.getByRole('alert')).toBeVisible();await expect(link).toHaveAttribute('href',invitation.url);await expect(editor.getByLabel('成员邮箱',{exact:true})).toHaveValue('pr3-retry@example.test');await page.context().setOffline(false);

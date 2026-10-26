@@ -13,6 +13,6 @@ export class RouteErrorBoundary extends Component<Props,State>{
  render(){
   if(!this.state.error)return this.props.children;
   const en=language()==='en';
-  return <section className="panel"><p className="error" role="alert">{en?'This view did not load.':'这一屏没有载入。'} {this.state.error.message}</p><button type="button" onClick={()=>this.setState({error:undefined})}>{en?'Retry this view':'重试当前视图'}</button></section>;
+  return <section className="panel"><p className="error" role="alert">{en?'This block did not load.':'这块数据没加载出来'} {this.state.error.message}</p><button type="button" onClick={()=>this.setState({error:undefined})}>{en?'Retry':'重试'}</button></section>;
  }
 }
