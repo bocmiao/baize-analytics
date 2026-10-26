@@ -93,7 +93,7 @@ test('every theme control and live chart follow same-page and cross-tab changes'
   await openOverview(page,url);await themeState(page,false);const instance=await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_');
   await page.locator('.workspace-toolbar .theme-toggle').click();await themeState(page,true);await capture(page,'dark-desktop',true);const account=await openWorkspaceAccount(page);await account.locator('.theme-toggle').click();await themeState(page,false);
   const second=await page.context().newPage();await second.goto(url);await expect(second.locator('.approved-overview')).toBeVisible();await second.locator('.workspace-toolbar .theme-toggle').click();await themeState(second,true);await themeState(page,true);expect(await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_')).toBe(instance);await second.close();
-  await page.setViewportSize({width:390,height:844});await page.locator('.v3-header .theme-toggle').click();await themeState(page,false);await page.locator('.v3-header .theme-toggle').click();await themeState(page,true);await capture(page,'dark-mobile',true);
+  await page.setViewportSize({width:390,height:844});await page.locator('.v3-header > .theme-toggle').click();await themeState(page,false);await page.locator('.v3-header > .theme-toggle').click();await themeState(page,true);await capture(page,'dark-mobile',true);
  });
 });
 test('denied browser storage does not break startup, toggling or URL-selected dark theme',async({browser})=>{
