@@ -18,5 +18,29 @@ export async function revealDateInputs(page:Page){
  return page;
 }
 
+/** Closes the date popover or phone sheet after a fill or refresh so the next control can be reached. */
+export async function closeDateSheet(page:Page){
+ const sheet=page.locator('#date-range-sheet');
+ if(!(await sheet.isVisible().catch(()=>false)))return;
+ await page.locator('.date-sheet-close').click();
+ await expect(sheet).toBeHidden();
+}
+
+export async function closeWorkspaceAccount(page:Page){
+ const account=page.locator('details.nav-account');
+ if(!(await account.evaluate(element=>(element as HTMLDetailsElement).open).catch(()=>false)))return;
+ await account.locator(':scope > summary').click();
+ await expect(account).not.toHaveAttribute('open','');
+}
+
 export async function openWorkspacePreferences(page:Page){const account=await openWorkspaceAccount(page);const details=account.locator('details.toolbar-preferences');await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();return details;}
-export async function openOverviewInterpretation(page:Page){const details=page.locator('.query-health > details');await expect(details).toBeAttached();if(!await details.isVisible())await openWorkspacePreferences(page);await expect(details).toBeVisible();if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();return details;}
+export async function openOverviewInterpretation(page:Page){
+ const details=page.locator('.query-health > details');
+ await expect(details).toBeAttached();
+ const insideAccount=await details.evaluate(element=>Boolean(element.closest('details.nav-account')));
+ if(!await details.isVisible()||insideAccount)await openWorkspacePreferences(page);
+ else await closeWorkspaceAccount(page);
+ await expect(details).toBeVisible();
+ if(!await details.evaluate(element=>(element as HTMLDetailsElement).open))await details.locator(':scope > summary').click();
+ return details;
+}

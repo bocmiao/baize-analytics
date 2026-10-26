@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {navigateWorkspace,revealDateInputs} from './navigation';
+import {navigateWorkspace,revealDateInputs,closeDateSheet} from './navigation';
 // Controlled browser API responses exercise UI lifecycle, not backend export throughput.
 test('clipboard absence, rejection, success and stale consent results provide honest feedback',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
@@ -23,7 +23,7 @@ test('exports poll until complete, stop on failed and allow retry after HTTP err
  await page.goto('/app');await navigateWorkspace(page,'数据导出');
  const download=page.getByRole('link',{name:'下载fixture-export'});await expect(download).toBeVisible({timeout:12000});const doneReads=reads;
  await page.waitForTimeout(2300);expect(reads).toBe(doneReads);
- mode='failed';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await expect(page.getByText('failed',{exact:true})).toBeVisible();const failedReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(failedReads);
- mode='error';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await expect(page.getByRole('button',{name:'重试当前视图'})).toBeVisible();const errorReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(errorReads);
+ mode='failed';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(page.getByText('failed',{exact:true})).toBeVisible();const failedReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(failedReads);
+ mode='error';await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(page.getByRole('button',{name:'重试当前视图'})).toBeVisible();const errorReads=reads;await page.waitForTimeout(2300);expect(reads).toBe(errorReads);
  mode='complete';await page.getByRole('button',{name:'重试当前视图'}).click();await expect(download).toBeVisible();
 });

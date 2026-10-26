@@ -1,4 +1,4 @@
-import {navigateWorkspace,openWorkspaceAccount,revealDateInputs} from './navigation';
+import {navigateWorkspace,openWorkspaceAccount,revealDateInputs,closeDateSheet} from './navigation';
 import { expect, test, type Browser, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 async function trackerHost(browser: Browser, baseURL: string, siteId: string, path: string) {
@@ -39,7 +39,7 @@ test('actual tracker revenue keeps currencies separate and event-time account sw
         expect(await page.locator('body').innerText()).not.toContain(accountA); expect(await page.locator('body').innerText()).not.toContain(accountB);
         await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await navigateWorkspace(page, "Identified users"); await expect(page.getByRole('heading', { name: 'Activity within account bindings' })).toBeVisible(); await expect(page.getByLabel('Registration event name')).toBeVisible();
         await navigateWorkspace(page, "Revenue attribution"); await expect(page.getByLabel('Select revenue currency')).toBeVisible(); await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
-        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click(); await page.getByLabel('选择站点').selectOption(daily.id); await navigateWorkspace(page, "已识别用户"); await expect(page.getByText('每日盐模式不支持身份缝合，不列出业务账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
+        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page); await page.getByLabel('选择站点').selectOption(daily.id); await navigateWorkspace(page, "已识别用户"); await expect(page.getByText('每日盐模式不支持身份缝合，不列出业务账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
     } finally { await context.close(); }
 });
 
@@ -59,7 +59,7 @@ test('actual consented experiment assignment and tracker conversion survive stop
         const assignment = await assign(); expect(assignment.ok()).toBeTruthy(); const { variant } = await assignment.json(); const repeated = await assign(); expect((await repeated.json()).variant).toBe(variant);
         await host.evaluate(async () => { const tracker = (window as unknown as { baize: { track: (event: string) => void; flush: () => Promise<void> } }).baize; tracker.track('actual-purchase'); tracker.track('actual-purchase'); await tracker.flush(); });
         await expect.poll(async () => { const response = await page.request.get(`/api/v1/sites/${current.id}/experiments`); return (await response.json()).find((row: { variant: string }) => row.variant === variant)?.conversions; }, { timeout: 30000 }).toBe(1);
-        await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click(); const result = page.getByRole('heading', { name, exact: true }).locator('..');
+        await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page); const result = page.getByRole('heading', { name, exact: true }).locator('..');
         await expect(result.getByRole('cell', { name: '1', exact: true })).toHaveCount(2); await expect(result.getByRole('cell', { name: '样本不足', exact: true })).toBeVisible();
         await result.getByRole('button', { name: '停止新访客分配' }).click(); await expect(result.getByText('实验状态：已停止分配')).toBeVisible(); expect((await assign()).status()).toBe(404);
         const stopped = await page.request.get(`/api/v1/sites/${current.id}/experiments`); expect((await stopped.json()).find((row: { variant: string }) => row.variant === variant).conversions).toBe(1);

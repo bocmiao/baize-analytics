@@ -1,5 +1,5 @@
 import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
-import {navigateWorkspace,openWorkspaceAccount,revealDateInputs} from './navigation';
+import {navigateWorkspace,openWorkspaceAccount,revealDateInputs,closeDateSheet} from './navigation';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 test('product landing is the default, login is an explicit action', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('heading', { name: /看懂每一次访问，.*找到下一步增长/ })).toBeVisible(); await expect(page.getByRole('link', { name: '登录', exact: true })).toBeVisible(); await expect(page.locator('input[type=password]')).toHaveCount(0); });
@@ -47,7 +47,7 @@ test('real administrator → site → durable collection → aggregate → Chine
         path: string;
         pv: number;
     }) => p.path === '/acceptance' && p.pv === beforePV + 1); }, { timeout: 30000 }).toBe(true);
-    await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();
+    await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);
     await page.screenshot({ path: 'docs/screenshots/dashboard-acceptance.png', fullPage: true });
     await navigateWorkspace(page, "页面");
     await expect(page.getByRole('cell', { name: '/acceptance', exact: true })).toBeVisible();
