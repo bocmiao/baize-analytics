@@ -53,8 +53,9 @@ td{color:var(--fg)}
 .mono{font-family:var(--font-mono);font-size:12px}
 .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:1px 7px;border-radius:999px;border:1px solid var(--border);color:var(--fg-2);background:var(--surface-2)}
 
-.workspace{display:flex;flex-direction:column;min-height:100vh;background:var(--bg);color:var(--fg);grid-template-columns:none}
-.workspace #workspace-navigation{display:flex;flex-direction:column;position:sticky;top:0;z-index:20;width:100%;height:auto;max-width:none;padding:0;background:var(--bg);color:var(--fg);border-right:0;overflow:visible}
+.workspace{display:flex;flex-direction:column;min-height:100vh;background:var(--bg);color:var(--fg);grid-template-columns:none;gap:0;padding:0}
+.workspace #workspace-navigation{display:flex;flex-direction:column;gap:0;position:sticky;top:0;z-index:20;width:100%;height:auto;max-width:none;padding:0;background:var(--bg);color:var(--fg);border-right:0;overflow:visible}
+details:not([open]) > :not(summary){display:none!important}
 .mobile-workspace-bar,.drawer-close,.navigation-backdrop,.phone-tabs{display:none!important}
 .v3-header{height:56px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--bg);min-width:0}
 .v3-header>*{min-width:0}
@@ -125,12 +126,21 @@ html[data-motion="on"] .workspace #workspace-navigation nav a[aria-current="page
 .overview-summary-row{margin-bottom:0}
 .approved-overview .overview-comparison-panel{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:0;padding:0}
 .approved-overview .overview-trend-panel{border-top-left-radius:0;border-top-right-radius:0;margin-top:0}
-.workspace-report-overview main{padding-top:4px}
-.workspace-report-overview .workspace-toolbar{margin:0 0 2px;min-height:28px}
+.workspace-report-overview main{padding-top:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:12px}
+.workspace-report-overview main > *{order:5;flex:1 1 100%;min-width:0}
+.workspace-report-overview main > .page-header{order:1;flex:0 1 auto;width:auto}
+.workspace-report-overview main > .workspace-toolbar{order:2;flex:1 1 auto;width:auto}
+.workspace-report-overview main > .scope-context,
+.workspace-report-overview main > details.panel,
+.workspace-report-overview main > .query-health{order:3;flex:0 1 auto;width:auto;margin:0;padding:0}
+button.theme-toggle{width:32px;height:32px;min-height:32px;padding:0;display:inline-grid;place-items:center}
+.workspace-report-overview .workspace-toolbar{margin:0;min-height:28px}
+.workspace-report-overview main>details.panel:not([open]){margin:0;padding:0}
+.workspace-report-overview main>details.overview-annotations{order:6;flex:1 1 100%;width:100%}
 .workspace-report-overview .page-header{margin:0}
 .workspace-report-overview .page-header h1{line-height:1.15}
 .workspace-report-overview main>.scope-context{margin:0;font-size:12px;line-height:1.3}
-.workspace-report-overview .query-health{margin:0 0 4px}
+.workspace-report-overview .query-health{margin:0}
 .workspace-report-overview .compact-query-health>details>summary{font-size:12px;line-height:1.3}
 .workspace-report-overview .overview-section-heading{margin:0}
 .approved-overview .overview-metrics th,.approved-overview .overview-metrics td{padding:6px 8px;border-bottom-color:var(--border);background:transparent;color:var(--fg)}
@@ -186,6 +196,8 @@ html[data-motion="on"] .skel i{animation:v3-shimmer 1.4s linear infinite}
  .live{max-width:96px;overflow:hidden}
  .nav-avatar{width:24px;height:24px}
  .workspace-toolbar{gap:4px}
+ .workspace-toolbar .date-range{flex:0 1 auto;width:auto;margin-top:0}
+ .workspace-toolbar .date-range button{margin-top:0}
  .date-presets button,.overview-trend-control button{padding:2px 6px}
  .compare-toggle{gap:4px}
  .date-range{gap:4px;flex:0 1 auto}
@@ -196,7 +208,8 @@ html[data-motion="on"] .skel i{animation:v3-shimmer 1.4s linear infinite}
  .nav-account-controls{right:0}
  .date-range{margin-left:0;flex:0 1 auto;min-width:0}
  .date-range-trigger{display:flex;align-items:center;min-width:0;max-width:46vw;height:32px;padding:0 8px;background:var(--surface);color:var(--fg);border:1px solid var(--border);border-radius:6px;box-shadow:var(--shadow-xs);font-size:12px;overflow:hidden;white-space:nowrap}
- .workspace-report-overview main{padding-top:4px}
+ .workspace-report-overview main{padding-top:0}
+ .workspace-report-overview main>details.panel:not([open])>summary{min-height:0;padding:0;font-size:12px;line-height:18px}
  .date-sheet{display:none}
  .date-range.is-open .date-scrim{display:block;position:fixed;inset:0;z-index:44;background:rgba(0,0,0,.32)}
  .date-range.is-open .date-sheet{display:grid;position:fixed;z-index:45;left:0;right:0;bottom:0;top:auto;max-height:min(70dvh,420px);overflow:auto;padding:16px 16px 24px;background:var(--surface);color:var(--fg);border:0;border-top:1px solid var(--border);border-radius:16px 16px 0 0;box-shadow:var(--shadow-pop)}
