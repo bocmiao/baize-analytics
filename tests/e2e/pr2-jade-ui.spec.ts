@@ -53,7 +53,7 @@ async function openOverview(page:Page,url:string){await page.goto(url);await exp
 async function themeState(page:Page,dark:boolean){
  await expect(page.locator('html')).toHaveAttribute('data-theme',dark?'dark':'light');
  await expect.poll(()=>page.locator('.theme-toggle').evaluateAll(elements=>elements.map(element=>element.getAttribute('aria-pressed')))).toEqual([''+dark,''+dark,''+dark]);
- await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content',dark?'#08110F':'#12302B');
+ await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content',dark?'#0A0A0A':'#FAFAFA');
  const contrast=await page.evaluate(()=>{
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1;const context=canvas.getContext('2d',{willReadFrequently:true})!;
   const rgba=(color:string)=>{context.clearRect(0,0,1,1);context.fillStyle=color;context.fillRect(0,0,1,1);return [...context.getImageData(0,0,1,1).data];};
@@ -93,7 +93,7 @@ test('every theme control and live chart follow same-page and cross-tab changes'
   await openOverview(page,url);await themeState(page,false);const instance=await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_');
   await page.locator('.workspace-toolbar .theme-toggle').click();await themeState(page,true);await capture(page,'dark-desktop',true);const account=await openWorkspaceAccount(page);await account.locator('.theme-toggle').click();await themeState(page,false);
   const second=await page.context().newPage();await second.goto(url);await expect(second.locator('.approved-overview')).toBeVisible();await second.locator('.workspace-toolbar .theme-toggle').click();await themeState(second,true);await themeState(page,true);expect(await page.locator('.chart[_echarts_instance_]').first().getAttribute('_echarts_instance_')).toBe(instance);await second.close();
-  await page.setViewportSize({width:390,height:844});await page.locator('.mobile-workspace-bar .theme-toggle').click();await themeState(page,false);await page.locator('.mobile-workspace-bar .theme-toggle').click();await themeState(page,true);await capture(page,'dark-mobile',true);
+  await page.setViewportSize({width:390,height:844});await page.locator('.v3-header .theme-toggle').click();await themeState(page,false);await page.locator('.v3-header .theme-toggle').click();await themeState(page,true);await capture(page,'dark-mobile',true);
  });
 });
 test('denied browser storage does not break startup, toggling or URL-selected dark theme',async({browser})=>{
@@ -104,7 +104,7 @@ test('denied browser storage does not break startup, toggling or URL-selected da
 test('only login/setup use the split artwork; real share and invitation flows remain single column',async({browser})=>{
  test.setTimeout(120000);
  await workspace(browser,{standard:true},async({page,origin,siteId})=>{
-  await page.goto(origin+'/login');await expect(page.locator('.auth')).toHaveCSS('display','grid');await expect(page.locator('.lart')).toBeVisible();await capture(page,'login-desktop',false);await page.setViewportSize({width:390,height:844});await expect(page.locator('.auth')).toHaveCSS('display','block');await expect(page.locator('.lart')).not.toBeVisible();await capture(page,'login-mobile',false);
+  await page.goto(origin+'/login');await expect(page.locator('.login')).toBeVisible();await expect(page.getByRole('heading',{name:'登录白泽',exact:true})).toBeVisible();await expect(page.locator('.lart')).toHaveCount(0);await capture(page,'login-desktop',false);await page.setViewportSize({width:390,height:844});await expect(page.getByRole('button',{name:'登录',exact:true})).toBeVisible();await expect(page.locator('.lart')).toHaveCount(0);await capture(page,'login-mobile',false);
   const share=await page.request.post(`/api/v1/sites/${siteId}/shares`,{data:{password:'SyntheticShare2026!'}});expect(share.status()).toBe(200);const shareToken=(await share.json()).token;
   const invitation=await page.request.post(`/api/v1/sites/${siteId}/invites`,{data:{email:'pr2-viewer@example.test',role:'viewer'}});expect(invitation.status()).toBe(200);const inviteToken=(await invitation.json()).token;
   const guest=await browser.newContext({baseURL:origin,reducedMotion:'reduce',viewport:{width:1440,height:1000}}),guestPage=await guest.newPage();
