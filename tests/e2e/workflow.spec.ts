@@ -2,7 +2,7 @@ import {fixtureInstallationNonce} from '../helpers/install-fixture.js';
 import {navigateWorkspace,openWorkspaceAccount,revealDateInputs,closeDateSheet} from './navigation';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
-test('product landing is the default, login is an explicit action', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('heading', { name: /看懂每一次访问，.*找到下一步增长/ })).toBeVisible(); await expect(page.getByRole('link', { name: '登录', exact: true })).toBeVisible(); await expect(page.locator('input[type=password]')).toHaveCount(0); });
+test('product landing is the default, login is an explicit action', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('heading', { name: '自托管网站分析', exact: true })).toBeVisible(); await expect(page.getByRole('link', { name: '登录', exact: true })).toBeVisible(); await expect(page.locator('input[type=password]')).toHaveCount(0); });
 test('real administrator → site → durable collection → aggregate → Chinese dashboard', async ({ page, request }) => {
     const setup = await request.get('/api/setup');
     expect(setup.ok()).toBeTruthy();
@@ -52,7 +52,7 @@ test('real administrator → site → durable collection → aggregate → Chine
     await navigateWorkspace(page, "页面");
     await expect(page.getByRole('cell', { name: '/acceptance', exact: true })).toBeVisible();
     await openWorkspaceAccount(page);await page.getByRole('button', { name: '退出登录', exact: true }).click();
-    await expect(page.getByRole('heading', { name: /看懂每一次访问，.*找到下一步增长/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '自托管网站分析', exact: true })).toBeVisible();
     const unauthenticated = await page.request.get(`/api/v1/sites/${site.id}/stats`);
     expect(unauthenticated.status()).toBe(401);
 });
@@ -144,7 +144,7 @@ test('real goal, funnel, saved report, protected share and revocation workflows'
     await readonly.goto(href!);
     await readonly.getByLabel('分享密码').fill('Readonly2026!');
     await readonly.getByRole('button', { name: '打开只读看板' }).click();
-    await expect(readonly.getByText('仅展示被授权的汇总信息，不提供站点配置与原始明细。')).toBeVisible();
+    await expect(readonly.getByText('这里只有被授权的汇总。')).toBeVisible();
     page.once('dialog', dialog => dialog.accept());
     await page.getByRole('button', { name: '吊销', exact: true }).last().click();
     await readonly.reload();

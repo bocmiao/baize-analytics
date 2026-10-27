@@ -39,7 +39,7 @@ test('actual tracker revenue keeps currencies separate and event-time account sw
         expect(await page.locator('body').innerText()).not.toContain(accountA); expect(await page.locator('body').innerText()).not.toContain(accountB);
         await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('en'); await page.getByLabel('Select site').selectOption(current.id); await navigateWorkspace(page, "Identified users"); await expect(page.getByRole('heading', { name: 'Activity within account bindings' })).toBeVisible(); await expect(page.getByLabel('Registration event name')).toBeVisible();
         await navigateWorkspace(page, "Revenue attribution"); await expect(page.getByLabel('Select revenue currency')).toBeVisible(); await openWorkspaceAccount(page);await page.getByLabel('界面语言 / Interface language').selectOption('zh-CN');
-        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page); await page.getByLabel('选择站点').selectOption(daily.id); await navigateWorkspace(page, "已识别用户"); await expect(page.getByText('每日盐模式不支持身份缝合，不列出业务账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
+        const daily = await site(page, baseURL!, `每日盐身份边界 ${Date.now()}`, { privacy_mode: 'daily_salt' }); await (await revealDateInputs(page), page).getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page); await page.getByLabel('选择站点').selectOption(daily.id); await navigateWorkspace(page, "已识别用户"); await expect(page.getByText('每日盐模式没有跨日身份，不列出账号。')).toBeVisible(); await expect(page.getByLabel('选择已识别账号')).toHaveCount(0);
     } finally { await context.close(); }
 });
 
@@ -48,7 +48,7 @@ test('actual consented experiment assignment and tracker conversion survive stop
     const current = await site(page, baseURL!, `实验专项 ${Date.now()}`, { config: { consent_required: true, experiments: true } });
     await page.goto('/app'); await page.getByLabel('选择站点').selectOption(current.id); await navigateWorkspace(page, "实验");
     const name = `真实固定周期实验 ${Date.now()}`;
-    await page.getByLabel('实验名称').fill(name); await page.getByLabel('变体名称（每行一个，至少两个）').fill('control\nvariant-b'); await page.getByLabel('真实转化事件名称').fill('actual-purchase');
+    await page.getByLabel('实验名称').fill(name); await page.getByLabel('变体名称（每行一个，至少两个）').fill('control\nvariant-b'); await page.getByLabel('转化事件名称').fill('actual-purchase');
     const created = page.waitForResponse(response => response.request().method() === 'POST' && response.url().endsWith(`/sites/${current.id}/experiments`));
     await page.getByRole('button', { name: '创建实验', exact: true }).click(); const experimentResponse = await created; expect(experimentResponse.ok()).toBeTruthy(); const experiment = await experimentResponse.json();
     const { context, host } = await trackerHost(browser, baseURL!, current.id, '/experiment-acceptance');

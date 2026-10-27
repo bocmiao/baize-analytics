@@ -17,6 +17,6 @@ test('complete realtime Top exceeds 200-row preview and retention never renders 
  await navigateWorkspace(page, "实时");await expect(page.getByTestId('realtime-total')).toHaveText('0');
  for(let batch=0;batch<5;batch++)await collect(Array.from({length:48},(_,index)=>event(randomUUID(),Date.now(),index<40?'/popular':'/other')));
  await expect(page.getByTestId('realtime-total')).toHaveText('240',{timeout:30000});
- const top=page.getByRole('region',{name:'实时Top页面'});await expect(top.getByRole('row').filter({has:page.getByRole('cell',{name:'/popular',exact:true})}).getByRole('cell',{name:'200',exact:true})).toHaveCount(2);await expect(top.getByRole('cell',{name:'/other',exact:true})).toBeVisible();await expect(page.getByText('下方事件仅为最近200条预览，不能作为完整流量或Top统计。')).toBeVisible();
+ const top=page.getByRole('region',{name:'实时Top页面'});await expect(top.getByRole('row').filter({has:page.getByRole('cell',{name:'/popular',exact:true})}).getByRole('cell',{name:'200',exact:true})).toHaveCount(2);await expect(top.getByRole('cell',{name:'/other',exact:true})).toBeVisible();await expect(page.getByText('下方是最近 200 条事件。Top 用完整窗口。')).toBeVisible();
  const live=await page.request.get(`/api/v1/sites/${site.id}/realtime`);const data=await live.json();expect(data.events).toHaveLength(200);expect(data.realtime.pv).toBe(240);expect(data.topPages.find((item:{path:string})=>item.path==='/popular').pv).toBe(200);
 });
