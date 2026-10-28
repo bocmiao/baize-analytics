@@ -1,5 +1,5 @@
 export type ChartPalette={
- jade:string;gold:string;cinnabar:string;mist:string;ink:string;muted:string;
+ jade:string;gold:string;cinnabar:string;mist:string;previous:string;ink:string;muted:string;
  line:string;grid:string;area:string;empty:string;tip:string;tipText:string;emphasis:string;
 };
 
@@ -29,7 +29,7 @@ export function currentTheme():'light'|'dark'{return typeof document!=='undefine
 
 function applyTheme(theme:'light'|'dark'){
  document.documentElement.dataset.theme=theme;
- document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#08110F':'#12302B');
+ document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#0A0A0A':'#FAFAFA');
 }
 
 export function subscribeTheme(listener:()=>void){
@@ -62,11 +62,11 @@ export function toggleTheme(){
 export function chartPalette():ChartPalette{
  const dark=document.documentElement.dataset.theme==='dark';
  return dark?{
-  jade:'#4FB39C',gold:'#D9B66A',cinnabar:'#E07A63',mist:'#8FB8AE',ink:'#E3ECE8',muted:'#A5B8B2',
-  line:'#22362F',grid:'#1B2D29',area:'rgba(79,179,156,.18)',empty:'#173A33',tip:'#08110F',tipText:'#F4EFE2',emphasis:'#D9B66A'
+  jade:'#3DBA9C',gold:'#E0A63A',cinnabar:'#F0705A',mist:'#6E6E6E',previous:'#4A4A4A',ink:'#EDEDED',muted:'#5E5E5E',
+  line:'#232323',grid:'#1A1A1A',area:'rgba(61,186,156,.16)',empty:'#171717',tip:'#111111',tipText:'#EDEDED',emphasis:'#3DBA9C'
  }:{
-  jade:'#2F7D6D',gold:'#C29A4E',cinnabar:'#C2553F',mist:'#8FA39D',ink:'#14302C',muted:'#4B5F5A',
-  line:'#E1E7E1',grid:'#E7EEE9',area:'rgba(47,125,109,.12)',empty:'#E3F0EB',tip:'#12302B',tipText:'#FFFFFF',emphasis:'#1E4A42'
+  jade:'#1F7A68',gold:'#C9A227',cinnabar:'#C2412D',mist:'#8F8F8F',previous:'#B5B5B5',ink:'#171717',muted:'#A3A3A3',
+  line:'#EBEBEB',grid:'#F0F0F0',area:'rgba(31,122,104,.16)',empty:'#F5F5F5',tip:'#FFFFFF',tipText:'#171717',emphasis:'#1F7A68'
  };
 }
 
