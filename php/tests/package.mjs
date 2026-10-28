@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {mkdtempSync,readFileSync,writeFileSync,chmodSync,mkdirSync,symlinkSync,unlinkSync,rmSync,existsSync,lstatSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join,resolve} from 'node:path';
+import {join,resolve,win32,posix} from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {releasePath,within} from '../../scripts/package-paths.mjs';
 
 // Publisher test: runtime hosts only receive the verified output, never this test or Node.
 const root=resolve(import.meta.dirname,'../..');
@@ -14,6 +15,13 @@ const run=(args,ok=true)=>{
  assert.equal(result.status===0,ok,result.stderr||result.stdout);passed++;return result;
 };
 try{
+ assert.equal(releasePath('C:\\release','C:\\release\\bin\\worker.php',win32),'bin/worker.php');passed++;
+ assert.equal(releasePath('/release','/release/bin/worker.php',posix),'bin/worker.php');passed++;
+ assert.equal(releasePath('/release','/release/literal\\name',posix),'literal\\name');passed++;
+ assert.ok(within('C:\\source\\php\\src\\unsafe','C:\\source\\php',win32));passed++;
+ assert.ok(!within('C:\\source\\php-other','C:\\source\\php',win32));passed++;
+ assert.ok(!within('D:\\source\\php','C:\\source\\php',win32));passed++;
+ assert.ok(within('C:\\source\\php','C:\\source\\php',win32));passed++;
  const previous=process.umask(0o077);
  try{run(['--output',output,'--archive',archive]);}finally{process.umask(previous);}
  const manifest=JSON.parse(readFileSync(join(output,'php-release-manifest.json'),'utf8'));
@@ -37,5 +45,5 @@ try{
  run(['--output',output],false);
  run(['--output',join(root,'php','src','unsafe-package')],false);
  run(['--output',join(temporary,'unsafe-archive'),'--archive',join(temporary,'unsafe-archive','inside.tar.gz')],false);
- console.log(JSON.stringify({suite:'php-publisher-package',passed,files:manifest.files.length,checks:['restrictive umask','complete modules/resources','no private files or Node','content/mode/extra-file/symlink rejection','tar extraction','source/output safety']}));
+ console.log(JSON.stringify({suite:'php-publisher-package',passed,files:manifest.files.length,checks:['Windows/POSIX path and containment semantics','restrictive umask','complete modules/resources','no private files or Node','content/mode/extra-file/symlink rejection','tar extraction','source/output safety']}));
 }finally{rmSync(temporary,{recursive:true,force:true});}

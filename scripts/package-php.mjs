@@ -1,5 +1,6 @@
 import {mkdirSync, readdirSync, lstatSync, chmodSync, readFileSync, writeFileSync, copyFileSync, existsSync} from 'node:fs';
-import {resolve, join, relative, dirname} from 'node:path';
+import {resolve, join, dirname} from 'node:path';
+import {releasePath, within} from './package-paths.mjs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {gunzipSync, gzipSync} from 'node:zlib';
@@ -44,7 +45,7 @@ const verify=directory=>{
   const manifest=JSON.parse(readFileSync(join(directory,'php-release-manifest.json'),'utf8'));
   if(manifest.format!=='baize-php-release-v1'||manifest.runtime!=='php'||manifest.profile!=='standard')throw Error('PHP_RELEASE_MANIFEST_INVALID');
   const actual=[],directories=[];
-  const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name),name=relative(directory,path);if(name==='php-release-manifest.json')continue;const stat=lstatSync(path);if(stat.isDirectory()){directories.push({path:name,mode:posix?(stat.mode&0o777):intendedDirMode(name)});walk(path);}else if(stat.isFile())actual.push({path:name,bytes:stat.size,sha256:sha256(readFileSync(path)),mode:posix?(stat.mode&0o777):intendedFileMode(name)});else throw Error('PHP_RELEASE_NONREGULAR_FILE');}};
+  const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name),name=releasePath(directory,path);if(name==='php-release-manifest.json')continue;const stat=lstatSync(path);if(stat.isDirectory()){directories.push({path:name,mode:posix?(stat.mode&0o777):intendedDirMode(name)});walk(path);}else if(stat.isFile())actual.push({path:name,bytes:stat.size,sha256:sha256(readFileSync(path)),mode:posix?(stat.mode&0o777):intendedFileMode(name)});else throw Error('PHP_RELEASE_NONREGULAR_FILE');}};
   walk(directory);actual.sort((a,b)=>a.path.localeCompare(b.path));
   directories.sort((a,b)=>a.path.localeCompare(b.path));if((posix&&(lstatSync(directory).mode&0o777)!==0o755)||JSON.stringify(directories)!==JSON.stringify(manifest.directories)||JSON.stringify(actual)!==JSON.stringify(manifest.files))throw Error('PHP_RELEASE_CONTENT_MISMATCH');
   console.log(JSON.stringify({verified:true,files:actual.length,revision:manifest.revision,profile:manifest.profile}));
@@ -52,7 +53,6 @@ const verify=directory=>{
 if(args.includes('--verify')){verify(resolve(at('--verify')));process.exit(0);}
 if(!args.includes('--output'))throw Error('Usage: node scripts/package-php.mjs --output NEW_ABSOLUTE_DIRECTORY [--verify DIRECTORY]');
 const output=resolve(at('--output'));
-const within=(path,parent)=>path===parent||path.startsWith(parent+'/');
 if(output===root||['php','dist','public','docs'].some(name=>within(output,join(root,name))))throw Error('PHP_RELEASE_OUTPUT_INSIDE_SOURCE');
 if(args.includes('--archive')&&within(resolve(at('--archive')),output))throw Error('PHP_RELEASE_ARCHIVE_INSIDE_OUTPUT');
 const revision=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
@@ -74,12 +74,12 @@ for(const name of readdirSync(join(root,'public')).filter(n=>/^tracker(?:[.\w-]*
 copy(join(root,'LICENSE'),join(output,'LICENSE'));
 const documentMap={'docs/PHP_INSTALLATION.md':'README.md','docs/PHP_VALIDATION_20261015.md':'VALIDATION.md'};
 for(const [source,target] of Object.entries(documentMap)){
- const text=readFileSync(join(root,source),'utf8').replace(/\]\(([^\s)]+)\)/g,(match,href)=>{if(href.startsWith('#')||/^[a-z][a-z\d+.-]*:/i.test(href)||href.startsWith('//'))return match;const [pathname,suffix='']=href.split(/(?=[?#])/);const path=relative(root,resolve(root,dirname(source),pathname)).split('\\').join('/');if(path.startsWith('../'))throw Error('PHP_RELEASE_DOCUMENTATION_LINK_ESCAPE');const mapped=documentMap[path];return ']('+(mapped?mapped+suffix:'https://github.com/bocmiao/baize-analytics/blob/'+revision+'/'+path.split('/').map(encodeURIComponent).join('/')+suffix)+')';});
+ const text=readFileSync(join(root,source),'utf8').replace(/\]\(([^\s)]+)\)/g,(match,href)=>{if(href.startsWith('#')||/^[a-z][a-z\d+.-]*:/i.test(href)||href.startsWith('//'))return match;const [pathname,suffix='']=href.split(/(?=[?#])/);const path=releasePath(root,resolve(root,dirname(source),pathname));if(path.startsWith('../'))throw Error('PHP_RELEASE_DOCUMENTATION_LINK_ESCAPE');const mapped=documentMap[path];return ']('+(mapped?mapped+suffix:'https://github.com/bocmiao/baize-analytics/blob/'+revision+'/'+path.split('/').map(encodeURIComponent).join('/')+suffix)+')';});
  writeFileSync(join(output,target),'> 本包运行与安装文件离线可用；源码和历史验收材料链接需要网络及仓库访问权限。\n\n'+text);
 }
 mkdirSync(join(output,'private'),{recursive:true,mode:0o700});
 const files=[],directories=[];
-const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name);const name=relative(output,path);if(entry.isDirectory()){const mode=name==='private'?0o700:0o755;chmodSync(path,mode);directories.push({path:name,mode});walk(path);}else{if(!lstatSync(path).isFile())throw Error('PHP_RELEASE_NONREGULAR_FILE');const mode=name.startsWith('bin/')?0o755:0o644;chmodSync(path,mode);files.push({path:name,bytes:lstatSync(path).size,sha256:sha256(readFileSync(path)),mode});}}};
+const walk=dir=>{for(const entry of readdirSync(dir,{withFileTypes:true})){const path=join(dir,entry.name);const name=releasePath(output,path);if(entry.isDirectory()){const mode=name==='private'?0o700:0o755;chmodSync(path,mode);directories.push({path:name,mode});walk(path);}else{if(!lstatSync(path).isFile())throw Error('PHP_RELEASE_NONREGULAR_FILE');const mode=name.startsWith('bin/')?0o755:0o644;chmodSync(path,mode);files.push({path:name,bytes:lstatSync(path).size,sha256:sha256(readFileSync(path)),mode});}}};
 walk(output);directories.sort((a,b)=>a.path.localeCompare(b.path));files.sort((a,b)=>a.path.localeCompare(b.path));
 const dirty=execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()!=='';
 writeFileSync(join(output,'php-release-manifest.json'),JSON.stringify({format:'baize-php-release-v1',runtime:'php',profile:'standard',revision,workingTreeChanges:dirty,builtAt:new Date().toISOString(),directories,requirements:['PHP >=8.3','pdo_mysql','curl','mbstring','dom','Phar','openssl','zlib','intl','bcmath or gmp for GeoIP','MySQL 8.4 or separately verified MariaDB'],files},null,2)+'\n');chmodSync(join(output,'php-release-manifest.json'),0o644);
