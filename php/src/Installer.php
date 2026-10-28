@@ -63,12 +63,30 @@ final class Installer
             $state=['state'=>'pending','nonce_hash'=>$nonce['hash'],'created_at'=>Store::now()];$app->store->put('install','state',$state);return $state;
         });
     }
+    /**
+     * 安装只允许连接本机/私网数据库：攻击者最容易的做法是把实例指向自己的公网库。
+     * 解析一次、按解析结果判定范围，调用方再用返回的 IP 建立首次连接，避免 DNS rebinding。
+     */
+    private static function databaseHost(string $host):array
+    {
+        $scope=static function(string $ip):string{
+            if($ip==='127.0.0.1'||$ip==='::1')return 'loopback';
+            return filter_var($ip,FILTER_VALIDATE_IP,FILTER_FLAG_NO_PRIV_RANGE|FILTER_FLAG_NO_RES_RANGE)===false?'private':'public';
+        };
+        if(filter_var($host,FILTER_VALIDATE_IP)!==false)return ['ip'=>$host,'scope'=>$scope($host)];
+        $addresses=gethostbynamel($host);
+        if($addresses===false||$addresses===[])Http::error(400,'database_host_unresolvable','数据库主机名无法解析；本机数据库请填 127.0.0.1 或容器名');
+        foreach($addresses as $ip){if($scope($ip)==='public')return ['ip'=>$ip,'scope'=>'public'];}
+        foreach($addresses as $ip){if($scope($ip)==='private')return ['ip'=>$ip,'scope'=>'private'];}
+        return ['ip'=>$addresses[0],'scope'=>'loopback'];
+    }
     public static function claim(App $app,array $body):array
     {
         $email=Auth::email($body['email']??'');$password=(string)($body['password']??'');Security::validatePassword($password);$name=Sites::text($body['name']??'管理员',1,128,'name');
         $user=$app->db->transaction(function()use($app,$body,$email,$password,$name){
             $app->db->lock('installation');$state=$app->store->get('install','state');
             if($app->store->list('users')||!$state||($state['state']??'')!=='pending')Http::error(409,'initialization_complete','初始化已完成或已封闭');
+            // Database reachability does not prove ownership of this application.
             self::verifyNonce($app->config['key_dir'],(string)($body['installationNonce']??$body['nonce']??''),$state['nonce_hash']);
             // Write-ahead terminal guard: a crash/rollback after this point fails closed.
             // In particular, restoring an old pending DB and nonce cannot reopen setup.
@@ -86,7 +104,6 @@ final class Installer
         $private=dirname($configPath);self::privateDirectory($private);$lock=fopen($private.'/installer.lock','c+b');if(!$lock)throw new \RuntimeException('INSTALL_LOCK_UNAVAILABLE');chmod($private.'/installer.lock',0600);
         try{
             if(!flock($lock,LOCK_EX))throw new \RuntimeException('INSTALL_LOCK_UNAVAILABLE');if(file_exists($configPath))Http::error(409,'INSTALL_CONFIG_EXISTS','已有配置，请通过初始化页面完成或恢复备份');
-            $keyDir=$private.'/keys';$guard=self::prepareFiles($keyDir);self::verifyNonce($keyDir,(string)($input['installationNonce']??''),$guard['hash']);
             $publicUrl=rtrim((string)($input['public_url']??''),'/');$url=parse_url($publicUrl);$local=in_array($url['host']??'',['localhost','127.0.0.1','::1'],true);
             if(!$url||!isset($url['host'])||isset($url['user'])||isset($url['pass'])||isset($url['query'])||isset($url['fragment'])||(!empty($url['path'])&&$url['path']!=='/')||!in_array($url['scheme']??'',['https','http'],true)||(($url['scheme']??'')!=='https'&&!$local))Http::error(400,'https_required','公网安装必须使用 HTTPS，且使用独立域名根目录');
             Auth::email($input['email']??'');Security::validatePassword((string)($input['password']??''));
@@ -96,8 +113,16 @@ final class Installer
             // PDO receives the account name separately from the DSN. Quoted MySQL
             // accounts may contain spaces or @; reject control characters only.
             if($user===''||preg_match('/[\x00-\x1f\x7f]/',$user)!==0)Http::error(400,'invalid_database_user','数据库账号不能为空或含控制字符；请填写账号字段，不要附加面板单独显示的授权来源');
+            $keyDir=$private.'/keys';$guard=self::prepareFiles($keyDir);
+            self::verifyNonce($keyDir,(string)($input['installationNonce']??''),$guard['hash']);
+            $target=self::databaseHost($host);$allowRemote=getenv('BAIZE_ALLOW_REMOTE_DB')==='1';
+            if($target['scope']==='public'&&!$allowRemote)Http::error(400,'remote_database_not_allowed','只允许连接本机或私网数据库；确需外部数据库时，在服务端设置 BAIZE_ALLOW_REMOTE_DB=1 并加重启，同时仍要提供 nonce');
+
             $config=['database'=>['dsn'=>"mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4",'user'=>$user,'password'=>(string)($input['db_password']??'')],'data_dir'=>$private.'/data','key_dir'=>$keyDir,'public_url'=>$publicUrl];
-            try{$db=new Database($config);$db->migrate();}
+            // The entire installation uses the validated address, not a second
+            // hostname lookup. Persist the owner's service name for later restarts.
+            $connectionConfig=$config;$connectionConfig['database']['dsn']="mysql:host={$target['ip']};port=$port;dbname=$name;charset=utf8mb4";
+            try{$db=new Database($connectionConfig);$db->migrate();}
             catch(\PDOException $e){error_log('Baize installer database failure: '.$e->getMessage());Http::error(503,'database_unavailable','无法连接数据库：请检查主机名、端口、库名与账号密码');}$config['master_key']=self::readKey($keyDir.'/master.v1.key');$app=new App($config,$db);$state=self::prepare($app);
             if(($state['state']??'')!=='pending')Http::error(409,'INSTALL_TERMINAL');
             $saved=$config;unset($saved['master_key']);self::privateWrite($configPath,"<?php\nreturn ".var_export($saved,true).";\n");

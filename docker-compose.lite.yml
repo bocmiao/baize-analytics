@@ -17,6 +17,9 @@ services:
       HOST: 0.0.0.0
       PORT: 3000
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+      # 放在反向代理后面时必须填代理地址（单个 IP 或 CIDR），否则所有访客都会以
+      # 代理 IP 记录：地域变成未知、去重访客被压成 1、限流也会互相影响。
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
       DATA_DIR: /app/data
       KEYS_DIR: /app/keys
     volumes:

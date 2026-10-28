@@ -1,3 +1,4 @@
+import {formatChartTime} from './chartTime';
 import type {TrendAnnotation} from './annotationTrend';
 import { useEffect, useRef, useState } from 'react';
 import type { Row } from './api';
@@ -10,11 +11,11 @@ import { LineChart, SankeyChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, MarkLineComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 echarts.use([LineChart, SankeyChart, GridComponent, TooltipComponent, LegendComponent, MarkLineComponent, CanvasRenderer]);
-function readable(v: unknown): string { return String(v ?? '—'); }
+function readable(v: unknown): string { return formatChartTime(v); }
 /** Element resizing also covers sidebar/panel changes without a window resize. */
 export function observeChartSize(element:HTMLElement,chart:{resize:()=>void}) {
  let frame:number|undefined;
- const resize=()=>{if(frame!==undefined)return;frame=window.requestAnimationFrame(()=>{frame=undefined;chart.resize();});};
+ const resize=()=>{if(frame!==undefined)return;frame=window.requestAnimationFrame(()=>{frame=undefined;if(element.clientWidth===0||element.clientHeight===0)return;chart.resize();});};
  const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(resize);
  observer?.observe(element);window.addEventListener('resize',resize);
  return()=>{observer?.disconnect();window.removeEventListener('resize',resize);if(frame!==undefined)window.cancelAnimationFrame(frame);};

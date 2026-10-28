@@ -14,6 +14,28 @@ PHP 版使用独立的 InnoDB 文档表、事务锁行及队列租约，不执�
 - 使用自己的 HTTPS 域名完成网页安装。数据库密码、供应商密钥在自己的安装页填写，不要发到聊天、工单或公开日志。
 - 使用 PHP CLI 常驻队列，或 1Panel 每分钟执行一次计划任务。网站进程不承担可靠后台调度。
 
+## 三步装完（推荐路径）
+
+下面的命令在运行 PHP 的容器内执行（1Panel 用 `docker exec -it -u www-data <php容器>`），路径换成站点实际目录。
+
+```sh
+# 1. 自检：PHP 版本、扩展、私有目录；带上 BAIZE_DB_* 还能顺带测数据库连接
+BAIZE_DB_HOST=mysql BAIZE_DB_NAME=baize BAIZE_DB_USER=baize BAIZE_DB_PASS='…' \
+  php /www/sites/<域名>/index/bin/install.php --check
+
+# 2. 安装：终端里问几个问题，装完直接登录，不需要打开安装页
+php /www/sites/<域名>/index/bin/install.php --interactive
+
+# 3. 队列：每分钟把采集到的事件聚合成看板数据
+php /www/sites/<域名>/index/bin/worker.php --once
+```
+
+先运行 `--prepare`，再使用 `--interactive` 输入一次性 nonce、公开访问地址、数据库资料及管理员信息。nonce 和密码在终端中隐藏输入；无法安全关闭回显时会停止，改用下方受保护的 `--stdin-json` 管道。非敏感字段可用 `BAIZE_PUBLIC_URL`、`BAIZE_DB_*`、`BAIZE_ADMIN_*` 预置。
+
+网页和 CLI 安装都必须提供 `--prepare` 生成的 nonce，它证明你有应用服务器的访问权。能连接数据库不能代替这项证明，本机、私网和公网数据库规则相同。公网数据库还需要操作者在服务端显式设置 `BAIZE_ALLOW_REMOTE_DB=1`。安装期间固定使用已校验的 IP；成功后保存操作者填写的服务名，供重启后正常解析。
+
+`--interactive` 同样校验 nonce，不会自动跳过安装凭证。自动化凭据通过标准输入传递，避免放到命令参数中。
+
 ## 准备安装包
 
 这是发布端操作；只在有源码和 Node.js 的构建环境执行：
@@ -26,6 +48,8 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 ```
 
 输出目录必须是新目录。打包清单包含每个文件的长度、SHA-256及权限，记录源码修订和构建时是否有未提交改动。代码目录为755、文件为644、CLI文件为755，空私有目录为700，不受发布环境umask影响。校验应在安装前、未加入实例配置时执行。打包脚本不递归复制仓库、私有配置、数据库、测试证据或 `node_modules`。
+
+归档里的权限位由打包脚本统一写入，因此在 Windows/macOS 上打包同样可用：Windows 表达不了 POSIX 权限，脚本会在生成 tar 后重写头部权限字段，接收方用 `tar --same-permissions` 解出来就是 755/700/644，不需要再手工 `chmod`。
 
 ## 在 1Panel 安装
 
@@ -71,7 +95,7 @@ docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/install.ph
 docker exec -u www-data <php容器> cat /www/sites/<域名>/index/private/keys/install-nonce.json
 ```
 
-**③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，直接用 `--stdin-json`：
+**③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，用 `--interactive` 在终端逐项回答即可；需要脚本化时再用 `--stdin-json`：
 
 ```bash
 set -o pipefail

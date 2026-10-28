@@ -47,7 +47,7 @@ test('one-time invitation survives member reload failure, offline retry and narr
   await editor.getByLabel('成员邮箱',{exact:true}).fill('pr3-retry@example.test');await page.context().setOffline(true);await editor.getByRole('button',{name:'生成邀请链接',exact:true}).click();await expect(editor.getByRole('alert')).toBeVisible();await expect(link).toHaveAttribute('href',invitation.url);await expect(editor.getByLabel('成员邮箱',{exact:true})).toHaveValue('pr3-retry@example.test');await page.context().setOffline(false);
   const retried=page.waitForResponse(response=>response.request().method()==='POST'&&response.url().endsWith('/invites'));await editor.getByRole('button',{name:'生成邀请链接',exact:true}).click();expect((await retried).status()).toBe(200);await expect(editor.getByRole('alert')).toHaveCount(0);
   const token=new URL(invitation.url).pathname.split('/').pop();expect((await page.request.post(`/api/v1/invites/${token}/register`,{data:{name:'合成只读成员',password:'SyntheticPr3Viewer2026!'}})).status()).toBe(200);
-  const guest=await browser.newContext({baseURL:origin});try{expect((await guest.request.post('/api/login',{data:{email:'pr3-viewer@example.test',password:'SyntheticPr3Viewer2026!'}})).status()).toBe(200);expect((await guest.request.post(`/api/v1/sites/${siteId}/invites`,{data:{email:'forbidden@example.test',role:'admin'}})).status()).toBe(403);const viewerPage=await guest.newPage();await viewerPage.goto(`/app?site=${siteId}&report=members&from=${day}&to=${day}`);await expect(viewerPage.getByRole('heading',{name:'此视图需要站点管理员权限',exact:true})).toBeVisible();await expect(viewerPage.getByRole('button',{name:'生成邀请链接',exact:true})).toHaveCount(0);}finally{await guest.close();}
+  const guest=await browser.newContext({baseURL:origin});try{expect((await guest.request.post('/api/login',{data:{email:'pr3-viewer@example.test',password:'SyntheticPr3Viewer2026!'}})).status()).toBe(200);expect((await guest.request.post(`/api/v1/sites/${siteId}/invites`,{data:{email:'forbidden@example.test',role:'admin'}})).status()).toBe(403);const viewerPage=await guest.newPage();await viewerPage.goto(`/app?site=${siteId}&report=members&from=${day}&to=${day}`);await expect(viewerPage.getByRole('heading',{name:'此视图需要站点管理员权限',exact:true})).toBeVisible();await expect(viewerPage.getByRole('button',{name:'生成邀请链接',exact:true})).toHaveCount(0);await expect(viewerPage.locator('option[value="_add_site_"]')).toHaveCount(0);}finally{await guest.close();}
  });
 });
 test('real ISO event timestamps render minute bars and visit clocks; unavailable online count stays unknown',async({browser})=>{
@@ -78,7 +78,7 @@ test('real ISO event timestamps render minute bars and visit clocks; unavailable
   const collectedRevenue=await page.request.post('/api/collect',{headers:{'User-Agent':'Mozilla/5.0 Baize PR3 revenue fixture'},data:{protocol_version:1,site_id:siteId,sdk:'tracker.js/1.0.0',sent_at:Date.now(),events:revenueEvents}});expect(collectedRevenue.status()).toBe(202);expect(await collectedRevenue.json()).toMatchObject({accepted:2,rejected:[]});await runWorkerOnce(runtime.ctx.pool);
   await page.addInitScript(()=>{const paints:{text:string;color:string}[]=[];(window as unknown as {axisPaints:typeof paints}).axisPaints=paints;const original=CanvasRenderingContext2D.prototype.fillText;CanvasRenderingContext2D.prototype.fillText=function(...args:Parameters<CanvasRenderingContext2D['fillText']>){if(paints.length<5000)paints.push({text:String(args[0]),color:String(this.fillStyle)});return original.apply(this,args);};});
   await page.setViewportSize({width:1440,height:1000});await page.goto(`/app?site=${siteId}&report=revenue&from=${day}&to=${day}&theme=dark&motion=off`);await expect(page.locator('[data-money-chart="true"] canvas')).toBeVisible();
-  const axis=await page.evaluate(day=>{const palette=getComputedStyle(document.documentElement).getPropertyValue('--ink2').trim(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d')!;ctx.fillStyle=palette;const color=String(ctx.fillStyle),paints=(window as unknown as {axisPaints:{text:string;color:string}[]}).axisPaints;return {color,dateLabels:paints.filter(paint=>paint.text.includes(day))};},day);expect(axis.dateLabels.length).toBeGreaterThan(0);expect(axis.dateLabels.every(label=>label.color===axis.color)).toBe(true);await capture(page,'revenue-dark-axis-colors',{axis});
+  const axis=await page.evaluate(day=>{const palette=getComputedStyle(document.documentElement).getPropertyValue('--ink2').trim(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d')!;ctx.fillStyle=palette;const color=String(ctx.fillStyle),paints=(window as unknown as {axisPaints:{text:string;color:string}[]}).axisPaints;return {color,dateLabels:paints.filter(paint=>paint.text.includes(day.slice(5).replace('-', '/')))};},day);expect(axis.dateLabels.length).toBeGreaterThan(0);expect(axis.dateLabels.every(label=>label.color===axis.color)).toBe(true);await capture(page,'revenue-dark-axis-colors',{axis});
 
  });
 });
@@ -96,5 +96,25 @@ test('page segments require their actual counts and never substitute bounce rate
   await revealDateInputs(page);await page.getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await page.getByRole('button',{name:'退出页',exact:true}).click();await expect(table.locator('tbody tr').first()).toContainText('/low-bounce');
   pages=[{path:'/first',pv:1,bounceRate:0},{path:'/second',pv:2,bounceRate:1}];
   await revealDateInputs(page);await page.getByRole('button',{name:'刷新',exact:true}).click();await closeDateSheet(page);await expect(table.locator('tbody tr').first()).toContainText('/first');await expect(page.getByRole('button',{name:'退出页',exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'入口页',exact:true})).toHaveCount(0);
+ });
+});
+test('merged site directory keeps real scoped navigation, retry and mobile overflow containment',async({browser})=>{
+ test.setTimeout(90000);
+ await fixture(browser,async({page,siteId})=>{
+  const day=new Date().toISOString().slice(0,10);let failRead=true;
+  await page.route('**/api/v1/sites/*/stats?**',route=>failRead?route.fulfill({status:503,json:{error:'Synthetic directory read failure'}}):route.continue());
+  await page.goto(`/app?site=${siteId}&report=sites&from=${day}&to=${day}`);
+  await expect(page.getByRole('button',{name:'重试读取',exact:true})).toBeVisible();
+  await expect(page.locator('.directory-summary article').nth(2).locator('strong')).toHaveText('—');
+  failRead=false;await page.getByRole('button',{name:'重试读取',exact:true}).click();
+  await expect(page.locator('.site-directory [role="status"]')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'重试读取',exact:true})).toHaveCount(0);
+  const link=page.locator('.directory-table').getByRole('link',{name:'白泽真实接口回归 · 合成演示',exact:true});
+  await expect(link).toHaveAttribute('href',new RegExp(`site=${siteId}&report=overview`));
+  await expect(page.locator('#workspace-navigation a[href*="report=visits"]')).toHaveCount(0);
+  for(const width of [1440,320]){await page.setViewportSize({width,height:900});await capture(page,`directory-${width}`);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+  await page.getByLabel('搜索站点',{exact:true}).fill('no matching site');await expect(page.getByText('没有匹配的站点',{exact:true})).toBeVisible();await page.getByLabel('搜索站点',{exact:true}).fill('');await link.click();await expect(page.locator('h1')).toHaveText('总览');
+  await page.setViewportSize({width:1440,height:900});await page.locator('select.sidebar-site-select').selectOption('_add_site_');await expect(page.getByRole('heading',{name:'添加站点',exact:true})).toBeVisible();
+  for(const width of [1440,320]){await page.setViewportSize({width,height:900});await page.goto('/');await expect(page.locator('.preview-note')).toContainText('示意数据');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,`landing-${width}`);}
  });
 });

@@ -10,7 +10,9 @@ if(!is_file(baize_config_path())){
 }
 if(!str_starts_with($path,'/api/')&&$path!=='/healthz'&&$path!=='/embed/chart'){
     $spa=__DIR__.'/index.html';if(!is_file($spa)){http_response_code(503);header('Content-Type: text/plain; charset=utf-8');echo '预构建前端文件缺失，请使用完整 PHP 发行包。';return;}
-    header('Content-Type: text/html; charset=utf-8');header('X-Content-Type-Options: nosniff');header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");readfile($spa);return;
+    // SPA 外壳引用带内容哈希的资源，必须每次回源校验；否则部署新版本后浏览器会
+    // 继续用缓存里的旧 HTML + 旧 JS，表现为"改了没生效"。哈希资源本身可长缓存。
+    header('Content-Type: text/html; charset=utf-8');header('Cache-Control: no-cache, must-revalidate');header('X-Content-Type-Options: nosniff');header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");readfile($spa);return;
 }
 try{$app=new Baize\App(baize_config());$app->register();$app->run();}
 catch(Throwable $e){http_response_code(503);header('Content-Type: application/json; charset=utf-8');error_log('Baize PHP startup failed: '.get_class($e));echo '{"error":"startup_unavailable","message":"实例暂不可用，请检查数据库、迁移和私有配置"}';}
