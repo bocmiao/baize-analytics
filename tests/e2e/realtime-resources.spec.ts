@@ -10,7 +10,7 @@ test('realtime pauses hidden resources, resumes snapshots and serializes event r
  });
  let reads=0,inFlight=0,maxFlight=0;let release:(()=>void)|undefined;
  await page.route('**/api/v1/sites/*/realtime',async route=>{reads++;inFlight++;maxFlight=Math.max(maxFlight,inFlight);try{if(reads===2)await new Promise<void>(resolve=>{release=resolve;});await route.fulfill({json:{online:reads,events:[]}});}finally{inFlight--;}});
- await page.goto('/app');await navigateWorkspace(page,'实时');await expect.poll(()=>reads).toBe(1);
+ await page.goto('/app?report=realtime');await navigateWorkspace(page,'实时');await expect.poll(()=>reads).toBe(1);
  await page.evaluate(()=>{const scope=window as unknown as {setHidden:(value:boolean)=>void};scope.setHidden(true);});
  expect(await page.evaluate(()=>(window as unknown as {streams:{closed:boolean}[]}).streams.every(stream=>stream.closed))).toBe(true);
  const paused=reads;await page.waitForTimeout(700);expect(reads).toBe(paused);

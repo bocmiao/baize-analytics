@@ -32,10 +32,10 @@ export function CountText({text}:{text:string}){
   const decimals=match[2]?match[2].slice(1).length:0;
   const comma=text.includes(',');
   const suffix=match[3]??'';
-  const started=performance.now();
+  const started=performance.now(),delay=150,duration=450;
   let frame=0;
   const tick=(now:number)=>{
-   const progress=Math.min(1,(now-started)/900);
+   const progress=Math.min(1,Math.max(0,(now-started-delay)/duration));
    const eased=1-Math.pow(1-progress,3);
    const value=target*eased;
    let body=decimals?value.toFixed(decimals):String(Math.round(value));
