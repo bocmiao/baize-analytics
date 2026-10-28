@@ -1,24 +1,12 @@
+import {useState} from 'react';
 import {ownValue} from './dictionary';
 import {language,t} from './i18n';
 import {rows,type Row,type Site} from './api';
+import {dimensionText} from './dimensionLabels';
 
 import {minuteBuckets,realtimeTimestamp} from './realtimeTime';
 
-const channelLabels:Record<string,string>={direct:'直接访问',search:'自然搜索',referral:'外部网站',social:'社交网络',email:'邮件',paid:'付费推广',internal:'站内跳转',unknown:'未知'};
-const deviceLabels:Record<string,string>={desktop:'电脑',mobile:'手机',tablet:'平板',unknown:'未知'};
-const geoLabels:Record<string,string>={unknown:'未知'};
-const eventLabels:Record<string,string>={pageview:'页面浏览',heartbeat:'停留心跳',custom:'自定义事件',click:'点击',outbound:'外链点击',form:'表单提交'};
-
-function humanize(dimension:string, value:unknown, en:boolean) {
- const text = String(value);
- if (en) return text;
- if (dimension === 'channel' || dimension === 'channel_group') return channelLabels[text] || text;
- if (dimension === 'device') return deviceLabels[text] || text;
- if (dimension === 'country' || dimension === 'region' || dimension === 'city') return geoLabels[text] || text;
- return text;
-}
-
-export function RealtimeSummary({data,timezone,site}:{data:Row;timezone?:string;site?:Site}) {
+export function RealtimeSummary({data,timezone,site,paused=false,onTogglePause}:{data:Row;site?:Site;timezone?:string;paused?:boolean;onTogglePause?:()=>void}) {
  const metadata=(data.realtime||{}) as Row;
  const complete=metadata.status==='complete'&&metadata.coverage===1;
  const labels:Record<string,string>={path:t('页面'),channel:t('渠道'),referrer:t('来源'),country:t('国家'),region:t('区域'),city:t('城市'),pv:t('浏览量'),uv:t('访客')};
@@ -28,53 +16,25 @@ export function RealtimeSummary({data,timezone,site}:{data:Row;timezone?:string;
  const en=language()==='en';
  const online=typeof data.online==='number'&&data.onlineCoverage===1?data.online.toLocaleString(en?'en-US':'zh-CN'):'—';
  const clock=(value:unknown)=>{const ts=realtimeTimestamp(value);return ts!==null?new Date(ts).toLocaleTimeString(en?'en':'zh-CN',{timeZone:timezone,hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}):'—';};
- // 窗口时间按站点时区显示，不能把 UTC 的 ISO 串直接打到界面上。
- const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);if(ts===null)return '—';return new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
- const origin=site?.domain?(/^https?:\/\//i.test(site.domain)?site.domain.replace(/\/+$/,''):`https://${site.domain.replace(/\/+$/,'')}`):'';
- const host=(site?.domain||'').replace(/^https?:\/\//i,'').replace(/\/+$/,'');const pageLabel=(path:unknown)=>{const text=String(path??'/');if(!host)return text;return text==='/'?host:`${host}${text.startsWith('/')?text:`/${text}`}`;};const pageLink=(path:unknown)=>{const text=String(path??'/');if(!origin)return text;return <a href={`${origin}${text.startsWith('/')?text:`/${text}`}`} target="_blank" rel="noopener noreferrer">{pageLabel(path)}</a>;};
- // 心跳只是停留时长的心跳包，不是一次访问；把它混进访问列表会让人以为有 8 次访问。
- 
- const tops:[string,string][]=[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']];
- const anyTop=tops.some(([key])=>Array.isArray(data[key])&&(data[key] as Row[]).length>0);
- const range=`${stamp(metadata.from)} — ${stamp(metadata.to)}${timezone?`（${timezone}）`:''}`;
- const pv=complete?String(metadata.pv):'—';
- const coverage=`${Math.round(Number(metadata.coverage||0)*100)}%`;
- const idle=events.length===0&&(!complete||Number(metadata.pv||0)===0);
-
- // 所有卡片共用同一套外壳，网格保证同行的卡片等高、边缘对齐。
- const kpi=<section className="panel rt-card rt-kpi" aria-label={en?'Live metrics':'实时指标'}>
-  <div className="rt-kpi-main"><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong></div>
-  <div className="rt-kpi-meta">
-   <p><span>{en?'Views (30m)':'近30分钟浏览量'}</span><strong data-testid="realtime-total">{pv}</strong></p>
-   <p><span>{en?'Coverage':'覆盖率'}</span><strong>{coverage}</strong></p>
-  </div>
-  <p className="rt-range">{range}</p>
- </section>;
-
- if (idle) return <div className="rt-grid rt-grid-idle">
-  <section className="panel rt-card rt-idle">
-   {kpi}
-   <p className="rt-idle-note">{en?'No events in the last 30 minutes. The minute bars and visit stream appear here as soon as the tracker reports a visit.':'过去 30 分钟没有采集到事件。埋点上报后，分钟柱与访问流会自动出现在这里。'}</p>
+ const stamp=(value:unknown)=>{const ts=realtimeTimestamp(value);return ts===null?'—':new Intl.DateTimeFormat(en?'en-GB':'zh-CN',{timeZone:timezone,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ts));};
+ const pageUrl=(path:unknown)=>{if(typeof path!=='string'||!site?.domain)return undefined;try{const url=new URL(path,/^https?:\/\//i.test(site.domain)?site.domain:'https://'+site.domain);return ['http:','https:'].includes(url.protocol)?url.href:undefined;}catch{return undefined;}};
+ const pageLink=(value:unknown)=>{const href=pageUrl(value),label=String(value??'—');return href?<a href={href} target="_blank" rel="noopener noreferrer">{label}</a>:label;};
+ const eventLabel=(value:unknown)=>en?String(value??''):({pageview:'页面浏览',heartbeat:'停留心跳',event:'自定义事件',click:'点击',outbound:'外链点击'} as Record<string,string>)[String(value)]||String(value??'');
+ const [feed,setFeed]=useState<'all'|'pageview'|'event'>('all');
+ const pageCounts=new Map<string,number>();
+ for(const event of events){const path=String(event.path||'');if(!path)continue;pageCounts.set(path,(pageCounts.get(path)||0)+1);}
+ const currentPages=[...pageCounts.entries()].sort((left,right)=>right[1]-left[1]).slice(0,6);
+ const shown=events.filter(event=>{const type=String(event.type||'');if(feed==='pageview')return type==='pageview';if(feed==='event')return type!=='pageview'&&type!=='heartbeat';return true;});
+ const pageMax=Math.max(1,...currentPages.map(([,count])=>count));
+ return <>
+  <section className="panel realtime-stage" aria-label={en?'Live pulse':'实时脉冲'}>
+   <div className="realtime-side">
+    <div className="realtime-online"><span className="overview-live-dot" aria-hidden="true"/><div><span>{en?'Active in the last 5 minutes':'近 5 分钟活跃'}</span><strong className="livecount">{online}</strong><small>{en?'Heartbeat-deduped visitors':'心跳去重访客'}</small></div></div>
+    <div><h3>{en?'Minutes in this preview':'这次预览的分钟柱'}</h3><p className="hint">{en?'Bars count only the latest events in this realtime response. They are not complete 30-minute traffic.':'分钟柱只统计本次接口返回的最近事件，不是完整 30 分钟流量。'}</p>{buckets.length?<div className="minute-bars" aria-hidden="true">{buckets.map(bucket=><i key={bucket.index} style={{height:`${Math.max(bucket.count?6:2,bucket.count/peak*100)}%`}}/>)}</div>:<p className="empty">{en?'No recent events were returned.':'没有返回最近事件。'}</p>}</div>
+    <div><h3>{en?'Pages being visited':'正在访问的页面'}</h3>{currentPages.length?<ul className="rank-rows">{currentPages.map(([path,count])=><li key={path}><span className="bar-bg" style={{width:`${count/pageMax*92}%`}} aria-hidden="true"/><span className="k">{path}</span><b>{count.toLocaleString(en?'en-US':'zh-CN')}</b></li>)}</ul>:<p className="empty">{en?'No page paths in this preview.':'这次预览没有页面路径。'}</p>}</div>
+   </div>
+   <div className="realtime-feed"><div className="realtime-feed-tools"><h3>{en?'Live event stream':'实时事件流'}</h3><div className="overview-page-order mini-tabs" role="group" aria-label={en?'Event stream filter':'事件流筛选'}><button type="button" aria-pressed={feed==='all'} onClick={()=>setFeed('all')}>{en?'All':'全部'}</button><button type="button" aria-pressed={feed==='pageview'} onClick={()=>setFeed('pageview')}>{en?'Pageviews':'浏览'}</button><button type="button" aria-pressed={feed==='event'} onClick={()=>setFeed('event')}>{en?'Events':'事件'}</button></div>{onTogglePause&&<button type="button" className="secondary" aria-pressed={paused} onClick={onTogglePause}>{paused?(en?'Resume':'继续'):(en?'Pause':'暂停')}</button>}</div>{shown.length?<ol className="visit-stream">{shown.slice(0,12).map((event,index)=>{const dimensions=event.dimensions&&typeof event.dimensions==='object'&&!Array.isArray(event.dimensions)?event.dimensions as Row:{};const device=typeof dimensions.device==='string'?dimensions.device:'';const country=typeof dimensions.country==='string'?dimensions.country:'';return <li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{pageLink(event.path||event.type||'—')}</span><small>{eventLabel(event.type)}</small>{device&&<b className="visit-device">{dimensionText('device',device)}</b>}{country&&<b className="visit-country">{dimensionText('country',country)}</b>}</li>;})}</ol>:<p className="empty">{en?'The visit stream is empty.':'访问流是空的。'}</p>}</div>
   </section>
- </div>;
-
- return <div className="rt-grid">
-  {kpi}
-  <section className="panel rt-card rt-chart">
-   <h3>{en?'Minutes in this window':'这次预览的分钟柱'}</h3>
-   <p className="hint">{en?'Bars count only the latest events returned by this realtime response.':'分钟柱只统计本次接口返回的最近事件。'}</p>
-   <div className="minute-bars" aria-hidden="true">{buckets.map(bucket=><i key={bucket.index} className={bucket.count?'on':undefined} style={{height:bucket.count?`${Math.max(10,bucket.count/peak*100)}%`:'100%'}}/>)}</div>
-  </section>
-  <section className="panel rt-card rt-visits">
-   <h3>{en?'Recent visits':'最近访问'}</h3>
-   <p className="rt-legend">{en?'A page view is one visit. A presence heartbeat is reported every 15s and only accumulates time on page.':'页面浏览代表一次访问；停留心跳每 15 秒上报一次，只用来累计停留时长，不代表新的访问。'}</p>{events.length?<ol className="visit-stream">{events.slice(0,8).map((event,index)=><li key={String(event.event_id||index)}><time>{clock(event.ts)}</time><span>{String(event.path||event.type||'—')}</span><small>{en?String(event.type||''):(eventLabels[String(event.type||'')]||String(event.type||''))}</small></li>)}</ol>
-    :<p className="empty">{en?'No events in this window.':'这段时间没有事件。'}</p>}
-  </section>
-  {!complete?<section className="panel rt-card rt-wide"><p className="notice">{t('实时窗口不完整，Top不可用，不显示伪零值。')}</p></section>
-   :anyTop?tops.map(([key,title])=>{const list=Array.isArray(data[key])?(data[key] as Row[]):[];const isPages=key==='topPages';return <section className="panel rt-card rt-top" key={key} aria-label={t(title)}>
-    <h3>{t(title)}</h3>
-    {list.length?<div className="table-wrap compact"><table><thead><tr>{Object.keys(list[0]||{}).map(name=><th key={name}>{ownValue(labels,name)||name}</th>)}</tr></thead><tbody>{list.map((row,index)=><tr key={index}>{Object.entries(row).map(([name,value])=><td key={name}>{value===null?'—':isPages&&name==='path'?pageLink(value):humanize(name,value,en)}</td>)}</tr>)}</tbody></table></div>:<p className="empty">{en?'Nothing in this window.':'该窗口暂无数据。'}</p>}
-   </section>;})
-   :<section className="panel rt-card rt-wide"><p className="empty">{en?'No breakdown available for this window.':'该窗口暂无细分数据。'}</p></section>}
- </div>;
+  <section className="panel"><h3>{t('实时完整窗口汇总')}</h3><p>{t('近 5 分钟活跃：')}{online}</p><dl className="prop-list"><div><dt>{t('最近30分钟浏览量')}</dt><dd><strong data-testid="realtime-total">{complete?String(metadata.pv):'—'}</strong></dd></div><div><dt>{t('覆盖率')}</dt><dd>{Math.round(Number(metadata.coverage||0)*100)}%</dd></div><div><dt>{en?'Window':'窗口'}</dt><dd>{stamp(metadata.from)} — {stamp(metadata.to)}</dd></div></dl><p className="hint">{t('下方是最近 200 条事件。Top 用完整窗口。')}</p>{!complete&&<p className="notice">{t('实时窗口不完整，Top 暂无。')}</p>}{[['topPages','实时Top页面'],['topSources','实时Top来源'],['topGeography','实时Top地域']].map(([key,title])=><section className="dim-card" key={key} aria-label={t(title)}><h4>{t(title)}</h4>{complete&&Array.isArray(data[key])?<div className="table-wrap" tabIndex={0} role="region" aria-label={t(title)}><table><thead><tr>{Object.keys((data[key] as Row[])[0]||{}).map(column=><th key={column}>{ownValue(labels,column)||column}</th>)}</tr></thead><tbody>{(data[key] as Row[]).map((row,index)=><tr key={index}>{Object.entries(row).map(([field,value])=><td key={field}>{value===null?'—':field==='path'?pageLink(value):['country','region','city','device','channel','source'].includes(field)?dimensionText(field,value):String(value)}</td>)}</tr>)}</tbody></table></div>:<p>—</p>}</section>)}</section>
+ </>;
 }

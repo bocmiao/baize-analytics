@@ -30,11 +30,11 @@ php /www/sites/<域名>/index/bin/install.php --interactive
 php /www/sites/<域名>/index/bin/worker.php --once
 ```
 
-`--interactive` 依次询问公开访问地址、数据库四项、管理员姓名/邮箱/密码。所有项都可以用 `BAIZE_PUBLIC_URL`、`BAIZE_DB_*`、`BAIZE_ADMIN_*` 环境变量预置，便于脚本化；提示会回显输入的密码，优先用环境变量传入。
+先运行 `--prepare`，再使用 `--interactive` 输入一次性 nonce、公开访问地址、数据库资料及管理员信息。nonce 和密码在终端中隐藏输入；无法安全关闭回显时会停止，改用下方受保护的 `--stdin-json` 管道。非敏感字段可用 `BAIZE_PUBLIC_URL`、`BAIZE_DB_*`、`BAIZE_ADMIN_*` 预置。
 
-想用网页安装时，直接打开 `https://<域名>/install.php`：数据库在**本机或私网**时不需要 nonce，安装器会先解析主机、确认数据库确实在这台机器/私网里。只有连接**公网数据库**才需要先 `--prepare`，且服务端必须显式设置 `BAIZE_ALLOW_REMOTE_DB=1`——nonce 用来证明服务器访问权，挡住"陌生人把实例接到自己的公网库"。
+网页和 CLI 安装都必须提供 `--prepare` 生成的 nonce，它证明你有应用服务器的访问权。能连接数据库不能代替这项证明，本机、私网和公网数据库规则相同。公网数据库还需要操作者在服务端显式设置 `BAIZE_ALLOW_REMOTE_DB=1`。安装期间固定使用已校验的 IP；成功后保存操作者填写的服务名，供重启后正常解析。
 
-`--interactive` 同样适用这条规则：本机/私网库直接装，不需要 nonce。
+`--interactive` 同样校验 nonce，不会自动跳过安装凭证。自动化凭据通过标准输入传递，避免放到命令参数中。
 
 ## 准备安装包
 
@@ -98,20 +98,29 @@ docker exec -u www-data <php容器> cat /www/sites/<域名>/index/private/keys/i
 **③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，用 `--interactive` 在终端逐项回答即可；需要脚本化时再用 `--stdin-json`：
 
 ```bash
-read -rsp 'nonce: ' NONCE; echo
-read -rp  'db host: ' DBH        # 容器/服务名，如 mysql；不是 127.0.0.1
-read -rp  'db user: ' DBU        # 只填用户名，不要带面板显示的 @%
-read -rsp 'db pass: ' DBP; echo
-read -rp  'admin email: ' EMAIL
-read -rsp 'admin pass: ' ADMINPW; echo
-
-docker exec -i -u www-data \
-  -e NONCE="$NONCE" -e DBH="$DBH" -e DBU="$DBU" -e DBP="$DBP" -e EMAIL="$EMAIL" -e ADMINPW="$ADMINPW" -e DOMAIN="<域名>" \
-  <php容器> php -r 'echo json_encode(["installationNonce"=>getenv("NONCE"),"public_url"=>"https://".getenv("DOMAIN"),"db_host"=>getenv("DBH"),"db_port"=>3306,"db_name"=>"baize","db_user"=>getenv("DBU"),"db_password"=>getenv("DBP"),"name"=>"管理员","email"=>getenv("EMAIL"),"password"=>getenv("ADMINPW")],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);' \
-| docker exec -i -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --stdin-json
+set -o pipefail
+python3 -c '
+import getpass, json, sys
+def ask(label):
+    print(label, end="", file=sys.stderr, flush=True)
+    return input()
+payload = {
+    "installationNonce": getpass.getpass("nonce: "),
+    "public_url": ask("公开 HTTPS 地址: "),
+    "db_host": ask("数据库主机（容器/服务名）: "),
+    "db_port": int(ask("数据库端口 [3306]: ") or "3306"),
+    "db_name": ask("数据库名: "),
+    "db_user": ask("数据库账号（不附加单独的授权来源）: "),
+    "db_password": getpass.getpass("数据库密码: "),
+    "name": ask("管理员姓名: "),
+    "email": ask("管理员邮箱: "),
+    "password": getpass.getpass("管理员密码: "),
+}
+print(json.dumps(payload, ensure_ascii=False))
+' | docker exec -i -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --stdin-json
 ```
 
-成功只打印 `安装完成。`。失败会打印错误码或异常信息（`--stdin-json` 与网页安装是同一套校验与事务，不会绕过任何安全检查）。
+在交互终端执行，宿主机需有 Python 3。密码输入不回显，凭据只经标准输入传递，不写入命令参数、环境变量或临时文件。成功只打印 `安装完成。`。失败会打印错误码或异常信息（`--stdin-json` 与网页安装是同一套校验与事务，不会绕过任何安全检查）。
 
 **④ 队列必须有消费者。** 面板计划任务里加一条每分钟执行：
 
@@ -128,7 +137,7 @@ docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/worker.php
 | `400 https_required` | vhost 未传 HTTPS | 加 `fastcgi_param HTTPS $https if_not_empty;` |
 | `403 csrf_origin_denied` | 浏览器 Origin / Sec-Fetch-Site 不符 | 用 ③ 的 `--stdin-json` |
 | `mkdir(): Permission denied` | `private/` 属主不是 FPM 用户 | `chown -R <uid>:<gid> private && chmod 700 private` |
-| `[1045] Access denied for user 'baize@%'@...` | 用户名带了 `@%` | 只填 `baize` |
+| `[1045] Access denied for user ...` | 账号、密码或授权来源不匹配 | 核对账号字段与数据库授权；不要拼入面板单独显示的授权来源 |
 | `[2002]` / `getaddrinfo failed` | 主机填了 `127.0.0.1` | 填面板显示的容器名（如 `mysql`） |
 | `/login` 返回 openresty 404 | 缺 `try_files` | 见 ① |
 | `database_unavailable` | 主机/库名/账号之一不对 | 用 `PDO` 单独连一次，看具体 SQLSTATE |

@@ -58,6 +58,31 @@ function baize_cli_ask(string $label,string $env,?string $default=null):string
     return $line===''?(string)$default:$line;
 }
 
+/** Never fall back to echoed input when a terminal cannot hide credentials. */
+function baize_cli_secret(string $label,string $env):string
+{
+    $value=getenv($env);if($value!==false&&$value!=='')return $value;
+    if(!function_exists('stream_isatty')||!stream_isatty(STDIN)||PHP_OS_FAMILY==='Windows')throw new RuntimeException('安全终端输入不可用；请从受保护标准输入使用 --stdin-json');
+    $pipes=[];$process=proc_open(['stty','-g'],[0=>STDIN,1=>['pipe','w'],2=>['pipe','w']],$pipes);
+    if(!is_resource($process))throw new RuntimeException('无法读取终端状态；请使用 --stdin-json');
+    $state=trim(stream_get_contents($pipes[1]));fclose($pipes[1]);fclose($pipes[2]);
+    if(proc_close($process)!==0||$state==='')throw new RuntimeException('无法读取终端状态；请使用 --stdin-json');
+    $process=proc_open(['stty','-echo'],[0=>STDIN,1=>STDOUT,2=>STDERR],$pipes);
+    if(!is_resource($process)||proc_close($process)!==0)throw new RuntimeException('无法关闭密码回显；请使用 --stdin-json');
+    $restored=false;$restore=static function()use($state,&$restored):void{
+        if($restored)return;$restored=true;$pipes=[];$process=proc_open(['stty',$state],[0=>STDIN,1=>STDOUT,2=>STDERR],$pipes);if(is_resource($process))proc_close($process);
+    };
+    register_shutdown_function($restore);
+    if(function_exists('pcntl_async_signals')&&function_exists('pcntl_signal')){
+        pcntl_async_signals(true);foreach([SIGINT,SIGTERM] as $signal)pcntl_signal($signal,static function(int $signal)use($restore):void{$restore();exit(128+$signal);});
+    }
+    try{
+        fwrite(STDOUT,$label.': ');$line=fgets(STDIN);
+        if($line===false)throw new RuntimeException('终端输入已关闭');
+        return rtrim($line,"\r\n");
+    }finally{$restore();fwrite(STDOUT,"\n");}
+}
+
 try{
     if(in_array('--check',$argv,true)){
         $db=getenv('BAIZE_DB_HOST')?[
@@ -71,15 +96,16 @@ try{
     }
     if(in_array('--interactive',$argv,true)){
         $input=[
+            'installationNonce'=>baize_cli_secret('一次性安装 nonce（先运行 --prepare）','BAIZE_INSTALLATION_NONCE'),
             'public_url'=>baize_cli_ask('公开访问地址（https://你的域名）','BAIZE_PUBLIC_URL'),
             'db_host'=>baize_cli_ask('数据库主机（容器名，不是 127.0.0.1）','BAIZE_DB_HOST','127.0.0.1'),
             'db_port'=>(int)baize_cli_ask('数据库端口','BAIZE_DB_PORT','3306'),
             'db_name'=>baize_cli_ask('数据库名','BAIZE_DB_NAME','baize'),
-            'db_user'=>baize_cli_ask('数据库用户名（只填名称，不要带 @主机）','BAIZE_DB_USER'),
-            'db_password'=>baize_cli_ask('数据库密码（会回显，可先用 BAIZE_DB_PASS 环境变量）','BAIZE_DB_PASS'),
+            'db_user'=>baize_cli_ask('数据库账号（不附加面板单独显示的授权来源）','BAIZE_DB_USER'),
+            'db_password'=>baize_cli_secret('数据库密码','BAIZE_DB_PASS'),
             'name'=>baize_cli_ask('管理员姓名','BAIZE_ADMIN_NAME','管理员'),
             'email'=>baize_cli_ask('管理员邮箱','BAIZE_ADMIN_EMAIL'),
-            'password'=>baize_cli_ask('管理员密码（至少 12 位，会回显）','BAIZE_ADMIN_PASSWORD'),
+            'password'=>baize_cli_secret('管理员密码（至少 12 位）','BAIZE_ADMIN_PASSWORD'),
         ];
         Baize\Installer::install($input,baize_config_path());
         fwrite(STDOUT,"安装完成。\n  登录：".$input['public_url']."/app\n  队列：每分钟执行一次 `php bin/worker.php --once`（面板计划任务里配置同一命令）\n");exit(0);
@@ -99,10 +125,12 @@ try{
         "注意：以上命令要以 PHP-FPM 的运行用户执行（例如 docker exec -u www-data），否则 private/ 会归 root 所有。\n");
 }catch(Throwable $e){
     // CLI 运行在本机受信环境，必须把失败原因打出来；只返回类名会让排障无从下手。
-    $detail=$e instanceof Baize\HttpError?$e->errorCode:trim(get_class($e).($e->getMessage()!==''?': '.$e->getMessage():''));
+    $message=$e->getMessage();
+    $detail=$e instanceof Baize\HttpError?$e->errorCode.($message!==''&&$message!==$e->errorCode?': '.$message:''):trim(get_class($e).($message!==''?': '.$message:''));
     fwrite(STDERR,"安装未完成：".$detail."\n");
     if(preg_match('/INSTALL_DIRECTORY|PRIVATE_|MASTER_KEY|Permission denied/',$detail)===1){
         fwrite(STDERR,'提示：私有目录必须归 PHP 运行用户所有且为 0700，可在宿主机以 root 执行 '.baize_repair_command(dirname(baize_config_path()))."\n");
     }
     exit(1);
+
 }

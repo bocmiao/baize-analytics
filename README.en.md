@@ -18,7 +18,7 @@ Baize is free, self-hosted, privacy-oriented website analytics with Chinese and 
 
 The desktop overview groups period comparisons, trends, sources, popular pages and session entry pages. Locations, devices and goal completions share one reading area. Mobile displays all six core metrics without clipped numbers.
 
-These screenshots show the running application with synthetic demonstration data. Locations are examples, not production traffic or real IP geolocation.
+Screenshots use synthetic data.
 
 ![Baize desktop interface](docs/images/baize-desktop.png)
 
@@ -111,13 +111,13 @@ Procedures: [native Standard maintenance](docs/release-native-ops.md), [Docker a
 
 **Do I need a cloud account?** Core analytics does not. Standard needs PostgreSQL; Lite uses local SQLite. GeoIP, search, email, SSO and AI services are configured only when needed.
 
-**Does core analytics automatically send data to AI?** It does not automatically enable AI. BYOK requires administrator configuration and means your own service key, not local inference. Each Lite manual call also requires explicit permission to send data. Model output is assistance, not a guarantee of facts or results.
+**Does core analytics automatically send data to AI?** No. AI stays off until an administrator configures BYOK with their own key. Data is sent only when you allow that call.
 
-**Can I use my domain or a Node hosting panel?** Follow the Node entrypoint and reverse-proxy instructions. `PUBLIC_URL` does not issue certificates or expose the service; verify the actual domain, certificate and hosting environment yourself.
+**Can I use my domain or a Node hosting panel?** Follow the Node entrypoint and reverse-proxy instructions. `PUBLIC_URL` does not issue a certificate or open the port.
 
-**Why is a metric unavailable?** Profiles, privacy modes, retained ranges and coverage have different boundaries. Daily-salt mode cannot provide cross-day visitor distinct counts, identify or retention. Unprovable completeness is shown as unavailable rather than fabricated precision or zero.
+**Why is a metric unavailable?** Daily-salt mode has no cross-day distinct visitors, identify, or retention. Missing data stays blank.
 
-**What can cost money?** Your server and external services such as models and SERP APIs. Baize has no paid feature gates and does not buy services or create production accounts for you.
+**What can cost money?** Your server, plus model and SERP APIs if you turn them on. Baize has no paid feature gates.
 
 ## Documentation and licenses
 
