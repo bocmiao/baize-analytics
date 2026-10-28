@@ -10,4 +10,9 @@ try{
         $raw=stream_get_contents(STDIN,32769);if(strlen($raw)>32768)throw new RuntimeException('INPUT_TOO_LARGE');$input=json_decode($raw,true,32,JSON_THROW_ON_ERROR);if(!is_array($input))throw new RuntimeException('INVALID_INPUT');Baize\Installer::install($input,baize_config_path());fwrite(STDOUT,"安装完成。\n");exit(0);
     }
     fwrite(STDOUT,"用法：php bin/install.php --prepare\n然后在自己的 HTTPS /install.php 页面输入凭据。\n自动化环境可从受保护标准输入传入 JSON：--stdin-json（不会回显秘密）。\n");
-}catch(Throwable $e){fwrite(STDERR,"安装未完成：".($e instanceof Baize\HttpError?$e->errorCode:get_class($e))."\n");exit(1);}
+}catch(Throwable $e){
+    // CLI 运行在本机受信环境，必须把失败原因打出来；只返回类名会让排障无从下手。
+    $message=$e->getMessage();
+    $detail=$e instanceof Baize\HttpError?$e->errorCode.($message!==''&&$message!==$e->errorCode?': '.$message:''):trim(get_class($e).($message!==''?': '.$message:''));
+    fwrite(STDERR,"安装未完成：".$detail."\n");exit(1);
+}
