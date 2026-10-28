@@ -74,20 +74,29 @@ docker exec -u www-data <php容器> cat /www/sites/<域名>/index/private/keys/i
 **③ 网页安装被 CSRF 拦时走 CLI 通道。** 安装页会校验 `Origin` 与 `Sec-Fetch-Site`，某些浏览器、插件或前置代理会让提交固定返回 `403 csrf_origin_denied`。不必改代理，直接用 `--stdin-json`：
 
 ```bash
-read -rsp 'nonce: ' NONCE; echo
-read -rp  'db host: ' DBH        # 容器/服务名，如 mysql；不是 127.0.0.1
-read -rp  'db user: ' DBU        # 只填用户名，不要带面板显示的 @%
-read -rsp 'db pass: ' DBP; echo
-read -rp  'admin email: ' EMAIL
-read -rsp 'admin pass: ' ADMINPW; echo
-
-docker exec -i -u www-data \
-  -e NONCE="$NONCE" -e DBH="$DBH" -e DBU="$DBU" -e DBP="$DBP" -e EMAIL="$EMAIL" -e ADMINPW="$ADMINPW" -e DOMAIN="<域名>" \
-  <php容器> php -r 'echo json_encode(["installationNonce"=>getenv("NONCE"),"public_url"=>"https://".getenv("DOMAIN"),"db_host"=>getenv("DBH"),"db_port"=>3306,"db_name"=>"baize","db_user"=>getenv("DBU"),"db_password"=>getenv("DBP"),"name"=>"管理员","email"=>getenv("EMAIL"),"password"=>getenv("ADMINPW")],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);' \
-| docker exec -i -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --stdin-json
+set -o pipefail
+python3 -c '
+import getpass, json, sys
+def ask(label):
+    print(label, end="", file=sys.stderr, flush=True)
+    return input()
+payload = {
+    "installationNonce": getpass.getpass("nonce: "),
+    "public_url": ask("公开 HTTPS 地址: "),
+    "db_host": ask("数据库主机（容器/服务名）: "),
+    "db_port": int(ask("数据库端口 [3306]: ") or "3306"),
+    "db_name": ask("数据库名: "),
+    "db_user": ask("数据库账号（不附加单独的授权来源）: "),
+    "db_password": getpass.getpass("数据库密码: "),
+    "name": ask("管理员姓名: "),
+    "email": ask("管理员邮箱: "),
+    "password": getpass.getpass("管理员密码: "),
+}
+print(json.dumps(payload, ensure_ascii=False))
+' | docker exec -i -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --stdin-json
 ```
 
-成功只打印 `安装完成。`。失败会打印错误码或异常信息（`--stdin-json` 与网页安装是同一套校验与事务，不会绕过任何安全检查）。
+在交互终端执行，宿主机需有 Python 3。密码输入不回显，凭据只经标准输入传递，不写入命令参数、环境变量或临时文件。成功只打印 `安装完成。`。失败会打印错误码或异常信息（`--stdin-json` 与网页安装是同一套校验与事务，不会绕过任何安全检查）。
 
 **④ 队列必须有消费者。** 面板计划任务里加一条每分钟执行：
 

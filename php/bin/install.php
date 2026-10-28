@@ -12,6 +12,7 @@ try{
     fwrite(STDOUT,"用法：php bin/install.php --prepare\n然后在自己的 HTTPS /install.php 页面输入凭据。\n自动化环境可从受保护标准输入传入 JSON：--stdin-json（不会回显秘密）。\n");
 }catch(Throwable $e){
     // CLI 运行在本机受信环境，必须把失败原因打出来；只返回类名会让排障无从下手。
-    $detail=$e instanceof Baize\HttpError?$e->errorCode:trim(get_class($e).($e->getMessage()!==''?': '.$e->getMessage():''));
+    $message=$e->getMessage();
+    $detail=$e instanceof Baize\HttpError?$e->errorCode.($message!==''&&$message!==$e->errorCode?': '.$message:''):trim(get_class($e).($message!==''?': '.$message:''));
     fwrite(STDERR,"安装未完成：".$detail."\n");exit(1);
 }

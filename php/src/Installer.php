@@ -93,8 +93,9 @@ final class Installer
             $host=(string)($input['db_host']??'127.0.0.1');$name=(string)($input['db_name']??'baize');$port=(int)($input['db_port']??3306);
             if(!preg_match('/^[a-zA-Z0-9_.:-]{1,253}$/D',$host)||!preg_match('/^[a-zA-Z0-9_-]{1,64}$/D',$name)||$port<1||$port>65535)Http::error(400,'invalid_database');
             $user=(string)($input['db_user']??'');
-            // 面板常把 "user@%" 整串显示出来，其中 @% 是授权范围而不是用户名的一部分。
-            if($user===''||str_contains($user,'@')||preg_match('/\s/',$user)!==0)Http::error(400,'invalid_database_user','数据库用户名只填名称，不要带面板显示的 @主机 后缀');
+            // PDO receives the account name separately from the DSN. Quoted MySQL
+            // accounts may contain spaces or @; reject control characters only.
+            if($user===''||preg_match('/[\x00-\x1f\x7f]/',$user)!==0)Http::error(400,'invalid_database_user','数据库账号不能为空或含控制字符；请填写账号字段，不要附加面板单独显示的授权来源');
             $config=['database'=>['dsn'=>"mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4",'user'=>$user,'password'=>(string)($input['db_password']??'')],'data_dir'=>$private.'/data','key_dir'=>$keyDir,'public_url'=>$publicUrl];
             try{$db=new Database($config);$db->migrate();}
             catch(\PDOException $e){error_log('Baize installer database failure: '.$e->getMessage());Http::error(503,'database_unavailable','无法连接数据库：请检查主机名、端口、库名与账号密码');}$config['master_key']=self::readKey($keyDir.'/master.v1.key');$app=new App($config,$db);$state=self::prepare($app);
