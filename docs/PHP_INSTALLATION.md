@@ -113,7 +113,7 @@ docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/worker.php
 | `400 https_required` | vhost 未传 HTTPS | 加 `fastcgi_param HTTPS $https if_not_empty;` |
 | `403 csrf_origin_denied` | 浏览器 Origin / Sec-Fetch-Site 不符 | 用 ③ 的 `--stdin-json` |
 | `mkdir(): Permission denied` | `private/` 属主不是 FPM 用户 | `chown -R <uid>:<gid> private && chmod 700 private` |
-| `[1045] Access denied for user 'baize@%'@...` | 用户名带了 `@%` | 只填 `baize` |
+| `[1045] Access denied for user ...` | 账号、密码或授权来源不匹配 | 核对账号字段与数据库授权；不要拼入面板单独显示的授权来源 |
 | `[2002]` / `getaddrinfo failed` | 主机填了 `127.0.0.1` | 填面板显示的容器名（如 `mysql`） |
 | `/login` 返回 openresty 404 | 缺 `try_files` | 见 ① |
 | `database_unavailable` | 主机/库名/账号之一不对 | 用 `PDO` 单独连一次，看具体 SQLSTATE |

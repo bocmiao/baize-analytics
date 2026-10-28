@@ -19,7 +19,7 @@ if(($_SERVER['REQUEST_METHOD']??'GET')==='POST'){
         $code=$e instanceof Baize\HttpError?$e->errorCode:(new ReflectionClass($e))->getShortName();
         error_log('Baize installer failed: '.$code.' '.$e->getMessage());
         $hint=$e instanceof PDOException
-            ? '数据库连接失败：主机名填容器/服务名（不是 127.0.0.1），库名必须已存在，用户名不要带面板显示的 @主机 后缀。'
+            ? '数据库连接失败：请核对主机、端口、库名和账号；面板若单独显示授权来源，不要把来源拼入账号。'
             : '请检查私有目录权限与安装凭据；已有配置时可从 /app 完成初始化。';
         $error='安装未完成（'.$code.'）。'.$hint;
     }
