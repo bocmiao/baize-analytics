@@ -61,7 +61,7 @@ Lite 适合希望少维护数据库服务的单实例部署。需要深度行为
 | Node-ready 预编译项目包 | Linux x64、受支持的 Node 24、Bash/flock；标准版另需 PostgreSQL | 已有 Node 服务或面板托管环境 |
 | bundled-node 解压启动包 | 相容的 Linux x64/glibc、Bash/flock；标准版另需 PostgreSQL | 希望使用包内 Node，不在服务器安装依赖或编译 |
 
-运行包已经包含编译产物和依赖，不需要 `npm install` 或 `npm run build`。附带 Node 不等于附带数据库、HTTPS 或进程管理器。Windows、macOS、ARM 和 Alpine 不属于这些原生包的支持范围。
+运行包已经包含编译产物和依赖，不需要 `npm install` 或 `npm run build`。附带 Node 不等于附带数据库、HTTPS 或进程管理器。Windows、macOS、ARM 和 Alpine 不属于这些原生包的支持范围。（在 Windows 上做本地开发：见 [docs/WINDOWS-LOCAL-DEV.md](docs/WINDOWS-LOCAL-DEV.md)，Lite 版可直接运行。）
 
 ### Docker
 
