@@ -62,6 +62,7 @@ Choose Lite for a single instance with fewer database services to maintain. Choo
 | bundled-node package | Compatible Linux x64/glibc, Bash/flock; Standard also needs PostgreSQL | You want the supplied Node binary without installing dependencies or compiling |
 
 Runtime packages already include dependencies and compiled assets. Do not run `npm install` or `npm run build` on them. Bundled Node does not include database servers, TLS or a process manager. These native packages do not support Windows, macOS, ARM or Alpine.
+Local development on Windows (Lite runs natively): see [docs/WINDOWS-LOCAL-DEV.md](docs/WINDOWS-LOCAL-DEV.md).
 
 ### Docker
 
