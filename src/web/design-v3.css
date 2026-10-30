@@ -476,3 +476,9 @@ html[data-theme="dark"] .overview-insight-evidence p,html[data-theme="dark"] .ov
   .prop-list dd{text-align:left}
   .insight-card{align-items:flex-start}
 }
+
+/* Dark-mode stragglers: id-specificity brand rule from style.css and the white
+   date-range capsule leak into dark surfaces; re-anchor them to theme tokens. */
+#workspace-navigation .brand,#workspace-navigation .brand-name{color:var(--fg)}
+#workspace-navigation .brand-name small{color:var(--fg-2)}
+.workspace-toolbar .date-range{background:transparent;border:0;box-shadow:none;padding:0;height:auto}

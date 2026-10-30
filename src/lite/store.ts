@@ -1,6 +1,6 @@
 import {Worker} from 'node:worker_threads';
 import {spawn,type ChildProcess} from 'node:child_process';
-import {mkdirSync,realpathSync} from 'node:fs';
+import {mkdirSync,realpathSync,openSync,closeSync,unlinkSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {verifyLocalFilesystem} from './database.js';
 import type {LiteStorePort} from './types.js';
@@ -10,7 +10,16 @@ export class LiteStore implements LiteStorePort {
  private writer!:Worker;private lock!:ChildProcess;private pending=new Map<number,{resolve:(v:unknown)=>void;reject:(e:Error)=>void;bytes:number}>();private readers=new Set<Worker>();private idleReaders:Worker[]=[];private retiringReaders=new Set<Promise<void>>();private readerPhysical=0;private readerPeak=0;private nativeReadStarts=0;private activeReads=0;private readQueueBytes=0;private readQueue:{resolve:()=>void;reject:(e:Error)=>void;bytes:number;timer:ReturnType<typeof setTimeout>}[]=[];private serial=0;private bytes=0;private failure:Error|undefined;private frozen=false;private closePromise:Promise<void>|undefined;private closing=false;private closed=false;private ready:Promise<void>;
  constructor(private options:StoreOptions){this.options={...options,dataDir:resolve(options.dataDir),keyDir:resolve(options.keyDir??join(options.dataDir,'keys'))};mkdirSync(options.dataDir,{recursive:true,mode:0o700});verifyLocalFilesystem(options.dataDir);let runtimeResolve!:(v:{sqliteVersion:string;sourceId:string})=>void;let runtimeReject!:(e:Error)=>void;this.runtime=new Promise((a,b)=>{runtimeResolve=a;runtimeReject=b;});this.ready=this.start(runtimeResolve).catch(e=>{this.lock?.stdin?.end();runtimeReject(e);throw e;});this.runtime.catch(()=>{});this.ready.catch(()=>{});}
  private async start(resolveRuntime:(v:{sqliteVersion:string;sourceId:string})=>void):Promise<void>{
- await new Promise<void>((resolve,reject)=>{this.lock=spawn('flock',['-n',join(this.options.dataDir,'writer.lock'),'sh','-c','printf "locked\\n"; cat >/dev/null'],{stdio:['pipe','pipe','pipe']});let acquired=false;this.lock.stdout!.once('data',()=>{acquired=true;resolve();});this.lock.once('error',reject);this.lock.once('exit',()=>{if(!acquired)reject(new Error('LITE_WRITER_ALREADY_RUNNING'));else if(!this.closed){this.failAll(new Error('LITE_WRITER_LOCK_LOST'));void this.writer?.terminate();}});});
+ await new Promise<void>((resolve,reject)=>{
+  if(process.platform==='win32'){
+   /* flock(1) is unavailable on Windows; approximate single-writer exclusion
+      with an exclusively created lock file held open for this process only.
+      An unclean shutdown leaves writer.lock behind and must be deleted by hand. */
+   const lockPath=join(this.options.dataDir,'writer.lock');
+   let fd:number;try{fd=openSync(lockPath,'wx',0o600);}catch{reject(new Error('LITE_WRITER_ALREADY_RUNNING'));return;}
+   this.lock={stdin:{end(){try{closeSync(fd);unlinkSync(lockPath);}catch{/* Closing after removal is fine. */}}}} as unknown as ChildProcess;
+   resolve();return;}
+  this.lock=spawn('flock',['-n',join(this.options.dataDir,'writer.lock'),'sh','-c','printf "locked\\n"; cat >/dev/null'],{stdio:['pipe','pipe','pipe']});let acquired=false;this.lock.stdout!.once('data',()=>{acquired=true;resolve();});this.lock.once('error',reject);this.lock.once('exit',()=>{if(!acquired)reject(new Error('LITE_WRITER_ALREADY_RUNNING'));else if(!this.closed){this.failAll(new Error('LITE_WRITER_LOCK_LOST'));void this.writer?.terminate();}});});
  const isTs=import.meta.url.endsWith('.ts');this.writer=new Worker(new URL(isTs?'./writer-worker.ts':'./writer-worker.js',import.meta.url),{workerData:{path:join(this.options.dataDir,'lite.sqlite'),dataDir:this.options.dataDir,keyDir:this.options.keyDir??join(this.options.dataDir,'keys'),maxWalBytes:this.options.maxWalBytes},execArgv:isTs?['--import','tsx']:[]});
  await new Promise<void>((resolve,reject)=>{this.writer.on('message',m=>{if(m.ready){resolveRuntime(m.runtime);resolve();return;}const p=this.pending.get(m.id);if(!p)return;this.pending.delete(m.id);this.bytes-=p.bytes;if(m.error)p.reject(Object.assign(new Error(m.error),{code:m.code,statusCode:m.statusCode}));else p.resolve(m.result);});this.writer.once('error',e=>{this.failAll(e);reject(e);this.lock.stdin!.end();});this.writer.once('exit',code=>{if(!this.closed){reject(new Error('LITE_WRITER_EXIT:'+code));this.failAll(new Error('LITE_WRITER_EXIT:'+code));this.lock.stdin!.end();}});});
  }
