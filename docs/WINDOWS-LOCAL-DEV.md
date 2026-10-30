@@ -45,3 +45,15 @@ E2E_PROFILE=lite npx playwright test --config playwright.config.ts
 
 global-setup 会走真实的安装向导（创建管理员与示例站点）并缓存会话。
 standard profile 的 e2e 需要 PostgreSQL，见 README。
+
+## Standard profile 的 e2e：请在 Linux/Docker 上跑
+
+Standard 版 e2e 需要 PostgreSQL（`TEST_DATABASE_URL`）。中文 Windows 上有一个
+系统性的陷阱：initdb 的 post-bootstrap 阶段会以服务器编码 UTF8 校验从进程
+环境继承的字符串，而 Windows ANSI 代码页（简体中文为 GBK/CP936）会把环境里
+的 CJK 路径（例如包含「项目」的仓库路径，字节 0xCF 0xEE）写成非法 UTF8 序
+列，直接 `FATAL: invalid byte sequence`。已验证无效的绕法：`--locale=C
+--encoding=UTF8`、ASCII 数据目录与 CWD、剥离 PWD、清洗全部非 ASCII 环境
+变量（GBK 字节在 Node 的 `process.env` 视角下与 UTF-8 中文无法区分，且部分
+值由系统注入）。结论：standard e2e 与依赖它的 relational 天粒度开发请在
+Linux 容器或 Linux 主机上完成。
