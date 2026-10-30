@@ -624,3 +624,8 @@ html[data-theme="dark"] .overview-insight-evidence p,html[data-theme="dark"] .ov
 .retention-heat table{min-width:640px}
 .retention-heat td,.retention-heat th{text-align:center;font-variant-numeric:tabular-nums}
 .source-ranks{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px;min-width:0}
+
+/* Site-directory status chip and the overview redesign marker. */
+.status-good{color:var(--pos,#047857);font-size:11px}
+.status-muted{color:var(--fg-3);font-size:11px}
+.overview-redesigned{scrollbar-gutter:stable}

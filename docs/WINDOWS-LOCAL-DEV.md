@@ -38,7 +38,7 @@ node scripts/audit-css-classes.mjs                   # 组件 className 与样�
 
 ```bash
 # 终端 1：起一个全新实例（脚本含安装凭证 fixture）
-npx tsx .baize-preview/serve.ts       # 或自行 createLiteApp 于 127.0.0.1:3000
+npx tsx scripts/e2e-serve.ts           # 全新实例 + 安装凭证 fixture，或自行 createLiteApp
 # 终端 2
 E2E_PROFILE=lite npx playwright test --config playwright.config.ts
 ```
