@@ -71,3 +71,10 @@ export function chartPalette():ChartPalette{
 }
 
 export function chartMotion(){return document.documentElement.dataset.motion!=='off';}
+
+/** Categorical series colors from docs/design/v3 tokens.json. */
+export function chartCategorical():string[]{
+ return document.documentElement.dataset.theme==='dark'
+  ?['#3DBA9C','#7AA2F7','#E0B84A','#F0705A','#A88BE0','#6E6E6E']
+  :['#1F7A68','#5B8DEF','#C9A227','#C2412D','#8E6CC9','#8F8F8F'];
+}

@@ -482,3 +482,15 @@ html[data-theme="dark"] .overview-insight-evidence p,html[data-theme="dark"] .ov
 #workspace-navigation .brand,#workspace-navigation .brand-name{color:var(--fg)}
 #workspace-navigation .brand-name small{color:var(--fg-2)}
 .workspace-toolbar .date-range{background:transparent;border:0;box-shadow:none;padding:0;height:auto}
+
+/* Legacy token aliases: auxiliary sheets (workspace-*, merged-features, style)
+   still reference v2 variable names that left the import chain. Aliases resolve
+   at use time, so they follow the active theme automatically. */
+:root{
+ --jade:var(--accent);--jade2:var(--accent-soft);--jade-ink:var(--fg);
+ --gold:var(--warn);--cinnabar:var(--neg);
+ --ink:var(--fg);--muted:var(--fg-2);
+ --card:var(--surface);--bg2:var(--surface-2);--line:var(--border);
+ --side:var(--surface);--sideink:var(--fg);--sidemuted:var(--fg-3);
+ --sh:var(--shadow-xs);--overview-gap:16px;--overview-radius:10px;
+}
