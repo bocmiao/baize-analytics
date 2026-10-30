@@ -569,3 +569,29 @@ html[data-theme="dark"] .overview-insight-evidence p,html[data-theme="dark"] .ov
 .dim-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;min-width:0;margin:8px 0}
 .dim-card-grid .dim-card{margin:0}
 @media(max-width:1250px){.dense-donut-wrap{gap:12px;flex-direction:column;min-height:210px}.dense-legend{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 14px}}
+
+/* =========================================================================
+   Visit detail rows, realtime dot and campaign builder — the remaining
+   classes whose styles also lived only in the retired sheets.
+   ========================================================================= */
+.panel form.visit-filters{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr)) auto;align-items:end;gap:10px 12px;max-width:none;margin:12px 0 0}
+.panel form.visit-filters>label{margin:0}
+.visit-filters>button{align-self:end}
+.visit-table{min-width:1150px}
+.visit-table :is(td,th){white-space:nowrap}
+.visit-table td{font-size:12px;max-width:220px}
+.visit-table td:nth-child(8){white-space:normal;min-width:160px;max-width:260px}
+.visitor-tag{font-size:11px;color:var(--fg-2);background:var(--surface-2);padding:2px 6px;border-radius:4px}
+.visitor-tag.new{color:var(--accent);background:var(--accent-soft)}
+.visitor-tag.returning{color:var(--warn);background:var(--warn-soft,var(--accent-soft))}
+.visit-path{font-size:12px;max-width:340px;margin:0}
+.visit-path>summary{cursor:pointer;color:var(--accent);line-height:1.5}
+.visit-path ol{white-space:normal;min-width:200px;padding-left:16px;margin:6px 0}
+.visit-path li{margin:6px 0;overflow-wrap:anywhere}
+.visit-path time{display:block;color:var(--fg-2)}
+.live-dot{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:5px;flex-shrink:0}
+.overview-live-note{font-size:11px;line-height:1.6;color:var(--fg-2);margin:10px 0 0}
+.campaign-builder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 16px;max-width:none}
+.campaign-result{display:flex;gap:10px;align-items:end;margin-top:12px}
+.campaign-result label{flex:1}
+@media(max-width:760px){.panel form.visit-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.campaign-builder{grid-template-columns:1fr}.campaign-result{flex-wrap:wrap}}
