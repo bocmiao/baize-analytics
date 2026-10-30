@@ -50,9 +50,6 @@ button:disabled { transition: none; }
 input, select, textarea {
   transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
-input:focus, select:focus, textarea:focus {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--jade) 14%, transparent);
-}
 
 /* ---------- 3. 页面切换：内容淡入上浮 ---------- */
 #workspace-main > .page-header { animation: page-in .26s cubic-bezier(.22, 1, .36, 1) both; }
@@ -73,7 +70,7 @@ input:focus, select:focus, textarea:focus {
 .panel {
   transition: box-shadow .26s cubic-bezier(.22, 1, .36, 1), transform .26s cubic-bezier(.22, 1, .36, 1);
 }
-.panel:hover { box-shadow: 0 6px 20px rgba(20, 48, 44, .07); }
+.panel:hover { box-shadow: 0 6px 20px rgba(15, 23, 42, .07); }
 .table-wrap tbody tr { transition: background-color .16s ease; }
 .table-wrap tbody tr td, .table-wrap tbody tr th { transition: color .16s ease; }
 
@@ -162,7 +159,7 @@ dialog::backdrop { animation: backdrop-in .2s ease-out both; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(20, 48, 44, .05) 45%, transparent 90%);
+  background: linear-gradient(90deg, transparent 0%, rgba(15, 23, 42, .05) 45%, transparent 90%);
   transform: translateX(-100%);
   animation: skeleton-sweep 1.15s ease-in-out infinite;
   pointer-events: none;

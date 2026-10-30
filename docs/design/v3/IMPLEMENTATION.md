@@ -103,3 +103,13 @@
 3. axe 无 serious/critical；文字对比度 ≥ 4.5（fg-3 #8F8F8F 只用于 12px 以上的次要信息，表头可用；正文不用）。
 4. reduced-motion 下无动画。
 5. 现有单测与 e2e 全过；e2e 里依赖旧类名/旧结构（侧栏、底部 Tab、date input）的选择器同步更新。
+
+---
+
+## 实施状态（2026-10-31）
+
+本规格已随 `v3-polish` 分支落地并通过验收（Lite e2e 5/5、明暗双主题全页截图核验）。
+
+- 已实施：顶部导航、中性 token、天粒度趋势、密集报表层、动效层、落地页/登录页重写的配色接入、暗色模式全量修复。
+- 与本规格的差异：PhoneTabs 底部 Tab 已被顶部横滑标签替代（规格中标注需确认的项，按 v3 稿执行）；主按钮黑底白字已实施。
+- 待办：relational 统计路径的趋势天粒度（UV 来自独立成员聚合管道，需要天级查询设计）；workspace-clean/density/design-ref/design-v2 四个退役样式文件与 PhoneTabs/ModelConnectionSummary 死组件已在本分支删除。

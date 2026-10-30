@@ -1,6 +1,6 @@
 import {Worker} from 'node:worker_threads';
 import {spawn,type ChildProcess} from 'node:child_process';
-import {mkdirSync,realpathSync} from 'node:fs';
+import {mkdirSync,realpathSync,openSync,closeSync,unlinkSync,readFileSync,writeFileSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {verifyLocalFilesystem} from './database.js';
 import type {LiteStorePort} from './types.js';
@@ -10,7 +10,25 @@ export class LiteStore implements LiteStorePort {
  private writer!:Worker;private lock!:ChildProcess;private pending=new Map<number,{resolve:(v:unknown)=>void;reject:(e:Error)=>void;bytes:number}>();private readers=new Set<Worker>();private idleReaders:Worker[]=[];private retiringReaders=new Set<Promise<void>>();private readerPhysical=0;private readerPeak=0;private nativeReadStarts=0;private activeReads=0;private readQueueBytes=0;private readQueue:{resolve:()=>void;reject:(e:Error)=>void;bytes:number;timer:ReturnType<typeof setTimeout>}[]=[];private serial=0;private bytes=0;private failure:Error|undefined;private frozen=false;private closePromise:Promise<void>|undefined;private closing=false;private closed=false;private ready:Promise<void>;
  constructor(private options:StoreOptions){this.options={...options,dataDir:resolve(options.dataDir),keyDir:resolve(options.keyDir??join(options.dataDir,'keys'))};mkdirSync(options.dataDir,{recursive:true,mode:0o700});verifyLocalFilesystem(options.dataDir);let runtimeResolve!:(v:{sqliteVersion:string;sourceId:string})=>void;let runtimeReject!:(e:Error)=>void;this.runtime=new Promise((a,b)=>{runtimeResolve=a;runtimeReject=b;});this.ready=this.start(runtimeResolve).catch(e=>{this.lock?.stdin?.end();runtimeReject(e);throw e;});this.runtime.catch(()=>{});this.ready.catch(()=>{});}
  private async start(resolveRuntime:(v:{sqliteVersion:string;sourceId:string})=>void):Promise<void>{
- await new Promise<void>((resolve,reject)=>{this.lock=spawn('flock',['-n',join(this.options.dataDir,'writer.lock'),'sh','-c','printf "locked\\n"; cat >/dev/null'],{stdio:['pipe','pipe','pipe']});let acquired=false;this.lock.stdout!.once('data',()=>{acquired=true;resolve();});this.lock.once('error',reject);this.lock.once('exit',()=>{if(!acquired)reject(new Error('LITE_WRITER_ALREADY_RUNNING'));else if(!this.closed){this.failAll(new Error('LITE_WRITER_LOCK_LOST'));void this.writer?.terminate();}});});
+ await new Promise<void>((resolve,reject)=>{
+  if(process.platform==='win32'){
+   /* flock(1) is unavailable on Windows; approximate single-writer exclusion
+      with an exclusively created lock file recording the owner PID. A lock left
+      by an unclean shutdown is reclaimed once its PID no longer exists; a PID
+      reuse collision keeps the store refused, which is the safe direction. */
+   const lockPath=join(this.options.dataDir,'writer.lock');
+   let fd:number;
+   try{fd=openSync(lockPath,'wx',0o600);}
+   catch{
+    let owner:unknown;try{owner=JSON.parse(readFileSync(lockPath,'utf8')).pid;}catch{owner=undefined;}
+    const stale=typeof owner==='number'&&Number.isInteger(owner)&&owner!==process.pid&&(()=>{try{process.kill(owner,0);return false;}catch(error){return (error as NodeJS.ErrnoException).code==='ESRCH';}})();
+    if(!stale){reject(new Error('LITE_WRITER_ALREADY_RUNNING'));return;}
+    try{unlinkSync(lockPath);fd=openSync(lockPath,'wx',0o600);}catch{reject(new Error('LITE_WRITER_ALREADY_RUNNING'));return;}
+   }
+   try{writeFileSync(fd,JSON.stringify({pid:process.pid,at:Date.now()}));}catch{/* The exclusive create above already gates ownership. */}
+   this.lock={stdin:{end(){try{closeSync(fd);unlinkSync(lockPath);}catch{/* Closing after removal is fine. */}}}} as unknown as ChildProcess;
+   resolve();return;}
+  this.lock=spawn('flock',['-n',join(this.options.dataDir,'writer.lock'),'sh','-c','printf "locked\\n"; cat >/dev/null'],{stdio:['pipe','pipe','pipe']});let acquired=false;this.lock.stdout!.once('data',()=>{acquired=true;resolve();});this.lock.once('error',reject);this.lock.once('exit',()=>{if(!acquired)reject(new Error('LITE_WRITER_ALREADY_RUNNING'));else if(!this.closed){this.failAll(new Error('LITE_WRITER_LOCK_LOST'));void this.writer?.terminate();}});});
  const isTs=import.meta.url.endsWith('.ts');this.writer=new Worker(new URL(isTs?'./writer-worker.ts':'./writer-worker.js',import.meta.url),{workerData:{path:join(this.options.dataDir,'lite.sqlite'),dataDir:this.options.dataDir,keyDir:this.options.keyDir??join(this.options.dataDir,'keys'),maxWalBytes:this.options.maxWalBytes},execArgv:isTs?['--import','tsx']:[]});
  await new Promise<void>((resolve,reject)=>{this.writer.on('message',m=>{if(m.ready){resolveRuntime(m.runtime);resolve();return;}const p=this.pending.get(m.id);if(!p)return;this.pending.delete(m.id);this.bytes-=p.bytes;if(m.error)p.reject(Object.assign(new Error(m.error),{code:m.code,statusCode:m.statusCode}));else p.resolve(m.result);});this.writer.once('error',e=>{this.failAll(e);reject(e);this.lock.stdin!.end();});this.writer.once('exit',code=>{if(!this.closed){reject(new Error('LITE_WRITER_EXIT:'+code));this.failAll(new Error('LITE_WRITER_EXIT:'+code));this.lock.stdin!.end();}});});
  }
@@ -26,6 +44,6 @@ export class LiteStore implements LiteStorePort {
  unfreeze():void{this.frozen=false;}
  async backupDatabase(destination:string):Promise<void>{if(!this.frozen)throw new Error('LITE_BACKUP_REQUIRES_FREEZE');await this.send('__backup',{destination});}
  close():Promise<void>{if(!this.closePromise)this.closePromise=this.doClose();return this.closePromise;}
- private async doClose():Promise<void>{if(this.closed||this.closing)return;this.closing=true;for(const waiting of this.readQueue){clearTimeout(waiting.timer);waiting.reject(new Error('LITE_STORE_CLOSED'));}this.readQueue=[];this.readQueueBytes=0;try{await this.ready;if(!this.failure)await this.send('__close');}finally{this.closed=true;for(const w of this.readers)await w.terminate();await Promise.all([...this.retiringReaders]);if(this.writer)await this.writer.terminate();if(this.lock&&this.lock.exitCode===null&&this.lock.signalCode===null){const exited=new Promise<void>(resolve=>this.lock.once('exit',()=>resolve()));this.lock.stdin?.end();await exited;}this.failAll(new Error('LITE_STORE_CLOSED'));}}
+ private async doClose():Promise<void>{if(this.closed||this.closing)return;this.closing=true;for(const waiting of this.readQueue){clearTimeout(waiting.timer);waiting.reject(new Error('LITE_STORE_CLOSED'));}this.readQueue=[];this.readQueueBytes=0;try{await this.ready;if(!this.failure)await this.send('__close');}finally{this.closed=true;for(const w of this.readers)await w.terminate();await Promise.all([...this.retiringReaders]);if(this.writer)await this.writer.terminate();if(this.lock&&this.lock.exitCode===null&&this.lock.signalCode===null){const exited=new Promise<void>(resolve=>this.lock.once('exit',()=>resolve()));this.lock.stdin?.end();await exited;}else this.lock?.stdin?.end();this.failAll(new Error('LITE_STORE_CLOSED'));}}
 }
 export function createLiteStore(options:StoreOptions):LiteStore{return new LiteStore(options);}
