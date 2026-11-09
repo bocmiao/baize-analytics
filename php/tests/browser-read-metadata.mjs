@@ -6,7 +6,7 @@ import {chromium} from '@playwright/test';
 const base=process.env.BAIZE_PHP_HTTP_URL||'http://127.0.0.1:8099';
 if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Disposable loopback fixtures only');
 const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-heatmap-legacy-session.json','utf8'));
-const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015/metadata';mkdirSync(output,{recursive:true});
+const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'.baize/test-evidence/php/metadata';mkdirSync(output,{recursive:true});
 const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium'});
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});

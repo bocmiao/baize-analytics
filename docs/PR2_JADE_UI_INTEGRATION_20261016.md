@@ -1,5 +1,7 @@
 # PR2 青玉／墨玉 UI 集成修复（2026-10-16）
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](REPOSITORY_MAINTENANCE_20261110.md)。
+
 接续 [PR #2](https://github.com/bocmiao/baize-analytics/pull/2) 的 `52579f1f162d49524d88f0c1e7227881d2d85bf5`，基线 `c087b64b112faf9caefd810b66b37736b8b91fd6`。保留 React / ECharts、青玉／墨玉色彩、鎏金重点、移动导航和动效。原 Node 标准版、Node Lite、PHP 的后端、数据库模型、追踪协议及能力边界没有改变。
 
 ## 修复后的行为
@@ -19,20 +21,20 @@
 
 | 本轮检查 | 结果与证据 |
 | --- | --- |
-| 专项浏览器 | **6/6**，桌面／390px对比、canvas提示、同页／跨标签主题、拒绝存储、真实分享及邀请；[结果](test-evidence/pr2-jade-20261016/fixed/playwright-results.json) |
-| 原 Node／Lite 浏览器 | **5/5组**，含标准版38入口、真实PG采集／聚合、多／少／空／长中文、320–1440px及容器断点、权限、错误重试、键盘、reduced-motion、精确金额及Lite；[结果](test-evidence/pr2-jade-20261016/regression/playwright-results.json) |
-| PHP HTTP | **29/29**，含采集重试、鉴权、安装终态、微额收入和预构建网页；[结果](test-evidence/pr2-jade-20261016/php-http/http-results.json) |
-| PHP 青玉／墨玉报告 | **各94/94状态**：39入口×少量／空数据桌面，以及8关键入口×少量／空数据390px。检查实际主题、控制台、网络、契约、金额和全局溢出；[青玉](test-evidence/pr2-jade-20261016/php-browser/browser-jade-light-results.json)、[墨玉](test-evidence/pr2-jade-20261016/php-browser-dark/browser-jade-dark-results.json) |
-| 单元／静态／构建 | **584/584**，新增5项tooltip语义；typecheck、全仓lint、Tracker／React／server／updater完整构建通过；[单测日志](test-evidence/pr2-jade-20261016/unit-final.log.txt) |
+| 专项浏览器 | **6/6**，桌面／390px对比、canvas提示、同页／跨标签主题、拒绝存储、真实分享及邀请；[结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/fixed/playwright-results.json) |
+| 原 Node／Lite 浏览器 | **5/5组**，含标准版38入口、真实PG采集／聚合、多／少／空／长中文、320–1440px及容器断点、权限、错误重试、键盘、reduced-motion、精确金额及Lite；[结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/regression/playwright-results.json) |
+| PHP HTTP | **29/29**，含采集重试、鉴权、安装终态、微额收入和预构建网页；[结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/php-http/http-results.json) |
+| PHP 青玉／墨玉报告 | **各94/94状态**：39入口×少量／空数据桌面，以及8关键入口×少量／空数据390px。检查实际主题、控制台、网络、契约、金额和全局溢出；[青玉](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/php-browser/browser-jade-light-results.json)、[墨玉](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/php-browser-dark/browser-jade-dark-results.json) |
+| 单元／静态／构建 | **584/584**，新增5项tooltip语义；typecheck、全仓lint、Tracker／React／server／updater完整构建通过；[单测日志](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/unit-final.log.txt) |
 | 发布／文档 | Node发布检查 **9/9**、PHP **18/18**，文档目标及39份归档原文校验通过；同目录保留日志 |
 
 专项的确定性统计、未完结和长路径采用显式控制响应，认证／站点仍连接真实 Node Lite，不把数字当生产测量。原报告回归连接真实 PG／SQLite，空／错误／长文字的受控案例另有 controlled 标记。分享、邀请连接真实 Node PostgreSQL。PHP报告连接真实 PHP HTTP + MySQL，不替换后台响应、不调用模型或外部提供商。
 
-桌面、390px、两主题、对比关闭、提示、分享、邀请和空状态的最终截图已经实际打开检查；图片与观察见 [人工复核](test-evidence/pr2-jade-20261016/visual-review.json)，汇总及实际资源指纹见 [收据](test-evidence/pr2-jade-20261016/receipt.json)。不宣称覆盖所有浏览器、屏幕阅读器或真机。管理列表的空记录不当作已测试全部详情编辑。
+桌面、390px、两主题、对比关闭、提示、分享、邀请和空状态的最终截图已经实际打开检查；图片与观察见 [人工复核](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/visual-review.json)，汇总及实际资源指纹见 [收据](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/receipt.json)。不宣称覆盖所有浏览器、屏幕阅读器或真机。管理列表的空记录不当作已测试全部详情编辑。
 
 ## 修复前与过程记录
 
-用 `git archive 52579f1` 独立构建原PR2，运行同一专项，6项均失败。首次桌面鼠标操作受1px输入框遮挡；键盘重试明确复现关闭后仍有3个比较点。见 [基线](test-evidence/pr2-jade-20261016/negative-baseline.json)、[失败日志](test-evidence/pr2-jade-20261016/browser-before.log.txt)、[键盘复现](test-evidence/pr2-jade-20261016/browser-before-desktop.log.txt)。
+用 `git archive 52579f1` 独立构建原PR2，运行同一专项，6项均失败。首次桌面鼠标操作受1px输入框遮挡；键盘重试明确复现关闭后仍有3个比较点。见 [基线](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/negative-baseline.json)、[失败日志](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/browser-before.log.txt)、[键盘复现](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr2-jade-20261016/browser-before-desktop.log.txt)。
 
 手机点击、空图和PHP CSP的中间失败保留于 `intermediate/`、`regression-intermediate/`、`php-csp-before-fix/`。颜色测试工具最初不识别 `color(srgb … / alpha)`，改用浏览器原生RGBA并合成背景后重验；该工具错误不计作产品失败或最终通过。最终结果分别位于 `fixed/`、`regression/` 和两个PHP主题目录，不覆盖历史证据。
 

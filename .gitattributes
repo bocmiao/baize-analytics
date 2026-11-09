@@ -1,0 +1,13 @@
+* text=auto
+
+# Keep Linux entrypoints free of CRLF on Windows checkouts.
+*.sh text eol=lf
+# Historical archive checksums bind the committed LF bytes.
+docs/archive/** text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff binary
+*.woff2 binary

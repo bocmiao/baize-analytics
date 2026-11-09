@@ -1,5 +1,7 @@
 # PHP 安装版验证记录（2026-10-15）
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](REPOSITORY_MAINTENANCE_20261110.md)。
+
 > 本文件记录冻结源码的统一业务回归。两个源码检查点的当时状态保留在 [检查点记录](PHP_REVIEW_CHECKPOINT_20261015.md)；封装后运行结果与包指纹见 [最终交付收据](PHP_DELIVERY_20261015.md)。
 
 本轮从 `f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6` 独立实现，未取得 Windows `D:\codex存储\2026-10-15\task-5` 草稿，未迁移、覆盖或删除该草稿。原 Node 标准版及 PostgreSQL 迁移、SDK、测试均保留。
@@ -22,14 +24,14 @@
 
 PHP 8.3.35 下，MySQL 8.4.11、MariaDB 11.4.13各自运行11套件并通过。每个数据库的最终断言数：安装/认证59、采集130、分析250、治理199、SSO15、GeoIP/诊断30、密钥15、手动搜索48、供应商94、MCP73、日期备注48，共961。公共PSL和解析案例在不同数据库运行时重复执行，断言数不代表独立功能数。
 
-最终统一日志对应同一候选源码，11套件在两种数据库逐套串行通过。此前治理78/91与分析100是较早检查点的结果，不累加为最终次数。独立复核真实复现并修复HTTP旧删除日志窗口、报表周期、审计、分享和告警7组问题；实现者之外的定向复验每库50项，共100/100通过，原失败证据保留。后续分析250含真实capture→backup→restore、late→capture追平、持久热图、配置变更、保留天数上调后真实裁剪边界，以及已裁剪边界小时晚到后明确失效。见 [最终套件结果](test-evidence/php-20261015/suite-results.json)、[最终完整日志](test-evidence/php-20261015/php-dual-database-final.log.txt)、[独立修复前后复核](test-evidence/php-20261015/checkpoint-review/fixed-results.json)。
+最终统一日志对应同一候选源码，11套件在两种数据库逐套串行通过。此前治理78/91与分析100是较早检查点的结果，不累加为最终次数。独立复核真实复现并修复HTTP旧删除日志窗口、报表周期、审计、分享和告警7组问题；实现者之外的定向复验每库50项，共100/100通过，原失败证据保留。后续分析250含真实capture→backup→restore、late→capture追平、持久热图、配置变更、保留天数上调后真实裁剪边界，以及已裁剪边界小时晚到后明确失效。见 [最终套件结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/suite-results.json)、[最终完整日志](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/php-dual-database-final.log.txt)、[独立修复前后复核](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/checkpoint-review/fixed-results.json)。
 
-- 早期源码HTTP与预览包完成28项检查；新增微额收入精确字符串检查后，最终源码以及最终发行包的MySQL、MariaDB环境分别29/29通过。最终Nginx 1.28 / PHP-FPM 8.3中，MySQL保留测试私有状态执行包升级，MariaDB从独立空库真实网页安装、登录和创建站点。FPM与CLI以同一网站用户运行；worker实际处理队列。运行容器没有Node可执行文件，公开路径不能读取配置、bootstrap或隐藏环境文件。测试地址仅限隔离loopback，不是正式部署；未操作真实1Panel控制面板。见 [最终运行指纹](test-evidence/php-20261015/fpm-final-runtime.json)。
-- 最终包的预构建React前端连接真实PHP/MySQL，39个报告入口分别检查少量/空数据桌面，再对8个关键入口检查390px窄屏，共94状态通过，页面/API契约/全局横向溢出错误均为零。详情与编辑流程由对应业务套件覆盖。见 [最终包浏览器结果](test-evidence/php-20261015/fpm-final/browser-release-results.json)、[实际HTTP资源指纹](test-evidence/php-20261015/fpm-final/browser-release-asset-verification.json)。此前源码构建的94状态与555条API GET另保留在 [旧构建结果](test-evidence/php-20261015/browser-final-results.json) 和 [旧构建独立看图记录](test-evidence/php-20261015/browser-final-review.json)，不混用其资源哈希。
-- 原Fastify真实注册157条路由，PHP注册152条；参数别名归一后原API路径均有对应。原通配SPA及7个Tracker路径由Nginx静态服务处理；PHP另有capabilities/operations/实验预检入口。此清单仅用于查漏，不能证明处理语义相同，见 [路由清单](test-evidence/php-20261015/routes.json)。
-- 发布包18项检查通过，包括严格umask构建、文件和目录模式、完整资源、无实例私密文件/Node依赖、内容篡改/多余文件/符号链接拒绝、保留权限解包后再验证，以及禁止输出覆盖源码。清单含121个运行文件；最终发布包修订、大小和SHA256以交付的清单及收据为准。见 [发布检查](test-evidence/php-20261015/package-publisher.log.txt)。
+- 早期源码HTTP与预览包完成28项检查；新增微额收入精确字符串检查后，最终源码以及最终发行包的MySQL、MariaDB环境分别29/29通过。最终Nginx 1.28 / PHP-FPM 8.3中，MySQL保留测试私有状态执行包升级，MariaDB从独立空库真实网页安装、登录和创建站点。FPM与CLI以同一网站用户运行；worker实际处理队列。运行容器没有Node可执行文件，公开路径不能读取配置、bootstrap或隐藏环境文件。测试地址仅限隔离loopback，不是正式部署；未操作真实1Panel控制面板。见 [最终运行指纹](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/fpm-final-runtime.json)。
+- 最终包的预构建React前端连接真实PHP/MySQL，39个报告入口分别检查少量/空数据桌面，再对8个关键入口检查390px窄屏，共94状态通过，页面/API契约/全局横向溢出错误均为零。详情与编辑流程由对应业务套件覆盖。见 [最终包浏览器结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/fpm-final/browser-release-results.json)、[实际HTTP资源指纹](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/fpm-final/browser-release-asset-verification.json)。此前源码构建的94状态与555条API GET另保留在 [旧构建结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/browser-final-results.json) 和 [旧构建独立看图记录](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/browser-final-review.json)，不混用其资源哈希。
+- 原Fastify真实注册157条路由，PHP注册152条；参数别名归一后原API路径均有对应。原通配SPA及7个Tracker路径由Nginx静态服务处理；PHP另有capabilities/operations/实验预检入口。此清单仅用于查漏，不能证明处理语义相同，见 [路由清单](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/routes.json)。
+- 发布包18项检查通过，包括严格umask构建、文件和目录模式、完整资源、无实例私密文件/Node依赖、内容篡改/多余文件/符号链接拒绝、保留权限解包后再验证，以及禁止输出覆盖源码。清单含121个运行文件；最终发布包修订、大小和SHA256以交付的清单及收据为准。见 [发布检查](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/package-publisher.log.txt)。
 
-主会话后续复核的四项已另行实证修复：回放/事件去重墓碑保留私密元数据并从新full导出泄露（旧预览包真实HTTP JSON、CSV均复现；当前全表扫描均无已删标识）；默认RR快照下queue旧revision覆盖新任务（双连接locking-current-read回归）；AI两种请求体共用同一幂等键（缓存校验transport复现后按阶段分键）；既有删除记录一概阻断干净历史（精确非retention删除水位允许干净重捕获，后续新删除仍拒绝）。去重收据在旧库、删除后已applied记录、旧加密备份恢复时均最小化；站点full导出覆盖全部业务命名空间，明确排除内部索引/隐私墓碑，灾备仍保留必要私有索引。参见 [HTTP泄露前后对照](test-evidence/php-20261015/receipt-privacy/compare.json)。
+主会话后续复核的四项已另行实证修复：回放/事件去重墓碑保留私密元数据并从新full导出泄露（旧预览包真实HTTP JSON、CSV均复现；当前全表扫描均无已删标识）；默认RR快照下queue旧revision覆盖新任务（双连接locking-current-read回归）；AI两种请求体共用同一幂等键（缓存校验transport复现后按阶段分键）；既有删除记录一概阻断干净历史（精确非retention删除水位允许干净重捕获，后续新删除仍拒绝）。去重收据在旧库、删除后已applied记录、旧加密备份恢复时均最小化；站点full导出覆盖全部业务命名空间，明确排除内部索引/隐私墓碑，灾备仍保留必要私有索引。参见 [HTTP泄露前后对照](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/receipt-privacy/compare.json)。
 
 安装页的一次性nonce、配置和主密钥未记录到证据；测试账号和事件使用`.test`合成数据。桌面和窄屏截图已经分别实际打开查看，截图路径与是否使用受控API夹具均在各自JSON中标明。
 
@@ -53,4 +55,4 @@ PHP 8.3.35 下，MySQL 8.4.11、MariaDB 11.4.13各自运行11套件并通过。�
 
 测试中曾因本地磁盘满导致浏览器请求中断；该次失败不计入上述最终结果。仅清理本轮已完成的Node测试容器、卷及对应镜像后，重新验证当前构建。原PostgreSQL开发数据、Windows草稿与历史证据没有删除。CLI和FPM权限必须一致，不能用放宽私密文件权限规避。
 
-证据目录：[php-20261015](test-evidence/php-20261015/)。总览单独的整页截图与验收：[总览布局记录](OVERVIEW_LAYOUT_20261015.md)。仓库归档：[整理记录](REPOSITORY_ORGANIZATION_20261015.md)。
+证据目录：[php-20261015](https://github.com/bocmiao/baize-analytics/tree/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015)。总览单独的整页截图与验收：[总览布局记录](OVERVIEW_LAYOUT_20261015.md)。仓库归档：[整理记录](REPOSITORY_ORGANIZATION_20261015.md)。

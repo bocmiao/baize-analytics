@@ -1,5 +1,7 @@
 # 增量更新最终验收与六包交付（2026-10-13）
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](../REPOSITORY_MAINTENANCE_20261110.md)。
+
 > 历史报告：最终冻结 38c9c61 的复核和六包清单见 [2026-10-14 最终复核](INCREMENTAL_UPDATE_CLOSURE_20261014.md)。此处 d8362d0 为旧产物，不代表当前交付。
 
 代码冻结提交 `d8362d0ae6834bd500b119bfd73fbbc60010f421`；接续补丁来自 d4115f7，经独立提交保留来源，没有冒用原提交身份。早先 52c2ddf 的标准/Lite 共享运行时包是中间产物，本报告的六包清单替代它作为最终部署交付；历史文件和原包保留。
@@ -31,7 +33,7 @@
 
 ## 页面与空间保护
 
-标准/Lite 1440px 和 320px 实际 Docker 应用截图：[标准桌面](../screenshots/incremental-update-final-20261013/update-standard-1440.png)、[标准手机](../screenshots/incremental-update-final-20261013/update-standard-320.png)、[Lite 桌面](../screenshots/incremental-update-final-20261013/update-lite-1440.png)、[Lite 手机](../screenshots/incremental-update-final-20261013/update-lite-320.png)。保持既有紧凑布局，仅完善更新页。无横向溢出、无页面错误；checkbox、Tab、reduced-motion 已操作。回滚提示明确无下载，下方仅是上次检查计划。
+标准/Lite 1440px 和 320px 实际 Docker 应用截图：[标准桌面](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-final-20261013/update-standard-1440.png)、[标准手机](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-final-20261013/update-standard-320.png)、[Lite 桌面](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-final-20261013/update-lite-1440.png)、[Lite 手机](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-final-20261013/update-lite-320.png)。保持既有紧凑布局，仅完善更新页。无横向溢出、无页面错误；checkbox、Tab、reduced-motion 已操作。回滚提示明确无下载，下方仅是上次检查计划。
 
 新截图通过受支持 Library upload helper 提交，但 tools/list network 错误导致未保存、没有 Library ID；LIBRARY_UPLOAD_RESULT.json 是失败证据。最终截图已保存在 Git 和本环境，可在服务恢复后再上传。
 

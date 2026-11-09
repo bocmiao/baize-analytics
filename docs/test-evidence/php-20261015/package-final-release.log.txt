@@ -1,2 +1,0 @@
-{"verified":true,"files":121,"revision":"8ee220f17ed921e92f775bc3b93e8380f05e8318","profile":"standard"}
-{"archive":"/workspace/baize-analytics/.baize/releases/baize-php-8ee220f.tar.gz","sha256":"560455292f59af694b5fa2eefa3274c6b545e6d6636e1f52323c0f635166cb7e","bytes":1912027}

@@ -1,10 +1,12 @@
 # Node → PHP 接口与能力对照（2026-10-15）
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](REPOSITORY_MAINTENANCE_20261110.md)。
+
 原版基线为 `f26db98fbb727a1b5c6e42d5eeefda2a8bbcd0e6`。PHP独立实现检查点 `797851476f13a4daa3ea3edbc9869cc6e0477a6f` 已同步main；该检查点之后的独立复核发现HTTP隐私读取、历史快照语义和报表周期问题，第二检查点7c66bb9及后续250/199业务回归已经修复这些问题；最终统一11套件每库961项通过。旧检查点不作为最终发行包。
 
 对照分为实际接口清单、统计语义、安全与后台能力。每条接口都给出实现模块、组回归和差异；“组回归”表示对应业务测试有断言，不表示每个输入、状态和并发组合都经过Node/PHP逐字节差分。原React/ECharts前端保留不构成后端等价证明。
 
-完整机器清单：[157条逐接口记录](test-evidence/php-20261015/interface-matrix.json)。实际注册来源：[Node/PHP路由清单](test-evidence/php-20261015/routes.json)。PHP多出的capabilities、operations与实验预检不计为原功能完成数。
+完整机器清单：[157条逐接口记录](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/interface-matrix.json)。实际注册来源：[Node/PHP路由清单](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/routes.json)。PHP多出的capabilities、operations与实验预检不计为原功能完成数。
 
 ## 统计语义与剩余差异
 
@@ -204,4 +206,4 @@
 | GET /tracker.js | Nginx静态/SPA | static | 实现+组回归 |
 | GET /tracker.LICENSE.txt | Nginx静态/SPA | static | 实现+组回归 |
 
-数据库分别实测，测试次数与源码绑定：[验证记录](PHP_VALIDATION_20261015.md)、[逐套件结果](test-evidence/php-20261015/suite-results.json)。
+数据库分别实测，测试次数与源码绑定：[验证记录](PHP_VALIDATION_20261015.md)、[逐套件结果](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/php-20261015/suite-results.json)。

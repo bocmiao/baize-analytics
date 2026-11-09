@@ -1,5 +1,7 @@
 # PR #3 UI v2 整合验收（2026-10-17）
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](REPOSITORY_MAINTENANCE_20261110.md)。
+
 本轮在 main `b6744cbd50da0b60bf2393e418a04c37e737ebf5` 与原 PR head `b2b6672f89b37a6f6afd96c422794a955b0f1560` 上检查、修复和验证。保留 React/ECharts、青玉/墨玉、Node 标准版、Lite 能力边界和 PHP 标准版。未运行 GitHub Actions/CNB，未部署生产、购买服务或更改凭证/权限。
 
 ## 发现和修复
@@ -42,6 +44,6 @@ TEST_DATABASE_URL='postgres://LOCAL_TEST_DATABASE' PLAYWRIGHT_CHROMIUM_EXECUTABL
 
 集成测试另需本地测试 Redis；ClickHouse 等可选用例保持其原有显式环境条件。测试凭证全部为隔离合成 fixture，不是用户秘密。
 
-[源文件/构建摘要与测试边界](test-evidence/pr3-ui-20261017/receipt.json)、[最终截图及视口/SHA256](test-evidence/pr3-ui-20261017/screenshots.json)、[UI 原始日志](test-evidence/pr3-ui-20261017/review-final.log.txt)、[集成整套中间日志](test-evidence/pr3-ui-20261017/integration-complete-intermediate.log.txt)、[tracker 完整补跑](test-evidence/pr3-ui-20261017/tracker-repeat.log.txt)、[PHP 青玉](test-evidence/pr3-ui-20261017/php-light-results.json)、[PHP 墨玉](test-evidence/pr3-ui-20261017/php-dark-results.json)。
+[源文件/构建摘要与测试边界](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/receipt.json)、[最终截图及视口/SHA256](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/screenshots.json)、[UI 原始日志](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/review-final.log.txt)、[集成整套中间日志](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/integration-complete-intermediate.log.txt)、[tracker 完整补跑](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/tracker-repeat.log.txt)、[PHP 青玉](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/php-light-results.json)、[PHP 墨玉](https://github.com/bocmiao/baize-analytics/blob/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/test-evidence/pr3-ui-20261017/php-dark-results.json)。
 
 截图均为合成数据；深色总览的受控统计单独标注。邀请链接遮罩。`before/` 仅为原 PR 缺陷的负例，不是最终界面。金额图、成员错误态和实时 ISO 示例均有独立最终截图。

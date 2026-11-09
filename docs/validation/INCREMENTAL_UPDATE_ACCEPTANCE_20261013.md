@@ -1,5 +1,7 @@
 # 标准版与 Lite 实例增量更新：接续验收
 
+> 历史附件已移至固定提交存档，以下结果仍只对应本文日期。原始图片、日志和 JSON 保持不变，见[仓库整理记录](../REPOSITORY_MAINTENANCE_20261110.md)。
+
 2026-10-13 在新隔离云环境接续，未返回旧环境重试或删除旧包。补丁原始字节数194849，SHA256 `7f6b3a5feefc8846838eaaa80b0b34a084cbb9759803f26e97baa273189362b9`；五片、完整编码及原补丁哈希均匹配，`git apply --check`通过后应用。接续来源为`d4115f7a6bedaa0ae95c64f30cfdc22d99dde56b`，生成新的普通提交，未重建其作者身份。
 
 ## 最终实现和产物来源
@@ -43,4 +45,4 @@
 
 仓库没有`.github/workflows`，`.cnb.yml`仅有web_trigger/web_trigger_validate，无push/cron触发。普通提交使用`[skip ci]`，未运行Actions/CNB或改变权限；普通推送前后另核对远端main，禁止force。
 
-四张最终截图已保存在[截图目录](../screenshots/incremental-update-20261013/)。Library当前支持的准备上传辅助流程在读取工具列表阶段网络失败；扩大网络权限的同一路线仍失败，未进入上传/最终保存，不能声称截图已保存Library。这是剩余交付阻塞；截图文件和Git证据已保留，可在Library连接恢复后保存。
+四张最终截图已保存在[截图目录](https://github.com/bocmiao/baize-analytics/tree/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-20261013)。Library当前支持的准备上传辅助流程在读取工具列表阶段网络失败；扩大网络权限的同一路线仍失败，未进入上传/最终保存，不能声称截图已保存Library。这是剩余交付阻塞；截图文件和Git证据已保留，可在Library连接恢复后保存。
