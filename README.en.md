@@ -1,3 +1,5 @@
+<p><img src="public/brand/baize-head.png" width="48" height="48" alt="Baize logo"></p>
+
 # Baize Analytics
 
 **Understand traffic, page performance and conversions on your own server.**
@@ -18,14 +20,16 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 
 ## Interface
 
-Desktop and mobile share one interface with light and dark themes. These screenshots were captured from the running NAS instance on November 10, 2026, using a separate demonstration site. See [capture details and validation scope](docs/images/README.md).
+The current dashboard uses a white desktop workspace, with navigation and report layouts adapted for mobile. The preview uses a separate demonstration site's data. See [capture details and validation scope](docs/images/README.md).
 
-![Baize desktop interface](docs/images/baize-desktop.png)
+The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See [interface and report scope](docs/51LA_ALIGNMENT.md) (Chinese).
+
+![Baize desktop interface](docs/images/baize-desktop.jpg)
 
 <details>
 <summary>Mobile layout</summary>
 
-![Baize mobile interface](docs/images/baize-mobile.png)
+![Baize mobile interface](docs/images/baize-mobile.jpg)
 
 </details>
 

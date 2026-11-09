@@ -169,6 +169,40 @@ curl --fail-with-body --no-buffer -H "Authorization: Bearer $BAIZE_API_TOKEN" \
   "$BAIZE_BASE/api/v1/sites/$BAIZE_SITE_ID/realtime/stream"
 ```
 
+### 新流量报表：Node 标准版
+
+以下三个接口要求对应站点的 `read` 权限，前缀仍为 `S=/api/v1/sites/:siteId`。Node 标准版的 `GET /api/capabilities` 返回 `capabilities.trafficReports=true`；Node Lite、独立 PHP 版不因共用界面而自动获得这些接口。客户端应先检查实际实例的能力声明。
+
+| GET 路径 | 参数 | 返回摘要 |
+| --- | --- | --- |
+| `S/traffic-report` | `from?`、`to?`；`path`、`channel`、`utm_source`、`utm_medium`、`utm_campaign`、`utm_term`、`utm_content` 可选精确过滤 | `totals`、`groups`、`days`、`hours`、`dimensionTrend`、`visitors`、`engagement`，以及覆盖率与隐私状态 |
+| `S/visits` | 同上；`page=1`、`pageSize=25`；另可按 `visitorType=new/returning/unknown`、`referrer`、`city`、`entry`、`visitorKey`、`ipPrefix`、`keyword`、`browser` 精确过滤 | 分页会话 `rows`、`total`、`page`、`pageSize`、独立实时窗口 `live`，以及明细覆盖率 |
+| `S/overview-summary` | 同样的七项内容过滤；`extended=0/1` 可选，默认不读取扩展历史 | `asOf`、`timezone`、`today`、`yesterday`、`yesterdaySameTime`、`active15`、`live`、`forecast`；`extended=1` 时附加 `extended` |
+
+**日期与分页。** `traffic-report`、`visits` 的时间均为 ISO 8601 UTC，区间为 **`[from,to)`，不包含结束时刻**。默认最近 7 天，最长 366 天；未来的 `to` 截至查询时刻，响应 `to` 是实际结束时刻，`requestedTo` 保留请求值。会话分页 `page` 为 1–100000，`pageSize` 为 1–100，过滤先于分页。`overview-summary` 固定使用站点日历周期，传入 `from/to` 不改变这些周期。
+
+**流量报表。** `groups` 包含 `channel`、`page`、`entry`、`visitorType`、`country`、`city`、`referrer`、`searchEngine`、`external`、`keyword`、`directory`、`domain`、`isp`、`ipPrefix`、`campaign`、`utm_source`、`utm_medium`、`device`、`browser`、`os`、`screen`、`language`、`week`、`month`。每行提供 `label`、`pv`、`uv`、`ips`、`sessions`、`bounceRate`、`averageDuration`、`newVisitors`、`returningVisitors`、`unknownVisitors`；比率为 0–1，时长单位为秒。入口页的 PV 是从该页进入的会话在窗口内产生的浏览量。
+
+`days` 使用站点时区的 `day=YYYY-MM-DD`。`hours` 仅在所选范围属于单个站点日且明细完整时提供，`time` 是站点当地整点对应的 ISO 时间戳，补齐 `[from,min(to,now))` 中没有事件的小时；夏令时切换日按实际时间递增，可有 23 或 25 个小时。多日或覆盖缺失时返回 `hours=[]`，不能据此补成全天零流量。`dimensionTrend.channel/page` 提供当前范围 Top 5 的逐日数据；`dimensionTrend.visitorType` 按每一天的新访客、回访访客和未知访客分别计算。
+
+新老分类依据真实的 `visitor_first_seen.first_date`。整周期维度按对应范围或周/月桶分类；每日、每小时与访问明细按各自站点日期分类。同一位访客可以在首次访问当天计为新访客、第二天计为回访访客。缺少首次记录时保留 `unknown`，不假定为新访客。UV 按集合去重，不能相加每日、小时或维度 UV 得到周期 UV。
+
+**访问明细。** 每个 `rows` 项为一次会话，字段包括 `id`、`time`、`visitorKey`、`visitorType`、`city`、`ipPrefix`、`browser`、`referrer`、`entry`、`keyword`、`pageviews`、`duration`、`paths:[{time,path}]`。会话须在所选范围内开始，活动只计算到实际 `to`；这不是会话未来的完整时长。会话前置上下文不足时返回 `sessionStatus=partial_session_context`，不会把中途访问当作新的完整会话。明细不完整时 `rows=[]`、`total=null`。
+
+**概况与实时。** 三个概况周期分别为站点今日零点至 `asOf`、昨日零点至今日零点、昨日零点至昨日相同当地时刻；不是简单减去固定 24 小时。每个周期都有独立的 `totals`、`coverage`、`rangeStatus` 和 `visitors` 状态。昨日明细过期或截断，不会使今日已完整读取的访客分类失效。
+
+`live` 固定读取查询时刻前 30 分钟，不随历史筛选日期移动：`active` 提供最近 5/15/30 分钟页面访问或心跳的去重访客，`pageviews` 是由旧到新的 30 个逐分钟 PV 桶，`pages` 是该实时窗口内的页面 PV。`active15` 单独提供最近 15 分钟的访客与 PV。实时窗口有自己的 `from/to/coverage/status`。`forecast` 当前为 `status=not_estimated`，数值为 `null`，没有填入预测或演示数值。
+
+**历史展开。** `extended=1` 才读取 `extended.thisMonth`、`extended.total`、`extended.peaks` 和 `extended.history`。本月、总流量分别返回 `from/to/totals/coverage/status`；峰值按指标返回 `{value,date}`，日期为站点时区的 `YYYY-MM-DD`，并列时取最近日期。历史来源为已发布事实与可用旧汇总，`history.scope=available_published_history`，起点不等于原始明细保留期。总 UV 使用跨历史集合去重；总跳出率和平均时长使用总跳出次数、总时长除以总会话量。
+
+历史旧小时汇总与当前事实同小时重叠、缺少档案、旧汇总无法精确过滤或日期边界不可拆分时，不把两份数值相加。`overlapping_legacy_history` 会使受影响的总值和峰值为 `null`，`history.overlap` 给出边界；本月覆盖同一重叠时也标不可用。分别检查 `thisMonth`、`total`、`peaks` 的覆盖率，不能把折叠行能显示当作完整历史已还原。
+
+**隐私与不可用值。** 这三个接口没有新增原始 IP 或独立 IP 身份的采集。现有标准隐私模式只保留脱敏网段，因此 `ipStatus=not_collected`、`ips=null`；网段 PV/UV 不是独立 IP 数。运营商未采集，`providerStatus=not_collected`，不根据网段猜测运营商。`daily_salt` 模式不返回 IP 网段、新老访客或跨日 UV；同日 UV 可用，跨日实时窗口的活跃访客也可能为 `null`。
+
+单次明细读取上限为 100000 条事件，JSON 响应上限为 8 MiB。请同时检查 `coverage`、`status`、`sessionStatus`、`uvStatus`、`visitors.status`、`aggregationPending` 和实时窗口状态。`detail_limit_exceeded`、`raw_detail_retired`、`outside_raw_retention`、`detail_unavailable` 表示无法给出完整明细，空数组或 `null` 不等于零访问。聚合指标和原始明细的覆盖范围可以不同。
+
+实现范围与公开参考来源见[界面与报表说明](51LA_ALIGNMENT.md)。
+
 ## 目标、漏斗、实验、回放 / Goals, funnels, experiments, replay
 
 S/goals与S/funnels：GET(read)、POST(write)、PUT `/:id`(write)、DELETE `/:id`(write)。目标 `{name,type:event|page|duration,config}`，对应event_name/path/seconds；漏斗 `{name,steps:[{type:page|event,value}],strict}`。变更使generation增量并排队重算；不是立刻完整统计。GET S/jobs(admin)返回聚合租约、attempts、dead_letter、watermark/outbox计数；POST S/jobs/replay(admin)更新epoch并清重试状态，旧worker失去fence，保留明细重算。
