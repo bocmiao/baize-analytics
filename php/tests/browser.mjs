@@ -6,7 +6,7 @@ const base=process.env.BAIZE_PHP_HTTP_URL||'http://127.0.0.1:8099';
 if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Only a disposable loopback PHP fixture may be tested');
 const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-http/session.json','utf8'));
 if(!/^[a-zA-Z0-9_-]{1,128}$/.test(fixture.siteId)||!fixture.cookie?.startsWith('baize_session='))throw Error('Private PHP HTTP fixture is unavailable');
-const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015';mkdirSync(output,{recursive:true});
+const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'.baize/test-evidence/php';mkdirSync(output,{recursive:true});
 const theme=process.env.BAIZE_PHP_BROWSER_THEME||'light';if(!['light','dark'].includes(theme))throw Error('Invalid browser theme');
 const pass=process.env.BAIZE_PHP_BROWSER_PASS||'initial';if(!/^[a-z0-9-]{1,40}$/.test(pass))throw Error('Invalid evidence pass name');
 const source=readFileSync('src/web/workspaceRoute.ts','utf8');

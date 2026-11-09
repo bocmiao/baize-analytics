@@ -1,1 +1,0 @@
-{"suite":"php-publisher-package","passed":18,"files":121,"checks":["restrictive umask","complete modules/resources","no private files or Node","content/mode/extra-file/symlink rejection","tar extraction","source/output safety"]}

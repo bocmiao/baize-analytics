@@ -1,5 +1,0 @@
-{
-  "documents": 206,
-  "relativeLinks": 756,
-  "broken": []
-}

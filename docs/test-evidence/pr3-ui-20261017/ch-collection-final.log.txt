@@ -1,8 +1,0 @@
-
- RUN  v4.1.11 /tmp/baize-pr3-20261017
-
-
- Test Files  4 skipped (4)
-      Tests  16 skipped (16)
-   Start at  03:24:12
-   Duration  5.04s (transform 1.88s, setup 0ms, import 3.77s, tests 0ms, environment 0ms)

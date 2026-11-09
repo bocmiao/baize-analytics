@@ -1,0 +1,105 @@
+name: baize-nas-test
+
+# Standalone source deployment. Run from the repository root with:
+# docker compose --env-file .baize/nas.env -f deploy/docker-compose.nas.example.yml ...
+# Keep NAS_DATA_ROOT on a verified local SSD filesystem.
+services:
+  app:
+    image: ${BAIZE_NAS_IMAGE:-baize-analytics:nas-local}
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    user: "${BAIZE_UID:-1000}:${BAIZE_GID:-1000}"
+    ports:
+      - "${NAS_LISTEN_IP:-127.0.0.1}:${BAIZE_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+      DATABASE_URL: postgres://baize:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the private environment file}@postgres:5432/baize
+      REDIS_URL: redis://redis:6379
+      DATA_DIR: /app/data
+      KEYS_DIR: /app/keys
+      MASTER_KEY_FILE: /run/secrets/master_key
+      NPM_CONFIG_CACHE: /app/data/npm-cache
+    secrets:
+      - master_key
+    volumes:
+      - type: bind
+        source: ${NAS_DATA_ROOT:?Set NAS_DATA_ROOT to an absolute SSD path}/storage/app
+        target: /app/data
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${NAS_DATA_ROOT:?Set NAS_DATA_ROOT to an absolute SSD path}/storage/keys
+        target: /app/keys
+        bind:
+          create_host_path: false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: baize
+      POSTGRES_USER: baize
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the private environment file}
+    volumes:
+      - type: bind
+        source: ${NAS_DATA_ROOT:?Set NAS_DATA_ROOT to an absolute SSD path}/storage/postgres
+        target: /var/lib/postgresql/data
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U baize -d baize"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-bookworm
+    restart: unless-stopped
+    command: [redis-server, --appendonly, "yes"]
+    volumes:
+      - type: bind
+        source: ${NAS_DATA_ROOT:?Set NAS_DATA_ROOT to an absolute SSD path}/storage/redis
+        target: /data
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+secrets:
+  master_key:
+    file: ${NAS_DATA_ROOT:?Set NAS_DATA_ROOT to an absolute SSD path}/secrets/master.key

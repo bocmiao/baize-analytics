@@ -1,8 +1,0 @@
-
- RUN  v4.1.11 /tmp/baize-pr3-delivery-20261017
-
-
- Test Files  1 passed (1)
-      Tests  4 passed (4)
-   Start at  03:30:41
-   Duration  6.19s (transform 37ms, setup 0ms, import 473ms, tests 5.53s, environment 0ms)

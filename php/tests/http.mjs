@@ -4,7 +4,7 @@ import {chromium} from '@playwright/test';
 const base=process.env.BAIZE_PHP_HTTP_URL||'http://127.0.0.1:8099';
 if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Only a disposable loopback PHP fixture may be tested');
 const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-http/session.json','utf8'));
-const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015';mkdirSync(output,{recursive:true});
+const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'.baize/test-evidence/php';mkdirSync(output,{recursive:true});
 let checks=0;const check=(condition,message)=>{if(!condition)throw Error(message);checks++;};
 const json=async(path,{method='GET',body,anonymous=false,...options}={})=>{const res=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(anonymous?{}:{cookie:fixture.cookie}),...options.headers},...(body!==undefined?{body:typeof body==='string'?body:JSON.stringify(body)}:{})});const result=await res.json().catch(()=>null);return {status:res.status,result};};
 const now=Date.now()-60000,visitor=randomUUID(),page=randomUUID(),site=fixture.siteId;

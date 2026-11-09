@@ -18,3 +18,15 @@ keys/
 **/.env.*
 **/*.key
 secrets/
+
+# Design drafts and historical validation output are not application build inputs.
+# Keep current guides, README images, licensing data, source and test fixtures.
+docs/design/
+docs/ui-prototypes/
+docs/screenshots/
+docs/test-evidence/
+docs/performance/
+docs/validation/
+docs/archive/
+coverage/
+*.log

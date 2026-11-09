@@ -68,7 +68,7 @@ Docker发布器 `python3 scripts/publish-image-update.py` 从两个明确的本�
 
 ## 本地验收记录
 
-2026-10-13 新云环境真实 Docker 结果见 `docs/test-evidence/incremental-update-20261013/standard-docker.json` 与 `lite-docker.json`。两版实际完成增量下载、真实备份、版本/清单/启动身份与数据库健康、回滚及升级前后写入保留；标准版修复密钥包目录碰撞后连续回滚通过。`ui.json` 记录真实应用桌面和320px、确认框、键盘Tab、reduced-motion、无横向溢出与页面异常；截图位于 `docs/screenshots/incremental-update-20261013/`。测试镜像身份和签名仅供隔离验收，不能作为正式基础包或生产信任锚。
+2026-10-13 新云环境真实 Docker 结果见 `docs/test-evidence/incremental-update-20261013/standard-docker.json` 与 `lite-docker.json`。两版实际完成增量下载、真实备份、版本/清单/启动身份与数据库健康、回滚及升级前后写入保留；标准版修复密钥包目录碰撞后连续回滚通过。`ui.json` 记录真实应用桌面和320px、确认框、键盘Tab、reduced-motion、无横向溢出与页面异常；截图见[固定提交中的历史目录](https://github.com/bocmiao/baize-analytics/tree/3dac02284c4dee43b891a65c85e8b1da46a1bc7c/docs/screenshots/incremental-update-20261013)。测试镜像身份和签名仅供隔离验收，不能作为正式基础包或生产信任锚。
 
 ## 执行器失锁、容器策略和 schema 信任边界
 

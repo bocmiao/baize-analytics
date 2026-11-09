@@ -5,7 +5,7 @@ import {execFileSync} from 'node:child_process';
 
 const base=process.env.BAIZE_PHP_HTTP_URL||'http://127.0.0.1:8099';if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Disposable loopback fixtures only');
 const fixture=JSON.parse(readFileSync(process.env.BAIZE_PHP_HTTP_SESSION||'.baize/php-http/session.json','utf8'));
-const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'docs/test-evidence/php-20261015/receipt-privacy';mkdirSync(output,{recursive:true});
+const output=process.env.BAIZE_PHP_HTTP_EVIDENCE||'.baize/test-evidence/php/receipt-privacy';mkdirSync(output,{recursive:true});
 const baseline=process.env.BAIZE_EXPECT_RECEIPT_LEAK==='1';
 const json=async(path,body)=>{const response=await fetch(base+path,{method:body===undefined?'GET':'POST',headers:{cookie:fixture.cookie,Origin:base,'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});const data=await response.json();return {status:response.status,data};};
 const created=await json('/api/v1/sites',{name:'去重墓碑隐私HTTP验收',domain:'php-fixture.example.test',timezone:'UTC',config:{replay:true}});assert.equal(created.status,201);const site=created.data.site.id;

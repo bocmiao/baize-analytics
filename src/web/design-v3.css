@@ -69,6 +69,11 @@ details:not([open]) > :not(summary){display:none!important}
 .v3-header .brand{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--fg);min-width:0}
 .mark{width:22px;height:22px;border-radius:6px;background:var(--fg);color:var(--bg);display:inline-grid;place-items:center;font-size:12px;font-weight:600;flex:0 0 auto}
 .v3-header .brand-name small{display:block;font-size:10px;letter-spacing:.08em;color:var(--fg-2);font-weight:500}
+/* Override the legacy navigation ID selectors with the active theme colors. */
+.workspace #workspace-navigation .brand,#workspace-navigation .brand-name{color:var(--fg)}
+#workspace-navigation .brand-name small{color:var(--fg-2)}
+.workspace #workspace-navigation .brand{flex-shrink:0;padding:0}
+#workspace-navigation .brand-name{white-space:nowrap}
 .v3-site{min-width:0;display:flex;align-items:center}
 .site-switch-card{display:flex;align-items:center;gap:8px;min-width:0}
 .site-mark{width:16px;height:16px;border-radius:4px;background:var(--surface-2);color:var(--fg-2);border:1px solid var(--border);display:grid;place-items:center;font-size:10px}
@@ -123,6 +128,7 @@ html[data-motion="on"] .workspace #workspace-navigation nav a[aria-current="page
 .visit-stream .visit-device,.visit-stream .visit-country{font-size:12px;font-weight:500;color:var(--fg-2)}
 .compare-toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-2);margin:0}
 .date-range{display:flex;align-items:center;gap:8px;position:relative;margin-left:auto}
+.workspace-toolbar .date-range{background:transparent;border:0;box-shadow:none;padding:0;height:auto}
 .date-scrim{display:none}
 .date-range-trigger{display:inline-flex;align-items:center;gap:6px;height:32px;max-width:100%;padding:0 10px;background:var(--surface);color:var(--fg);border:1px solid var(--border);border-radius:6px;box-shadow:var(--shadow-xs);font-size:12px;font-weight:500}
 .date-trigger-short{display:none}
@@ -208,6 +214,9 @@ html[data-motion="on"] .skel i{animation:v3-shimmer 1.4s linear infinite}
 .auth:not(.auth-entry){display:block;max-width:620px;margin:24px auto;padding:0 16px}
 .lart{display:none!important}
 
+@media(min-width:768px) and (max-width:1023px){
+ .site-switch-copy{display:none}
+}
 @media(max-width:767px){
  .workspace{display:flex}
  .workspace #workspace-navigation{display:flex!important;position:sticky;inset:auto;width:100%;height:auto;max-width:none;z-index:20;overflow:visible;padding:0;background:var(--bg)}
@@ -264,7 +273,7 @@ html[data-motion="on"] .skel i{animation:v3-shimmer 1.4s linear infinite}
 html:not([data-theme="dark"]) .approved-overview .kpis .kpi small.metric-comparison.increasing{color:#146B40}
 html:not([data-theme="dark"]) .approved-overview .kpis .kpi small.metric-comparison.decreasing{color:#A33B2A}
 .metric-delta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
-.metric-compare-label{color:var(--fg-2);font-size:12px;font-weight:500}
+.approved-overview .kpis .kpi .metric-compare-label{color:var(--fg-2);font-size:12px;font-weight:500}
 .overview-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 .overview-breakdown-grid,.overview-source-stack,.overview-audience-stack{display:contents}
 .overview-trend-panel{grid-column:1/-1;grid-row:1}
@@ -313,6 +322,11 @@ html:not([data-theme="dark"]) .approved-overview .kpis .kpi small.metric-compari
 .skel-card{min-height:180px}
 .skel-card i{height:16px}
 .baize-loading{min-height:240px}
+@container overview (min-width:680px) and (max-width:959px){
+ .approved-overview .kpis.overview-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .approved-overview .kpis .kpi:nth-child(3n+1){border-left:0}
+ .approved-overview .kpis .kpi:nth-child(n+4){border-top:1px solid var(--border)}
+}
 @container overview (max-width:679px){
  .approved-overview .kpis.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
  .approved-overview .kpis .kpi:nth-child(odd){border-left:0}
