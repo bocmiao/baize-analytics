@@ -1,3 +1,5 @@
+<p><img src="public/brand/baize-head.png" width="48" height="48" alt="白泽 Logo"></p>
+
 # 白泽 Baize Analytics
 
 **把网站流量、页面表现和转化放在自己的服务器上。**
@@ -18,14 +20,16 @@
 
 ## 界面预览
 
-桌面和手机共用一套界面，支持深浅主题。以下为 2026-11-10 在 NAS 上运行的实际截图，使用独立演示站点的数据；[截图来源与验证范围](docs/images/README.md)。
+当前后台采用白色桌面工作台，手机端提供适配的导航与报表布局。预览使用独立演示站点的数据；[截图来源与验证范围](docs/images/README.md)。
 
-![白泽桌面端界面](docs/images/baize-desktop.png)
+这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。具体范围见[界面与报表说明](docs/51LA_ALIGNMENT.md)。
+
+![白泽桌面端界面](docs/images/baize-desktop.jpg)
 
 <details>
 <summary>查看手机布局</summary>
 
-![白泽手机端界面](docs/images/baize-mobile.png)
+![白泽手机端界面](docs/images/baize-mobile.jpg)
 
 </details>
 

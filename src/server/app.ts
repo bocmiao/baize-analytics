@@ -1,4 +1,5 @@
 import {registerUpdates} from '../update/http.js';
+import {register51laReports} from './51la-reports.js';
 import {maintenanceActive,runningUpdateIdentity} from '../update/maintenance.js';
 import {installFactStore} from './fact-store.js';
 import {installRemainingFactStore} from './remaining-fact-store.js';
@@ -139,15 +140,16 @@ export async function createApp(options:AppOptions={}){
   app.addHook('preParsing',async(req,_reply,payload)=>{if(req.headers['content-encoding']!=='gzip')return payload;let size=0;const chunks:Buffer[]=[];for await(const chunk of payload){const bytes=Buffer.from(chunk);size+=bytes.length;if(size>1024*1024)throw new HttpError(413,'请求过大');chunks.push(bytes);}let out:Buffer;try{out=gunzipSync(Buffer.concat(chunks),{maxOutputLength:1024*1024});}catch{throw new HttpError(400,'无效或过大的 gzip 请求');}delete req.headers['content-encoding'];req.headers['content-length']=String(out.length);const {Readable}=await import('node:stream');return Readable.from(out);});
   app.setErrorHandler((error,_req,reply)=>{if(error instanceof ExternalError)return reply.code(error.statusCode).send({error:error.code,message:error.message});if(error instanceof z.ZodError)return reply.code(400).send({error:'invalid_request',issues:error.issues.map(i=>({path:i.path,message:i.message}))});const {statusCode,...body}=resolveApiError(error);if(body.error==='share_password_busy')reply.header('Retry-After','1');return reply.code(statusCode).send(body);});
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1,updateIdentity};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
-  app.get('/api/capabilities',async()=>({profile:'standard',reports:[],capabilities:{}}));
+  app.get('/api/capabilities',async()=>({profile:'standard',reports:[],capabilities:{trafficReports:true}}));
   registerRequestRateLimits(app,ctx);
-  await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
+  await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await register51laReports(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
-  if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));}
+  if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));
+ app.get('/brand/:file',async(req,reply)=>{const {file}=req.params as {file:string};if(!/^(?:baize-head(?:-16|-32|-48|-96|-512)?\.(?:png|webp)|favicon\.ico)$/.test(file))return reply.code(404).send();return reply.sendFile(file,resolve('public/brand'));});}
   app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
   const maintenance=createMaintenanceRunner([
     ()=>runGovernance(ctx),()=>enforceRetention(pool),

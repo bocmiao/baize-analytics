@@ -1,6 +1,13 @@
 import {describe,expect,it} from 'vitest';
 import {cleanFilters,navigationGroups,readWorkspaceRoute,validCivilDate,workspaceReports,workspaceUrl} from '../../src/web/workspaceRoute.js';
 describe('workspace navigation URL contract',()=>{
+ it('keeps the daily report on the selected last day when opened from a multi-day report',()=>{
+  const route=readWorkspaceRoute('?site=demo&report=daily&from=2026-10-27&to=2026-11-09&path=%2Fdocs');
+  expect(route).toEqual({siteId:'demo',report:'daily',from:'2026-11-09',to:'2026-11-09',filters:{path:'/docs'}});
+  const url=new URL(workspaceUrl({...route,from:'2026-10-27'}),'http://local');
+  expect(url.searchParams.get('from')).toBe('2026-11-09');
+  expect(url.searchParams.get('to')).toBe('2026-11-09');
+ });
  it('preserves existing report URLs and adds the directory and capability-gated traffic routes',()=>{
   const existing=['overview','realtime','pages','sources','audience','downloads','notFound','events','eventTrend','paths','goals','funnels','retention','userpaths','revenue','experiments','vitals','heatmap','replay','seo','gsc','seo-conversions','serp','suggestions','ai','reports','alerts','schedules','updates','settings','ga4','shares','members','tokens','audit','jobs','privacy','exports','channels'];
   for(const report of existing)expect(readWorkspaceRoute('?report='+report).report).toBe(report);
