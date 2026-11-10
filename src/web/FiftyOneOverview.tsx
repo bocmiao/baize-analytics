@@ -3,11 +3,12 @@ import type {OverviewDashboard} from './OverviewDashboard';
 import {api,rows,type Row} from './api';
 import {useReportRead} from './DensePrimitives';
 import {metricText} from './trafficModel';
-import {civilDate,dateRange,previousDateRange} from './time';
+import {civilDate,previousDateRange} from './time';
 import {FiftyOneChart} from './FiftyOneCharts';
 import {dimensionText} from './dimensionLabels';
 import './51la-overview.css';
 import {ForecastNote} from './ForecastNote';
+import {OverviewDateControl} from './OverviewDateControl';
 
 const GeographicMap=lazy(()=>import('./GeographicMap'));
 const metrics=[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['sessions','会话数'],['bounceRate','跳出率'],['averageDuration','平均访问时长']];
@@ -23,7 +24,7 @@ function Ranking({data,label,metric='pv',heading='访客数',title,onSelect}:{da
 }
 
 export function FiftyOneOverview({site,data,previous,compare,query,range,onRange,onReport,onFilter,reportHref,refresh=0,geographyStatus}:Props){
- const [selected,setSelected]=useState('pv'),[tick,setTick]=useState(0),[expanded,setExpanded]=useState(false),[calendar,setCalendar]=useState(false),[draftFrom,setDraftFrom]=useState(range.from),[draftTo,setDraftTo]=useState(range.to);
+ const [selected,setSelected]=useState('pv'),[tick,setTick]=useState(0),[expanded,setExpanded]=useState(false);
  const [mobilePeriod,setMobilePeriod]=useState(0);
  const [summary,setSummary]=useState<{site:string;data?:Row;error?:string}>({site:site.id});
  const reportRefresh=`${refresh}:${tick}`;
@@ -31,7 +32,6 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
  let priorQuery:string|null=null;try{if(compare)priorQuery=previousDateRange(query,site.timezone);}catch{/* A skipped civil date has no comparable period. */}
  const priorTraffic=useReportRead(priorQuery?`/api/v1/sites/${site.id}/traffic-report?${priorQuery}`:null,reportRefresh);
  const geography=useReportRead(`/api/v1/sites/${site.id}/geography?${query}&country=CN`,reportRefresh);
- useEffect(()=>{setDraftFrom(range.from);setDraftTo(range.to);},[range.from,range.to]);
  useEffect(()=>{const timer=setInterval(()=>{if(document.visibilityState==='visible')setTick(n=>n+1);},30000);return()=>clearInterval(timer);},[]);
  useEffect(()=>{const controller=new AbortController();setSummary(old=>old.site===site.id?old:{site:site.id});void api<Row>(`/api/v1/sites/${site.id}/overview-summary${expanded?'?extended=1':''}`,undefined,'GET',controller.signal).then(result=>{if(!controller.signal.aborted)setSummary({site:site.id,data:result});}).catch(error=>{if(!controller.signal.aborted)setSummary({site:site.id,error:error.message});});return()=>controller.abort();},[site.id,refresh,tick,expanded]);
  const overview=summary.site===site.id?summary.data:undefined;
@@ -61,7 +61,7 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
  const rawDevices=groups.device||Object.entries(((data.audience as Row|undefined)?.device||{}) as Row).map(([label,pv])=>({label,pv}));
  const devices=['desktop','mobile','other'].map(key=>({label:key==='desktop'?'电脑端':key==='mobile'?'移动端':'其他',pv:rawDevices.filter(row=>key==='other'?!['desktop','mobile'].includes(String(row.label)):row.label===key).reduce((sum,row)=>sum+(Number(row.pv)||0),0)}));
  const detail=(report:string)=><a href={reportHref(report)} onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onReport(report);}}>详情 <span aria-hidden="true">›</span></a>;
- function apply(from:string,to:string){onRange(from,to);setCalendar(false);}
+ function apply(from:string,to:string){onRange(from,to);}
  return <div className="l51-overview">
   <div className={`l51-overview-top${expanded?' is-expanded':''}`}>
    <section className="l51-live-card"><h2><span aria-hidden="true">◈</span> 最近15分钟活跃访客数</h2><strong>{metricText(active.visitors)}</strong><a href={reportHref('realtime')} onClick={event=>{event.preventDefault();onReport('realtime');}}>查看实时 <span aria-hidden="true">›</span></a>{summary.error&&<small role="status">实时数据暂不可用</small>}</section>
@@ -73,7 +73,7 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
    </section>
   </div>
   <ForecastNote forecast={overview?.forecast as Row|undefined}/>
-  <div className="l51-range-bar"><div role="group" aria-label="日期范围">{[['今日',today,today],['昨日',yesterday,yesterday],['最近七日',shift(today,-6),today],['最近30日',shift(today,-29),today]].map(([label,from,to])=><button key={label} aria-pressed={range.from===from&&range.to===to} onClick={()=>apply(from!,to!)}>{label}</button>)}</div><div className="l51-calendar-control"><button aria-expanded={calendar} onClick={()=>setCalendar(v=>!v)} aria-label="自定义日期范围">▦ {range.from} ~ {range.to}</button>{calendar&&<form onSubmit={event=>{event.preventDefault();try{dateRange(draftFrom,draftTo,site.timezone);apply(draftFrom,draftTo);}catch{/* Native date inputs retain the invalid selection for correction. */}}} className="l51-date-popover"><label>开始日期<input type="date" required value={draftFrom} max={draftTo} onChange={event=>setDraftFrom(event.target.value)}/></label><label>结束日期<input type="date" required value={draftTo} min={draftFrom} onChange={event=>setDraftTo(event.target.value)}/></label><button type="submit">确定</button><button type="button" onClick={()=>setCalendar(false)}>取消</button></form>}</div></div>
+  <div className="l51-range-bar"><div role="group" aria-label="日期范围">{[['今日',today,today],['昨日',yesterday,yesterday],['最近七日',shift(today,-6),today],['最近30日',shift(today,-29),today]].map(([label,from,to])=><button key={label} aria-pressed={range.from===from&&range.to===to} onClick={()=>apply(from!,to!)}>{label}</button>)}</div><OverviewDateControl from={range.from} to={range.to} timezone={site.timezone} onApply={apply}/></div>
   <div className="l51-overview-first">
    <Panel title="趋势分析" detail={detail('trend')}><div className="l51-metric-tabs" role="tablist" aria-label="趋势指标">{[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['newVisitors','新访客数'],['sessions','会话数']].map(([key,label])=><button role="tab" aria-selected={selected===key} key={key} onClick={()=>setSelected(key!)}>{label}</button>)}</div>{currentValues.some(v=>v!==null)?<FiftyOneChart labels={labels} series={series} height={270}/>:<div className="l51-chart-empty">{selected==='ips'?'尚无独立 IP 数据':traffic.error?'数据读取失败':'暂无数据'}</div>}</Panel>
    <div className="l51-newold"><Panel title="新老访客" kind="people" detail={detail('visitors')}><FiftyOneChart kind="bar" labels={[range.from===range.to?range.from:range.from+' ~ '+range.to]} series={newOldSeries} height={202}/></Panel><div className="l51-visitor-summary">{[['new','新访客'],['returning','老访客']].map(([key,label])=><div key={key}><CardIcon kind="people"/><span>{label}<b>{metricText(visitorNumber(trafficVisitors,key!))}</b></span><strong>{classifiedVisitors>0&&visitorNumber(trafficVisitors,key!)!==null?((visitorNumber(trafficVisitors,key!)!/classifiedVisitors)*100).toFixed(2)+'%':'—'}</strong></div>)}</div></div>

@@ -8,7 +8,7 @@ const GeographicMap=lazy(()=>import('./GeographicMap'));
 const geoName=(value:unknown)=>!value||value==='unknown'?'未知':String(value);
 const countryName=(value:unknown)=>{const code=geoName(value);try{return code==='未知'?code:new Intl.DisplayNames(['zh-CN'],{type:'region'}).of(code)||code;}catch{return code;}};
 const cityName=(value:unknown)=>String(value||'').replace(/市$|地区$|自治州$/,'');
-const metrics:DenseColumn[]=[{key:'pv',label:'浏览量（PV）'},{key:'uv',label:'访客数（UV）'},{key:'ips',label:'独立 IP'}];
+const metrics:DenseColumn[]=[{key:'pv',label:'浏览量（PV）'},{key:'uv',label:'访客数（UV）'},{key:'ips',label:'独立 IP'},{key:'sessions',label:'访问次数'},{key:'newVisitors',label:'新访客'},{key:'returningVisitors',label:'老访客'}];
 
 export function GeographyExplorer({siteId,query,geographyStatus}:{siteId:string;query:string;geographyStatus?:string}){
  const [country,setCountry]=useState('CN'),[region,setRegion]=useState(''),[city,setCity]=useState(''),[isp,setIsp]=useState(''),[metric,setMetric]=useState('pv'),[level,setLevel]=useState<'countries'|'regions'|'cities'>('regions');
@@ -40,13 +40,15 @@ export function GeographyExplorer({siteId,query,geographyStatus}:{siteId:string;
    {!state.data&&!state.error&&<p className="dense-note" role="status">正在加载地域数据…</p>}
    {unavailable[String(data.status)]&&<p className="notice" role="status">{unavailable[String(data.status)]}</p>}
    <p className="dense-note">当前：{selectedLabel} · 明细覆盖 {Math.round(Number(data.coverage||0)*100)}% · 地域已知 {Math.round(Number(data.geographyCoverage||0)*100)}%</p>
-   <MetricStrip totals={totals} metrics={['pv','uv','ips']}/>
+   <MetricStrip totals={totals} metrics={['pv','uv','ips','sessions','newVisitors']}/>
    {totals.ipStatus==='partial_ip_identity'&&<p className="dense-note">部分历史记录没有完整 IP 标识，已知独立 IP 为 {metricText(totals.knownIps)}，覆盖 {Math.round(Number(totals.ipCoverage)*100)}%。</p>}
    {totals.ipStatus==='not_collected'&&<p className="dense-note">这段时间的记录没有采集完整 IP 标识，独立 IP 显示为 —。</p>}
+   {data.sessionStatus==='partial_session_context'&&<p className="dense-note">查询起点前的会话明细不完整，访问次数显示为 —。</p>}
+   {totals.visitorStatus==='partial_first_seen'&&<p className="dense-note">部分访客的首次访问记录缺失，未知新老访客为 {metricText(totals.unknownVisitors)}。</p>}
    {data.uvStatus==='unsupported_in_this_mode'&&<p className="dense-note">当前隐私模式不合并跨日访客；每日趋势仍按当天访客去重。</p>}
   </DensePanel>
   <div className="dense-two">
-   <DensePanel title="地域分布" action={<MetricTabs value={metric} onChange={setMetric} metrics={['pv','uv','ips']} label="地域图表指标"/>}>
+   <DensePanel title="地域分布" action={<MetricTabs value={metric} onChange={setMetric} metrics={['pv','uv','ips','sessions','newVisitors']} label="地域图表指标"/>}>
     {unconfigured?<p className="dense-note">地域库未配置；已知位置仍显示在下方明细中。</p>:country==='CN'?<><p className="dense-note">按{metricNames[metric]}显示。点击省份或城市继续查看，灰色表示没有可用值。</p>{region&&<button type="button" className="secondary" onClick={()=>chooseRegion('')}>返回中国省级地图</button>}<Suspense fallback={<p className="dense-note">正在加载地图…</p>}><GeographicMap region={region} values={(region?cities:rows(data.regions)).map(row=>({...row,pv:typeof row[metric]==='number'?row[metric]:null}))} onRegion={chooseRegion} onCity={chooseCity}/></Suspense></>:<><p className="dense-note">选择中国可查看省市地图。其他国家的地域分布见下方表格。</p><DenseTable data={rows(data.countries)} columns={[{key:'country',label:'国家 / 地区',render:row=><button type="button" className="dense-text-button" onClick={()=>chooseCountry(String(row.country))}>{countryName(row.country)}</button>},...metrics]} exportName="国家分布" searchable={false}/></>}
    </DensePanel>
    <DensePanel title="选定地域趋势" action={<span className="dense-note">{metricNames[metric]}</span>}>

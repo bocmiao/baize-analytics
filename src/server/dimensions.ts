@@ -14,7 +14,7 @@ function terminalDimensionsFromParsed(parsed:ReturnType<UAParser['getResult']>,e
  const [width,height]=(event.screen??'').split('x').map(Number),valid=Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>0&&width<=32768&&height<=32768;
  const size=valid?Math.min(width,height):undefined;
  const device=kind==='tablet'?'tablet':kind==='mobile'?(size!==undefined&&size>=600?'tablet':'mobile'):kind?kind:parsed.browser.name||parsed.os.name?(size!==undefined&&size<600?'mobile':size!==undefined&&size<1024?'tablet':'desktop'):'unknown';
- return {device,brand:parsed.device.vendor??'unknown',colorDepth:event.color_depth?String(event.color_depth):'unknown',browser:parsed.browser.name??'unknown',os:parsed.os.name??'unknown',screen:valid?`${width}x${height}`:'unknown',device_pixel_ratio:event.device_pixel_ratio??null};
+ return {device,brand:parsed.device.vendor??'unknown',colorDepth:event.color_depth?String(event.color_depth):'unknown',browser:parsed.browser.name??'unknown',browserVersion:parsed.browser.version??'unknown',os:parsed.os.name??'unknown',osVersion:parsed.os.version??'unknown',screen:valid?`${width}x${height}`:'unknown',device_pixel_ratio:event.device_pixel_ratio??null};
 }
 /** Classification only: configurable domain strings never initiate DNS or network access. */
 export function eventDimensions(ua:string,event:WireEvent,geo:Record<string,string>={},config:Record<string,unknown>={},ip=''){

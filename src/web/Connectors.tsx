@@ -58,21 +58,7 @@ export function SavedReport({ siteId, from, to, onSaved }: {
 catch (err) {
     setError((err as Error).message);
 } }}><label>{t("报表名称")}<input name="name" required/></label><label>{t("限定页面（可选）")}<input name="path" placeholder="/pricing"/></label><label>{t("限定渠道（可选）")}<select name="channel"><option value="">{t("所有渠道")}</option><option value="direct">{t("直接访问")}</option><option value="search">{t("搜索引擎")}</option><option value="social">{t("社交媒体")}</option><option value="ai">{t("AI 引荐")}</option></select></label><p>{t("日期范围：")}{from.slice(0, 10)}{t("至")}{to.slice(0, 10)}</p><button>{t("保存筛选报表")}</button></form>{error && <p role="alert" className="error">{error}</p>}</section>; }
-export function ShareEditor({ siteId, onSaved }: {
-    siteId: string;
-    onSaved: () => void;
-}) { const [result, setResult] = useState(''); const [embed,setEmbed]=useState(''); const [error, setError] = useState(''); return <section className="panel feature-section connector-section"><h2>{t("创建只读分享")}</h2><form onSubmit={async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget), payload: Row = { frame_origins: String(f.get('frame_origins')).split('\n').map(s => s.trim()).filter(Boolean) }; if (f.get('password'))
-    payload.password = f.get('password'); if (f.get('expires_at'))
-    payload.expires_at = new Date(String(f.get('expires_at'))).toISOString(); try {
-    const r = await api<{
-        url: string; token:string;
-    }>(`/api/v1/sites/${siteId}/shares`, payload);
-    setResult(r.url);setEmbed('');if(!payload.password&&(payload.frame_origins as string[]).length){const url=new URL('/embed/chart',location.origin);url.searchParams.set('token',r.token);url.searchParams.set('type','top-pages');url.searchParams.set('lang',String(f.get('embed_language')||language()));setEmbed(url.href);}
-    onSaved();
-}
-catch (err) {
-    setError((err as Error).message);
-} }}><label>{t("访问密码（可选，至少 8 位）")}<input name="password" type="password" minLength={8}/></label><label>{t("失效时间（可选）")}<input name="expires_at" type="datetime-local"/></label><details className="feature-disclosure"><summary>{t("图表嵌入安全设置")}</summary><label>{t("允许嵌入的 Origin（每行一个）")}<textarea name="frame_origins" placeholder="https://my-admin.example.com"/></label><label>{t("嵌入图表语言")}<select name="embed_language" defaultValue={language()}><option value="zh-CN">中文</option><option value="en">English</option></select></label><p>{t("带密码的分享不能嵌进普通 iframe。嵌入请用无密码分享并限制 Origin。")}</p></details><button>{t("生成只读链接")}</button></form>{result && <p role="status">{t("分享链接（只显示一次）：")}<a href={result}>{result}</a></p>}{embed&&<section><h3>{t("只读嵌入代码")}</h3><pre>{`<iframe src="${embed}" title="${t('热门页面图表')}" loading="lazy"></iframe>`}</pre><a href={embed} target="_blank" rel="noreferrer">{t("打开嵌入图表")}</a></section>}{error && <p role="alert" className="error">{error}</p>}</section>; }
+export {ShareEditor} from './ShareEditor';
 export function InviteEditor({ siteId, onSaved }: {
     siteId: string;
     onSaved: () => void;

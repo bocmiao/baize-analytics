@@ -48,6 +48,8 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('spider visit ledger with real P
   const response=await app.inject({url:view(a,'&limit=2'),headers});expect(response.statusCode,response.body).toBe(200);
   const body=response.json();expect(body.totals).toMatchObject({visits:3,ips:2,urls:2});expect(body.rows).toHaveLength(2);expect(body.pages).toBe(2);
   expect(body.summary).toEqual([expect.objectContaining({engine:'google',category:'bot',visits:3,ips:2,urls:2})]);
+  expect(body.trend).toEqual([expect.objectContaining({day:today(),engine:'google',visits:3,ips:2,urls:2})]);
+  expect((await app.inject({url:view(a,'&engine=bing'),headers})).json().trend).toEqual([]);
   expect(JSON.stringify(body.rows)).not.toContain('ip_identity');expect(response.body).not.toContain('receipt_hash');
   const next=(await app.inject({url:view(a,'&limit=2&page=2'),headers})).json();expect(next.rows).toHaveLength(1);
   expect(new Set([...body.rows,...next.rows].map(row=>row.id)).size).toBe(3);

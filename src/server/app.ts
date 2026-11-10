@@ -1,3 +1,8 @@
+import {registerSiteContentManagement} from './site-content-management.js';
+import {registerEventCaptureRules} from './event-capture-rules.js';
+import {registerIPFilterManagement} from './ip-filter-management.js';
+import {registerAdvancedReports} from './advanced-reports.js';
+import {registerSiteLifecycle} from './site-lifecycle.js';
 import {registerUpdates} from '../update/http.js';
 import {register51laReports} from './51la-reports.js';
 import {registerEventManagement} from './event-management.js';
@@ -133,7 +138,7 @@ export async function createApp(options:AppOptions={}){
     // 反代存在但没配 TRUSTED_PROXIES 时，所有访客都会被记成代理地址；这里只提醒一次，
     // 不去猜哪些代理可信（猜错等于允许伪造 IP）。
     if(!proxyWarningShown&&trustedProxies.length===0&&req.headers['x-forwarded-for']){proxyWarningShown=true;console.warn('[baize] 收到 X-Forwarded-For 但未设置 TRUSTED_PROXIES：访客 IP 会全部记录为代理地址，地域/去重访客/限流都会失真。请把代理地址填入 TRUSTED_PROXIES 后重启。');}
-    if(!req.url.startsWith('/embed/'))reply.header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
+    if(!req.url.startsWith('/embed/'))reply.header('Content-Security-Policy',(req.url.split('?')[0]==='/app'?"frame-src http: https:; ":'')+"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
     if(!['GET','HEAD','OPTIONS'].includes(req.method)&&req.url!=='/api/collect'&&!req.url.startsWith('/api/v1/experiments/')&&!req.headers.authorization){
       const origin=req.headers.origin;if(origin&&origin!==new URL(config.publicUrl).origin)throw new HttpError(403,'跨站请求被拒绝');
       if(req.headers['sec-fetch-site']==='cross-site')throw new HttpError(403,'跨站请求被拒绝');
@@ -144,10 +149,10 @@ export async function createApp(options:AppOptions={}){
   app.get('/healthz',async(_req,reply)=>{try{await pool.query('SELECT 1');let cache='disabled';if(redis){try{cache=await redis.ping()==='PONG'?'ready':'unavailable';}catch{cache='unavailable';}}return {ok:true,database:'ready',cache,geoip:geo.status,schemaVersion:1,updateIdentity};}catch{return reply.code(503).send({ok:false,database:'unavailable'});}});
   app.get('/api/capabilities',async()=>({profile:'standard',reports:[],capabilities:{trafficReports:true}}));
   registerRequestRateLimits(app,ctx);
-  await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await register51laReports(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
+  await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerSiteLifecycle(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await register51laReports(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerBotVisitLog(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
-  await registerEventManagement(app,ctx);
+  await registerEventManagement(app,ctx);await registerSiteContentManagement(app,ctx);await registerEventCaptureRules(app,ctx);await registerIPFilterManagement(app,ctx);await registerAdvancedReports(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}

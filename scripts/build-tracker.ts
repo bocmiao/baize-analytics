@@ -7,7 +7,7 @@ await mkdir('public',{recursive:true});
 const license=(await readFile('packages/tracker/LICENSE','utf8')).trim();
 await writeFile('public/tracker.LICENSE.txt',license+'\n');
 const sizes:Record<string,number>={};
-for(const [name,source] of Object.entries({'tracker':'browser','tracker-min':'browser','tracker-vitals':'vitals','tracker-replay':'replay','tracker-heatmap':'heatmap','tracker-consent':'consent'})){
+for(const [name,source] of Object.entries({'tracker':'browser','tracker-min':'browser','tracker-vitals':'vitals','tracker-replay':'replay','tracker-heatmap':'heatmap','tracker-consent':'consent','tracker-visual':'visual'})){
 const bundled=await build({write:false,entryPoints:[`packages/tracker/src/${source}.ts`],outfile:`public/${name}.js`,bundle:true,define:{__BAIZE_MIN__:String(name==='tracker-min')},minify:true,format:'iife',target:'es2020',legalComments:'inline'});
 // Keep the existing ES2020 target and public/wire property names. This minifier
 // is already pinned by Vite in the source lockfile; it does not remove console calls.

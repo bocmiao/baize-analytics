@@ -7,6 +7,7 @@ import {classifyBotUA,type BotDecision} from './bot-filter.js';
 import {lockSite,transaction} from './db.js';
 import {anonymizeIP,canonical,hashToken,HttpError,matchesCIDR} from './security.js';
 import {networkIPIdentity,normalizeNetworkIP,summarizeIPIdentities} from './network-ip.js';
+import {recordBotObservationInTransaction} from './bot-observations.js';
 
 const DAY=86400000;
 export const BOT_VISIT_MAX_RETENTION_DAYS=90;
@@ -53,10 +54,11 @@ export function safeBotPath(value:unknown,ip=''):string|null {
 export interface BotVisitInput {
  siteId:string;ip:string;userAgent:string;path:unknown;decision:BotDecision;at?:number;
  requestId?:string;source?:'collector'|'server_log';
+ observation?:{ruleVersion:number;declaredEvents:number};
 }
 interface BotSite {
  id:string;salt_secret:string;privacy_mode:string;retention_days:number;timezone:string;
- config:{write_key_hash?:string;excluded_ips?:string[]};
+ config:{write_key_hash?:string;excluded_ips?:string[];archived_at?:string};
 }
 export type BotVisitResult={recorded:boolean;duplicate?:boolean;reason?:string};
 function retentionDays(site:BotSite){return Math.max(1,Math.min(BOT_VISIT_MAX_RETENTION_DAYS,Number(site.retention_days)||1));}
@@ -88,7 +90,9 @@ export async function recordBotVisit(pool:Pool,input:BotVisitInput):Promise<BotV
  return transaction(pool,async client=>{
   await lockSite(client,input.siteId);
   const site=(await client.query('SELECT id,salt_secret,privacy_mode,retention_days,timezone,config FROM sites WHERE id=$1',[input.siteId])).rows[0] as BotSite|undefined;
-  if(!site)return {recorded:false,reason:'site_not_found'};
+  if(!site)return {recorded:false,reason:'site_not_found'};if(site.config?.archived_at)return {recorded:false,reason:'site_archived'};
+  if((site.config.excluded_ips??[]).some(cidr=>matchesCIDR(input.ip,cidr)))return {recorded:false,reason:'excluded_ip'};
+  if(input.observation)await recordBotObservationInTransaction(client,site.id,site.timezone,input.decision,input.observation.ruleVersion,input.observation.declaredEvents);
   return insertVisit(client,site,input,Date.now());
  });
 }
@@ -137,6 +141,7 @@ export async function registerBotVisitLog(app:FastifyInstance,ctx:AppContext){
    await lockSite(client,siteId);
    const site=(await client.query('SELECT id,salt_secret,privacy_mode,retention_days,timezone,config FROM sites WHERE id=$1',[siteId])).rows[0] as BotSite|undefined;
    if(!site||!validSecret(token,site.config.write_key_hash))throw new HttpError(401,'invalid_write_key');
+   if(site.config.archived_at)throw new HttpError(410,'站点已移入回收站');
    try{await rateLimit(siteId);}catch(error){if(error instanceof HttpError&&error.statusCode===429)reply.header('Retry-After','60');throw error;}
    let accepted=0,duplicates=0;const rejected:{id:string;reason:string}[]=[];
    for(const visit of body.visits){
@@ -155,8 +160,9 @@ export async function registerBotVisitLog(app:FastifyInstance,ctx:AppContext){
   const q=botVisitWindowSchema.parse(req.query);
   return transaction(ctx.pool,async client=>{
    await lockSite(client,siteId);
-   const site=(await client.query('SELECT id,privacy_mode,retention_days,timezone FROM sites WHERE id=$1',[siteId])).rows[0] as BotSite|undefined;
+   const site=(await client.query('SELECT id,privacy_mode,retention_days,timezone,config FROM sites WHERE id=$1',[siteId])).rows[0] as BotSite|undefined;
    if(!site)throw new HttpError(404,'站点不存在');
+   if(site.config.archived_at)throw new HttpError(410,'站点已移入回收站');
    const params=[siteId,q.from,q.to,site.timezone,q.engine??null,q.source??null,retentionDays(site)];
    const where=`site_id=$1 AND visited_at>=($2::date::timestamp AT TIME ZONE $4)
     AND visited_at<(($3::date+1)::timestamp AT TIME ZONE $4) AND expires_at>now()
@@ -164,6 +170,10 @@ export async function registerBotVisitLog(app:FastifyInstance,ctx:AppContext){
    const totals=(await client.query(`SELECT count(*)::int visits,count(ip_identity)::int known_ip_visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen FROM bot_visit_log WHERE ${where}`,params)).rows[0];
    const summary=(await client.query(`SELECT engine,category,count(*)::int visits,count(ip_identity)::int known_ip_visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen
     FROM bot_visit_log WHERE ${where} GROUP BY engine,category ORDER BY visits DESC,engine,category`,params)).rows;
+   // Group actual records by site-calendar day; do not add daily distinct IPs.
+   const trend=(await client.query(`SELECT to_char(visited_at AT TIME ZONE $4,'YYYY-MM-DD') AS "day",engine,
+    count(*)::int visits,count(ip_identity)::int known_ip_visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls
+    FROM bot_visit_log WHERE ${where} GROUP BY 1,engine ORDER BY 1,engine`,params)).rows;
    const rows=(await client.query(`SELECT id,source,visited_at,engine,category,reason,rule_id,path,ip_prefix FROM bot_visit_log WHERE ${where}
     ORDER BY visited_at DESC,id DESC,source LIMIT $8 OFFSET $9`,[...params,q.limit,(q.page-1)*q.limit])).rows;
    const privacy=site.privacy_mode==='daily_salt';
@@ -173,7 +183,7 @@ export async function registerBotVisitLog(app:FastifyInstance,ctx:AppContext){
    const publicTotals=metrics(totals);
    return {from:q.from,to:q.to,timezone:site.timezone,page:q.page,limit:q.limit,total:totals.visits,
     pages:Math.ceil(totals.visits/q.limit),rows:privacy?rows.map(row=>({...row,ip_prefix:null})):rows,totals:publicTotals,
-    summary:summary.map(metrics),ipStatus:publicTotals.ipStatus,ipCoverage:publicTotals.ipCoverage,knownIps:publicTotals.knownIps,
+    summary:summary.map(metrics),trend:trend.map(metrics),ipStatus:publicTotals.ipStatus,ipCoverage:publicTotals.ipCoverage,knownIps:publicTotals.knownIps,
     coverage:BOT_VISIT_COVERAGE,retentionDays:retentionDays(site)};
   });
  });

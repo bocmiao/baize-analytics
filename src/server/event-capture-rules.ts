@@ -1,0 +1,15 @@
+import type {FastifyInstance} from 'fastify';
+import {randomBytes} from 'node:crypto';
+import {z} from 'zod';
+import type {AppContext} from './context.js';
+import {transaction,lockSite} from './db.js';
+import {structuralSelector} from '../../packages/tracker/src/visual-model.js';
+export const captureRuleInput=z.object({name:z.string().trim().min(1).max(128),selector:z.string().max(512).regex(structuralSelector,'请选择有效的页面元素'),scope:z.enum(['all','exact','prefix']),path:z.string().max(2048).regex(/^\/(?!\/)[^?#\s]*$/,'请输入以 / 开始的页面路径'),enabled:z.boolean().default(true)}).strict();
+export const captureRuleSchema=captureRuleInput.extend({id:z.string().regex(/^[a-f0-9]{24}$/),createdAt:z.iso.datetime(),updatedAt:z.iso.datetime()});
+export function readCaptureRules(config:Record<string,unknown>){return (Array.isArray(config.event_capture_rules)?config.event_capture_rules:[]).flatMap(value=>{const parsed=captureRuleSchema.safeParse(value);return parsed.success?[parsed.data]:[];}).slice(0,100);}
+export const heatmapPagesSchema=z.array(z.string().max(2048).regex(/^\/(?!\/)[^?#\s*]*\*?$/,'使用 /path 或 /path/* 指定采集页面')).max(100);
+export function registerEventCaptureRules(app:FastifyInstance,ctx:AppContext){
+ const base='/api/v1/sites/:siteId/event-capture-rules';
+ app.get(base,async req=>{const{siteId}=req.params as{siteId:string};await ctx.authorize(req,siteId);const row=(await ctx.pool.query('SELECT config FROM sites WHERE id=$1',[siteId])).rows[0];if(!row)throw Object.assign(Error('站点不存在'),{statusCode:404});return {rules:readCaptureRules(row.config)};});
+ for(const method of ['POST','PATCH','DELETE'] as const)app.route({method,url:method==='POST'?base:base+'/:ruleId',handler:async(req,reply)=>{const{siteId,ruleId}=req.params as{siteId:string;ruleId?:string},user=await ctx.authorize(req,siteId,'admin');const input=method==='DELETE'?null:captureRuleInput.parse(req.body);return transaction(ctx.pool,async client=>{await lockSite(client,siteId);const row=(await client.query('SELECT config FROM sites WHERE id=$1 FOR UPDATE',[siteId])).rows[0];if(!row)throw Object.assign(Error('站点不存在'),{statusCode:404});let rules=readCaptureRules(row.config);const previous=rules.find(rule=>rule.id===ruleId);if(method!=='POST'&&!previous)throw Object.assign(Error('采集规则不存在'),{statusCode:404});if(method==='POST'&&rules.length>=100)throw Object.assign(Error('最多100条采集规则'),{statusCode:400});const now=new Date().toISOString(),id=ruleId||randomBytes(12).toString('hex');rules=rules.filter(rule=>rule.id!==id);if(input)rules.push({...input,id,createdAt:previous?.createdAt||now,updatedAt:now});await client.query("UPDATE sites SET config=config||jsonb_build_object('event_capture_rules',$2::jsonb) WHERE id=$1",[siteId,JSON.stringify(rules)]);await client.query('INSERT INTO audit_logs(actor_id,site_id,action,target) VALUES($1,$2,$3,$4)',[user.id,siteId,'event_capture.'+method.toLowerCase(),JSON.stringify({id,name:input?.name||previous?.name})]);if(method==='POST')reply.code(201);return {rules};});}});
+}

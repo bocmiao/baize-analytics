@@ -1,0 +1,45 @@
+/* Mobile keeps the report hierarchy, with controls sized for touch. */
+.workspace .l51-calendar-control>button:hover,
+.workspace .l51-calendar-control>button[aria-expanded=true]{background:#f0f7ff;color:#1766a5;border-color:#b7d8f6}
+.workspace .l51-date-popover{top:calc(100% + 8px);max-width:calc(100vw - 24px)}
+.l51-date-actions{display:flex;gap:12px;width:100%}
+.l51-date-popover .error{width:100%;margin:0;font-size:13px}
+.auth.shared-dashboard-page{max-width:min(1180px,calc(100% - 32px));margin:32px auto;padding:0;display:block}
+.shared-dashboard-page>.panel{min-width:0;max-width:100%}
+@media(max-width:767px){
+ .workspace.la51-reference #workspace-main :is(button,summary){min-height:44px!important}
+ .workspace.la51-reference #workspace-main :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select){min-height:44px!important;height:auto;font-size:16px!important;max-width:100%;box-sizing:border-box}
+ .workspace.la51-reference #workspace-main label.checkbox{min-height:44px;display:flex;align-items:center;gap:8px}
+ .workspace.la51-reference #workspace-main :is(button,a,input,select,summary):focus-visible{outline:2px solid #1676ce;outline-offset:2px}
+ .workspace.la51-reference .la51-menu-toggle{width:44px;height:44px;flex-shrink:0}
+ .workspace.la51-reference .la51-topbar .nav-account>summary{min-height:44px;padding:0 8px}
+ .workspace.la51-reference .la51-sidebar{width:260px;overscroll-behavior:contain}
+ .workspace.la51-reference #workspace-navigation nav.la51-report-nav{width:260px;max-width:100%}
+ .workspace.la51-reference #workspace-navigation nav.la51-report-nav :is(.la51-submenu a,.la51-extra-links a){min-height:44px;height:auto;line-height:1.5;padding-block:12px}
+ .workspace.la51-reference .la51-site-row{height:60px;padding:8px}
+ .workspace.la51-reference .la51-site{height:44px}
+ .workspace.la51-reference .la51-site .sidebar-site-select{height:44px;font-size:14px}
+ .workspace.la51-reference .la51-sidebar-collapse{width:44px;height:44px;flex-basis:44px}
+ .workspace.la51-reference #workspace-main .workspace-toolbar{align-items:center;gap:8px}
+ .workspace.la51-reference #workspace-main .date-presets{gap:8px}
+ .workspace.la51-reference #workspace-main .date-presets button{padding-inline:10px}
+ .workspace.la51-reference .l51-range-bar>div:first-child{width:100%;justify-content:space-between;gap:8px}
+ .workspace.la51-reference .l51-range-bar>div:first-child button{padding-inline:6px}
+ .workspace.la51-reference .l51-mobile-periods{gap:8px}
+ .workspace.la51-reference .l51-mobile-periods button{padding:6px 3px}
+ .workspace.la51-reference .l51-metric-tabs{display:flex;flex-wrap:wrap;overflow:visible;gap:8px;background:none}
+ .workspace.la51-reference .l51-metric-tabs button{flex:1 0 auto;background:#f3f5f7}
+ .workspace.la51-reference .l51-summary-expand{width:48px}
+ .workspace.la51-reference .l51-date-popover{padding:14px;gap:12px}
+ .workspace.la51-reference .l51-date-popover label{min-width:110px}
+ .workspace.la51-reference #workspace-main .traffic-workspace .dense-tabs{gap:8px}
+ .workspace.la51-reference #workspace-main .dense-panel-heading{flex-wrap:wrap;align-items:center}
+ .workspace.la51-reference #workspace-main .dense-pagination{flex-wrap:wrap;gap:8px}
+ .workspace.la51-reference #workspace-main .dense-pagination button{min-width:44px}
+ .workspace.la51-reference #workspace-main .dense-table-wrap{overscroll-behavior-x:contain}
+ .workspace.la51-reference #workspace-main .report-comparison-controls :is(form,label){min-width:0;width:100%}
+ .workspace.la51-reference #workspace-main .report-comparison-controls select{width:100%}
+ .workspace.la51-reference #workspace-main .replay-metadata{overflow-wrap:anywhere}
+ .workspace.la51-reference #workspace-main .baize-replay-controls{gap:8px}
+ .workspace.la51-reference #workspace-main .baize-replay-controls output{flex-basis:100%;font-variant-numeric:tabular-nums}
+}

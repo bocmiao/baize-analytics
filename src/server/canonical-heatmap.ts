@@ -1,3 +1,4 @@
+import {structuralSelector} from '../../packages/tracker/src/visual-model.js';
 import {ApplicationError} from '../shared/error-codes.js';
 import {randomUUID} from 'node:crypto';
 import type {Pool,PoolClient} from 'pg';
@@ -8,7 +9,7 @@ import {prepareCacheReadSource} from './cache-store-source.js';
 import {cacheRowKey} from './cache-store.js';
 import type {FactSourceOptions} from './fact-store-source.js';
 
-const pointSchema=z.object({kind:z.enum(['click','scroll']),x:z.number().min(0).max(1),y:z.number().min(0).max(1),width:z.number().int().min(1).max(20000),height:z.number().int().min(1).max(20000)}).strict();
+const pointSchema=z.object({kind:z.enum(['click','scroll']),x:z.number().min(0).max(1),y:z.number().min(0).max(1),width:z.number().int().min(1).max(20000),height:z.number().int().min(1).max(20000),element:z.string().max(512).regex(structuralSelector).optional(),document_height:z.number().int().min(1).max(200000).optional(),document_width:z.number().int().min(1).max(20000).optional()}).strict();
 /** Caller keeps P/site gates and one RR transaction. Exact counts spill to PG TEMP,
  * never an all-site JS map. Coverage is per immutable raw batch and base point:
  * a late event is counted unless its committed batch belongs to that point's base.

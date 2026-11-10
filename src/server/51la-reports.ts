@@ -1,4 +1,4 @@
-import type {FastifyInstance} from 'fastify';
+import type {FastifyInstance,FastifyRequest} from 'fastify';
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import type {AppContext} from './context.js';
@@ -9,6 +9,8 @@ import {withStatsReadSnapshot} from './stats-read-snapshot.js';
 import {ApplicationError} from '../shared/error-codes.js';
 import {buildLiveTraffic,buildTrafficReport,filterVisits,visitorCounts,trafficDimensions,type VisitorCounts} from './51la-report-model.js';
 import {countIPIdentities} from './network-ip.js';
+import {sortVisitRows,visitReportCsv,visitSortKeys,MAX_VISIT_EXPORT_ROWS} from './visit-report.js';
+import {readDirectoryRules} from './site-content-management.js';
 import {query51laHistory} from './51la-history-summary.js';
 import {buildForecastHistory,buildTrafficForecast,forecastCalendar} from './traffic-forecast.js';
 
@@ -21,7 +23,10 @@ function validateTrendSelection(query:{trendDimension?:string;trendLabel?:string
 }
 export const trafficRangeSchema=trafficRangeBase.superRefine(validateTrendSelection);
 const rangeSchema=trafficRangeSchema;
-const visitsSchema=trafficRangeBase.extend({page:z.coerce.number().int().min(1).max(100000).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25),visitorType:z.enum(['new','returning','unknown']).optional(),referrer:z.string().max(253).optional(),city:z.string().max(200).optional(),entry:z.string().max(2048).optional(),visitorKey:z.string().max(256).optional(),ipPrefix:z.string().max(128).optional(),ipKey:z.string().regex(/^[a-f0-9]{24}$/).optional(),ipLabel:z.string().max(160).optional(),isp:z.string().max(128).optional(),keyword:z.string().max(128).optional(),browser:z.string().max(200).optional()}).superRefine(validateTrendSelection);
+export const visitsSchema=trafficRangeBase.extend({page:z.coerce.number().int().min(1).max(100000).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25),sort:z.enum(visitSortKeys).default('time'),direction:z.enum(['asc','desc']).default('desc'),visitDimension:z.enum(trafficDimensions).optional(),visitLabel:z.string().max(2048).optional(),visitorType:z.enum(['new','returning','unknown']).optional(),referrer:z.string().max(253).optional(),country:z.string().max(64).optional(),region:z.string().max(128).optional(),city:z.string().max(200).optional(),entry:z.string().max(2048).optional(),visitorKey:z.string().max(256).optional(),ipPrefix:z.string().max(128).optional(),ipKey:z.string().regex(/^[a-f0-9]{24}$/).optional(),ipLabel:z.string().max(160).optional(),isp:z.string().max(128).optional(),keyword:z.string().max(128).optional(),browser:z.string().max(200).optional()}).superRefine(validateTrendSelection).superRefine((query,ctx)=>{
+ if((query.visitDimension!==undefined)!==(query.visitLabel!==undefined))ctx.addIssue({code:'custom',path:['visitDimension'],message:'请选择钻取维度及对应项目'});
+ if(query.visitDimension==='ip'&&!/^[a-f0-9]{24}$/.test(query.visitLabel??''))ctx.addIssue({code:'custom',path:['visitLabel'],message:'无效的 IP 报表标识'});
+});
 interface Site {timezone:string;privacy_mode:string;retention_days:number;config:Record<string,unknown>}
 const iso=(value:Date|string|number)=>new Date(value).toISOString();
 const unavailableVisitors=(status:string):VisitorCounts=>({new:null,returning:null,unknown:null,status});
@@ -59,20 +64,28 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
    const site=await getSite(client,siteId),privacy=site.privacy_mode!=='standard',timeoutMs=sessionTimeoutMs(site.config);
    const detail=await readDetail(ctx,client,siteId,range.from,range.effectiveTo,timeoutMs);
    const seen=await firstSeen(client,siteId,detail.events,privacy);
-   const {visits:_visits,...report}=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel,trendLabels:query.trendLabels}:{}});
+   const {visits:_visits,...report}=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,directoryRules:readDirectoryRules(site.config),sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel,trendLabels:query.trendLabels}:{}});
    return {...modelMetadata(site,range.from,range.effectiveTo,detail,filters),requestedTo:range.to,filters,...report,...(detail.coverage===1?{}:{totals:{pv:null,uv:null,ips:null,sessions:null,bounceRate:null,averageDuration:null},visitors:unavailableVisitors(detail.status),groups:{},days:[],hours:[],dimensionTrend:{channel:[],page:[],visitorType:[]},engagement:{depth:[],duration:[]}})};
   });return boundResponse({...snapshot.value,aggregationPending:snapshot.dirty});
  });
- app.get('/api/v1/sites/:siteId/visits',async req=>{
-  const {siteId}=req.params as {siteId:string};await ctx.authorize(req,siteId);const query=visitsSchema.parse(req.query),now=Date.now(),range=selectedRange(query,now),filters=contentFilterSchema.parse(query),asOf=iso(now);
+ async function visitData(req:FastifyRequest,all=false){
+  const {siteId}=req.params as {siteId:string},user=await ctx.authorize(req,siteId);const query=visitsSchema.parse(req.query),now=Date.now(),range=selectedRange(query,now),filters=contentFilterSchema.parse(query),asOf=iso(now);
   const snapshot=await withStatsReadSnapshot(ctx,siteId,iso(Math.min(+new Date(range.from),now-30*60000)),asOf,async client=>{
    const site=await getSite(client,siteId),privacy=site.privacy_mode!=='standard',timeoutMs=sessionTimeoutMs(site.config),detail=await readDetail(ctx,client,siteId,range.from,range.effectiveTo,timeoutMs),seen=await firstSeen(client,siteId,detail.events,privacy);
-   const model=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel,trendLabels:query.trendLabels}:{}});
-   const {visitorType,referrer,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser}=query;
-   const rows=filterVisits(model.visits,{visitorType,referrer,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser});
+   const model=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,directoryRules:readDirectoryRules(site.config),sessionContextComplete:detail.sessionContextComplete,visitDimension:query.visitDimension,visitLabel:query.visitLabel});
+   const {visitorType,referrer,country,region,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser}=query;
+   const rows=sortVisitRows(filterVisits(model.visits,{visitorType,referrer,country,region,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser}),query.sort,query.direction);
    const complete=detail.coverage===1&&detail.sessionContextComplete;
-   return {...modelMetadata(site,range.from,range.effectiveTo,detail,filters),requestedTo:range.to,rows:complete?rows.slice((query.page-1)*query.pageSize,query.page*query.pageSize):[],total:complete?rows.length:null,page:query.page,pageSize:query.pageSize,coverage:complete?1:0,status:complete?'complete':detail.coverage===1?'partial_session_context':detail.status,live:await liveRead(ctx,client,siteId,site,asOf,filters)};
-  });return boundResponse({...snapshot.value,aggregationPending:snapshot.dirty});
+   return {...modelMetadata(site,range.from,range.effectiveTo,detail,filters),requestedTo:range.to,rows:complete?(all?rows:rows.slice((query.page-1)*query.pageSize,query.page*query.pageSize)):[],total:complete?rows.length:null,page:query.page,pageSize:query.pageSize,sort:query.sort,direction:query.direction,exportLimit:MAX_VISIT_EXPORT_ROWS,visitDimension:query.visitDimension,visitLabel:query.visitLabel,coverage:complete?1:0,status:complete?'complete':detail.coverage===1?'partial_session_context':detail.status,...all?{}:{live:await liveRead(ctx,client,siteId,site,asOf,filters)}};
+  });return {user,siteId,result:{...snapshot.value,aggregationPending:snapshot.dirty}};
+ }
+ app.get('/api/v1/sites/:siteId/visits',async req=>boundResponse((await visitData(req)).result));
+ app.get('/api/v1/sites/:siteId/visits.csv',async(req,reply)=>{
+  const {user,siteId,result}=await visitData(req,true);
+  if(result.coverage!==1)throw Object.assign(new Error('所选时间段的访问明细不完整，请缩小日期范围后下载。'),{statusCode:409});
+  const csv=visitReportCsv(result.rows,result.timezone);
+  await ctx.audit(user.id,siteId,'visits.export',{from:result.from,to:result.to,rows:result.rows.length,sort:result.sort,direction:result.direction});
+  return reply.header('content-type','text/csv; charset=utf-8').header('content-disposition','attachment; filename="visits.csv"').header('X-Baize-Export-Rows',String(result.rows.length)).header('X-Baize-Export-Truncated','false').header('Cache-Control','no-store').send(csv);
  });
  app.get('/api/v1/sites/:siteId/overview-summary',async req=>{
   const {siteId}=req.params as {siteId:string};await ctx.authorize(req,siteId);const query=contentFilterSchema.extend({extended:z.enum(['0','1']).optional()}).parse(req.query),filters=contentFilterSchema.parse(query),now=Date.now(),asOf=iso(now);
@@ -108,3 +121,4 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
   const value=snapshot.value;if(snapshot.dirty){for(const period of [value.today,value.yesterday,value.yesterdaySameTime])period.coverage=0;value.forecast={...value.forecast,...buildTrafficForecast({asOf:value.asOf,timezone:value.timezone,dayStart:value.forecast.dayStart,dayEnd:value.forecast.dayEnd,today:value.today}),status:'aggregation_pending'};if(value.extended){value.extended.thisMonth.coverage=0;value.extended.total.coverage=0;value.extended.peaks.coverage=0;value.extended.total.status='aggregation_pending';value.extended.peaks.status='aggregation_pending';}}return boundResponse({...value,aggregationPending:snapshot.dirty});
  });
 }
+

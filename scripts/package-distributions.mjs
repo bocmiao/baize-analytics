@@ -13,7 +13,7 @@ def archive(name,entries):
    entry=zipfile.ZipInfo(target,date_time=(2026,1,1,0,0,0));entry.external_attr=0o100644<<16;entry.compress_type=zipfile.ZIP_DEFLATED
    z.writestr(entry,(root/source).read_bytes())
 archive('baize-wordpress.zip',[(f'plugins/wordpress/{n}',f'baize/{n}') for n in ['baize.php','README.md','LICENSE']])
-names=['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap','tracker-consent']
+names=['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap','tracker-consent','tracker-visual']
 archive('baize-tracker-browser.zip',[(f'public/{n}.js',f'tracker/{n}.js') for n in names]+[('public/tracker.LICENSE.txt','tracker/tracker.LICENSE.txt'),('packages/tracker/README.md','tracker/README.md')])
 source=[(str(p),str(p.relative_to(root/'packages'))) for p in sorted((root/'packages/tracker').rglob('*')) if p.is_file() and 'node_modules' not in p.parts]
 archive('baize-tracker-source.zip',[(str(pathlib.Path(p).relative_to(root)),n) for p,n in source])

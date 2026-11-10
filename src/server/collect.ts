@@ -1,6 +1,7 @@
+import {heatmapPathMatches,capturePathMatches} from '../../packages/tracker/src/visual-model.js';
+import {readCaptureRules} from './event-capture-rules.js';
 import {captureRevenueIntakeCoverage,advanceRevenueIntakeCoverage} from './fact-coverage-witness.js';
 import {recordBotVisit} from './bot-visit-log.js';
-import {recordBotObservation} from './bot-observations.js';
 import {recordIntakeObservation} from './intake-status.js';
 import {replayPayloadHash} from './replay-hash.js';
 import {sanitizeDailyPayload,sanitizeDailyDimensions} from './daily-privacy-policy.js';
@@ -37,7 +38,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     let raw=req.body as any;
     if(typeof raw==='string'){try{raw=JSON.parse(raw);}catch{throw new HttpError(400,'invalid_json');}}
     if(raw?.protocol_version!==1)return reply.code(400).send({error:'unsupported_protocol_version',supported:[1]});
-    const envelope=envelopeSchema.parse(raw);const found=await ctx.pool.query('SELECT * FROM sites WHERE id=$1',[envelope.site_id]);if(!found.rowCount)throw new HttpError(404,'站点不存在');let site=found.rows[0];
+    const envelope=envelopeSchema.parse(raw);const found=await ctx.pool.query('SELECT * FROM sites WHERE id=$1',[envelope.site_id]);if(!found.rowCount)throw new HttpError(404,'站点不存在');let site=found.rows[0];if(site.config?.archived_at)throw new HttpError(410,'站点已移入回收站');
     const origin=req.headers.origin;if(origin){try{new URL(origin);}catch{throw new HttpError(403,'无效来源');}if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');reply.header('Access-Control-Allow-Origin',origin).header('Vary','Origin');}
     const ip=req.ip,ua=req.headers['user-agent']??'';
     const limitKey=`baize:rate:${site.id}:${visitorHash(site.salt_secret,'rate',ip,'')}`;let count=0;
@@ -49,11 +50,11 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr)))return reply.code(204).send();
     if(req.headers.authorization){const write=site.config.write_key_hash;const token=req.headers.authorization.replace(/^Bearer /,'');if(!write||hashToken(token)!==write)throw new HttpError(401,'invalid_write_key');const signature=req.headers['x-baize-signature'];const expected=createHmac('sha256',token).update(canonical(envelope)).digest();let supplied:Buffer;try{supplied=Buffer.from(String(signature),'hex');}catch{throw new HttpError(401,'invalid_signature');}if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected))throw new HttpError(401,'invalid_signature');}
     const bot=await botFilter.inspect({siteId:site.id,secret:site.salt_secret,ip,userAgent:ua});
-    if(bot.isBot){await recordBotObservation(ctx.pool,site.id,site.timezone,bot,botFilter.ruleVersion,envelope.events.length);await recordBotVisit(ctx.pool,{siteId:site.id,ip,userAgent:ua,path:(envelope.events.find((event:unknown)=>event&&typeof event==='object'&&'path' in event) as {path?:unknown}|undefined)?.path,decision:bot});return reply.code(204).send();}
+    if(bot.isBot){const result=await recordBotVisit(ctx.pool,{siteId:site.id,ip,userAgent:ua,path:(envelope.events.find((event:unknown)=>event&&typeof event==='object'&&'path' in event) as {path?:unknown}|undefined)?.path,decision:bot,observation:{ruleVersion:botFilter.ruleVersion,declaredEvents:envelope.events.length}});if(result.reason==='site_archived')throw new HttpError(410,'站点已移入回收站');return reply.code(204).send();}
     const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false,lastAcceptedEventTime=0;
     await transaction(ctx.pool,async client=>{
       await lockSite(client,site.id);
-      site=(await client.query('SELECT * FROM sites WHERE id=$1',[site.id])).rows[0];if(!site)throw new HttpError(404,'站点不存在');
+      site=(await client.query('SELECT * FROM sites WHERE id=$1',[site.id])).rows[0];if(!site)throw new HttpError(404,'站点不存在');if(site.config?.archived_at)throw new HttpError(410,'站点已移入回收站');
       if(origin){if(!siteAllowsOrigin(site,origin))throw new HttpError(403,'来源不属于该站点');}
       if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr))){ignored=true;return;}
       if(req.headers.authorization&&hashToken(req.headers.authorization.replace(/^Bearer /,''))!==site.config.write_key_hash)throw new HttpError(401,'invalid_write_key');
@@ -77,6 +78,8 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         if(wire.ts>Date.now()+86400000){rejected.push({index,event_id:wire.event_id,reason:'future_event'});continue;}
         if(wire.ts<Date.now()-Number(site.retention_days)*86400000){rejected.push({index,event_id:wire.event_id,reason:'outside_retention'});continue;}
         if(wire.type==='replay'||wire.type==='heatmap'){if(site.config[wire.type]!==true){rejected.push({index,event_id:wire.event_id,reason:'feature_not_enabled'});continue;}}
+        if(wire.type==='heatmap'&&!heatmapPathMatches(Array.isArray(site.config.heatmap_pages)?site.config.heatmap_pages:[],wire.path)){rejected.push({index,event_id:wire.event_id,reason:'heatmap_page_not_enabled'});continue;}
+        if(wire.type==='event'&&wire.props?.capture==='visual'&&!readCaptureRules(site.config).some(rule=>rule.enabled&&rule.name===wire.event_name&&capturePathMatches(rule,wire.path))){rejected.push({index,event_id:wire.event_id,reason:'visual_rule_not_enabled'});continue;}
         const day=dayFormatter.format(new Date(wire.ts));
         const visitor=site.privacy_mode==='daily_salt'?visitorHash(site.salt_secret,day,ip,ua):wire.visitor_id??randomUUID();
         let userId=site.privacy_mode==='standard'&&wire.user_id?visitorHash(site.salt_secret,'identity',wire.user_id,''):undefined;

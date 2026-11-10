@@ -1,17 +1,19 @@
 import {dayOf,eventMatchesFilters,sessionize,type AnalyticsEvent,type ContentFilters,type Session} from './analytics-core.js';
+import {directoryLabels,type DirectoryRule} from './site-content-management.js';
+import {normalizeRegion} from './geography-analytics.js';
 import {networkIPLabel,publicIPKey,summarizeIPIdentities,validIPIdentity,type IPMetrics} from './network-ip.js';
 
 export interface TrafficModelOptions {
  from:string;to:string;timezone:string;privacy:boolean;timeoutMs:number;
- filters?:ContentFilters;firstSeen:ReadonlyMap<string,string>;sessionContextComplete?:boolean;trendDimensions?:readonly string[];trendLabel?:string;trendLabels?:readonly string[];
+ filters?:ContentFilters;firstSeen:ReadonlyMap<string,string>;sessionContextComplete?:boolean;trendDimensions?:readonly string[];trendLabel?:string;trendLabels?:readonly string[];visitDimension?:typeof trafficDimensions[number];visitLabel?:string;directoryRules?:readonly DirectoryRule[];
 }
 export type VisitorType='new'|'returning'|'unknown';
 export interface VisitorCounts {new:number|null;returning:number|null;unknown:number|null;status:string}
 interface Accumulator {pv:number;visitors:Map<string,string>;ipIdentities:Set<string>;knownIPPages:number;sessions:number;bounces:number;duration:number}
 export interface TrafficMetric extends IPMetrics {label:string;pv:number;uv:number|null;sessions:number|null;bounceRate:number|null;averageDuration:number|null;newVisitors:number|null;returningVisitors:number|null;unknownVisitors:number|null}
-export interface VisitRow {id:string;time:string;visitorKey:string;visitorType:VisitorType;city:string|null;ipPrefix:string|null;ipLabel:string|null;ipKey:string|null;ipKeys:string[];multipleIPs:boolean;isp:string|null;browser:string|null;referrer:string|null;entry:string;keyword:string|null;pageviews:number;duration:number;paths:{time:string;path:string;ipKey:string|null;ipLabel:string|null}[]}
-export interface VisitFilters {visitorType?:VisitorType;referrer?:string;city?:string;entry?:string;visitorKey?:string;ipPrefix?:string;ipLabel?:string;ipKey?:string;isp?:string;keyword?:string;browser?:string}
-export const trafficDimensions=['channel','page','entry','visitorType','country','region','city','referrer','searchEngine','external','keyword','directory','domain','isp','ip','ipPrefix','campaign','utm_source','utm_medium','device','browser','os','screen','language','brand','colorDepth','week','month'] as const;
+export interface VisitRow {id:string;time:string;visitorKey:string;visitorType:VisitorType;country:string|null;region:string|null;city:string|null;ipPrefix:string|null;ipLabel:string|null;ipKey:string|null;ipKeys:string[];multipleIPs:boolean;isp:string|null;browser:string|null;referrer:string|null;entry:string;keyword:string|null;pageviews:number;duration:number;paths:{time:string;path:string;ipKey:string|null;ipLabel:string|null}[]}
+export interface VisitFilters {visitorType?:VisitorType;referrer?:string;country?:string;region?:string;city?:string;entry?:string;visitorKey?:string;ipPrefix?:string;ipLabel?:string;ipKey?:string;isp?:string;keyword?:string;browser?:string}
+export const trafficDimensions=['channel','page','entry','visitorType','country','region','city','referrer','searchEngine','external','keyword','directory','domain','isp','ip','ipPrefix','campaign','utm_source','utm_medium','utm_content','utm_term','device','browser','browserVersion','os','osVersion','screen','language','brand','colorDepth','week','month'] as const;
 const dimensions=trafficDimensions;
 const blank=():Accumulator=>({pv:0,visitors:new Map(),ipIdentities:new Set(),knownIPPages:0,sessions:0,bounces:0,duration:0});
 const timestamp=(event:AnalyticsEvent)=>+new Date(event.ts);
@@ -48,10 +50,15 @@ function dimension(event:AnalyticsEvent,key:typeof dimensions[number],options:Tr
   case 'ip':return privacy||!validIPIdentity(d.client_ip_id)?null:d.client_ip_id;
   case 'ipPrefix':return privacy?null:known(d.ip_truncated);
   case 'campaign':return known(d.utm_campaign)||'未设置';
+  case 'region':return normalizeRegion(d.country||'',d.region||'unknown');
   case 'week':return isoWeek(dayOf(event.ts,timezone));
   case 'month':return dayOf(event.ts,timezone).slice(0,7);
   default:return known(d[key])||'未知';
  }
+}
+function labelsFor(event:AnalyticsEvent,key:typeof dimensions[number],options:TrafficModelOptions):string[]{
+ if(key==='directory')return directoryLabels(event.path,options.directoryRules);
+ const label=dimension(event,key,options);return label===null?[]:[label];
 }
 function metric(label:string,a:Accumulator,options:TrafficModelOptions,multiDay=false,periodDay=dayOf(options.from,options.timezone)):TrafficMetric {
  const complete=options.sessionContextComplete!==false;
@@ -80,11 +87,11 @@ export function buildTrafficReport(input:AnalyticsEvent[],options:TrafficModelOp
   const day=dayOf(event.ts,options.timezone);addPage(total,event,day);addPage(get(days,day),event,day);
   if(!multiDay)addPage(get(hours,new Date(hourStart(timestamp(event))).toISOString()),event,day);
   const daily=dayPages.get(day)||[];daily.push(event);dayPages.set(day,daily);
-  for(const key of dimensions){const label=dimension(event,key,options);if(label!==null)addPage(get(groups[key],label),event,day);}
+  for(const key of dimensions)for(const label of labelsFor(event,key,options))addPage(get(groups[key],label),event,day);
  }
  for(const session of sessions){
   const entry=session.events.find(e=>e.type==='pageview')!,day=dayOf(entry.ts,options.timezone);addSession(total,session);addSession(get(days,day),session);
-  for(const key of dimensions){const label=dimension(entry,key,options);if(label!==null)addSession(get(groups[key],label),session);}
+  for(const key of dimensions)for(const label of labelsFor(entry,key,options))addSession(get(groups[key],label),session);
   if(!multiDay)addSession(get(hours,new Date(hourStart(timestamp(entry))).toISOString()),session);
   const landing=get(groups.entry,entry.path);addSession(landing,session);for(const event of session.events)if(event.type==='pageview')addPage(landing,event,dayOf(event.ts,options.timezone));
  }
@@ -95,7 +102,8 @@ export function buildTrafficReport(input:AnalyticsEvent[],options:TrafficModelOp
  const depthLabels=['1 页','2–3 页','4–7 页','8–15 页','16 页及以上'],durationLabels=['不足 10 秒','10–29 秒','30–59 秒','1–3 分钟','3–10 分钟','10 分钟及以上'];
  const depth=depthLabels.map(label=>({label,sessions:0,pv:0})),duration=durationLabels.map(label=>({label,sessions:0,pv:0}));
  for(const session of sessions){const depthRow=depth[session.pageviews===1?0:session.pageviews<=3?1:session.pageviews<=7?2:session.pageviews<=15?3:4]!;depthRow.sessions++;depthRow.pv+=session.pageviews;const seconds=session.duration_s,durationRow=duration[seconds<10?0:seconds<30?1:seconds<60?2:seconds<180?3:seconds<600?4:5]!;durationRow.sessions++;durationRow.pv+=session.pageviews;}
- const visits:VisitRow[]=sessions.map(session=>{const entry=session.events.find(e=>e.type==='pageview')!,d=entry.dimensions,ipKeys=options.privacy?[]:[...new Set(session.events.filter(e=>e.type==='pageview').map(e=>publicIPKey(e.dimensions.client_ip_id)).filter((key):key is string=>key!==null))];return {id:session.id,time:new Date(entry.ts).toISOString(),visitorKey:session.visitor_id,visitorType:visitorType(session.visitor_id,dayOf(entry.ts,options.timezone),options.firstSeen,options.privacy),city:known(d.city),ipPrefix:options.privacy?null:known(d.ip_truncated),ipLabel:options.privacy?null:networkIPLabel(d),ipKey:options.privacy?null:publicIPKey(d.client_ip_id),ipKeys,multipleIPs:ipKeys.length>1,isp:known(d.isp),browser:known(d.browser),referrer:known(d.referrer),entry:entry.path,keyword:known(d.keyword),pageviews:session.pageviews,duration:session.duration_s,paths:session.events.filter(e=>e.type==='pageview').map(e=>({time:new Date(e.ts).toISOString(),path:e.path,ipKey:options.privacy?null:publicIPKey(e.dimensions.client_ip_id),ipLabel:options.privacy?null:networkIPLabel(e.dimensions)}))};}).sort((a,b)=>b.time.localeCompare(a.time)||a.id.localeCompare(b.id));
+ const visitSessions=options.visitDimension?sessions.filter(session=>{const key=options.visitDimension!;return key==='entry'?session.entry_path===options.visitLabel:session.events.some(event=>event.type==='pageview'&&(key==='ip'?[options.privacy?null:publicIPKey(event.dimensions.client_ip_id)]:labelsFor(event,key,options)).includes(options.visitLabel!));}):sessions;
+ const visits:VisitRow[]=visitSessions.map(session=>{const entry=session.events.find(e=>e.type==='pageview')!,d=entry.dimensions,ipKeys=options.privacy?[]:[...new Set(session.events.filter(e=>e.type==='pageview').map(e=>publicIPKey(e.dimensions.client_ip_id)).filter((key):key is string=>key!==null))];return {id:session.id,time:new Date(entry.ts).toISOString(),visitorKey:session.visitor_id,visitorType:visitorType(session.visitor_id,dayOf(entry.ts,options.timezone),options.firstSeen,options.privacy),country:known(d.country),region:known(d.region)?normalizeRegion(d.country||'',d.region!):null,city:known(d.city),ipPrefix:options.privacy?null:known(d.ip_truncated),ipLabel:options.privacy?null:networkIPLabel(d),ipKey:options.privacy?null:publicIPKey(d.client_ip_id),ipKeys,multipleIPs:ipKeys.length>1,isp:known(d.isp),browser:known(d.browser),referrer:known(d.referrer),entry:entry.path,keyword:known(d.keyword),pageviews:session.pageviews,duration:session.duration_s,paths:session.events.filter(e=>e.type==='pageview').map(e=>({time:new Date(e.ts).toISOString(),path:e.path,ipKey:options.privacy?null:publicIPKey(e.dimensions.client_ip_id),ipLabel:options.privacy?null:networkIPLabel(e.dimensions)}))};}).sort((a,b)=>b.time.localeCompare(a.time)||a.id.localeCompare(b.id));
  if(options.sessionContextComplete===false)rows.entry=[];
  // Only requested dimensions are materialized: at most 3 × 5 leaders per day.
  const trendKeys=[...new Set(options.trendDimensions||['channel','page','visitorType'])].filter((key):key is typeof dimensions[number]=>dimensions.includes(key as typeof dimensions[number])).slice(0,3);
@@ -111,9 +119,9 @@ export function buildTrafficReport(input:AnalyticsEvent[],options:TrafficModelOp
   const selected=keys.map(value=>{const source=key==='ip'?[...groups[key].keys()].find(label=>publicIPKey(label)===value)??null:value;return {source,label:key==='ip'?(source?networkIPLabel(ipDetails.get(source)!.dimensions):null)||`IP · ${value.slice(0,12)}`:value,...key==='ip'?{ipKey:value}:{}};});
   const leaders=new Set(selected.map(item=>item.source).filter((label):label is string=>label!==null));
   const trend=new Map<string,Accumulator>();
-  const labelFor=(event:AnalyticsEvent)=>key==='visitorType'?visitorType(event.visitor_id,dayOf(event.ts,options.timezone),options.firstSeen,options.privacy):dimension(event,key,options);
-  if(key!=='entry')for(const event of pages){const label=labelFor(event);if(label!==null&&leaders.has(label)){const time=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([time,label])),event,time);}}
-  for(const session of sessions){const entry=session.events.find(e=>e.type==='pageview')!,label=key==='entry'?entry.path:labelFor(entry);if(label===null||!leaders.has(label))continue;const time=dayOf(entry.ts,options.timezone);addSession(get(trend,JSON.stringify([time,label])),session);if(key==='entry')for(const event of session.events)if(event.type==='pageview'){const pageDay=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([pageDay,label])),event,pageDay);}}
+  const trendLabelsFor=(event:AnalyticsEvent)=>key==='visitorType'?[visitorType(event.visitor_id,dayOf(event.ts,options.timezone),options.firstSeen,options.privacy)]:labelsFor(event,key,options);
+  if(key!=='entry')for(const event of pages)for(const label of trendLabelsFor(event))if(leaders.has(label)){const time=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([time,label])),event,time);}
+  for(const session of sessions){const entry=session.events.find(e=>e.type==='pageview')!;for(const label of key==='entry'?[entry.path]:trendLabelsFor(entry)){if(!leaders.has(label))continue;const time=dayOf(entry.ts,options.timezone);addSession(get(trend,JSON.stringify([time,label])),session);if(key==='entry')for(const event of session.events)if(event.type==='pageview'){const pageDay=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([pageDay,label])),event,pageDay);}}}
   // Explicit comparisons retain the same requested groups and every calendar
   // position. Only known empty buckets become zero; absent IP identities remain unknown.
   if(options.trendDimensions||requestedLabels){
@@ -124,7 +132,16 @@ export function buildTrafficReport(input:AnalyticsEvent[],options:TrafficModelOp
  }));
  return {groups:rows,days:dayRows,hours:hourRows,dimensionTrend,totals:metric('全部',total,options,multiDay),visitors:visitorCounts(pages,options),engagement:options.sessionContextComplete===false?{depth:[],duration:[]}:{depth,duration},visits};
 }
-export function filterVisits(rows:VisitRow[],filters:VisitFilters){return rows.filter(row=>Object.entries(filters).every(([key,value])=>value===undefined||value===''||(key==='ipKey'?row.ipKeys.includes(value):row[key as keyof VisitFilters]===value)));}
+export function filterVisits(rows:VisitRow[],filters:VisitFilters){return rows.filter(row=>Object.entries(filters).every(([key,value])=>{
+ if(value===undefined||value==='')return true;
+ if(key==='ipKey')return row.ipKeys.includes(value);
+ if(key==='visitorType'||key==='ipPrefix')return row[key]===value;
+ const term=value.trim().toLocaleLowerCase();
+ if(key==='visitorKey')return row.visitorKey.toLocaleLowerCase().startsWith(term);
+ if(key==='ipLabel')return [row.ipLabel,row.ipPrefix,...row.paths.map(path=>path.ipLabel)].some(label=>label?.toLocaleLowerCase().includes(term));
+ if(key==='region')return normalizeRegion(row.country||'',row.region||'').toLocaleLowerCase().includes(normalizeRegion(row.country||'',value.trim()).toLocaleLowerCase());
+ return String(row[key as keyof VisitFilters]??'').toLocaleLowerCase().includes(term);
+}));}
 
 /** Counts the whole bounded window, never a recent-events preview. */
 export function buildLiveTraffic(events:AnalyticsEvent[],asOf:string,timezone:string,privacy:boolean,filters:ContentFilters={}){
@@ -134,3 +151,5 @@ export function buildLiveTraffic(events:AnalyticsEvent[],asOf:string,timezone:st
  for(const minutes of [5,15,30]){const from=end-minutes*60000;active[minutes]=privacy&&dayOf(new Date(from),timezone)!==dayOf(new Date(end-1),timezone)?null:new Set(selected.filter(e=>timestamp(e)>=from&&(e.type==='pageview'||e.type==='heartbeat')).map(e=>e.visitor_id)).size;}
  return {from:new Date(begin).toISOString(),to:asOf,active,pageviews,pages:[...paths].map(([path,pv])=>({path,pv})).sort((a,b)=>b.pv-a.pv||a.path.localeCompare(b.path)),method:'pageview_or_heartbeat_distinct',coverage:1,status:'complete'};
 }
+
+

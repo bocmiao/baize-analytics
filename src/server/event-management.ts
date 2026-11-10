@@ -10,6 +10,7 @@ const metadata={displayName:z.string().trim().min(1).max(128),description:z.stri
 const createSchema=z.object({name:eventName,...metadata,description:metadata.description.default('')}).strict();
 const updateSchema=z.object(metadata).partial().strict().refine(value=>Object.keys(value).length>0,'至少修改一项');
 const definitionSchema=createSchema.extend({createdAt:z.iso.datetime(),updatedAt:z.iso.datetime()});
+export const eventDefinitionsSchema=z.record(z.string(),definitionSchema).refine(value=>Object.keys(value).length<=EVENT_DEFINITION_LIMIT);
 export type EventDefinition=z.infer<typeof definitionSchema>;
 
 /** Metadata only: defining, renaming, or removing a definition never discards

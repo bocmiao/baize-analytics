@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 // Serve fixed distribution artifacts only; never expose repository license paths.
 export function registerTrackerAssets(app:FastifyInstance){
  app.get('/tracker.LICENSE.txt',async(_req,reply)=>reply.type('text/plain; charset=utf-8').sendFile('tracker.LICENSE.txt',resolve('public')));
- for(const name of ['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap','tracker-consent']){
+ for(const name of ['tracker','tracker-min','tracker-vitals','tracker-replay','tracker-heatmap','tracker-consent','tracker-visual']){
   app.get(`/${name}.js`,async(req,reply)=>{
    const gzip=(req.headers['accept-encoding']??'').split(',').some(part=>{
     const [encoding,...parameters]=part.trim().split(';');

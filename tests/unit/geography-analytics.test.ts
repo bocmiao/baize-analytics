@@ -22,3 +22,17 @@ it('supports daily UV trend but hides network identity in daily-salt mode, inclu
 it('never invents locations for unknown and does not claim cross-day daily-salt UV', () => {
  const result = summarizeGeography([event('a', 'unknown', 'unknown', 'unknown')], {}, false); expect(result.geographyCoverage).toBe(0); expect(result.regions[0]).toMatchObject({region: 'unknown', uv: null}); expect(result.uvStatus).toBe('unsupported_in_this_mode');
 });
+it('attributes sessions to entry geography and preserves previous-session lookback across content filters',()=>{
+ const a=event('a','CN','Henan','洛阳'),b=event('a','CN','Sichuan','成都'),c=event('b','CN','Sichuan','成都');a.ts='2026-11-01T00:00:00Z';b.ts='2026-11-01T00:01:00Z';c.ts='2026-11-01T01:00:00Z';a.path='/landing';b.path=c.path='/target';
+ const base={from:'2026-11-01T00:00:00Z',to:'2026-11-02T00:00:00Z',timezone:'UTC',firstSeen:new Map([['a','2026-10-01'],['b','2026-11-01']])};
+ const full=summarizeGeography([a,b,c],{},true,base);expect(full.selected.totals).toMatchObject({pv:3,uv:2,sessions:2,newVisitors:1,returningVisitors:1,unknownVisitors:0});expect(full.cities.find(row=>row.city==='成都')).toMatchObject({pv:2,uv:2,sessions:1});
+ const filtered=summarizeGeography([a,b,c],{},true,{...base,filters:{path:'/target'}});expect(filtered.selected.totals).toMatchObject({pv:2,sessions:1});
+ const clipped=summarizeGeography([a,b,c],{},true,{...base,from:'2026-11-01T00:00:30Z'});expect(clipped.selected.totals).toMatchObject({pv:2,sessions:1});
+});
+it('keeps new visitor daily classification, missing first-seen and partial session context explicit',()=>{
+ const a=event('a','CN','Henan','洛阳'),b=event('a','CN','Henan','洛阳');a.ts='2026-11-01T17:00:00Z';b.ts='2026-11-02T17:00:00Z';
+ const opts={from:'2026-11-01T16:00:00Z',to:'2026-11-03T16:00:00Z',timezone:'Asia/Shanghai',firstSeen:new Map([['a','2026-11-02']])};
+ const report=summarizeGeography([a,b],{},true,opts);expect(report.selected.totals).toMatchObject({newVisitors:1,returningVisitors:0,sessions:2});expect(report.trend.map(row=>[row.newVisitors,row.returningVisitors])).toEqual([[1,0],[0,1]]);
+ expect(summarizeGeography([a],{},true,{...opts,sessionContextComplete:false,firstSeen:new Map()}).selected.totals).toMatchObject({sessions:null,averageDuration:null,unknownVisitors:1,visitorStatus:'partial_first_seen'});
+ expect(summarizeGeography([a],{},true,{...opts,privacy:true}).selected.totals).toMatchObject({newVisitors:null,returningVisitors:null,visitorStatus:'unsupported_in_this_mode'});
+});

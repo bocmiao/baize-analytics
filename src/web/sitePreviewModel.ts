@@ -1,0 +1,3 @@
+import type {Site} from './api';
+export function previewTarget(site:Site,value:string,appOrigin:string){const url=new URL(value);const hosts=[site.domain,...(Array.isArray(site.config?.allowed_hosts)?site.config.allowed_hosts.map(String):[])].map(host=>new URL('https://'+host).host);if(!['http:','https:'].includes(url.protocol)||url.username||url.password||url.origin===appOrigin||!hosts.includes(url.host))throw Error('请输入本站域名或已配置别名的完整网址；预览页必须与统计后台不同源。');return url;}
+export function trustedPreviewMessage(event:Pick<MessageEvent,'source'|'origin'|'data'>,frame:Window|null,origin:string,nonce:string){return event.source===frame&&frame!==null&&event.origin===origin&&event.data?.nonce===nonce&&['baize:editor:ready','baize:editor:pick'].includes(event.data?.type);}

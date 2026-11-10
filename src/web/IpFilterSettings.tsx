@@ -1,0 +1,9 @@
+import {useState} from 'react';
+import {api,rows} from './api';
+import {DensePanel,DenseTable,useReportRead} from './DensePrimitives';
+import './advanced-analysis.css';
+export function IpFilterSettings({siteId,onSaved}:{siteId:string;onSaved?:()=>void}){
+ const[refresh,setRefresh]=useState(0),[value,setValue]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');const base=`/api/v1/sites/${siteId}/ip-filters`,result=useReportRead(base,refresh);
+ async function update(rule:string,method:'POST'|'DELETE'){setBusy(true);setMessage('');try{await api(base,{value:rule},method);if(method==='POST')setValue('');setRefresh(n=>n+1);onSaved?.();setMessage(method==='POST'?'已添加，后续匹配请求不再计入统计。':'已删除过滤规则。');}catch(error){setMessage((error as Error).message);}finally{setBusy(false);}}
+ return <DensePanel title="IP 过滤"><p className="dense-note">支持单个 IPv4 / IPv6、CIDR 网段或起止范围，最多 100 条。规则只影响后续采集。</p>{result.error&&<p role="alert">{result.error}</p>}<form className="advanced-controls" onSubmit={e=>{e.preventDefault();void update(value,'POST');}}><label>IP 地址或范围<input required value={value} maxLength={128} disabled={busy} onChange={e=>setValue(e.target.value)} placeholder="192.0.2.1 或 192.0.2.1-192.0.2.20"/></label><button disabled={busy} type="submit">添加过滤</button></form><DenseTable data={rows(result.data?.rules)} defaultSort="addedAt" exportName="IP过滤规则" columns={[{key:'value',label:'IP / 网段 / 范围'},{key:'kind',label:'类型',render:row=>({ip:'单个地址',cidr:'CIDR网段',range:'起止范围'})[String(row.kind)]||'—'},{key:'addedAt',label:'添加时间',render:row=>row.addedAt?new Date(String(row.addedAt)).toLocaleString('zh-CN'):'历史规则'},{key:'actions',label:'操作',render:row=><button className="dense-text-button" disabled={busy} onClick={()=>void update(String(row.value),'DELETE')}>删除</button>}]}/>{message&&<p role="status">{message}</p>}</DensePanel>;
+}

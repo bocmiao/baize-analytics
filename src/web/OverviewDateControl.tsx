@@ -1,0 +1,10 @@
+import {useEffect,useId,useRef,useState} from 'react';
+import {dateRange} from './time';
+
+export function OverviewDateControl({from,to,timezone,onApply}:{from:string;to:string;timezone:string;onApply:(from:string,to:string)=>void}){
+ const [open,setOpen]=useState(false),[draftFrom,setDraftFrom]=useState(from),[draftTo,setDraftTo]=useState(to),[error,setError]=useState('');
+ const id=useId(),container=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null),start=useRef<HTMLInputElement>(null);
+ function close(){setOpen(false);setError('');trigger.current?.focus();}
+ useEffect(()=>{if(!open)return;start.current?.focus();const dismiss=(event:PointerEvent)=>{if(!container.current?.contains(event.target as Node))setOpen(false);};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();setOpen(false);trigger.current?.focus();}};document.addEventListener('pointerdown',dismiss);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',escape);};},[open]);
+ return <div className="l51-calendar-control" ref={container}><button ref={trigger} type="button" aria-expanded={open} aria-controls={id} onClick={()=>{setDraftFrom(from);setDraftTo(to);setError('');setOpen(value=>!value);}} aria-label="自定义日期范围">▦ {from} ~ {to}</button>{open&&<form id={id} role="dialog" aria-label="自定义日期范围" onSubmit={event=>{event.preventDefault();try{dateRange(draftFrom,draftTo,timezone);onApply(draftFrom,draftTo);close();}catch{setError('请选择有效日期，开始日期不能晚于结束日期，且日期须在站点时区内存在。');}}} className="l51-date-popover"><label>开始日期<input ref={start} type="date" required value={draftFrom} max={draftTo} onChange={event=>setDraftFrom(event.target.value)}/></label><label>结束日期<input type="date" required value={draftTo} min={draftFrom} onChange={event=>setDraftTo(event.target.value)}/></label>{error&&<p role="alert" className="error">{error}</p>}<div className="l51-date-actions"><button type="submit">确定</button><button type="button" onClick={close}>取消</button></div></form>}</div>;
+}
