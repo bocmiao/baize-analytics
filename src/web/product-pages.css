@@ -14,6 +14,9 @@ html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
 .workspace :is(.settings-form,.connector-form,.segment-filters) textarea{min-height:104px;resize:vertical;line-height:1.6}
 .workspace .settings-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
 .workspace .settings-actions :is(button,.button){width:auto}
+.workspace .settings-instruction{display:block;grid-column:1/-1;max-width:75ch;margin:0 0 14px;padding:0;color:var(--fg-2);font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.workspace .settings-instruction :is(strong,code){display:inline;float:none;white-space:normal}
+.workspace .settings-instruction strong{font-weight:500;color:var(--fg)}
 .workspace .settings-feedback{font-size:13px;line-height:1.7;color:var(--fg-2);margin:16px 0 0;overflow-wrap:anywhere}
 .workspace .settings-feedback[role=status]{color:var(--pos)}
 .workspace .settings-advanced{min-width:0}
