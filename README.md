@@ -8,7 +8,7 @@
 
 项目正在打磨完善，欢迎通过 [Issue](https://github.com/bocmiao/baize-analytics/issues) 反馈问题，也欢迎提交 [PR](https://github.com/bocmiao/baize-analytics/pulls)。
 
-[English](README.en.md) · [安装指南](docs/deployment-methods.md) · [PHP 安装](docs/PHP_INSTALLATION.md) · [文档导航](docs/README.md) · [参与贡献](CONTRIBUTING.md)
+[English](README.en.md) · [安装指南](docs/deployment-methods.md) · [PHP 安装](docs/PHP_INSTALLATION.md) · [文档导航](docs/README.md) · [QQ 交流群](#交流与反馈) · [参与贡献](CONTRIBUTING.md)
 
 ## 能做什么
 
@@ -23,14 +23,16 @@
 
 ## 界面预览
 
-工作台采用白泽蓝白配色，支持深色模式和手机布局。统计、转化和行为分析按任务分组，管理工具收进设置。预览使用独立演示站点的数据；[截图来源与验证范围](docs/images/README.md)。
+流量报表、访客分析和站点设置使用统一的白泽界面，支持浅色、深色及手机布局。常用筛选放在报表顶部，高级配置按需展开。
 
-这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。本次界面整理见[全页面界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md)，完整能力范围见[逐项功能对照](docs/51LA_FUNCTION_MATRIX.md)。
+以下为当前 Node 标准版的实际运行截图，使用独立演示站点数据。[截图说明](docs/images/README.md) · [界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [功能对照](docs/51LA_FUNCTION_MATRIX.md)
+
+**桌面流量报表**
 
 ![白泽桌面流量报表](docs/images/baize-reports-desktop.jpg)
 
 <details>
-<summary>查看手机布局</summary>
+<summary>查看手机端站点设置</summary>
 
 ![白泽手机站点设置](docs/images/baize-settings-mobile.jpg)
 
@@ -90,6 +92,12 @@ bash install.sh       # Node 标准版
 | 核对功能范围与历史验证 | [功能清单](docs/IMPLEMENTATION_CHECKLIST.md) · [版本状态与验收记录](docs/STATUS.md) |
 
 完整入口见 [文档导航](docs/README.md)。历史验收和运行包都对应各自的源码版本，部署时以所用版本的清单与说明为准。本次文件整理与历史附件位置见 [仓库维护记录](docs/REPOSITORY_MAINTENANCE_20261110.md)。
+
+## 交流与反馈
+
+**QQ 交流群：2639496**
+
+欢迎加入，交流安装和使用心得、反馈问题、讨论新功能。可复现的问题建议同时提交 [Issue](https://github.com/bocmiao/baize-analytics/issues)，便于跟进处理。
 
 ## 参与贡献
 

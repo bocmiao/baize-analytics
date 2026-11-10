@@ -8,27 +8,31 @@ Baize is an open-source, self-hosted website analytics product. Add the tracking
 
 Baize is under active development. [Bug reports and suggestions](https://github.com/bocmiao/baize-analytics/issues) and [pull requests](https://github.com/bocmiao/baize-analytics/pulls) are welcome.
 
-[中文](README.md) · [Installation](docs/deployment-methods.md) · [PHP installation](docs/PHP_INSTALLATION.md) · [Documentation](docs/en/README.md) · [Contributing](CONTRIBUTING.md)
+[中文](README.md) · [Installation](docs/deployment-methods.md) · [PHP installation](docs/PHP_INSTALLATION.md) · [Documentation](docs/en/README.md) · [QQ community](#community-and-feedback) · [Contributing](CONTRIBUTING.md)
 
 ## Features
 
 - **Understand visits:** pageviews, visitors, sessions, channels, UTM, popular pages, devices, geography and Web Vitals, with date filters and period comparisons.
 - **Complete traffic details (Node Standard):** distinct IPs, offline IPv4/IPv6 geography and ISP data, today’s traffic forecast, event definitions and crawler access logs. [Setup guide](docs/TRAFFIC_DATA_SETUP.md) (Chinese).
+- **Manage content and campaigns (Node Standard):** custom directory rules, saved campaign links and UTM parameters, locally generated QR codes, and analysis by source, campaign and medium. [Guide](docs/CONTENT_CAMPAIGN_SETUP.md) (Chinese).
 - **Track events and conversions:** custom events and goals. Standard also offers funnels, paths and retention.
 - **Manage multiple sites:** site permissions, exports, data retention and visitor deletion. Standard adds team invitations, sharing, scheduled reports and alerts.
 - **Explore visitor behavior:** opt-in replay, heatmaps, visual event selection, and event comparisons in Standard.
+- **Share summaries (Node Standard):** read-only dashboards with passwords and expiry dates, plus embeddable traffic, acquisition, device, geography and page charts. [Sharing guide](docs/SHARED_DASHBOARDS.md) (Chinese).
 - **Control your data:** collection consent, privacy settings and an independent deletion journal that is replayed during recovery.
 
 ## Interface
 
-The workspace uses Baize’s blue and white palette, with dark mode and mobile layouts. Analytics are organized by task, with administration grouped under Settings. The preview uses a separate demonstration site's data. See [capture details and validation scope](docs/images/README.md).
+Traffic reports, visitor analysis and site settings share the same Baize interface, with light, dark and mobile layouts. Common filters sit above reports, while advanced configuration expands when needed.
 
-The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See the [all-pages UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) and [feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese).
+These screenshots show the current Node Standard application using a separate demonstration site's data. [Capture details](docs/images/README.md) · [UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [Feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese)
+
+**Desktop traffic report**
 
 ![Baize desktop traffic report](docs/images/baize-reports-desktop.jpg)
 
 <details>
-<summary>Mobile layout</summary>
+<summary>Mobile site settings</summary>
 
 ![Baize mobile site settings](docs/images/baize-settings-mobile.jpg)
 
@@ -88,6 +92,12 @@ Other installation paths:
 | Check feature coverage and past validation | [Feature checklist](docs/IMPLEMENTATION_CHECKLIST.md) · [Version status and acceptance records](docs/STATUS.md) |
 
 See the [documentation index](docs/README.md) for all guides. Historical test reports and runtime packages belong to their recorded source revisions; use the manifest and instructions for the version you deploy. The [repository maintenance record](docs/REPOSITORY_MAINTENANCE_20261110.md) lists this cleanup and the preserved historical attachments.
+
+## Community and feedback
+
+**QQ group: 2639496** (Chinese-speaking community)
+
+Join to discuss installation, share tips, report problems and suggest features. Please also file an [issue](https://github.com/bocmiao/baize-analytics/issues) for reproducible bugs so they can be tracked.
 
 ## Contributing
 
