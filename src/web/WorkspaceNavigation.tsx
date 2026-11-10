@@ -1,8 +1,8 @@
-import {useEffect,useRef,useState,type KeyboardEvent as ReactKeyboardEvent,type ReactNode} from 'react';
+import {Fragment,useEffect,useRef,useState,type KeyboardEvent as ReactKeyboardEvent,type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {language} from './i18n';
-import {navigationGroups,workspaceUrl,type WorkspaceRoute} from './workspaceRoute';
-import {referenceGroupIsExpandable,referenceNavigation,type ReferenceLink} from './51laNavigation';
+import {workspaceUrl,type WorkspaceRoute} from './workspaceRoute';
+import {referenceGroupIsExpandable,navigationSections,permittedNavigation,type ReferenceLink,type ReferenceNavigationItem} from './51laNavigation';
 
 function NavigationIcon({name}:{name:string}){
  const paths:Record<string,ReactNode>={
@@ -27,16 +27,9 @@ function NavigationIcon({name}:{name:string}){
 
 export function WorkspaceNavigation({route,items,onNavigate,children,account,identity}:{route:WorkspaceRoute;items:string[][];onNavigate:(report:string)=>void;children:(close:()=>void)=>ReactNode;account?:(close:()=>void)=>ReactNode;identity?:{name:string;detail:string}}){
  const en=language()==='en';
- const allowed=new Set(items.map(([key])=>key));
- const known=new Set(['daily',...referenceNavigation.flatMap(group=>group.links.map(link=>link.key))]);
- const groups=referenceNavigation.map(group=>({...group,links:group.links.filter(link=>allowed.has(link.key))})).filter(group=>group.links.length);
- const extras=navigationGroups.flatMap(group=>{
-  const members=items.filter(([key])=>!known.has(key)&&group.reports.some(report=>report===key));
-  return members.length?[{id:group.id,zh:group.zh,en:group.en,members}]:[];
- });
+ const groups=permittedNavigation(items.map(([key])=>key));
  const activeGroup=groups.find(group=>group.links.some(link=>link.key===route.report));
  const [expanded,setExpanded]=useState(activeGroup&&referenceGroupIsExpandable(activeGroup.id)?activeGroup.id:'');
- const [extrasOpen,setExtrasOpen]=useState(!known.has(route.report));
  const [drawerOpen,setDrawerOpen]=useState(false);
  const [collapsed,setCollapsed]=useState(()=>typeof window!=='undefined'&&window.matchMedia('(min-width:768px) and (max-width:1023px)').matches);
  const [mobile,setMobile]=useState(()=>typeof window!=='undefined'&&window.matchMedia('(max-width:767px)').matches);
@@ -45,9 +38,9 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
  const flyoutRef=useRef<HTMLDivElement>(null),flyoutTriggerRef=useRef<HTMLElement|null>(null);
  const closeTimerRef=useRef<ReturnType<typeof setTimeout>|null>(null),focusFlyoutRef=useRef<'first'|'last'|null>(null),skipFocusOpenRef=useRef(false);
  const rail=collapsed&&!mobile;
- const dailyLink={key:'daily',zh:'数据日报',en:'Daily report'};
+
  const flyoutGroup=groups.find(group=>group.id===flyout?.id);
- const flyoutLinks=flyoutGroup?.id==='overview'?[...flyoutGroup.links,...allowed.has('daily')?[dailyLink]:[]]:flyoutGroup?.links||[];
+
  useEffect(()=>{
   const phone=window.matchMedia('(max-width:767px)'),tablet=window.matchMedia('(min-width:768px) and (max-width:1023px)');
   const changed=()=>{setMobile(phone.matches);setCollapsed(tablet.matches);setDrawerOpen(false);};
@@ -55,9 +48,9 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
   return()=>{phone.removeEventListener('change',changed);tablet.removeEventListener('change',changed);};
  },[]);
  useEffect(()=>{
-  const next=referenceNavigation.find(group=>group.links.some(link=>link.key===route.report));
+  const next=permittedNavigation(items.map(([key])=>key)).find(group=>group.links.some(link=>link.key===route.report));
   if(next&&referenceGroupIsExpandable(next.id))setExpanded(next.id);
-  if(!next&&route.report!=='daily')setExtrasOpen(true);
+
   setDrawerOpen(false);
   setFlyout(null);
  },[route.report,route.siteId]);
@@ -77,7 +70,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
   const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
   const main=document.getElementById('workspace-main'),previousInert=main?.inert;
   if(main)main.inert=true;
-  const focusable=()=>Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]),a[href],select:not([disabled]),[tabindex="0"]')||[]).filter(element=>element.getClientRects().length>0);
+  const focusable=()=>Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]),a[href],summary,select:not([disabled]),[tabindex="0"]')||[]).filter(element=>element.getClientRects().length>0);
   focusable()[0]?.focus();
   const keydown=(event:KeyboardEvent)=>{
    if(event.key==='Escape'){event.preventDefault();setDrawerOpen(false);return;}
@@ -95,8 +88,8 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
  function openFlyout(id:string,trigger:HTMLElement,focus?:'first'|'last'){
   if(!rail)return;
   cancelFlyoutClose();flyoutTriggerRef.current=trigger;focusFlyoutRef.current=focus||null;
-  const group=groups.find(item=>item.id===id),count=id==='extra'?extras.reduce((sum,item)=>sum+item.members.length,0):(group?.links.length||0)+(id==='overview'&&allowed.has('daily')?1:0);
-  const height=Math.min(window.innerHeight-68,count*49+(id==='extra'?extras.length*30:0));
+  const group=groups.find(item=>item.id===id),count=group?.links.length||0;
+  const height=Math.min(window.innerHeight-68,count*49+(id==='configuration'?60:0));
   setFlyout({id,top:Math.max(60,Math.min(trigger.getBoundingClientRect().top,window.innerHeight-height-8))});
  }
  function delayFlyoutClose(){cancelFlyoutClose();closeTimerRef.current=setTimeout(()=>{if(!flyoutRef.current?.contains(document.activeElement)&&document.activeElement!==flyoutTriggerRef.current)setFlyout(null);},120);}
@@ -127,9 +120,16 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
  function link(item:ReferenceLink,icon?:string,inFlyout=false,triggerId?:string){
   return <a key={item.key} href={workspaceUrl({...route,report:item.key})} aria-label={en?item.en:item.zh} aria-current={route.report===item.key?'page':undefined} title={en?item.en:item.zh} role={inFlyout?'menuitem':undefined} tabIndex={inFlyout?-1:undefined} aria-haspopup={triggerId&&rail?'menu':undefined} aria-expanded={triggerId&&rail?flyout?.id===triggerId:undefined} aria-controls={triggerId&&rail&&flyout?.id===triggerId?'la51-flyout':undefined} {...triggerId?flyoutTrigger(triggerId):{}} onClick={event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onNavigate(item.key);close();}}>{icon&&<NavigationIcon name={icon}/>}<span>{en?item.en:item.zh}</span></a>;
  }
+ function groupLinks(group:ReferenceNavigationItem,inFlyout=false){
+  return <>{group.links.filter(item=>!item.section).map(item=>link(item,undefined,inFlyout))}{navigationSections.map(section=>{
+   const members=group.links.filter(item=>item.section===section.id);if(!members.length)return null;
+   if(inFlyout)return <div key={section.id} role="group" aria-label={en?section.en:section.zh}><div className="la51-flyout-group-title" role="presentation">{en?section.en:section.zh}</div>{members.map(item=>link(item,undefined,true))}</div>;
+   return <details key={section.id} className="baize-nav-settings-section" open={members.some(item=>item.key===route.report)}><summary>{en?section.en:section.zh}</summary>{members.map(item=>link(item))}</details>;
+  })}</>;
+ }
  return <div id="workspace-navigation" className={`la51-navigation${collapsed&&!mobile?' is-collapsed':''}${drawerOpen?' is-drawer-open':''}`} aria-label={en?'Workspace navigation':'工作空间导航'}>
   <header className="la51-topbar">
-   <a href="/" className="brand la51-brand" aria-label={en?'Baize Analytics':'白泽统计'}><img src="/brand/baize-head-96.png" width="32" height="32" alt=""/><span className="brand-name">{en?'Baize':'白泽'}<small>{en?'ANALYTICS':'网站统计'}</small></span></a>
+   <a href="/" className="brand la51-brand" aria-label={en?'Baize Analytics':'白泽统计'}><img src="/brand/baize-head-96.png" width="32" height="32" alt=""/><span className="brand-name">{en?'Baize':'白泽统计'}<small>{en?'ANALYTICS':'BAIZE ANALYTICS'}</small></span></a>
    <button ref={menuRef} type="button" className="la51-menu-toggle" aria-label={en?'Menu':'菜单'} aria-expanded={drawerOpen} aria-controls="la51-sidebar" onClick={()=>setDrawerOpen(value=>!value)}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
    <span className="la51-topbar-space"/>
    {account&&<details className="nav-account"><summary><span className="nav-identity"><b>{identity?.name||(en?'Account':'账户')}</b><small>{identity?.detail||(en?'Account and language':'账户与语言')}</small></span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg></summary><div className="nav-account-controls">{account(close)}</div></details>}
@@ -140,17 +140,16 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
    <nav className="v3-tabs la51-report-nav" aria-label={en?'Report pages':'报表页面'}>
     {groups.map(group=>{
      const grouped=referenceGroupIsExpandable(group.id),selected=group.links.some(item=>item.key===route.report);
-     if(group.id==='overview')return <div key={group.id} className={`la51-overview-links${selected||route.report==='daily'?' is-current':''}`}>{link(group.links[0],group.icon,false,allowed.has('daily')?'overview':undefined)}{allowed.has('daily')&&<><span className="la51-overview-divider" aria-hidden="true">|</span>{link(dailyLink)}</>}</div>;
+     if(group.id==='overview')return <div key={group.id} className={`la51-overview-links${selected?' is-current':''}`}>{link(group.links[0],group.icon,false,group.links.length>1?'overview':undefined)}{group.links.slice(1).map(item=><Fragment key={item.key}><span className="la51-overview-divider" aria-hidden="true">|</span>{link(item)}</Fragment>)}</div>;
      if(!grouped)return <div key={group.id} className="la51-nav-single">{link(group.links[0],group.icon)}</div>;
-     const open=expanded===group.id&&!collapsed;
-     return <section key={group.id} className={`navigation-group la51-nav-group${selected?' contains-current':''}`}><button type="button" title={en?group.en:group.zh} aria-label={en?group.en:group.zh} aria-haspopup={rail?'menu':undefined} aria-expanded={rail?flyout?.id===group.id:open} aria-controls={rail?(flyout?.id===group.id?'la51-flyout':undefined):`la51-nav-${group.id}`} {...flyoutTrigger(group.id)} onClick={event=>{if(rail)openFlyout(group.id,event.currentTarget,'first');else setExpanded(open?'':group.id);}}><NavigationIcon name={group.icon}/><span>{en?group.en:group.zh}</span><svg className="la51-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 2 4 4-4 4"/></svg></button><div id={`la51-nav-${group.id}`} className="la51-submenu" hidden={!open}>{group.links.map(item=>link(item))}</div></section>;
+     const open=expanded===group.id&&!rail;
+     return <section key={group.id} className={`navigation-group la51-nav-group${selected?' contains-current':''}`}><button type="button" title={en?group.en:group.zh} aria-label={en?group.en:group.zh} aria-haspopup={rail?'menu':undefined} aria-expanded={rail?flyout?.id===group.id:open} aria-controls={rail?(flyout?.id===group.id?'la51-flyout':undefined):`la51-nav-${group.id}`} {...flyoutTrigger(group.id)} onClick={event=>{if(rail)openFlyout(group.id,event.currentTarget,'first');else setExpanded(open?'':group.id);}}><NavigationIcon name={group.icon}/><span>{en?group.en:group.zh}</span><svg className="la51-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 2 4 4-4 4"/></svg></button><div id={`la51-nav-${group.id}`} className="la51-submenu" hidden={!open}>{groupLinks(group)}</div></section>;
     })}
-    {extras.length>0&&<section className={`navigation-group la51-nav-group la51-extra-group${!known.has(route.report)?' contains-current':''}`}><button type="button" title={en?'More features':'更多功能'} aria-label={en?'More features':'更多功能'} aria-haspopup={rail?'menu':undefined} aria-expanded={rail?flyout?.id==='extra':extrasOpen} aria-controls={rail?(flyout?.id==='extra'?'la51-flyout':undefined):'la51-nav-extra'} {...flyoutTrigger('extra')} onClick={event=>{if(rail)openFlyout('extra',event.currentTarget,'first');else setExtrasOpen(value=>!value);}}><NavigationIcon name="more"/><span>{en?'More features':'更多功能'}</span><svg className="la51-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 2 4 4-4 4"/></svg></button><div id="la51-nav-extra" className="la51-extra-links" hidden={!extrasOpen||collapsed}>{extras.map(group=><div key={group.id}><h3>{en?group.en:group.zh}</h3>{group.members.map(([key,label])=>link({key,zh:label,en:label}))}</div>)}</div></section>}
    </nav>
   </aside>
-  {rail&&flyout&&createPortal(<div id="la51-flyout" ref={flyoutRef} className="la51-flyout" role="menu" aria-label={flyout.id==='extra'?(en?'More features':'更多功能'):(en?flyoutGroup?.en:flyoutGroup?.zh)} style={{top:flyout.top}} onMouseEnter={cancelFlyoutClose} onMouseLeave={delayFlyoutClose} onBlur={event=>blurFlyout(event.relatedTarget)} onKeyDown={flyoutKeys}>
-   <div className="la51-flyout-title" role="presentation">{flyout.id==='extra'?(en?'More features':'更多功能'):(en?flyoutGroup?.en:flyoutGroup?.zh)}</div>
-   {flyout.id==='extra'?extras.map(group=><div key={group.id} role="group" aria-label={en?group.en:group.zh}><div className="la51-flyout-group-title" role="presentation">{en?group.en:group.zh}</div>{group.members.map(([key,label])=>link({key,zh:label,en:label},undefined,true))}</div>):flyoutLinks.map(item=>link(item,undefined,true))}
+  {rail&&flyout&&createPortal(<div id="la51-flyout" ref={flyoutRef} className="la51-flyout" role="menu" aria-label={en?flyoutGroup?.en:flyoutGroup?.zh} style={{top:flyout.top}} onMouseEnter={cancelFlyoutClose} onMouseLeave={delayFlyoutClose} onBlur={event=>blurFlyout(event.relatedTarget)} onKeyDown={flyoutKeys}>
+   <div className="la51-flyout-title" role="presentation">{en?flyoutGroup?.en:flyoutGroup?.zh}</div>
+   {flyoutGroup&&groupLinks(flyoutGroup,true)}
   </div>,document.body)}
  </div>;
 }

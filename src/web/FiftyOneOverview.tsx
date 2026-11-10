@@ -11,13 +11,13 @@ import {ForecastNote} from './ForecastNote';
 import {OverviewDateControl} from './OverviewDateControl';
 
 const GeographicMap=lazy(()=>import('./GeographicMap'));
-const metrics=[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['sessions','会话数'],['bounceRate','跳出率'],['averageDuration','平均访问时长']];
+const metrics=[['pv','浏览量(PV)'],['uv','访客数(UV)'],['ips','独立 IP'],['sessions','会话数'],['bounceRate','跳出率'],['averageDuration','平均访问时长']];
 type Props=ComponentProps<typeof OverviewDashboard>&{query:string;range:{from:string;to:string};onRange:(from:string,to:string)=>void};
 const value=(row:Row|undefined,key:string)=>row?.[key];
 function numeric(value:unknown):number|null{return typeof value==='number'&&Number.isFinite(value)?value:null;}
 function shift(date:string,days:number){const d=new Date(`${date}T12:00:00Z`);d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);}
-function CardIcon({kind='trend'}:{kind?:string}){return <span className={`l51-card-icon l51-icon-${kind}`} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{kind==='people'?<><circle cx="9" cy="7" r="3"/><path d="M3 20v-4a6 6 0 0 1 12 0v4M16 4a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3"/></>:kind==='device'?<><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M7 21h10m-5-4v4"/></>:kind==='geo'?<><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3ZM9 3v15m6-12v15"/></>:kind==='page'?<><path d="M6 2h8l4 4v16H6ZM14 2v5h5M9 12h6m-6 4h6"/></>:kind==='entry'?<><path d="M14 3h7v18h-7M2 12h14m-5-5 5 5-5 5"/></>:<><path d="M3 4v16h18M6 15l5-6 4 3 5-7"/></>}</svg></span>;}
-function Panel({title,kind,detail,children,className=''}:{title:string;kind?:string;detail?:ReactNode;children:ReactNode;className?:string}){return <section className={`l51-card ${className}`}><div className="l51-card-heading"><h2><CardIcon kind={kind}/>{title}</h2>{detail}</div>{children}</section>;}
+function Chevron({expanded=false}:{expanded?:boolean}){return <svg className={expanded?'l51-chevron is-expanded':'l51-chevron'} viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg>;}
+function Panel({title,detail,children,className=''}:{title:string;detail?:ReactNode;children:ReactNode;className?:string}){return <section className={`l51-card ${className}`}><div className="l51-card-heading"><h2>{title}</h2>{detail}</div>{children}</section>;}
 function Ranking({data,label,metric='pv',heading='访客数',title,onSelect}:{data:Row[];label:string;metric?:string;heading?:string;title:string;onSelect?:(row:Row)=>void}){
  const list=data.slice(0,10);const max=Math.max(1,...list.map(row=>Number(row[metric])||0));
  return <div className="l51-rank-table" role="region" aria-label={title}><table><thead><tr><th>{label}</th><th>{heading}</th></tr></thead><tbody>{list.map((row,index)=><tr key={index}><td><span className={`l51-rank-index rank-${index+1}`}>{index+1}</span><span className="l51-rank-name" style={{backgroundSize:`${Math.max(0,Number(row[metric])||0)/max*100}% 100%`}} title={String(row.label||row.name||row.path||'—')}>{onSelect?<button onClick={()=>onSelect(row)}>{String(row.label||row.name||row.path||'—')}</button>:String(row.label||row.name||row.path||'—')}</span></td><td>{metricText(row[metric])}</td></tr>)}</tbody></table>{!list.length&&<div className="l51-no-data">暂无数据</div>}</div>;
@@ -60,32 +60,52 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
  const regions=rows(geography.data?.regions).map(row=>({...row,label:String(row.region)}));
  const rawDevices=groups.device||Object.entries(((data.audience as Row|undefined)?.device||{}) as Row).map(([label,pv])=>({label,pv}));
  const devices=['desktop','mobile','other'].map(key=>({label:key==='desktop'?'电脑端':key==='mobile'?'移动端':'其他',pv:rawDevices.filter(row=>key==='other'?!['desktop','mobile'].includes(String(row.label)):row.label===key).reduce((sum,row)=>sum+(Number(row.pv)||0),0)}));
- const detail=(report:string)=><a href={reportHref(report)} onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onReport(report);}}>详情 <span aria-hidden="true">›</span></a>;
+ const detail=(report:string)=><a href={reportHref(report)} onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onReport(report);}}>查看详情<Chevron/></a>;
  function apply(from:string,to:string){onRange(from,to);}
  return <div className="l51-overview">
-  <div className={`l51-overview-top${expanded?' is-expanded':''}`}>
-   <section className="l51-live-card"><h2><span aria-hidden="true">◈</span> 最近15分钟活跃访客数</h2><strong>{metricText(active.visitors)}</strong><a href={reportHref('realtime')} onClick={event=>{event.preventDefault();onReport('realtime');}}>查看实时 <span aria-hidden="true">›</span></a>{summary.error&&<small role="status">实时数据暂不可用</small>}</section>
-   <section className="l51-summary">
-    <div className="l51-summary-mobile"><div className="l51-mobile-periods" role="group" aria-label="概况统计周期">{timeRows.map(([label],index)=><button key={label} type="button" aria-pressed={mobilePeriod===index} onClick={()=>setMobilePeriod(index)}>{label}</button>)}</div><div className="l51-mobile-metrics">{metrics.map(([key,label])=><div key={key}><span>{label}</span><strong>{metricText((timeRows[mobilePeriod]?.[1]?.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div>{expanded&&<div className="l51-mobile-history">{extendedRows.map(([label,row])=><section key={label}><h3>{label}</h3><div className="l51-mobile-metrics">{metrics.map(([key,name])=><div key={key}><span>{name}</span><strong>{metricText((row.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div></section>)}</div>}</div>
-    <div className="l51-summary-grid"><div className="l51-summary-labels"><span/><span>今日</span><span>昨日</span><span>预计今日</span><span>昨日此时</span></div>{metrics.map(([key,label])=><div key={key} className="l51-summary-metric"><span className="l51-summary-name">{label} <span title={key==='ips'?'按站点内的独立网络地址去重；早期未采集的记录不补造。 ':label} aria-label={label+'说明'}>ⓘ</span></span>{timeRows.map(([name,row],index)=><span key={name} className={index===0?'l51-today-value':''} title={name==='预计今日'?'依据历史日内分布和当前流量估算，实际结果会变化':undefined}>{metricText(value(row.totals as Row,key!),key)}</span>)}</div>)}</div>
-    {expanded&&<div className="l51-summary-grid l51-history-grid"><div className="l51-history-labels">{extendedRows.map(([label])=><span key={label}>{label}</span>)}</div>{metrics.map(([key])=><div key={key} className="l51-history-metric">{extendedRows.map(([label,row])=><span key={label}>{metricText(value(row.totals as Row,key!),key)}{label==='历史峰值'&&typeof((extended.peaks as Row|undefined)?.[key!] as Row|undefined)?.date==='string'&&<small>({String(((extended.peaks as Row)[key!] as Row).date)})</small>}</span>)}</div>)}</div>}
-    <button className="l51-summary-expand" type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)} aria-label={expanded?'收起历史统计':'展开历史统计'}>{expanded?'⌃':'⌄'}</button>
-   </section>
-  </div>
-  <ForecastNote forecast={overview?.forecast as Row|undefined}/>
+  <section className={`l51-summary${expanded?' is-expanded':''}`} aria-label="今日流量概况">
+   <div className="l51-summary-heading">
+    <h2 title={`按站点时区 ${site.timezone} 统计`}>今日概况</h2>
+    <div className="l51-live-card">
+     <span>近15分钟活跃</span><strong>{metricText(active.visitors)}</strong>
+     <a href={reportHref('realtime')} onClick={event=>{event.preventDefault();onReport('realtime');}}>实时访客<Chevron/></a>
+     {summary.error&&<small role="status">实时数据暂不可用</small>}
+    </div>
+   </div>
+   <div className="l51-summary-mobile">
+    <div className="l51-mobile-periods" role="group" aria-label="概况统计周期">{timeRows.map(([label],index)=><button key={label} type="button" aria-pressed={mobilePeriod===index} onClick={()=>setMobilePeriod(index)}>{label}</button>)}</div>
+    <div className="l51-mobile-metrics">{metrics.map(([key,label])=><div key={key}><span>{label}</span><strong>{metricText((timeRows[mobilePeriod]?.[1]?.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div>
+    {expanded&&<div className="l51-mobile-history">{extendedRows.map(([label,row])=><section key={label}><h3>{label}</h3><div className="l51-mobile-metrics">{metrics.map(([key,name])=><div key={key}><span>{name}</span><strong>{metricText((row.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div></section>)}</div>}
+   </div>
+   <div className="l51-summary-desktop">
+    <table className="l51-summary-table" aria-label="今日与历史流量对比">
+     <thead><tr><th scope="col">统计时段</th>{metrics.map(([key,label])=><th scope="col" key={key}><span title={key==='ips'?'同一站点内按网络地址去重；未采集独立 IP 的记录显示为空。':undefined}>{label}</span></th>)}</tr></thead>
+     <tbody>{timeRows.map(([name,row],index)=><tr key={name} className={index===0?'l51-today-row':name==='预计今日'?'l51-estimate-row':undefined}><th scope="row">{name}</th>{metrics.map(([key])=><td key={key} title={name==='预计今日'?'估算值，随今日流量更新':undefined}>{metricText(value(row.totals as Row,key!),key)}</td>)}</tr>)}</tbody>
+     {expanded&&<tbody className="l51-history-rows">{extendedRows.map(([label,row])=><tr key={label}><th scope="row">{label}</th>{metrics.map(([key])=><td key={key}>{metricText(value(row.totals as Row,key!),key)}{label==='历史峰值'&&typeof((extended.peaks as Row|undefined)?.[key!] as Row|undefined)?.date==='string'&&<small>{String(((extended.peaks as Row)[key!] as Row).date)}</small>}</td>)}</tr>)}</tbody>}
+    </table>
+   </div>
+   <div className="l51-summary-footer">
+    <button className="l51-summary-expand" type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)}>{expanded?'收起历史统计':'历史统计'}<Chevron expanded={expanded}/></button>
+    <ForecastNote forecast={overview?.forecast as Row|undefined}/>
+   </div>
+  </section>
   <div className="l51-range-bar"><div role="group" aria-label="日期范围">{[['今日',today,today],['昨日',yesterday,yesterday],['最近七日',shift(today,-6),today],['最近30日',shift(today,-29),today]].map(([label,from,to])=><button key={label} aria-pressed={range.from===from&&range.to===to} onClick={()=>apply(from!,to!)}>{label}</button>)}</div><OverviewDateControl from={range.from} to={range.to} timezone={site.timezone} onApply={apply}/></div>
   <div className="l51-overview-first">
-   <Panel title="趋势分析" detail={detail('trend')}><div className="l51-metric-tabs" role="tablist" aria-label="趋势指标">{[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['newVisitors','新访客数'],['sessions','会话数']].map(([key,label])=><button role="tab" aria-selected={selected===key} key={key} onClick={()=>setSelected(key!)}>{label}</button>)}</div>{currentValues.some(v=>v!==null)?<FiftyOneChart labels={labels} series={series} height={270}/>:<div className="l51-chart-empty">{selected==='ips'?'尚无独立 IP 数据':traffic.error?'数据读取失败':'暂无数据'}</div>}</Panel>
-   <div className="l51-newold"><Panel title="新老访客" kind="people" detail={detail('visitors')}><FiftyOneChart kind="bar" labels={[range.from===range.to?range.from:range.from+' ~ '+range.to]} series={newOldSeries} height={202}/></Panel><div className="l51-visitor-summary">{[['new','新访客'],['returning','老访客']].map(([key,label])=><div key={key}><CardIcon kind="people"/><span>{label}<b>{metricText(visitorNumber(trafficVisitors,key!))}</b></span><strong>{classifiedVisitors>0&&visitorNumber(trafficVisitors,key!)!==null?((visitorNumber(trafficVisitors,key!)!/classifiedVisitors)*100).toFixed(2)+'%':'—'}</strong></div>)}</div></div>
+   <Panel title="流量趋势" detail={detail('trend')}><div className="l51-metric-tabs" role="tablist" aria-label="趋势指标">{[['pv','浏览量(PV)'],['uv','访客数(UV)'],['ips','独立 IP'],['newVisitors','新访客数'],['sessions','会话数']].map(([key,label])=><button role="tab" aria-selected={selected===key} key={key} onClick={()=>setSelected(key!)}>{label}</button>)}</div>{currentValues.some(v=>v!==null)?<FiftyOneChart labels={labels} series={series} height={270}/>:<div className="l51-chart-empty">{selected==='ips'?'尚无独立 IP 数据':traffic.error?'数据读取失败':'暂无数据'}</div>}</Panel>
+   <Panel title="新老访客" detail={detail('visitors')} className="l51-visitors-panel">
+    <FiftyOneChart kind="bar" labels={[range.from===range.to?range.from:range.from+' ~ '+range.to]} series={newOldSeries} height={230}/>
+    <div className="l51-visitor-summary">{[['new','新访客'],['returning','老访客']].map(([key,label])=><div key={key}><span>{label}</span><b>{metricText(visitorNumber(trafficVisitors,key!))}</b><strong>{classifiedVisitors>0&&visitorNumber(trafficVisitors,key!)!==null?((visitorNumber(trafficVisitors,key!)!/classifiedVisitors)*100).toFixed(2)+'%':'—'}</strong></div>)}</div>
+    {(visitorNumber(trafficVisitors,'unknown')||0)>0&&<p className="l51-classification-note" title="尚未完成新老访客识别的访客计入总数，不归入新访客或老访客。">未分类 {metricText(visitorNumber(trafficVisitors,'unknown'))}</p>}
+   </Panel>
   </div>
   <div className="l51-overview-ranks">
-   <Panel title="来路" kind="entry" detail={detail('sourceSummary')}><Ranking title="来路排名" data={sourceRows} label="来路网站" metric="uv"/></Panel>
-   <Panel title="受访页" kind="page" detail={detail('pages')}><Ranking title="受访页面排名" data={pageRows} label="页面地址" heading="查看次数" onSelect={row=>onFilter('path',String(row.path))}/></Panel>
-   <Panel title="入口页" kind="entry" detail={detail('entryPages')}><Ranking title="入口页面排名" data={entries} label="页面地址" metric="entries" heading="入口次数" onSelect={row=>onFilter('path',String(row.path))}/></Panel>
+   <Panel title="访问来源" detail={detail('sourceSummary')}><Ranking title="来路排名" data={sourceRows} label="来源网站" metric="uv"/></Panel>
+   <Panel title="受访页面" detail={detail('pages')}><Ranking title="受访页面排名" data={pageRows} label="页面地址" heading="浏览量" onSelect={row=>onFilter('path',String(row.path))}/></Panel>
+   <Panel title="入口页面" detail={detail('entryPages')}><Ranking title="入口页面排名" data={entries} label="页面地址" metric="entries" heading="入口次数" onSelect={row=>onFilter('path',String(row.path))}/></Panel>
   </div>
   <div className="l51-overview-last">
-   <Panel title="地域" kind="geo" detail={detail('geography')}><div className="l51-geo-body"><div><Suspense fallback={<div className="l51-chart-empty">加载地图…</div>}><GeographicMap region="" values={rows(geography.data?.regions)} onRegion={()=>onReport('geography')} onCity={()=>onReport('geography')}/></Suspense>{['unknown','unavailable','disabled'].includes(String(geographyStatus))&&<small className="l51-geo-note">地域库未配置</small>}</div><Ranking title="地域排名" data={regions} label="省份" metric="uv"/></div></Panel>
-   <Panel title="终端设备" kind="device" detail={detail('environment')}><FiftyOneChart kind="donut" labels={devices.map(row=>row.label)} series={[{name:'终端设备',values:devices.map(row=>numeric(row.pv))}]} height={220}/><ul className="l51-device-legend">{devices.map((row,index)=><li key={row.label}><i className={`device-${index}`}/><span>{row.label}</span><b>{metricText(row.pv)}</b></li>)}</ul></Panel>
+   <Panel title="访客地域" detail={detail('geography')}><div className="l51-geo-body"><div><Suspense fallback={<div className="l51-chart-empty">加载地图…</div>}><GeographicMap region="" values={rows(geography.data?.regions)} onRegion={()=>onReport('geography')} onCity={()=>onReport('geography')}/></Suspense>{['unknown','unavailable','disabled'].includes(String(geographyStatus))&&<small className="l51-geo-note">地域库未配置</small>}</div><Ranking title="地域排名" data={regions} label="省份" metric="uv"/></div></Panel>
+   <Panel title="终端设备" detail={detail('environment')}><FiftyOneChart kind="donut" labels={devices.map(row=>row.label)} series={[{name:'终端设备',values:devices.map(row=>numeric(row.pv))}]} height={220}/><ul className="l51-device-legend">{devices.map((row,index)=><li key={row.label}><i className={`device-${index}`} aria-hidden="true"/><span>{row.label}</span><b>{metricText(row.pv)}</b></li>)}</ul></Panel>
   </div>
  </div>;
 }

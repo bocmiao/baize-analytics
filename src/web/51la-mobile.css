@@ -1,6 +1,6 @@
 /* Mobile keeps the report hierarchy, with controls sized for touch. */
 .workspace .l51-calendar-control>button:hover,
-.workspace .l51-calendar-control>button[aria-expanded=true]{background:#f0f7ff;color:#1766a5;border-color:#b7d8f6}
+.workspace .l51-calendar-control>button[aria-expanded=true]{background:var(--hover);color:var(--accent);border-color:var(--accent)}
 .workspace .l51-date-popover{top:calc(100% + 8px);max-width:calc(100vw - 24px)}
 .l51-date-actions{display:flex;gap:12px;width:100%}
 .l51-date-popover .error{width:100%;margin:0;font-size:13px}
@@ -10,7 +10,7 @@
  .workspace.la51-reference #workspace-main :is(button,summary){min-height:44px!important}
  .workspace.la51-reference #workspace-main :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select){min-height:44px!important;height:auto;font-size:16px!important;max-width:100%;box-sizing:border-box}
  .workspace.la51-reference #workspace-main label.checkbox{min-height:44px;display:flex;align-items:center;gap:8px}
- .workspace.la51-reference #workspace-main :is(button,a,input,select,summary):focus-visible{outline:2px solid #1676ce;outline-offset:2px}
+ .workspace.la51-reference #workspace-main :is(button,a,input,select,summary):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
  .workspace.la51-reference .la51-menu-toggle{width:44px;height:44px;flex-shrink:0}
  .workspace.la51-reference .la51-topbar .nav-account>summary{min-height:44px;padding:0 8px}
  .workspace.la51-reference .la51-sidebar{width:260px;overscroll-behavior:contain}
@@ -28,8 +28,7 @@
  .workspace.la51-reference .l51-mobile-periods{gap:8px}
  .workspace.la51-reference .l51-mobile-periods button{padding:6px 3px}
  .workspace.la51-reference .l51-metric-tabs{display:flex;flex-wrap:wrap;overflow:visible;gap:8px;background:none}
- .workspace.la51-reference .l51-metric-tabs button{flex:1 0 auto;background:#f3f5f7}
- .workspace.la51-reference .l51-summary-expand{width:48px}
+ .workspace.la51-reference .l51-metric-tabs button{flex:1 0 auto;background:var(--bg)}
  .workspace.la51-reference .l51-date-popover{padding:14px;gap:12px}
  .workspace.la51-reference .l51-date-popover label{min-width:110px}
  .workspace.la51-reference #workspace-main .traffic-workspace .dense-tabs{gap:8px}

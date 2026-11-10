@@ -1,21 +1,20 @@
-export interface ReferenceLink {key:string;zh:string;en:string}
+export interface ReferenceLink {key:string;zh:string;en:string;section?:'notifications'|'administration'}
 export interface ReferenceNavigationItem {id:string;zh:string;en:string;icon:string;links:ReferenceLink[]}
 
-/** Names and ordering observed in the public 51.LA V6 navigation; keys stay Baize routes. */
+/** Customer navigation for Baize. Route keys remain stable for saved links. */
 export const referenceNavigation:ReferenceNavigationItem[]=[
- {id:'overview',zh:'概况',en:'Overview',icon:'home',links:[{key:'overview',zh:'概况',en:'Overview'}]},
+ {id:'overview',zh:'概况',en:'Overview',icon:'home',links:[{key:'overview',zh:'概况',en:'Overview'},{key:'daily',zh:'日报',en:'Daily report'}]},
  {id:'realtime',zh:'实时',en:'Realtime',icon:'clock',links:[{key:'realtime',zh:'实时',en:'Realtime'}]},
- {id:'visits',zh:'访问明细',en:'Visit details',icon:'compass',links:[{key:'visits',zh:'访问明细',en:'Visit details'}]},
- {id:'traffic',zh:'流量分析',en:'Traffic analysis',icon:'trend',links:[{key:'trend',zh:'趋势分析',en:'Trends'},{key:'periods',zh:'周月分析',en:'Weekly / monthly'}]},
- {id:'sources',zh:'来路分析',en:'Source analysis',icon:'sources',links:[{key:'sources',zh:'来路概览',en:'Source overview'},{key:'sourceSummary',zh:'来路汇总',en:'Source summary'},{key:'searchEngines',zh:'搜索引擎',en:'Search engines'},{key:'referrals',zh:'外部链接',en:'Referring sites'},{key:'keywords',zh:'关键词',en:'Keywords'}]},
- {id:'content',zh:'内容分析',en:'Content analysis',icon:'content',links:[{key:'pages',zh:'受访页面',en:'Visited pages'},{key:'entryPages',zh:'入口页面',en:'Entry pages'},{key:'directories',zh:'目录分析',en:'Directories'},{key:'domains',zh:'受访域名',en:'Visited domains'}]},
- {id:'attraction',zh:'吸引力分析',en:'Engagement',icon:'pie',links:[{key:'visitors',zh:'新老访客',en:'New / returning visitors'},{key:'engagement',zh:'互动度',en:'Interaction'}]},
- {id:'audience',zh:'访问者信息',en:'Visitor information',icon:'visitor',links:[{key:'environment',zh:'系统环境',en:'System environment'},{key:'environmentDetails',zh:'环境详情',en:'Environment details'},{key:'geography',zh:'地域分布',en:'Geography'},{key:'providers',zh:'运营商',en:'Network providers'},{key:'ips',zh:'访问IP',en:'Visitor IPs'}]},
- {id:'campaigns',zh:'渠道追踪',en:'Campaign tracking',icon:'channels',links:[{key:'campaigns',zh:'渠道分析',en:'Campaign analysis'},{key:'channelSettings',zh:'渠道设置',en:'Campaign settings'}]},
- {id:'heatmap',zh:'热力图',en:'Heatmaps',icon:'heatmap',links:[{key:'heatmap',zh:'热力图',en:'Heatmaps'}]},
- {id:'replay',zh:'屏幕录制',en:'Screen recordings',icon:'replay',links:[{key:'replay',zh:'屏幕录制',en:'Screen recordings'}]},
- {id:'behavior',zh:'用户行为分析',en:'User behavior',icon:'behavior',links:[{key:'events',zh:'事件分析',en:'Event analysis'}]},
- {id:'bots',zh:'蜘蛛统计',en:'Crawler statistics',icon:'bot',links:[{key:'bots',zh:'蜘蛛统计',en:'Crawler statistics'}]},
- {id:'configuration',zh:'配置',en:'Configuration',icon:'settings',links:[{key:'settings',zh:'参数设置',en:'Parameters'},{key:'eventManagement',zh:'事件管理',en:'Event management'},{key:'ipRules',zh:'IP过滤',en:'IP filtering'},{key:'exports',zh:'数据下载',en:'Data export'}]},
+ {id:'traffic',zh:'流量',en:'Traffic',icon:'trend',links:[{key:'trend',zh:'流量趋势',en:'Traffic trends'},{key:'periods',zh:'周月统计',en:'Weekly / monthly'},{key:'visits',zh:'访问明细',en:'Visit details'},{key:'reports',zh:'自定义报表',en:'Saved reports'},{key:'bots',zh:'爬虫访问',en:'Crawler visits'}]},
+ {id:'sources',zh:'来源',en:'Sources',icon:'sources',links:[{key:'sources',zh:'来源概况',en:'Source overview'},{key:'sourceSummary',zh:'来源明细',en:'Source details'},{key:'searchEngines',zh:'搜索引擎',en:'Search engines'},{key:'referrals',zh:'外部链接',en:'Referring sites'},{key:'keywords',zh:'关键词',en:'Keywords'}]},
+ {id:'content',zh:'内容',en:'Content',icon:'content',links:[{key:'pages',zh:'访问页面',en:'Visited pages'},{key:'entryPages',zh:'入口页面',en:'Entry pages'},{key:'directories',zh:'内容目录',en:'Directories'},{key:'domains',zh:'访问域名',en:'Domains'},{key:'downloads',zh:'文件下载',en:'Downloads'},{key:'notFound',zh:'失效页面',en:'Missing pages'},{key:'vitals',zh:'页面性能',en:'Page performance'}]},
+ {id:'audience',zh:'访客',en:'Visitors',icon:'visitor',links:[{key:'visitors',zh:'新老访客',en:'New / returning'},{key:'audience',zh:'访客概况',en:'Visitor overview'},{key:'geography',zh:'地域分布',en:'Geography'},{key:'environment',zh:'设备环境',en:'Devices'},{key:'environmentDetails',zh:'环境详情',en:'Device details'},{key:'providers',zh:'运营商',en:'Network providers'},{key:'ips',zh:'访问 IP',en:'Visitor IPs'},{key:'userpaths',zh:'已识别访客',en:'Identified visitors'}]},
+ {id:'conversion',zh:'转化',en:'Conversions',icon:'pie',links:[{key:'goals',zh:'转化目标',en:'Goals'},{key:'funnels',zh:'转化漏斗',en:'Funnels'},{key:'retention',zh:'访客留存',en:'Retention'}]},
+ {id:'behavior',zh:'行为',en:'Behavior',icon:'behavior',links:[{key:'events',zh:'事件分析',en:'Events'},{key:'eventTrend',zh:'事件趋势',en:'Event trends'},{key:'paths',zh:'访问路径',en:'Visit paths'},{key:'engagement',zh:'访问深度',en:'Engagement'},{key:'heatmap',zh:'点击热图',en:'Heatmaps'},{key:'replay',zh:'访问回放',en:'Session replay'}]},
+ {id:'campaigns',zh:'推广',en:'Campaigns',icon:'channels',links:[{key:'campaigns',zh:'推广效果',en:'Campaign performance'},{key:'channelSettings',zh:'推广链接',en:'Campaign links'}]},
+ {id:'configuration',zh:'设置',en:'Settings',icon:'settings',links:[{key:'settings',zh:'站点设置',en:'Site settings'},{key:'sites',zh:'站点管理',en:'Manage sites'},{key:'eventManagement',zh:'事件管理',en:'Event settings'},{key:'ipRules',zh:'IP 过滤',en:'IP filters'},{key:'shares',zh:'报表分享',en:'Report sharing'},{key:'members',zh:'成员权限',en:'Members'},{key:'privacy',zh:'隐私与数据',en:'Privacy and data'},{key:'exports',zh:'数据导出',en:'Data export'},{key:'alerts',zh:'告警规则',en:'Alerts',section:'notifications'},{key:'schedules',zh:'定时报告',en:'Scheduled reports',section:'notifications'},{key:'channels',zh:'接收渠道',en:'Delivery channels',section:'notifications'},{key:'tokens',zh:'API 密钥',en:'API keys',section:'administration'},{key:'audit',zh:'操作日志',en:'Activity log',section:'administration'},{key:'jobs',zh:'任务管理',en:'Background jobs',section:'administration'},{key:'updates',zh:'系统更新',en:'System updates',section:'administration'}]},
 ];
-export const referenceGroupIsExpandable=(id:string)=>['traffic','sources','content','attraction','audience','campaigns','behavior','configuration'].includes(id);
+export const navigationSections=[{id:'notifications',zh:'通知与报告',en:'Notifications'},{id:'administration',zh:'高级管理',en:'Administration'}] as const;
+/** This only narrows the caller's permission/capability-filtered links. */
+export function permittedNavigation(keys:Iterable<string>){const allowed=new Set(keys);return referenceNavigation.map(group=>({...group,links:group.links.filter(link=>allowed.has(link.key))})).filter(group=>group.links.length);}
+export const referenceGroupIsExpandable=(id:string)=>id!=='overview'&&id!=='realtime'&&referenceNavigation.some(group=>group.id===id);

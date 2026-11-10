@@ -1,14 +1,9 @@
 import {reportFilterKeys,type ReportFilters} from '../../packages/contracts/report-definition';
-export const navigationGroups=[
- {id:'traffic',zh:'流量与内容',en:'Traffic and content',reports:['pages','sources','audience','downloads','notFound']},
- {id:'behavior',zh:'行为与转化',en:'Behavior and conversion',reports:['events','eventTrend','paths','goals','funnels','retention','userpaths','revenue','experiments']},
- {id:'experience',zh:'体验',en:'Experience',reports:['vitals','heatmap','replay']},
- {id:'search',zh:'搜索与优化',en:'Search and optimization',reports:['seo','gsc','seo-conversions','serp','suggestions']},
- {id:'reports',zh:'AI 与报表',en:'AI and reporting',reports:['ai','reports','alerts','schedules']},
- {id:'settings',zh:'设置',en:'Settings',reports:['sites','updates','settings','ga4','shares','members','tokens','audit','jobs','privacy','exports','channels']}
-, {id:'traffic-detail',zh:'流量明细',en:'Traffic details',reports:['visits','trend','periods','sourceSummary','searchEngines','referrals','keywords','entryPages','directories','domains','visitors','engagement','environment','environmentDetails','geography','providers','ips','campaigns','channelSettings','bots','eventManagement','ipRules']}
-] as const;
-export const workspaceReports=['overview','daily','realtime',...navigationGroups.flatMap(group=>group.reports)] as readonly string[];
+import {referenceNavigation} from './51laNavigation';
+export const navigationGroups=referenceNavigation.filter(group=>!['overview','realtime'].includes(group.id)).map(group=>({id:group.id,zh:group.zh,en:group.en,reports:group.links.map(link=>link.key)}));
+/** Existing integrations remain addressable without crowding everyday statistics. */
+export const secondaryWorkspaceReports=['revenue','experiments','seo','gsc','seo-conversions','serp','suggestions','ai','ga4'] as const;
+export const workspaceReports=['overview','daily','realtime',...navigationGroups.flatMap(group=>group.reports),...secondaryWorkspaceReports] as readonly string[];
 export interface WorkspaceRoute {siteId:string;report:string;from:string;to:string;filters:ReportFilters;notice?:'invalid-context'}
 export function validCivilDate(value:string){if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;const parsed=new Date(`${value}T12:00:00Z`);return Number.isFinite(+parsed)&&parsed.toISOString().slice(0,10)===value;}
 export function cleanFilters(value:Record<string,unknown>):ReportFilters{return Object.fromEntries(reportFilterKeys.flatMap(key=>{const v=Object.hasOwn(value,key)?value[key]:undefined,max=key==='path'?1024:key==='channel'?100:500;return typeof v==='string'&&v.length<=max&&!/[\u0000-\u001f\u007f]/.test(v)&&v.trim()?[[key,v.trim()]]:[];}));}

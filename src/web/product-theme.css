@@ -1,0 +1,72 @@
+/* Baize product foundation: shared by the workspace, forms and account pages. */
+:root,html[data-theme="light"]{
+ --bg:#f5f7fb;--surface:#fff;--surface-2:#f4f6fa;--hover:#edf3fd;
+ --fg:#17243b;--fg-2:#59677e;--fg-3:#68758a;--text:#17243b;--text-secondary:#59677e;
+ --border:#e6ebf2;--border-strong:#c8d2e1;--muted:#68758a;
+ --accent:#2563eb;--accent-soft:#edf3ff;--accent-bar:#dbe8ff;--accent-ring:#2563eb29;
+ --primary-bg:#2563eb;--primary-fg:#fff;--primary-hover:#1d4ed8;
+ --chart-1:#2563eb;--chart-prev:#94a3b8;--chart-grid:#edf0f5;--chart-axis:#68758a;
+ --pos:#16826b;--neg:#c7394f;--warn:#916216;--pos-soft:#edf8f4;--neg-soft:#fdf0f2;--warn-soft:#fff8e9;
+ --shadow-xs:none;--shadow-pop:0 12px 36px #17243b1a;
+ --overview-muted:var(--fg-2);--overview-ink:var(--fg);--overview-border:var(--border);--overview-surface:var(--surface);--overview-canvas:var(--surface-2);--overview-blue:var(--accent);
+ color-scheme:light;
+}
+html[data-theme="dark"]{
+ --bg:#0f1725;--surface:#172235;--surface-2:#1e2b41;--hover:#243650;
+ --fg:#e7edf7;--fg-2:#a8b7cd;--fg-3:#94a6c1;--text:#e7edf7;--text-secondary:#a8b7cd;
+ --border:#2b3a52;--border-strong:#465b77;--muted:#94a6c1;
+ --accent:#82adff;--accent-soft:#243753;--accent-bar:#2b456d;--accent-ring:#82adff33;
+ --primary-bg:#346deb;--primary-fg:#fff;--primary-hover:#467df2;
+ --chart-1:#82adff;--chart-prev:#8b9eb9;--chart-grid:#2b3a52;--chart-axis:#a8b7cd;
+ --pos:#7cd8bc;--neg:#ff9bad;--warn:#e9bf70;--pos-soft:#1c3936;--neg-soft:#432a38;--warn-soft:#3b3529;
+ --shadow-pop:0 12px 36px #0005;
+ color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--fg)}
+::selection{color:var(--fg);background:var(--accent-bar)}
+input,textarea{caret-color:var(--accent)}
+*:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.workspace{--font-sans:"Inter","PingFang SC","Microsoft YaHei",sans-serif}
+.workspace :is(h1,h2,h3,h4){color:var(--fg);letter-spacing:-.02em}
+.workspace :is(button,input,textarea,select){font-family:inherit}
+.workspace button,.workspace .button{border-radius:8px;min-height:36px;box-shadow:none;font-weight:500;transition:background .15s ease,color .15s ease,border-color .15s ease}
+.workspace :is(input,textarea,select){border-radius:8px;border-color:var(--border-strong);font-size:14px}
+.workspace :is(input,textarea)::placeholder{color:var(--fg-3);opacity:1}
+.workspace :is(input,textarea,select):focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
+.workspace :is(.panel,.card){border:1px solid var(--border);border-radius:12px;box-shadow:none}
+.workspace .panel{padding:24px;margin-bottom:20px}
+.workspace .panel h2{font-size:16px;font-weight:600;line-height:1.5;margin:0 0 20px}
+.workspace .panel h3{font-size:14px;font-weight:600;line-height:1.5}
+.workspace :is(.notice,.hint,.scope-context,.empty){font-size:13px;line-height:1.65}
+.workspace .notice{padding:10px 14px;background:var(--surface-2);color:var(--fg-2);border:1px solid var(--border);border-radius:8px}
+.workspace .error{color:var(--neg)}
+.workspace .empty-state{padding:36px 20px;text-align:center;color:var(--fg-2)}
+.workspace .empty-state .empty-title{color:var(--fg);font-size:15px;margin:0 0 8px}
+.workspace .empty-state p{margin:0 0 12px}
+.workspace .panel>p{max-width:75ch;color:var(--fg-2)}
+.workspace .panel>details{margin-block:12px}
+.workspace summary{cursor:pointer;color:var(--fg-2);font-size:13px}
+.workspace :is(td,th,strong,output){font-variant-numeric:tabular-nums}
+.workspace .table-wrap{border-color:var(--border);border-radius:8px;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+.workspace th{background:var(--surface-2);color:var(--fg-2);font-size:12px}
+.workspace td{font-size:13px;border-color:var(--border)}
+.workspace a{text-underline-offset:4px}
+.workspace .scope-context{font-size:12px}
+.workspace .toolbar-preferences{padding-top:10px;border-top:1px solid var(--border)}
+.workspace .nav-account-controls{display:flex;flex-direction:column;gap:12px;padding:18px}
+.workspace .nav-account-controls .language{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.workspace .nav-account-controls :is(button,select){font-size:13px}
+.workspace .nav-account-controls .theme-toggle{align-self:flex-start}
+.workspace .filter-chips:empty{display:none}
+.workspace .query-health{margin-bottom:16px}
+.workspace .customer-data-status{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.workspace .customer-data-status details{width:100%}
+.workspace .customer-data-status ul{margin:8px 0;padding-left:20px}
+.auth-entry{color:var(--fg)}
+.auth-entry .auth-foot{justify-content:center}
+@media(max-width:767px){
+ .workspace .panel{padding:18px;margin-bottom:16px}
+ .workspace :is(button,.button){min-height:44px}
+ .workspace .panel h2{margin-bottom:16px}
+}
+@media(prefers-reduced-motion:reduce){.workspace :is(button,.button){transition:none}}

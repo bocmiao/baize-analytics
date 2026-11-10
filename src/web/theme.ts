@@ -29,7 +29,7 @@ export function currentTheme():'light'|'dark'{return typeof document!=='undefine
 
 function applyTheme(theme:'light'|'dark'){
  document.documentElement.dataset.theme=theme;
- document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#0A0A0A':'#FAFAFA');
+ document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#0f1725':'#f5f7fb');
 }
 
 export function subscribeTheme(listener:()=>void){
@@ -62,11 +62,11 @@ export function toggleTheme(){
 export function chartPalette():ChartPalette{
  const dark=document.documentElement.dataset.theme==='dark';
  return dark?{
-  jade:'#3DBA9C',gold:'#E0A63A',cinnabar:'#F0705A',mist:'#6E6E6E',previous:'#4A4A4A',ink:'#EDEDED',muted:'#5E5E5E',
-  line:'#232323',grid:'#1A1A1A',area:'rgba(61,186,156,.16)',empty:'#171717',tip:'#111111',tipText:'#EDEDED',emphasis:'#3DBA9C'
+  jade:'#82adff',gold:'#7cd8bc',cinnabar:'#F0705A',mist:'#6E6E6E',previous:'#8b9eb9',ink:'#EDEDED',muted:'#a8b7cd',
+  line:'#232323',grid:'#2b3a52',area:'rgba(130,173,255,.12)',empty:'#17243b',tip:'#172235',tipText:'#EDEDED',emphasis:'#82adff'
  }:{
-  jade:'#1F7A68',gold:'#C9A227',cinnabar:'#C2412D',mist:'#8F8F8F',previous:'#B5B5B5',ink:'#171717',muted:'#A3A3A3',
-  line:'#EBEBEB',grid:'#F0F0F0',area:'rgba(31,122,104,.16)',empty:'#F5F5F5',tip:'#FFFFFF',tipText:'#171717',emphasis:'#1F7A68'
+  jade:'#2563eb',gold:'#16826b',cinnabar:'#C2412D',mist:'#8F8F8F',previous:'#94a3b8',ink:'#17243b',muted:'#68758a',
+  line:'#EBEBEB',grid:'#edf0f5',area:'rgba(37,99,235,.10)',empty:'#F5F5F5',tip:'#FFFFFF',tipText:'#17243b',emphasis:'#2563eb'
  };
 }
 
