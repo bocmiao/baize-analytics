@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useId,useState} from 'react';
 import {rows,type Row,type Site} from './api';
 import {DensePanel,LiveStrip,useReportRead} from './DensePrimitives';
 import {labelText,metricText} from './trafficModel';
@@ -11,11 +11,13 @@ export function ReportReadStatus({data}:{data:Row|undefined}){return data?.cover
 export function VisitPaths({record,timezone}:{record:Row;timezone:string}){return <><h3>本次访问路径</h3><ol>{rows(record.paths).map((path,index)=><li key={index}><time>{visitTime(path.time,timezone)}</time><span>{String(path.path)}</span>{Boolean(path.ipLabel)&&<small>{String(path.ipLabel)}</small>}</li>)}</ol></>;}
 export function VisitsReport(props:VisitsReportProps){return <VisitReportBody key={[props.site.id,props.ipKey,props.dimension,props.label,props.visitorKey].join(':')} {...props}/>;}
 function VisitReportBody({site,query,refresh,ipKey,dimension,label,visitorKey,showLive=true,historyEnabled=true}:VisitsReportProps){
+ const filterPanelId=useId(),[filtersOpen,setFiltersOpen]=useState(()=>typeof window==='undefined'||window.matchMedia('(min-width:768px)').matches);
  const [draft,setDraft]=useState<Record<string,string>>({}),[filters,setFilters]=useState<Record<string,string>>({}),[page,setPage]=useState(1),[size,setSize]=useState(20),[sort,setSort]=useState<VisitColumn>('time'),[direction,setDirection]=useState<'asc'|'desc'>('desc');
  const [hidden,setHidden]=useState<string[]>(['country','region','keyword']),[expanded,setExpanded]=useState(''),[history,setHistory]=useState(''),[tick,setTick]=useState(0),[auto,setAuto]=useState(false),[downloading,setDownloading]=useState(false),[downloadError,setDownloadError]=useState('');
  useEffect(()=>{setPage(1);setExpanded('');setHistory('');setDownloadError('');},[query]);
  useEffect(()=>{if(!auto)return;const timer=window.setInterval(()=>{if(!document.hidden)setTick(value=>value+1);},10000);return()=>window.clearInterval(timer);},[auto]);
  const parameters=visitReportQuery(query,{page,size,sort,direction,filters,ipKey,visitorKey,dimension,label}),base=`/api/v1/sites/${site.id}`,result=useReportRead(`${base}/visits?${parameters}`,`${refresh}:${tick}`),data=result.data;
+ const appliedParameters=new URLSearchParams(parameters),activeFilterNames=([['visitorType','访客类型'],['referrer','来路网站'],['country','国家'],['region','省 / 区域'],['city','城市'],['entry','入口页面'],['visitorKey','访客标识'],['ipLabel','IP 标识或网段'],['isp','运营商'],['keyword','关键词'],['browser','浏览器'],['ipKey','指定 IP'],['visitDimension','当前分组']] as const).filter(([key])=>appliedParameters.get(key)?.trim()).map(([,name])=>name);
  const visible=visitColumns.filter(([key])=>!hidden.includes(key)),total=typeof data?.total==='number'?data.total:0,pages=Math.max(1,Math.ceil(total/size));
  useEffect(()=>{if(data?.coverage===1&&page>pages)setPage(pages);},[data,page,pages]);
  function chooseSort(key:VisitColumn){setDirection(key===sort&&direction==='desc'?'asc':'desc');setSort(key);setPage(1);setExpanded('');}
@@ -25,12 +27,16 @@ function VisitReportBody({site,query,refresh,ipKey,dimension,label,visitorKey,sh
  return <>
   {showLive&&<LiveStrip live={data?.live as Row|undefined}/>} 
   <DensePanel className="visit-filter-panel">
+   <button className="secondary" type="button" aria-expanded={filtersOpen} aria-controls={filterPanelId} onClick={()=>setFiltersOpen(value=>!value)} style={{width:'100%',minHeight:44,display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}><span>筛选访问记录{activeFilterNames.length>0&&` · ${activeFilterNames.length} 项生效`}</span><span>{filtersOpen?'收起 ▴':'展开 ▾'}</span></button>
+   {activeFilterNames.length>0&&<p className="dense-note" role="status">当前生效：{activeFilterNames.join('、')}</p>}
    {(dimension||ipKey||visitorKey)&&<p className="dense-note">{visitorKey?`访客 ${visitorKey} 在所选日期内的全部访问`:dimension?`当前分组：${labelText(label)}`:'当前 IP 的访问记录'}</p>}
+   <div id={filterPanelId} hidden={!filtersOpen} style={{marginTop:12}}>
    <form className="visit-filters" onSubmit={event=>{event.preventDefault();setFilters({...draft});setPage(1);setExpanded('');setHistory('');}}>
     <label>访客类型<select value={draft.visitorType||''} onChange={event=>setDraft({...draft,visitorType:event.target.value})}><option value="">全部访客</option><option value="new">新访客</option><option value="returning">老访客</option><option value="unknown">未知</option></select></label>
     {([['referrer','来路网站'],['country','国家代码'],['region','省 / 区域'],['city','城市'],['entry','入口页面'],...visitorKey?[]:[['visitorKey','访客标识前缀']],['ipLabel','IP 标识或网段'],['isp','运营商'],['keyword','关键词'],['browser','浏览器']] as string[][]).map(([key,name])=><label key={key}>{name}<input value={draft[key!]||''} onChange={event=>setDraft({...draft,[key!]:event.target.value})} placeholder={key==='country'?'例如 CN':`输入${name}`}/></label>)}
     <div className="visit-filter-actions"><button type="submit">查询</button><button className="secondary" type="button" onClick={reset}>重置筛选</button></div>
    </form>
+   </div>
   </DensePanel>
   <DensePanel title="访问记录" action={<div className="directory-actions"><label className="checkbox"><input type="checkbox" checked={auto} onChange={event=>setAuto(event.target.checked)}/>每 10 秒刷新</label><button className="secondary" type="button" onClick={()=>setTick(value=>value+1)}>刷新</button></div>}>
    <div className="dense-table-tools"><details className="dense-column-picker"><summary>⚙ 自定义表头</summary><div>{visitColumns.map(([key,name],index)=><label key={key}><input type="checkbox" checked={!hidden.includes(key)} disabled={index<2} onChange={event=>setHidden(event.target.checked?hidden.filter(value=>value!==key):[...hidden,key])}/>{name}</label>)}</div></details><div className="dense-table-actions"><span className="dense-note">列标题可排序；点击访客标识展开路径</span><button className="secondary" type="button" disabled={downloading||data?.coverage!==1} onClick={()=>void download()}>{downloading?'下载中…':'下载全部筛选结果'}</button></div></div>
