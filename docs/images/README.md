@@ -1,13 +1,13 @@
 # 界面截图与来源
 
-拍摄日期：2026-11-10（Asia/Shanghai）。运行环境为 NAS 固态硬盘上的 Node 标准版、PostgreSQL 17 和 Redis 7。图片为实际浏览器截图，没有替换接口结果、注入样式或后期修改页面内容。
+最新截图拍摄日期：2026-11-11（Asia/Shanghai）；保留的较早截图拍摄于 2026-11-10。运行环境为 NAS 固态硬盘上的 Node 标准版、PostgreSQL 17 和 Redis 7。图片为实际浏览器截图，没有替换接口结果、注入样式或后期修改页面内容。
 
 ## 本轮最终截图
 
-源码提交：`760bbb7dac2f223655b642b5e8e7f0263fd3e685`。
+源码提交：`765647ac1b0c9fbd0b88891fcd2ab9943d61759c`。
 
 ```text
-镜像 sha256:5e6a8d00dc12de76bbcb9abb3b615284b42974582629ace65162cdd1558170f1
+镜像 sha256:74ed450a52dac3717ecfed8ca3b953e7e34870b24c11a83afc37b6eb6278f506
 ```
 
 | 图片 | JPG 实际像素 | 内容 |
@@ -15,7 +15,7 @@
 | [baize-reports-desktop.jpg](baize-reports-desktop.jpg) | 1440 × 1000 | 桌面流量趋势、指标切换与日期比较入口 |
 | [baize-settings-mobile.jpg](baize-settings-mobile.jpg) | 375 × 900 | 手机站点设置、站点信息与追踪代码区域 |
 
-本轮统一工作台、设置与共享页的蓝白及暗色样式，精简重复入口和说明。完整范围、108 项单元回归、67 项 NAS 接口验收及未覆盖边界见 [全页面界面验收](../validation/BAIZE_ALL_PAGES_UI_20261110.md)。
+新版站点选择器显示名称与域名，折叠按钮独立放置。页面加载、图表复用和最新验证见 [加载与切换验收](../validation/BAIZE_NAVIGATION_PERFORMANCE_20261110.md)；较早的全页面统一记录见 [全页面界面验收](../validation/BAIZE_ALL_PAGES_UI_20261110.md)。
 
 ## 保留的概况截图
 
@@ -37,8 +37,8 @@
 图片 SHA-256：
 
 ```text
-425835250636ed051a38b4f5baabd6cb55d3c364c7e04ada81fb590aacefcc34  baize-reports-desktop.jpg
-364b7f994df5bca70c4678ba2ba75ff8a09d5a83fa4a5b37df2541403a34a190  baize-settings-mobile.jpg
+86f2eb08d8c31c2eaf505e066d5bf81cf0574cfa197699a5057076c6d70e98bc  baize-reports-desktop.jpg
+e7dd64e7c2ca3bd1ad868b3e48b05440fbd5f04b3f7c264cc8bb081dca7fc75e  baize-settings-mobile.jpg
 8df5bcc2dfbd576ce5ed5a162ddf88a54cbc19558ebb647eca1b8c871ee60c38  baize-desktop.jpg
 7d2f9c1d4bbb73bc66031a0ac93f8f1795c976cd4a58edd31168316b872b30b0  baize-mobile.jpg
 ```

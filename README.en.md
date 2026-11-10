@@ -25,7 +25,7 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 
 Traffic reports, visitor analysis and site settings share the same Baize interface, with light, dark and mobile layouts. Common filters sit above reports, while advanced configuration expands when needed.
 
-These screenshots show the current Node Standard application using a separate demonstration site's data. [Capture details](docs/images/README.md) · [UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [Feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese)
+These screenshots show the current Node Standard application using a separate demonstration site's data. [Capture details](docs/images/README.md) · [UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [Loading and navigation](docs/validation/BAIZE_NAVIGATION_PERFORMANCE_20261110.md) · [Feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese)
 
 **Desktop traffic report**
 

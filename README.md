@@ -25,7 +25,7 @@
 
 流量报表、访客分析和站点设置使用统一的白泽界面，支持浅色、深色及手机布局。常用筛选放在报表顶部，高级配置按需展开。
 
-以下为当前 Node 标准版的实际运行截图，使用独立演示站点数据。[截图说明](docs/images/README.md) · [界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [功能对照](docs/51LA_FUNCTION_MATRIX.md)
+以下为当前 Node 标准版的实际运行截图，使用独立演示站点数据。[截图说明](docs/images/README.md) · [界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [加载与切换](docs/validation/BAIZE_NAVIGATION_PERFORMANCE_20261110.md) · [功能对照](docs/51LA_FUNCTION_MATRIX.md)
 
 **桌面流量报表**
 
