@@ -4,7 +4,7 @@
 
 **Understand traffic, page performance and conversions on your own server.**
 
-Baize is a free, self-hosted website analytics tool with Chinese and English interfaces. Add its tracker to see traffic, sources, pages and audiences, then enable events, goals, SEO or AI analysis as needed. There are no paid feature gates; you cover your hosting and external-service costs.
+Baize is an open-source, self-hosted website analytics product. Add the tracking code to explore traffic trends, acquisition, page performance and conversions. Chinese and English interfaces are available.
 
 Baize is under active development. [Bug reports and suggestions](https://github.com/bocmiao/baize-analytics/issues) and [pull requests](https://github.com/bocmiao/baize-analytics/pulls) are welcome.
 
@@ -14,16 +14,16 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 
 - **Understand visits:** pageviews, visitors, sessions, channels, UTM, popular pages, devices, geography and Web Vitals, with date filters and period comparisons.
 - **Complete traffic details (Node Standard):** distinct IPs, offline IPv4/IPv6 geography and ISP data, today’s traffic forecast, event definitions and crawler access logs. [Setup guide](docs/TRAFFIC_DATA_SETUP.md) (Chinese).
-- **Track events and conversions:** custom events and goals. Standard also offers funnels, paths, retention and experiment attribution.
+- **Track events and conversions:** custom events and goals. Standard also offers funnels, paths and retention.
 - **Manage multiple sites:** site permissions, exports, data retention and visitor deletion. Standard adds team invitations, sharing, scheduled reports and alerts.
-- **Explore when needed:** opt-in replay, heatmaps, search connectors and AI in Standard; manual HTML checks and manual BYOK AI in Lite.
-- **Control your data:** collection consent, privacy settings and an independent deletion journal that is replayed during recovery. AI is off by default and requires your key and permission to send data.
+- **Explore visitor behavior:** opt-in replay, heatmaps, visual event selection, and event comparisons in Standard.
+- **Control your data:** collection consent, privacy settings and an independent deletion journal that is replayed during recovery.
 
 ## Interface
 
-The current dashboard uses a white desktop workspace, with navigation and report layouts adapted for mobile. The preview uses a separate demonstration site's data. See [capture details and validation scope](docs/images/README.md).
+The workspace uses Baize’s blue and white palette, with dark mode and mobile layouts. Analytics are organized by task, with administration grouped under Settings. The preview uses a separate demonstration site's data. See [capture details and validation scope](docs/images/README.md).
 
-The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See [interface and report scope](docs/51LA_ALIGNMENT.md) (Chinese).
+The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See the [product UI validation](docs/validation/BAIZE_PRODUCT_UI_20261110.md) and [feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese).
 
 ![Baize desktop interface](docs/images/baize-desktop.jpg)
 
@@ -38,8 +38,8 @@ The new traffic reports in this interface are available in **Node Standard**. No
 
 | Runtime | Storage and deployment | Scope |
 | --- | --- | --- |
-| **Node Standard** | PostgreSQL; the Docker installer includes PostgreSQL and Redis, or you can host the services separately | Full analytics, behavioral reports, collaboration and connectors |
-| **Node Lite** | Local SQLite and one application process; no separate database service | Core analytics, events, simple event goals and manual SEO / AI |
+| **Node Standard** | PostgreSQL; the Docker installer includes PostgreSQL and Redis, or you can host the services separately | Full analytics, behavioral reports, collaboration and report management |
+| **Node Lite** | Local SQLite and one application process; no separate database service | Core analytics, events and simple event goals |
 | **Independent PHP application** | PHP 8.3+, PHP-FPM, MySQL and a CLI worker | PHP / 1Panel hosting; see the [PHP guide](docs/PHP_INSTALLATION.md) for feature coverage and database compatibility |
 
 Lite does not include funnels, paths, retention, replay or heatmaps. It requires one local database writer and does not support network filesystems. To move to Node Standard, follow the [migration guide](docs/lite-migration.md).
