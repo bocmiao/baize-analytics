@@ -9,7 +9,7 @@ describe('persistent report chart lifecycle',()=>{
  let resizeDisconnect:Mock<()=>void>,themeDisconnect:Mock<()=>void>;
  const element={} as HTMLDivElement;
  beforeEach(()=>{
-  vi.clearAllMocks();chart.init.mockReturnValue(chart);chart.getOption.mockReturnValue({});
+  vi.clearAllMocks();chart.init.mockReturnValue(chart);chart.getOption.mockReturnValue(undefined);
   resizeDisconnect=vi.fn();themeDisconnect=vi.fn();foreground='#17243b';
   vi.stubGlobal('ResizeObserver',class{constructor(callback:()=>void){resize=callback;}observe(){}disconnect(){resizeDisconnect();}});
   vi.stubGlobal('MutationObserver',class{constructor(callback:()=>void){theme=callback;}observe(){}disconnect(){themeDisconnect();}});
@@ -17,6 +17,14 @@ describe('persistent report chart lifecycle',()=>{
   vi.stubGlobal('getComputedStyle',()=>({getPropertyValue:(name:string)=>name==='--fg'?foreground:''}));
  });
  afterEach(()=>vi.unstubAllGlobals());
+ it('renders the first dataset when ECharts has no option before its first setOption',()=>{
+  const mounted=mountFiftyOneChart(element);
+  expect(chart.getOption()).toBeUndefined();
+  expect(()=>mounted.update({kind:'line',labels:['10:00'],series:[{name:'PV',values:[5]}]})).not.toThrow();
+  expect(chart.setOption.mock.lastCall?.[0].legend.selected).toEqual({});
+  expect(chart.setOption.mock.lastCall?.[0].series[0].data).toEqual([5]);
+  expect(chart.init).toHaveBeenCalledOnce();mounted.dispose();
+ });
  it('keeps one canvas and skips identical newly allocated parent data',()=>{
   const mounted=mountFiftyOneChart(element);
   mounted.update({kind:'line',labels:['10:00'],series:[{name:'PV',values:[5]}]});

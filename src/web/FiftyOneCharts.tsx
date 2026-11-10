@@ -15,7 +15,7 @@ export function mountFiftyOneChart(element:HTMLDivElement){
    if(disposed||!current)return;
    const {kind,labels,series}=current;
    const hasValues=series.some(item=>item.values.some(value=>typeof value==='number'&&Number.isFinite(value)));
-   const selected=(chart.getOption() as {legend?:{selected?:Record<string,boolean>}[]}).legend?.[0]?.selected;
+   const selected=(chart.getOption() as {legend?:{selected?:Record<string,boolean>}[]}|undefined)?.legend?.[0]?.selected;
    const style=getComputedStyle(element),token=(name:string,fallback:string)=>style.getPropertyValue(name).trim()||fallback;
    const colors=[token('--accent','#2563eb'),token('--chart-prev','#94a3b8'),token('--chart-teal','#14b8a6'),'#64748b','#60a5fa'];
    const foreground=token('--fg','#17243b'),muted=token('--fg-2','#5c6b80'),surface=token('--surface','#ffffff'),grid=token('--chart-grid','#e6ebf2'),axis=token('--chart-axis','#68788d');
