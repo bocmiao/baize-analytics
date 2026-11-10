@@ -59,6 +59,13 @@ input,textarea{caret-color:var(--accent)}
 .workspace .nav-account-controls .theme-toggle{align-self:flex-start}
 .workspace .filter-chips:empty{display:none}
 .workspace .query-health{margin-bottom:16px}
+.workspace #workspace-main>.date-timezone{display:none}
+.workspace .settings-layout{display:block}
+.workspace .settings-subnav{display:flex;position:static;flex-direction:row;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:0;background:transparent;border:0}
+.workspace .settings-subnav a{padding:8px 16px;border-radius:8px;font-size:13px;color:var(--fg-2);text-decoration:none}
+.workspace .settings-subnav a[aria-current=page]{background:var(--accent-soft);color:var(--accent)}
+.workspace .settings-group>.panel{border:0;padding:0;margin:0;background:transparent;box-shadow:none}
+.workspace .la51-topbar .nav-account>summary:hover{background:var(--surface-2)}
 .workspace .customer-data-status{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
 .workspace .customer-data-status details{width:100%}
 .workspace .customer-data-status ul{margin:8px 0;padding-left:20px}

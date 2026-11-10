@@ -27,8 +27,9 @@
  .workspace.la51-reference .l51-range-bar>div:first-child button{padding-inline:6px}
  .workspace.la51-reference .l51-mobile-periods{gap:8px}
  .workspace.la51-reference .l51-mobile-periods button{padding:6px 3px}
- .workspace.la51-reference .l51-metric-tabs{display:flex;flex-wrap:wrap;overflow:visible;gap:8px;background:none}
- .workspace.la51-reference .l51-metric-tabs button{flex:1 0 auto;background:var(--bg)}
+ .workspace.la51-reference .l51-metric-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;gap:8px;background:none}
+ .workspace.la51-reference .l51-metric-tabs button{grid-column:span 2;min-width:0;background:var(--bg)}
+ .workspace.la51-reference .l51-metric-tabs button:nth-child(-n+2){grid-column:span 3}
  .workspace.la51-reference .l51-date-popover{padding:14px;gap:12px}
  .workspace.la51-reference .l51-date-popover label{min-width:110px}
  .workspace.la51-reference #workspace-main .traffic-workspace .dense-tabs{gap:8px}

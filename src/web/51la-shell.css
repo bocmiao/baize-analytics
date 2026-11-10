@@ -10,7 +10,7 @@
 .workspace .la51-menu-toggle {display:none; align-items:center; justify-content:center; width:32px; height:32px; min-height:0; border:0; border-radius:4px; padding:6px; color:var(--fg-2); background:transparent; box-shadow:none;}
 .la51-menu-toggle svg {width:20px; height:20px;}
 .workspace .la51-topbar .nav-account {position:relative; margin:0; padding:0; border:0; background:transparent; color:var(--fg);}
-.workspace .la51-topbar .nav-account > summary {display:flex; align-items:center; gap:8px; min-height:32px; padding:0; font-size:13px; color:var(--fg); list-style:none;}
+.workspace .la51-topbar .nav-account > summary {display:flex; align-items:center; gap:8px; min-height:32px; padding:6px 8px; font-size:13px; color:var(--fg); list-style:none; background:transparent; border-radius:8px;}
 .workspace .la51-topbar .nav-account > summary > svg {width:12px; height:12px;}
 .workspace .la51-topbar .nav-identity {display:flex; align-items:center; gap:8px;}
 .workspace .la51-topbar .nav-identity b {color:var(--fg); font-size:13px; font-weight:400;}
