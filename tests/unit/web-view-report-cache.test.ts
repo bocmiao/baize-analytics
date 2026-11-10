@@ -26,6 +26,7 @@ let cache:ReportReadCache,requests:Request[],View:(props:any)=>Tree,props:any;
 function firstRender(){cursor=0;dirty=false;return View(props);}
 function render(){let tree=firstRender();for(let pass=0;pass<20;pass++){const effects=pending;pending=new Map();for(const[index,effect]of effects){slots[index]!.cleanup?.();slots[index]!.cleanup=effect()||undefined;}if(!dirty)return tree;tree=firstRender();}throw new Error('View effects did not settle');}
 function find(node:any,type:string):Tree|undefined{if(Array.isArray(node)){for(const item of node){const result=find(item,type);if(result)return result;}return;}if(!node||typeof node!=='object')return;if(node.type===type)return node;return find(node.props?.children,type);}
+function locationOf(node:any,type:string,path='root'):string|undefined{if(Array.isArray(node)){for(let i=0;i<node.length;i++){const found=locationOf(node[i],type,`${path}[${i}]`);if(found)return found;}return;}if(!node||typeof node!=='object')return;if(node.type===type)return path;return locationOf(node.props?.children,type,path+'.children');}
 const overview=(tree:Tree)=>find(tree,'FiftyOneOverview');
 const stats=()=>requests.filter(request=>request.path.includes('/stats?')&&!request.path.includes('previous=1'));
 const previous=()=>requests.filter(request=>request.path.includes('previous=1'));
@@ -43,10 +44,23 @@ beforeEach(()=>{
 afterEach(()=>{unmount();cache.invalidate('mutation');vi.useRealTimers();vi.unstubAllGlobals();});
 
 describe('View report cache and refresh state',()=>{
+ it('mounts standard overview while parent stats are pending and keeps its reconciliation position after success or failure',async()=>{
+  const pending=render(),mounted=overview(pending),position=locationOf(pending,'FiftyOneOverview');
+  expect(mounted).toBeDefined();expect(mounted?.props.data).toEqual({});expect(find(pending,'AnalysisState')).toBeUndefined();
+  expect(stats()).toHaveLength(1);stats()[0]!.resolve(result(12));const loaded=await settle();
+  expect(overview(loaded)?.props.data.totals.pv).toBe(12);expect(locationOf(loaded,'FiftyOneOverview')).toBe(position);
+  unmount();cache.invalidate('mutation');const retry=render();stats()[1]!.reject(new Error('parent stats unavailable'));const failed=await settle();
+  expect(locationOf(failed,'FiftyOneOverview')).toBe(locationOf(retry,'FiftyOneOverview'));expect(overview(failed)?.props.data).toEqual({});
+  expect(JSON.stringify(failed)).toContain('parent stats unavailable');
+ });
+ it('retains the original loading gate for Lite overview and other report tabs',()=>{
+  props={...props,profile:{profile:'lite',capabilities:{trafficReports:false}}};const lite=render();expect(find(lite,'LegacyOverviewDashboard')).toBeUndefined();expect(lite.props.className).toBe('panel baize-loading');
+  unmount();props={...props,tab:'pages',profile:{profile:'standard',capabilities:{trafficReports:true}}};const pages=render();expect(pages.props.className).toBe('panel baize-loading');
+ });
  it('renders fresh stats on the first remount without a loading frame, and expires after ten seconds',async()=>{
   render();stats()[0]!.resolve(result(12));expect(overview(await settle())?.props.data.totals.pv).toBe(12);unmount();
   expect(overview(firstRender())?.props.data.totals.pv).toBe(12);render();await settle();expect(stats()).toHaveLength(1);
-  unmount();vi.advanceTimersByTime(10_001);expect(overview(firstRender())).toBeUndefined();render();expect(stats()).toHaveLength(2);
+  unmount();vi.advanceTimersByTime(10_001);expect(overview(firstRender())?.props.data).toEqual({});render();expect(stats()).toHaveLength(2);
  });
  it('forces explicit refresh while preserving the successful chart through a failed refresh',async()=>{
   render();stats()[0]!.resolve(result(12));await settle();props={...props,refresh:1};
@@ -56,11 +70,11 @@ describe('View report cache and refresh state',()=>{
  });
  it('never presents another date, filter or site response even before effects run',async()=>{
   render();stats()[0]!.resolve(result(12));await settle();
-  props={...props,query:props.query+'&channel=search'};expect(overview(firstRender())).toBeUndefined();render();
+  props={...props,query:props.query+'&channel=search'};expect(overview(firstRender())?.props.data).toEqual({});render();
   stats()[1]!.resolve(result(25));await settle();props={...props,query:props.query.replace('2026-11-09','2026-11-08')};
-  expect(overview(firstRender())).toBeUndefined();render();const abandoned=stats()[2]!;
-  props={...props,site:{...props.site,id:'b'}};expect(overview(firstRender())).toBeUndefined();render();
-  abandoned.resolve(result(99));await settle();expect(overview(render())).toBeUndefined();
+  expect(overview(firstRender())?.props.data).toEqual({});render();const abandoned=stats()[2]!;
+  props={...props,site:{...props.site,id:'b'}};expect(overview(firstRender())?.props.data).toEqual({});render();
+  abandoned.resolve(result(99));await settle();expect(overview(render())?.props.data).toEqual({});
   stats()[3]!.resolve(result(30));expect(overview(await settle())?.props.data.totals.pv).toBe(30);
  });
  it('forces pending-aggregation polls and refreshes comparison once on completion',async()=>{
@@ -73,7 +87,7 @@ describe('View report cache and refresh state',()=>{
  it('does not duplicate comparison reads when the first stats response is already complete',async()=>{
   props={...props,compare:true};render();stats()[0]!.resolve(result(12));previous()[0]!.resolve(result(8));await settle();
   vi.advanceTimersByTime(6000);render();expect(stats()).toHaveLength(1);expect(previous()).toHaveLength(1);
-  props={...props,query:props.query+'&path=%2Fnew'};expect(overview(firstRender())).toBeUndefined();render();
+  props={...props,query:props.query+'&path=%2Fnew'};expect(overview(firstRender())?.props.data).toEqual({});render();
   stats()[1]!.resolve(result(2));expect(overview(await settle())?.props.previous).toEqual({});
  });
  it('does not pair a cached new range with the previous range comparison on its first render',async()=>{
@@ -85,7 +99,7 @@ describe('View report cache and refresh state',()=>{
  it('retains explicit refresh data but clears mutations and suspended sessions immediately',async()=>{
   render();stats()[0]!.resolve(result(12));await settle();cache.invalidate('refresh');
   expect(overview(render())?.props.data.totals.pv).toBe(12);expect(stats()).toHaveLength(2);
-  stats()[1]!.resolve(result(13));await settle();cache.invalidate('mutation');expect(overview(firstRender())).toBeUndefined();render();expect(stats()).toHaveLength(3);
+  stats()[1]!.resolve(result(13));await settle();cache.invalidate('mutation');expect(overview(firstRender())?.props.data).toEqual({});render();expect(stats()).toHaveLength(3);
   stats()[2]!.resolve(result(14));await settle();cache.invalidate('session');expect(overview(firstRender())).toBeUndefined();render();expect(stats()).toHaveLength(3);
  });
  it('does not use the report cache for sensitive management records',async()=>{
