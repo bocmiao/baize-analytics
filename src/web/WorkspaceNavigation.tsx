@@ -3,6 +3,7 @@ import {createPortal} from 'react-dom';
 import {language} from './i18n';
 import {workspaceUrl,type WorkspaceRoute} from './workspaceRoute';
 import {referenceGroupIsExpandable,navigationSections,permittedNavigation,type ReferenceLink,type ReferenceNavigationItem} from './51laNavigation';
+import {CommunityContact} from './CommunityContact';
 
 function NavigationIcon({name}:{name:string}){
  const paths:Record<string,ReactNode>={
@@ -138,7 +139,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
    <a href="/" className="brand la51-brand" aria-label={en?'Baize Analytics':'白泽统计'}><img src="/brand/baize-head-96.png" width="32" height="32" alt=""/><span className="brand-name">{en?'Baize':'白泽统计'}<small>{en?'ANALYTICS':'BAIZE ANALYTICS'}</small></span></a>
    <button ref={menuRef} type="button" className="la51-menu-toggle" aria-label={en?'Menu':'菜单'} aria-expanded={drawerOpen} aria-controls="la51-sidebar" onClick={()=>setDrawerOpen(value=>!value)}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
    <span className="la51-topbar-space"/>
-   {account&&<details ref={accountRef} className="nav-account"><summary aria-label={en?'Account settings':'账户设置'}><span className="nav-identity"><b title={identity?.name}>{identity?.name||(en?'Account':'账户')}</b><small>{identity?.detail||(en?'Account and language':'账户与语言')}</small></span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg></summary><div className="nav-account-controls">{account(close)}</div></details>}
+   {account&&<details ref={accountRef} className="nav-account"><summary aria-label={en?'Account settings':'账户设置'}><span className="nav-identity"><b title={identity?.name}>{identity?.name||(en?'Account':'账户')}</b><small>{identity?.detail||(en?'Account and language':'账户与语言')}</small></span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg></summary><div className="nav-account-controls">{account(close)}<CommunityContact/></div></details>}
   </header>
   {mobile&&drawerOpen&&<button type="button" className="la51-drawer-backdrop" tabIndex={-1} aria-label={en?'Close navigation':'关闭导航'} onClick={close}/>}
   <aside id="la51-sidebar" ref={sidebarRef} className="la51-sidebar" role={mobile?'dialog':undefined} aria-modal={mobile&&drawerOpen?true:undefined} aria-label={en?'Reports and settings':'分析与设置'} aria-hidden={mobile&&!drawerOpen?true:undefined}>

@@ -1,0 +1,13 @@
+.community-contact{display:flex;align-items:center;flex-wrap:wrap;gap:0 8px;min-width:0;color:var(--fg-2);font-size:12px;line-height:1.5}
+.community-contact--menu{border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
+.community-contact-label{white-space:nowrap}
+.community-contact .community-contact-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:6px 8px;margin:0;border:0;border-radius:6px;background:transparent;color:var(--fg-2);box-shadow:none;font-size:13px;font-weight:500;cursor:pointer}
+.community-contact .community-contact-button:hover{background:var(--hover);color:var(--accent)}
+.community-contact .community-contact-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.community-contact-number{font-variant-numeric:tabular-nums;user-select:all;-webkit-user-select:all}
+.community-contact-button svg{flex:none;opacity:.75}
+.community-contact-feedback{flex-basis:100%;color:var(--fg-2);font-size:12px}
+.community-contact-feedback:empty{display:none}
+.product-entry footer{align-items:center;flex-wrap:wrap}
+.workspace .la51-topbar .nav-account-controls{max-height:calc(100dvh - 80px);overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:767px){.workspace #workspace-navigation .nav-account-controls .community-contact-button{min-height:44px}.product-entry footer .community-contact{flex-basis:100%;order:2}}
