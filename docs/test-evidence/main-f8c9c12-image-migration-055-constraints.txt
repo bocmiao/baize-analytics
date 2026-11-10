@@ -1,2 +1,0 @@
-NOTICE:  055 receipt/nullable bigint+text columns/validated pair constraint: 3 valid, 5 invalid tested
-DO

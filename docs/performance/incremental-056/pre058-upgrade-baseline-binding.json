@@ -1,6 +1,0 @@
-{
-  "productionCommit": "27057e438949639ba16856a79dba71bd84242100",
-  "fixtureHash": "da47d5b61c6dc63b3e55ed81d8eb6dfb4fe89ee167b3a56356d5fdfde6306953",
-  "testHash": "8fd1a9f713f83d708bad29ab7a990889382046e1914eafb3e784e539e81c41cd",
-  "diagnosticDeviation": "remove only 059 classification SQL precondition; actual upgrade stops at published058; same refusal/owner assertions retained"
-}

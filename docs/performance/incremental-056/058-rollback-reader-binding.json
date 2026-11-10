@@ -1,5 +1,0 @@
-{
-  "productionCommit": "15e1cf0a60901d3f45e6bf1a3174e53985b2b808",
-  "testDeviation": "tests/integration/canonical-retention.test.ts",
-  "sha256": "7198400f2eeb1dd78e357d5422b52d2b3cede11a21824de13d815648c2414da1"
-}

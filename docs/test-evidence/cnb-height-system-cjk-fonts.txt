@@ -1,3 +1,0 @@
-DejaVuSans.ttf: "DejaVu Sans" "Book"
-DejaVuSans.ttf: "DejaVu Sans" "Book"
-Chromium 154.0.8037.92 built on Debian GNU/Linux 12 (bookworm)

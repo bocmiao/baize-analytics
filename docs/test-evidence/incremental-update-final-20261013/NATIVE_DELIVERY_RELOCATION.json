@@ -1,6 +1,0 @@
-{
-  "original": "/workspace/baize-transfer/native-delivery-d8362d0-r2",
-  "retained": "/tmp/native-delivery-d8362d0-r2-retained",
-  "bytes": 542844220,
-  "method": "copy, verify SHA256 and symlinks, retain original as symlink"
-}

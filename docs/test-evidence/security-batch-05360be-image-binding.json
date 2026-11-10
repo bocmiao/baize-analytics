@@ -1,8 +1,0 @@
-{
-  "sourceCommit": "05360be137a66e3863605393602b87db3f6782be",
-  "imageId": "sha256:4d5c1084b7fe04aef7311b323c46590de7fe5dc30fd2d29d25c6636c9195365e",
-  "sourceManifestSha256": "55f47171539d96df6a64e32c900e4d57179a261caffb42e1d911b07fa0e3a642",
-  "files": 401,
-  "migrationFiles": 56,
-  "sourceImageDiffEmpty": true
-}

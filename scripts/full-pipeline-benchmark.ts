@@ -20,7 +20,7 @@ const pool=new pg.Pool({connectionString,max:10,options:`-c search_path=${schema
 const redis=new Redis(process.env.REDIS_URL??'redis://127.0.0.1:6379',{maxRetriesPerRequest:1,enableOfflineQueue:false});
 redis.on('error',()=>{});
 const temporary=await mkdtemp(join(tmpdir(),'baize-benchmark-'));
-const artifact=resolve(arg('output',`docs/test-evidence/full-pipeline-${events}.json`));
+const artifact=resolve(arg('output',`.baize/test-evidence/full-pipeline-${events}.json`));
 const results:Record<string,unknown>={status:'running',events,sites:sitesCount,rounds,batchSize:50,rate:'at most one batch per site per second',background:false,storage:'PostgreSQL; ClickHouse explicitly disabled',startedAt:new Date().toISOString(),sourceHead:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceBoundary:'Working tree may contain uncommitted changes; startup HEAD is not a complete source snapshot',schema};
 let instance:Awaited<ReturnType<typeof createApp>>|undefined,peakRss=process.memoryUsage().rss;
 const sampler=setInterval(()=>{peakRss=Math.max(peakRss,process.memoryUsage().rss);},100);sampler.unref();

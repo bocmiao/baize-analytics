@@ -1,1 +1,0 @@
-{"sourceSha":"a86993d626bac551d5222d4006f8edaa0a41f29b","events":300,"batchEvents":50,"intervalMs":1000,"queryIntervalMs":10000,"maxQueued":8,"maxConcurrent":2,"drainLimitMs":120000,"freeBytesBefore":13639770112}

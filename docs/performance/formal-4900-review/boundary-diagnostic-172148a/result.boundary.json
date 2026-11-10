@@ -1,8 +1,0 @@
-{
-  "recordedAtUtc": "2026-10-12T00:02:10.190Z",
-  "schema": "independent_6bd98308e8cd4f9a",
-  "seedTs": "2026-10-11T23:57:29.455Z",
-  "latestTs": "2026-10-12T00:00:18.087Z",
-  "committedRows": 4401,
-  "meaning": "current active isolated fixture metadata only; seed is earliest strict bootstrap row; from/to HTTP windows were not captured in immutable r1"
-}

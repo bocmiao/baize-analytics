@@ -1,62 +1,5 @@
 # 用户 API 手册 / User API manual
 
-> 当前状态统一见 [STATUS](STATUS.md)。以下阶段验收表属于其标明 SHA 的历史，不是最新 checkout 的通过声明。
-
-
-## 历史验收入口（本地ce42c9f / d67应用源）
-
-| 源/阶段 | 实际证据 |
-|---|---|
-| d67后端 |217单元+428真实集成=645PASS，实际后端执行|
-| ce42c9f浏览器 |30检查（28真实Chromium+2日期）PASS、EXIT0；与d67 src/db/packages/sdk/scripts EMPTYdiff，不称后端重跑|
-| d67镜像 |实际EXIT0：55DDL/391manifest/严格独立恢复；瞬时可用盘低62MiB风险已归档，不隐去|
-| d67固定1000/5000 |实际EXIT1结束：1000PASS4.537660079秒；5000整体FAIL4700accepted/6unsent/38delayed/queryfail0，但draintrue、六final断言PASS，finalHTTP23.714184648秒；Node峰714698752B不含DB。性能仍欠，不称5000/SLO通过|
-| Git/托管 |remotee441已核、push blocked，不再认证尝试；最新local检查点以/workspace/baize-checkpoints/CHECKPOINT_MANIFEST.json为准，仅Git对象/已跟踪source不含runtime keys；87e六commit为历史verified记录。不称收工，不触发CI|
-
-原661ENOSPC及d67首轮29/30整体EXIT1按原SHA证据保留在历史节。
-
-1240 source文件前后不变、4项cleanup全true。当前无负载运行；末段可用盘观察1.5GiB→结束2.0GiB，不是minimum也不据此作因果解释。其后仅获批10个旧构建缓存精确ID清理，观测可用空间2485452800→9281884160B；完整清理证据另存，不触及最新镜像、共享依赖或卷。
-
-
-容量87e：短1000双PASS；长5000overallEXIT1，PG5000PASS（finalHTTP2.324900314秒，0未发送/延迟/查询失败）；strict5000FAIL（全部accepted、0未发送/查询失败、15delayed、120秒排空deadline、executed[]/assertfalse）。strict finalassertwindow28.497584549秒不是实测最终HTTP耗时，不声称最终完整性或数据丢失/SLO。功能645/浏览器30/镜像EXIT0独立；性能仍欠，停止追加heavy追绿、托管不触发。
-
-## 历史SHA阶段记录与设计原文
-
-## 历史此前当前表
-
-| 源/阶段 | 实际证据与边界 |
-|---|---|
-| 66150be正式全轮 | actualEXIT0/cleanup：55文件215单元+156文件426真实集成=641PASS/0skip/0unhandled；30E2E（28真实Chromium+2日期）全部PASS，约1.5分钟；lint/type/SDK/journal/build/migrate/compiledentry全部PASS |
-| 66150be固定负载 | 1000PASS，finalHTTP5.047623651秒；5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/sourceCH，六完整性断言PASS，finalHTTP21.102973929秒；不是5000或SLO通过 |
-| 最新镜像/远端状态 | 新镜像尚未完成；本地HEAD e441存在，HTTPS认证失败导致push尚未确认，不操作Git或托管 |
-| 66150be独立静态/单元 | type/lint/215单元PASS，不代替正式全轮结果 |
-| 0a提交前摘要绑定专项 | 19真实定向PASS，仅对应precommit源码摘要，不是全局计数 |
-| c890后端（历史源） | 211单元+421真实集成=632PASS，未外推661 |
-| 1c1cb65浏览器/镜像（历史源） | 30检查=28Chromium+2日期PASS；镜像EXIT0，均绑定1c非661 |
-| 1c1cb65固定负载（历史源） | 1000PASS，5000FAIL，不称SLO达标或661结果 |
-
-托管不触发。以下更新段全部是明确SHA对应的历史阶段原文：其中“当前/最新”仅指各历史时点，不构成另一个当前入口。bd未捕错误、0a类型FAIL、测试WIP两FAIL、1c负载FAIL及所有原来源完整保留。
-
-## 历史SHA阶段记录与原契约
-
-**当前66150be测试窄修**：完整type/lint/215单元实际EXIT0，src/db/packages与0a相同；19真实precommit专项仍只证明此前摘要绑定源码，不是完整全轮。0a正式入口实际EXIT2（TS2749），unit/int/browser/image未运行；随后测试WIP首次213/215单元通过、2FAIL，类型与event-capable mock窄修后215PASS。先type后追加测试导致旧报告外推的失误已记录，不掩盖。661新full/image/load待；bd未捕获错误、0a类型FAIL、测试WIP2FAIL及1c负载FAIL原证据保留。
-
-当前更新a9b49e7：bd3f51f三批候选7单元/21真实专项PASS，但新完整入口实际EXIT1：213单元PASS，集成424检查中423PASS/1skip，并有uncaught PG25P04 error1；浏览器NOT RUN。旧1c30浏览器及镜像通过仅绑定旧source，不外推候选。skip来自runner漏env，已改用仓库validate-local-final.sh正式入口；C idlefatal修复已保存0a0c171：precommit WIP摘要绑定第四轮19真实专项PASS/0skip/0uncaught，10单元/type/lint通过；新0a全量/镜像/负载尚待。所有FAIL保留，托管不触发。
-
-### 历史2818bd4验收入口
-
-c890实际后端211单元+421真实集成=632 PASS；1c1cb65浏览器30检查（28Chromium+2日期）PASS，src/db/packages与c890相同，不声称后端重跑。1c生产镜像实际EXIT0，main-1c1cb65-image-*证据绑定source1c。最终固定1000已PASS：最终HTTP5120ms、Node应用+harness采样峰650272768字节（不含存储服务）；5000最终FAIL（4900accepted/2unsent/39delayed、排空超时、最终断言未执行），不预称通过或SLO达标。预算默认值不保证scan行数、heap上限或性能改善。下文main0f/de当前或标记browser待等均为对应SHA历史原文，旧失败保留；托管不触发。
-
-## 历史契约与阶段记录
-
-当前交付：main0f14；19d97af同源595应用/30检查与55DDL/两个索引生产镜像均实际通过，核心activation guard已true，逐站proof/epoch/journal仍强制。下文早期切片的guard关闭/未交付描述是历史时点，不能用于当前操作；不得手动改authority绕过证明。ac投影仅定向14真实+2单元通过，ac1000通过5.316秒、5000失败，浏览器专项实际30检查PASS/0skip，96.441秒、EXIT0，不外推全轮或镜像。
-
-## 现行用户契约与操作手册
-
-本手册描述当前应用路由，面向自托管管理员和集成开发者。主体 AGPLv3，独立 tracker MIT；接口不要求付费订阅。开发中接口单独标注，不能据此假定某个旧镜像已包含新功能。运行版本及真实验收见 [主验收记录](archive/validation/VALIDATION_MAIN.md)。本文件同时提供中文契约与英文操作说明。
-
-This manual documents implemented self-hosted endpoints. Check your installed version against the validation record. Development additions are explicitly marked; external connector fixtures do not prove real provider-account access.
-
 ## 通用约定 / Conventions
 
 请求、响应默认 JSON；CSV、下载、HTML embed 和 SSE 例外。站点接口前缀 `S=/api/v1/sites/:siteId`；**外部连接器使用** `E=/api/sites/:siteId`，没有 `v1`。UUID 参数须传实际返回 ID。日期时间使用 ISO8601 UTC（例如 `2026-10-01T00:00:00Z`），外部日历报表用 `YYYY-MM-DD`。统计期间通常 `[from,to)`；Google 连接器 `start/end` 是包含两端的日期范围。时区是站点 IANA timezone，不是浏览器时区。缺失、不可用或不支持的指标可能为 `null`；不能显示成零。
@@ -207,7 +150,7 @@ curl --fail-with-body --no-buffer -H "Authorization: Bearer $BAIZE_API_TOKEN" \
 
 单次明细读取上限为 100000 条事件，JSON 响应上限为 8 MiB。请同时检查 `coverage`、`status`、`sessionStatus`、`uvStatus`、`visitors.status`、`aggregationPending` 和实时窗口状态。`detail_limit_exceeded`、`raw_detail_retired`、`outside_raw_retention`、`detail_unavailable` 表示无法给出完整明细，空数组或 `null` 不等于零访问。聚合指标和原始明细的覆盖范围可以不同。
 
-实现范围与公开参考来源见[界面与报表说明](51LA_ALIGNMENT.md)。
+数据口径见本文“流量报表的数据边界”。
 
 ## 目标、漏斗、实验、回放 / Goals, funnels, experiments, replay
 
@@ -246,7 +189,7 @@ Public share URLs are bearer capabilities, not login credentials. They only expo
 
 ## 外部服务 / External connectors
 
-全部下列E路径均站点隔离；GET read，设置/导入/扫描/排名/复检一般admin，AI问数/query/usage read，ai/test admin；evidence/suggestions创建与状态变更write；SEO建议复检另需admin。不得在客户端或仓库保存提供方secret。OAuth发起及callback绑定当前用户/Cookie/session、一次state/PKCE。实际服务账号尚未验证的项目见 [外部验收](ACCEPTANCE_EXTERNAL.md)。
+全部下列E路径均站点隔离；GET read，设置/导入/扫描/排名/复检一般admin，AI问数/query/usage read，ai/test admin；evidence/suggestions创建与状态变更write；SEO建议复检另需admin。不得在客户端或仓库保存提供方secret。OAuth发起及callback绑定当前用户/Cookie/session、一次state/PKCE。外部服务需要部署者配置自己的账号，并验证连接与权限。
 
 | E后缀 / E suffix | 方法 / Method | 请求与响应 / Request/result |
 |---|---|---|
@@ -260,7 +203,7 @@ Public share URLs are bearer capabilities, not login credentials. They only expo
 | /ga4/window | GET start/end | 仅精确已导入窗口saved-provider-window，否则unsupported，不外推UV |
 | /seo/scan；/seo/scans | POST扫描；GET最近20扫描 | 受robots/rate/DNS/redirect/同站范围限制；安全issues/pages保存在PG |
 | /seo/conversions | GET start/end | 聚合search→落地页→转化对照，非个人词到订单归因 |
-| /serp/check；/serp | POST `{keyword,provider:serpapi|dataforseo}`；GET历史 | SerpAPI/DataForSEO BYOK、排名变化；实际付费账号未实测 |
+| /serp/check；/serp | POST `{keyword,provider:serpapi|dataforseo}`；GET历史 | SerpAPI/DataForSEO BYOK、排名变化；需配置供应商账号与权限 |
 | /ai/query | POST read `{metric,dimension?,start,end,limit?,filters?}` | 确定性只读类型聚合，不调用模型，max31日/limit100，无SQL/其他site |
 | /ai/usage；/ai/test | GET read；POST admin | 预算/任务计量；test会真实调用已配置提供方，不是无费用dry-run |
 | /evidence | POST `{start,end}` | 确定性本地证据、不调用AI，适合先预览 |
@@ -272,9 +215,7 @@ Google配置settings `{clientId,redirectUri,property?,gaProperty?,dailyGsc?,dail
 
 AI配置settings `{endpoint,model,enabled,monthlyTokenBudget,maxTokens?,localOrigin?,dailyReport?,automaticAnomaly?}`；默认不启用。仅明确登记localOrigin的实例管理员允许本地Ollama窄例外，不是全局关闭SSRF。发送用户问题/请求文本及获授权聚合数据，不发送原始事件行、原IP或身份。问题文本本身可能包含用户输入的敏感信息，提交前应自行避免；不能承诺“只传聚合从不传问题”。保留外部提供方成本风险，应用无额外收费。聚合变化和模型建议是观察性证据，不证明因果或收益。
 
-### AI typed chart：当前工作树新增 / Development addition
-
-该段接口已生产注册并有独立真实PG验收，但本文编写时尚未进入新的不可变全量batch；旧镜像不得假定包含。真实模型质量/Google账号等不由模拟transport证明。
+### AI 问数与图表 / Typed question charts
 
 POST E/ai `{purpose:"question",question:≤2000字符,start,end}`（最多31个包含端点日历日）返回id/answer/tokens/evidence与questionEvidence。GET E/ai/questions/:callId返回id/status/answer/questionEvidence/tokens/createdAt/evidenceStatus（verified-tool-trace、legacy-unverified、not-completed）；失败/预留任务没有可验证answer/evidence。
 
@@ -286,7 +227,7 @@ GET S/storage(admin)显示配置/mode/replica_format/水位/错误；PUT admin `
 
 S/storage/history（GET admin，最新100manifests）；POST /capture；POST /:id/backup；POST /:id/restore `{namespace:UUID}`。未配置409，找不到published manifest404。history备份由服务端dataDir保存签名文件，响应id/bytes/integrity；restore仅恢复隔离CH namespace，不激活为canonical查询源、不替换PG。删除和保留会使旧历史失效，不能用副本恢复被删个人数据。实际CLI/恢复流程见 [迁移手册](migration.md)。
 
-POST /api/admin/keys/rotate、GET/PUT /api/admin/geoip、POST /api/admin/geoip/refresh以及GET/PUT /api/admin/sso/wecom为实例设置；密钥轮换保留版本旧key，GeoIP只允许官方认证校验下载，SSO明确映射已有账号，不自动开放注册。GET /api/sso返回启用状态；start/callback需要安全会话/state。这些账号或许可未配置时不要称真实服务已验收。
+POST /api/admin/keys/rotate、GET/PUT /api/admin/geoip、POST /api/admin/geoip/refresh以及GET/PUT /api/admin/sso/wecom为实例设置；密钥轮换保留版本旧key，GeoIP只允许官方认证校验下载，SSO明确映射已有账号，不自动开放注册。GET /api/sso返回启用状态；start/callback需要安全会话/state。外部服务需配置有效账号与权限后使用。
 
 ## 错误与重试 / Errors and retries
 
@@ -308,81 +249,7 @@ POST /api/admin/keys/rotate、GET/PUT /api/admin/geoip、POST /api/admin/geoip/r
 
 English operational rule: inspect both HTTP status and the stable error code; retain task IDs and coverage metadata. Retry immutable intake payloads with the same event IDs, never infer success from a zero/empty chart, and never expose provider credentials or raw errors. Full database recovery, latest deletion journal and key/files restoration are separate from a site export.
 
-## 本文示例验证 / Example verification
-
-2026-10-10，本地独立PG schema/临时Fastify端口实际执行setup→建站→采集PV及boolean事件→生产worker→同一文档curl统计命令→真实SSE首帧：setup200/site201/collect202 accepted2，curl得到PV1/UV1/coverage1，SSE200，EXIT0，schema/临时密钥已清理，无外部调用、无凭据输出。辅助runner首次.ts因/tmp CJS转换在应用启动前失败，改.mts后实际通过；不将首个未运行当成功。该检查只验证所列本地示例，完整接口/外部账号状态以各验收记录及已安装版本为准。
-
-## 删除AI派生信息与通知保护
-
-应用删除和journal重放保守清除整站AI历史答案、最终工具证据和建议，并撤销相关导出；保留月度预算/计量账本防止删除重置费用。main fa3e82873d9b9e3cb1b139fbea3db9c742995a48已包含第七分阶段验证的这条路径，旧镜像须按实际版本核验。
-
-031与AI派生内容物理清理已纳入main fa3e82873d9b9e3cb1b139fbea3db9c742995a48的第七分阶段验收；删除使相关问数答案、工具证据、建议与旧导出失效，保留预算记账避免费用重置。后续040通知快照清理与dispatch epoch门禁仍属新工作树切片，不能扩大旧镜像/旧验收边界。
-
-## 百度搜索资源公开可行性 / Baidu public feasibility
-
-截至2026-10-10，官方[搜索分析说明](https://ziyuan.baidu.com/college/articleinfo?id=3415)介绍点击/展现/关键词/平均排名/热门页，但普通站长公开文档化读取API未证实，不能断言不存在。收录API仅提交URL。[2015关键词下载说明](https://ziyuan.baidu.com/wiki/571)没有当前实际CSV样本；[百度统计搜索词API](https://tongji.baidu.com/api/manual/Chapter1/source_searchword_a.html)提供PV/UV搜索词，不等同自然搜索展现/排名。手动自定义模板/列映射不能称原生CSV兼容，真实账号/样本未提供；本产品连接器状态仍unsupported-unverified。
-
-As of2026-10-10, official search-analysis product documentation describes clicks/impressions/keywords/rank/popular pages, but a publicly documented read API for ordinary site owners has not been established. This does not prove no such API exists. URL-submission APIs and Baidu Tongji PV/UV search-word reports are different capabilities. A2015 download article is not a current native CSV sample; custom templates/column mapping must not be advertised as native compatibility without samples.
-
-## 标准 MCP 与权威存储开发边界
-
-POST `/api/sites/:siteId/mcp` 已在默认应用注册。它提供标准 JSON-RPC2 的 initialize、ping、tools/list、tools/call，不是 HTTP typed-query 的改名；无状态 Streamable HTTP、POST JSON 响应，notification成功202，已鉴权 GET/DELETE 为405并返回 Allow: POST。每请求检查该站点 read 权限，工具读取前与返回前再次检查；提供 Origin 时须精确匹配 PUBLIC_URL。
-
-唯一工具 query_analytics 只接受已授权站点的31个包含端点日历日、最多100分组的 typed 只读聚合，不提供 SQL、其他站点选择器、raw 数据或副作用。成功返回 content 与 structuredContent；工具运行/范围失败返回 MCP isError，权限失败为HTTP401/403。JSON-RPC协议错误用 -32700/-32600/-32601/-32602，不能套用所有普通API的错误JSON。官方 SDK1.32.1 真实HTTP/PG客户端已验证协议2025-11-25；服务声明2025-11-25、2025-06-18、2025-03-26，后两版以及其他桌面客户端不算已测。完整连接样例见[中文MCP](mcp.md)/[English MCP](en/mcp.md)。独立4项通过，默认入口已纳入上述fa3第七分阶段compiled-app验收；不假定旧镜像包含新入口。
-
-当前普通安装仍用 PG 权威。032 canonical adapter、033 normalized facts、034 replay metadata索引及治理权威读取为独立开发切片；该早期开发切片当时整个 canonical activation guard 仍关闭（当前已true）。不要修改数据库 authority 字段或删除PG raw 来绕过保护。已选择canonical的隔离测试中，CH故障返回503 canonical_unavailable，不能回退空PG数据；这不改变可选副本模式允许显式PG fallback的既有契约。
-
-034仅存 replay chunk 索引、事件/页面标识、hash和记录时间范围，不存 rrweb payload；canonical回放读取上限1000 chunks/128MiB，完整导出沿用每表100k。用量中的 canonical bytes:null 表示没有实际CH磁盘测量，logical_bytes仅是事件JSON大小。混合身份记录的不可变替换、旧body物理ACK、故障回滚/孤儿恢复及独立journal恢复已由C4真实PG/CH三项专项验证；尚未纳入新的不可变全量与原生rrweb canonical浏览器验收。30天物理回放保留已有下述工作树定向实现，仍待下一不可变完整验收，activation/replay guard保持关闭，索引隐藏不等于物理擦除。定向结果见[治理切片](ACCEPTANCE_CANONICAL_GOVERNANCE.md)，不是不可变main全量或部署验收。
-
-
-新增035 durable AI reservation账本仅保存费用保留/结算状态，无模型正文或visitor FK；删除AI派生内容不能删除该账本而重置费用。站点facts导出排除该内部操作状态（ai_reservations，原因quota-ledger-operational-state），不改变已有ai_budget数字事实策略；PG整库backup自然包含账本。该新增切片的定向与下一完整阶段结果单列，不假定旧镜像已有035。
-
-### 后续工作树：运行期回放保留与恢复证明
-
-037授权账本保存单调cutoff、attempts和退避状态；调度在任何partition/site锁前独立提交，以GREATEST保留已经授权的范围，之后按partition→site→job锁序处理。同连接执行记录级物理清理，canonical混合chunk不可变替换并确认旧body物理删除；PG权威的可选历史归档也保留新记录和合法派生桶。截止时间取站点保留与30天中较短者，延长保留不会撤销已有cutoff；失败保留可靠指针和固定错误码。该时间策略不是个人删除请求，不伪称有个人fsync journal。
-
-恢复证明为version2、scope=canonical-and-history-replay；v1直接拒绝。稳定v1实例key签名sourceScope、签发时间与完整cutoff集合，默认10分钟有效、最多5000站点。范围是active CH权威站点∪published历史raw站点∪既有037授权站点；后者保证当前raw清空也不丢旧备份所需的授权。备份index.retentionSites须一致。恢复先校验签名/来源/时效/完整性，再同连接GREATEST合并；在同一未提交事务中恢复并清除过期正文，之后才允许提交。源最新向量或journal变化阻止成功标记；不修改源CH。
-
-canonical每站最多10k访客、每访客最多10k chunks，超预算明确失败而不先删索引。当前定向证据含真实PG/CH v2范围/源历史TTL/恢复与失败重试；native CLI已完成真实dump及独立PG/CH恢复、最新cutoff物理裁剪和源推进拒绝，最新native CLI也已覆盖非空standard036 carry（schema含041，原生fixture的041行为空）、latest journal删除A保留B；daily非空包定向通过，但完整daily activation/restore、严格PG metadata、整镜像和native canonical浏览器仍待对应验收，activation/replay guard保持关闭。见[治理验收](ACCEPTANCE_CANONICAL_GOVERNANCE.md)。
-
-后续通知保护把报表及个人数据派生告警绑定aggregationEpoch；派送在同连接partition/site共享锁下复读running状态、attempts、有效lease和当前epoch，失效则撤销且正文最小化。共享锁跨15秒有界传输直到记录结果，因此删除ACK之后不再从旧claim派送；已发出或在途的外网消息无法召回。真实本地HTTP/PG删除竞态已验收，真实SMTP/企业账号外发未实测。上述后续切片尚未纳入fa3主版本，不能据此称旧镜像已具备新保护。
-
-048 strict导出（不可变7fbb561已验）：完整站点facts的stats_hourly/stats_daily若为V2，data中的pv等数值来自当前已认证发布事实，不直接使用旧兼容缓存或控制字段默认值；uv与membership_counts为SQL去重计数，visitor_values_exported=false说明不返回个人成员值。export_manifest.source_vector分别给出published_fact_source、raw authority及canonical/deletion/aggregation epoch、generation/processed_generation/watermark。dirty状态拒绝，不把未重建旧导出当最新。真实缓存旧个人正文的物理ACK、strict源/独立目标恢复已有联合原生证据并纳不可变本地验收；单纯投影隐藏仍不能证明擦除。新镜像与规模验收另列。
-
-048隐私失效后的导出预览：已知V2当前数值只依赖认证44/47事实，不要求已擦除的048兼容缓存再次存在。不可精确重建的legacy表从JSON中省略，并在export_manifest.unsupported_tables与table_read_metadata标coverage=0、reason及已知时间范围；表不存在不表示真实零。部分仍可认证的当前行可保留，manifest明确旧历史范围不可用。真实vitals样本可输出TDigest centroids及原加权sample_count。仅已知隐私基线失效允许此显式部分导出；正文缺失/损坏、HMAC错误或CH网络失败仍失败，不能伪装普通partial。桶UV不可跨日/小时直接相加。
-
-raw-prune安全窄修：管理员canonical HTTP `{action:"prune"}`返回409 `canonical_backup_required`，不接受备份路径/JSON授权。CLI必须验证真实签名raw包、当前独立journal、来源/epoch/generation与正文hash；参数及现有备份目录见[迁移手册](migration.md)。该门槛已纳7fbb561不可变本地联合验收；3e052d8历史计数不修改。
-
-
-报表筛选扩展（当前开发切片，真实PG/浏览器集成尚待）：DSL支持可选path/channel及五个UTM，全部已设条件同时匹配，手动运行和定时当前/前期比较使用相同筛选。旧报表不迁移，缺失或空字段表示不限；未知键、逆序日期、超长字段拒绝。path上限1024、channel100、各UTM500字符。定时报表按推送周期计算范围并保留筛选，不重用陈旧固定日期。明细留存、daily-salt跨日及精确coverage限制保持。
-
-### 接入观察、过滤原因、只读诊断与人工备注（第二轮开发切片）
-
-以下新接口已接线，当前仅类型、lint、单元验证；真实PG/浏览器联合验收待负责人执行，不追加到旧494计数。
-
-- `GET /api/v1/sites/:siteId/intake-status`（read）：可传from/to ISO时间与报表七项筛选；默认最近7天。返回receiver接收时间、事件时间、接受批次generation、聚合水位与当前查询coverage。stage为not_observed/aggregation_pending/statistics_available/statistics_unavailable。统计读取失败回滚savepoint，不假完整。旧站缺050观察仅表示未记录接收观察；不证明script失效。既不爬站点，也不发送测试PV或验证snippet，过滤空结果不等于采集失败。
-- `GET .../bot-observations?from=YYYY-MM-DD&to=YYYY-MM-DD`（read）：最多31个站点日历日、200组并返回truncated；reason仅ua/request_burst，附rule_id/rule_version。filtered_requests是被过滤请求数，declared_events是未逐条校验的批次声明事件数，二者不是PV。旧category计数差额为legacy_unknown，事件数null；不制造历史原因。无原IP/UA/访客/body。
-- `GET .../self-host-diagnostics`及`/export`（admin）：只读白名单数据库/Redis配置状态、schema版本、聚合水位/失败布尔、队列、权威模式、保留信息。Redis configured_not_checked不是实际健康验证；物理容量not_measured。backup not_verified明确需要当前签名包和独立最新journal，不能解释为失败或恢复保证。不接受任意路径、不自修、不输出连接串/密钥/原错误/访客/正文；下载Cache-Control:no-store。
-- `GET .../annotations?from&to`（read）：ISO日历日窗口≤366日、最多200条/truncated；每条携带保存时timezone，另返回currentTimezone。`POST .../annotations`、`PATCH .../annotations/:id`、`DELETE .../annotations/:id`（write，分析师以上）支持`{date,title,note?}`，title1–120字、note≤2000字；真实日期校验与审计同事务。编辑重新绑定编辑时站点时区。viewer不可改，其他站点不可读写，记录不存在404。这些是manual_note，measuredEvidence/causalEvidence:false，绝不作为AI事实或因果输入。
-
-冻结补记：ac86cd3浏览器30检查（28真实Chromium+2日期）实际PASS/0skip，96.441秒、EXIT0；其191/404完整后端全轮未复验，不叠加旧19计数。当前4384后续预算切片尚未全量通过；B真实3项仅证明服务器行为，200 exception风险仍待C适配，不能称adapter已验。aea2ece日期标记4单元PASS、浏览器未跑。预算口径为SELECT次数/decoded bytes/deadline，不承诺scan或heap限制。原FAIL全部保留。
-
-1c最终固定负载：1000 PASS、最终HTTP5120ms；5000总体FAIL：4900accepted、2unsent、39delayed、queryfail0，drainReached=false且120秒deadline，剩余积压1350/最大3250。最终查询25.389秒FAIL、assertionsExecuted=[]，不得声称六完整性断言已过。Node峰730509312字节不含数据库，source unchanged且4项cleanup全true；没有预算拒绝。已通过代码功能/浏览器/镜像不等于关闭此本地性能欠项，不据此称提速/SLO。归档证据为 docs/test-evidence/main-1c1cb65-independent-strict-5000.json 及配套record；原FAIL保留。
-
-0a0c171包含三批候选及idlefatal修复。第四轮实际19/19 PASS（11budget+4server+3triple+1strictrestore）、0skip/0uncaught，另10单元/type/lint通过；这是提交前源码摘要绑定定向证明，不是新全局计数。原前三轮FAIL及bd完整EXIT1全部保留。0a新完整空库、镜像和固定负载正在准备，不预写通过；旧c890632、1c30/image、1c1000PASS/5000FAIL各按原源码阶段保留，不外推0a。
-
-## 历史前次状态入口（原记录保留）
-
-## 当前验收入口（66150be，唯一当前）
-
-最新本地主干d67bb8a已保存，正常Git push权限当前不可用，不创建token。只在同run effects/vitals均为complete CH时省identity TEMP写，混源保持原路径；type/lint、新2+旧18=20受影响真实集成及217单元PASS/0skip。20是部分集成，不与旧426累加；217首次215PASS/2旧mockFAIL保留，随后仅修形状不降断言。d67新whole/image/load等待串行验收，最新已过完整全轮仍是661641+30；不推断提速。原镜像ENOSPC FAIL及精确自有旧cache清理/targethealthy EXIT0仅诊断恢复，native未跑，不称镜像生命周期通过。
-d67整轮实际EXIT1/cleanup：645后端（217单元+428集成）ALL PASS；浏览器29PASS/1FAIL，protected share只读提示未找到、实际HTTP503“统计快照已改变请重试”，D正在诊断竞态，不称全passed。新完整镜像/负载待。父已核远端e441；local e441..d67 Gitbundle及tracked-source tar保存在/workspace/baize-checkpoints，bundleverify0且排runtime，不创建新凭据。
-
-正式全轮215单元+426真实集成=641PASS，30E2E（28真实Chromium+2日期）PASS，EXIT0/cleanup。固定1000PASS、finalHTTP5.047623651秒；固定5000整体FAIL：4350accepted/13unsent/35delayed、drainfalse120秒；已接受4350最终PV4350/coverage1/CH且六完整性断言PASS21.102973929秒，不是5000或SLO验收通过。
-
-新镜像实际EXIT1：CH target233/ENOSPC创建preprocessed_configs；build/install/manifest/budget/55DDL/licensing/seed已过，native阶段未开始，targetcleanup完成，F归档证据。不推测底层原因。本地01e2c5d已保存，不预称远端确认；托管不触发。历史验收段以SHA标记；下方API/安装操作手册仍描述当前契约。预算不保证scan/heap或性能收益。
-
-## 本批安全契约 / Security contracts
+## 安全与请求预算 / Security and rate limits
 
 实例 `/api/admin/*` 仅接受真实管理员 Cookie 会话；站点 API Token（包括管理员签发或 admin scope）以及 Cookie + Authorization 混用均拒绝。站点创建、配置和写入密钥轮换与审计同事务提交，审计失败回滚业务变更，不使旧密钥失效。
 
@@ -390,4 +257,40 @@ Instance administration requires an administrator browser Cookie session. Site A
 
 账户密码统一12–1024字符、最多4096 UTF-8字节，兼容旧邀请创建的长密码账户。分享密码创建仍至少8字符，上限1024字符/4096字节；异步scrypt保留旧32字节哈希，旧格式密码验证允许至1MiB UTF-8字节，仍受原HTTP整份正文1MiB上限；不截断、不扩大请求上限。全进程最多4个分享密码派生任务，无等待队列，满额503/share_password_busy并Retry-After:1。
 
-Authenticated statistics/site-management/admin requests share a 600-request/user/60-second fixed-window budget across sites and Cookie/API tokens. Public share and embed requests share 120 requests/trusted-IP/60 seconds. Excess requests return429 with Retry-After; configured Redis failure/timeout returns503 without resetting quotas. Without Redis the bounded process-local budget does not coordinate replicas. Details: [request budget](API_RATE_LIMIT_CURRENT.md).
+认证统计、站点管理和实例管理共享每用户每 60 秒 600 次预算，跨站点及 Cookie/API Token 共用。公开分享和 embed 图表按服务端识别的来源地址共享每 60 秒 120 次预算。超限返回 429 request_rate_limit_exceeded；已配置 Redis 但故障或超时返回 503 request_rate_limit_unavailable，均附 Retry-After，不重置为本地额度。未配置 Redis 时使用最多 10000 个主体的有界进程内计数，不保证多实例共享；计数保存域隔离 HMAC，不存原 IP、URL 或 Token。采集、登录及签名蜘蛛日志上报使用各自限流。固定窗口边界可能允许突发，不是平滑速率保证。
+
+## 数据删除、回放与导出
+
+访客删除及独立删除日志重放会清除相关 AI 答案、工具证据和建议，并撤销旧导出。费用预留与结算账本保留，删除数据不会重置 AI 预算。通知发送前重新检查站点 epoch、任务状态和租约；已经发出或在途的外部消息无法召回。
+
+回放按记录时间执行站点保留期与 30 天中的较短期限。授权截止时间单调前进，延长保留不会恢复已过期内容。混合时间块保留未过期记录，确认旧正文物理删除后再更新状态；索引隐藏不等于物理删除。恢复使用签名的最新回放保留证明和独立删除日志，具体见[迁移与恢复](migration.md)。
+
+严格存储下，站点导出读取经过认证的已发布事实。UV 与成员数量按集合去重，不返回个人成员值。导出清单记录事实来源、原始数据权威源、epoch、generation、水位和覆盖情况。尚未重建的脏状态拒绝导出。历史表无法精确重建时，通过 unsupported_tables、coverage 和 reason 说明缺失；缺失不表示真实零。正文损坏、签名失败或存储连接故障不能伪装成普通的部分结果。
+
+## 接入状态、诊断与备注
+
+- GET /api/v1/sites/:siteId/intake-status：需要 read 权限，接受 from/to 与报表筛选，默认最近 7 天。返回接收时间、事件时间、generation、聚合水位与 coverage；stage 为 not_observed、aggregation_pending、statistics_available 或 statistics_unavailable。没有观察记录不等于脚本失效。
+- GET /api/v1/sites/:siteId/bot-observations：需要 read 权限，from/to 为站点日历日期，最多 31 天、200 组并返回 truncated。filtered_requests 是请求数，declared_events 是批次声明事件数，均不能替代 PV；不返回原 IP、UA 或访客正文。
+- GET /api/v1/sites/:siteId/self-host-diagnostics 及 /export：需要管理员权限，只读返回数据库与 Redis 配置状态、schema、聚合水位、队列和存储模式。configured_not_checked、not_measured、not_verified 分别表示未检查、未测量、未验证，不能当成健康或备份成功。不输出连接串、密钥或原错误。
+- GET /api/v1/sites/:siteId/annotations：需要 read 权限，ISO 日期范围最多 366 天、200 条并返回 truncated。POST、PATCH /:id、DELETE /:id 需要 write 权限。写入接受 date、title（1–120 字）和 note（最多 2000 字），保存时区并写审计。人工备注不是测量证据或因果证据。
+
+## MCP 与存储模式
+
+标准 MCP 入口为 POST /api/sites/:siteId/mcp，使用站点只读 Token、JSON-RPC 2 与 Streamable HTTP。工具仅查询已授权站点的聚合数据，不执行 SQL，不读取任意站点或原始个人明细。连接方法与协议错误见[MCP 指南](mcp.md)。
+
+默认 PostgreSQL 为权威源。mirror、prefer_clickhouse 是可验证副本模式；受控迁移后的 ClickHouse 权威模式具有独立备份、删除与恢复要求。权威正文不可用时返回错误，不能回退到空 PostgreSQL 数据。不要直接修改 authority 字段或手动删除原始表；操作见[迁移手册](migration.md)。
+
+百度搜索数据使用[手动导入模板](MANUAL_SEARCH_IMPORT.md)。URL 提交、百度统计搜索词与自然搜索展现/排名属于不同来源，不能混合为相同指标；自定义映射不表示兼容未验证的原生 CSV。
+
+## 流量报表的数据边界
+
+所有站点报表沿用白泽的站点权限、删除记录与存储快照。明细接口通过现有事件存储读取，概况和历史统计复用已发布事实及经过校验的汇总来源。
+
+- 时间区间为 `[from,to)`；站点日历按其 IANA 时区计算。完整单日的小时轴补真实零值桶，缺失覆盖不补零。
+- UV 按访客集合去重。总跳出率和平均时长按总会话量计算，不取每日比率的简单平均。
+- IP 按服务器解析的连接地址计算，只有明确配置的受信代理可以提供客户端地址。原地址只在内存中查询地域并生成站点隔离 HMAC；报表、导出和共享不返回该内部 HMAC。旧事件只有网段的，不能恢复完整 IP，返回 `ipCoverage` 和未知值。
+- 预测采用白泽独立实现的 `historical_remaining_v1`，参考最近 14 个完整自然日。缺少历史时可按今日运行速度作低样本估计；凌晨或样本不足时留空。区间是历史波动的参考范围，不是经过校准的统计置信区间。
+- 蜘蛛名称来自 User-Agent 声明，不等同于已验证搜索引擎身份。网页埋点无法看到不执行 JavaScript 的爬虫，需通过服务端日志上报补齐。日志保留不超过站点期限及 90 天，不保存原始 IP、UA、查询参数或请求正文。
+- 原始事件过期、明细超限或会话上下文不足时，保留不可用状态。汇总尚存不能恢复已经缺失的逐次访问路径。
+- 历史旧小时汇总与事实重叠时，不能证明完整、不重复的数据返回 `overlapping_legacy_history` 和 `null`。历史总量的起点为仍可读取的已发布历史，不声称覆盖没有保存过的数据。
+- `daily_salt` 不支持跨日身份统计、新老访客或 IP 网段。未知值与不可用值不替换成零或演示数据。

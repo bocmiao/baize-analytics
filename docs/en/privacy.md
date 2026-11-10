@@ -28,4 +28,4 @@ Deletion is coordinated by site locks and tombstones at collection and worker bo
 
 Share links are bearer credentials for the shared result: restrict their scope, set expiry and revoke them when no longer needed. Administrative sessions and scoped API tokens do not belong in tracker scripts.
 
-Connector credentials are encrypted under separately protected versioned keys. AI uses operator-supplied credentials and can send query context to the selected provider; review the provider and the exact feature before enabling it. External account tests that have not been run are recorded as unverified. The application does not create paid accounts or production credentials automatically. Protect exported files, backup packages and operational logs with the same care as the live database.
+Connector credentials are encrypted under separately protected versioned keys. AI requires operator-supplied credentials and can send query context to the selected provider; review the provider and the data sent before enabling it. Protect exported files, backup packages and operational logs with the same care as the live database.

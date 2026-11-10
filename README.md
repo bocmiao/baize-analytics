@@ -25,7 +25,7 @@
 
 流量报表、访客分析和站点设置使用统一的白泽界面，支持浅色、深色及手机布局。常用筛选放在报表顶部，高级配置按需展开。
 
-以下为当前 Node 标准版的实际运行截图，使用独立演示站点数据。[截图说明](docs/images/README.md) · [界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [加载与切换](docs/validation/BAIZE_NAVIGATION_PERFORMANCE_20261110.md) · [功能对照](docs/51LA_FUNCTION_MATRIX.md)
+以下为 Node 标准版的实际运行截图，使用独立演示站点数据。[截图说明](docs/images/README.md)
 
 **桌面流量报表**
 
@@ -89,9 +89,8 @@ bash install.sh       # Node 标准版
 | 配置隐私与数据保留 | [隐私说明（英文）](docs/en/privacy.md) |
 | 备份、恢复、升级与迁移 | [维护与迁移](docs/migration.md) · [Lite 维护](docs/lite-deployment.md) · [实例增量更新](docs/INSTANCE_INCREMENTAL_UPDATES.md) |
 | 开发与测试 | [开发指南](docs/development.md) · [贡献说明](CONTRIBUTING.md) |
-| 核对功能范围与历史验证 | [功能清单](docs/IMPLEMENTATION_CHECKLIST.md) · [版本状态与验收记录](docs/STATUS.md) |
 
-完整入口见 [文档导航](docs/README.md)。历史验收和运行包都对应各自的源码版本，部署时以所用版本的清单与说明为准。本次文件整理与历史附件位置见 [仓库维护记录](docs/REPOSITORY_MAINTENANCE_20261110.md)。
+完整入口见 [文档导航](docs/README.md)。
 
 ## 交流与反馈
 

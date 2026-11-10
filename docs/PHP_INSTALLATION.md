@@ -1,15 +1,13 @@
 # PHP + MySQL 网页安装版
 
-最终已验安装包、SHA-256、双数据库运行记录及剩余边界见 [2026-10-15 交付收据](PHP_DELIVERY_20261015.md)。
-
 原 Node.js 标准版继续保留，原安装入口为仓库根目录 `install.sh`、`docs/PANEL_INSTALLATION.md`。本目录说明独立的 PHP 运行时，代码在 `php/`，安装包只携带预构建的 React / ECharts 前端和 tracker；接收服务器不需要 Node.js。
 
-PHP 版使用独立的 InnoDB 文档表、事务锁行及队列租约，不执行 PostgreSQL 迁移，不将原库直接切换为 MySQL。原版的数据存档、scrypt 密码、加密设置和 ClickHouse 权威存储必须保留；没有经过验证的迁移工具时，不能直接复制表或替换正在运行的实例。PHP 目标为标准版功能；具体实现和测试边界请同时阅读随本次交付记录提供的功能对照，不把入口可用当作完整兼容证明。
+PHP 版使用独立的 InnoDB 文档表、事务锁行及队列租约，不执行 PostgreSQL 迁移，不将原库直接切换为 MySQL。原版的数据存档、scrypt 密码、加密设置和 ClickHouse 权威存储必须保留；没有经过验证的迁移工具时，不能直接复制表或替换正在运行的实例。PHP 目标为标准版功能；具体差异见本文兼容边界。
 
 ## 运行条件
 
 - PHP 8.3 或更新版本，启用 `pdo_mysql`、`curl`、`mbstring`、`dom`、`Phar`、`openssl`、`zlib`、`intl`；地域库纯 PHP 解码还需 `bcmath` 或 `gmp`。CLI 与 PHP-FPM 使用同一版本、扩展、配置路径和网站运行用户。
-- MySQL 8.4，InnoDB、UTF-8。MariaDB 必须按交付记录中的实际版本和业务测试单独判断。
+- MySQL 8.4，InnoDB、UTF-8。MariaDB 部署需验证对应版本兼容性。
 - 1Panel 网站的运行目录只指向安装包的 `public/`。配置、主密钥、删除日志和备份均在 `public/` 之外。
 - 使用自己的 HTTPS 域名完成网页安装。数据库密码、供应商密钥在自己的安装页填写，不要发到聊天、工单或公开日志。
 - 使用 PHP CLI 常驻队列，或 1Panel 每分钟执行一次计划任务。网站进程不承担可靠后台调度。
@@ -62,7 +60,7 @@ node scripts/package-php.mjs --verify /absolute/new/baize-php
 
 手动 CSV 导入允许5 MiB文件、最多100,000行；JSON封装需要较大的请求上限。示例使用 Nginx `client_max_body_size 32m`、PHP `post_max_size=32M`、`memory_limit=512M`、`max_execution_time=120`。采集接口仍在应用内限制为1 MiB。不要放宽私有文件的600/目录700权限来解决运行用户不同的问题。
 
-### 1Panel 实操要点（2026-10 实际部署记录）
+### 1Panel 配置要点
 
 面板会自行生成站点 vhost，包内 `deploy/nginx.conf.example` 只作参考。以下六点来自一次真实的 1Panel + PHP-FPM 8.3 + MySQL 8.4 部署，都是从"能打开安装页"到"看到统计数据"之间实际卡住的地方。
 
@@ -88,7 +86,7 @@ server {
 **② 面板路径与容器路径是两套。** 1Panel 常见布局：宿主机 `/opt/1panel/1panel/www/sites/<域名>/index`，容器内 `/www/sites/<域名>/index`（用 `docker inspect <php容器> -f '{{range .Mounts}}{{.Source}} => {{.Destination}}{{"\n"}}{{end}}'` 核对）。所有 CLI 命令必须同时满足两点：
 
 - 用**容器内路径**，否则 `Could not open input file`；
-- 用 `-u <FPM用户>` 执行，且先 `chown -R <uid>:<gid>` 到该用户，否则 `private/` 归 root 所有，`--prepare` 会报 `mkdir(): Permission denied`。
+- 用 `-u <FPM用户>` 执行，并确认新建的私有目录由该用户拥有；已有数据先备份，核对实际路径后仅修正需要调整的目录权限。
 
 ```bash
 docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/install.php --prepare
@@ -150,7 +148,7 @@ docker exec -u www-data <php容器> php /www/sites/<域名>/index/bin/worker.php
 
 备份不只包括数据库，还需要当前及历史主密钥、独立删除日志和配置。必须独立保留当前 `data_dir/privacy-deletions.jsonl`、`data_dir/privacy-watermark.json` 与 `key_dir/privacy-journal-identity.json`；这里的 `data_dir`、`key_dir` 指实例配置中的私有路径。数据库回滚后必须在对外服务之前重放保留下来的删除日志，防止旧备份使已经删除的访客、回放帧和派生内容重新出现。不得用旧备份覆盖较新的独立删除日志。恢复会验证删除日志身份；缺失日志或误建的空日志不能用于恢复旧备份，不能通过重新安装绕过。
 
-操作入口为包内 `bin/backup.php`、`bin/restore.php`、`bin/export.php` 和 `bin/upgrade.php`；执行参数与验证结果以本次交付记录及各命令的帮助输出为准。升级前保留完整可恢复副本，升级后验证安装仍为终态、历史 namespace 未丢失以及删除日志重放结果。不能只验证数据库连接就删掉旧版。
+操作入口为包内 `bin/backup.php`、`bin/restore.php`、`bin/export.php` 和 `bin/upgrade.php`；参数以各命令的帮助输出为准。升级前保留完整可恢复副本，升级后验证安装仍为终态、历史 namespace 未丢失以及删除日志重放结果。不能只验证数据库连接就删掉旧版。
 
 ```sh
 php bin/backup.php /private/backups/baize-php.enc
@@ -163,6 +161,16 @@ php bin/upgrade.php
 
 ## 兼容边界
 
-PHP 存储采用文档记录与按站点锁定的事务，可保存原始明细和配置；其吞吐与原版 PostgreSQL / ClickHouse 的容量模型不同。本次测试数据量只能证明所记录的业务条件，不能外推到原版压测规模。需要原版的大规模权威存储、实例增量更新协议或已有 Node 数据库原位升级时，继续使用 Node 标准版。
+PHP 存储采用文档记录与按站点锁定的事务，可保存原始明细和配置；其吞吐与原版 PostgreSQL / ClickHouse 的容量模型不同。部署容量需按实际工作负载测试。需要原版的大规模权威存储、实例增量更新协议或已有 Node 数据库原位升级时，继续使用 Node 标准版。
 
 旧 Node scrypt 密码需要经过验证的重哈希迁移或独立重置；PHP 不会将不能验证的旧哈希当作有效密码。AES-GCM 历史信封只能在密钥与格式均明确时解密，不能据此承诺所有历史数据库直接兼容。外部供应商调用需要用户自己配置凭据；模拟提供商测试不等于真实账号联通。
+
+### 与 Node 标准版的主要差异
+
+- PHP 使用 MySQL/InnoDB 文档存储与站点事务锁，不运行 PostgreSQL 迁移，不提供 Node 数据库原位转换。Node scrypt 账号需要独立迁移或重置。
+- 原始读取预算按站点保留事件计，超过 100000 条返回不可用；缩短查询日期不能绕过全站读取预算。
+- PHP 实时数据通过短 SSE 流自动重连，需检查代理缓冲和超时配置。
+- PHP 历史 namespace 与 Node ClickHouse 权威存储协议不同；旧 Node 存档不能直接导入。实例自动增量更新、ClickHouse 权威迁移使用 Node 版维护工具。
+- daily-salt 不提供跨日访客识别；缺少历史明细、身份来源或会话上下文时返回未知与覆盖状态，不用零代替。收入按币种独立累计，不汇率换算。
+- 回放保留最多 30 天。恢复需要最新独立删除日志及密钥，旧备份不会恢复已撤销的 Token、分享或邀请。
+- 外部连接器、通知、SSO 和 AI 需要部署者配置自己的供应商账号，并验证实际可达性。

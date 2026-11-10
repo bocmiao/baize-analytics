@@ -2,8 +2,6 @@
 
 # Keep Linux entrypoints free of CRLF on Windows checkouts.
 *.sh text eol=lf
-# Historical archive checksums bind the committed LF bytes.
-docs/archive/** text eol=lf
 # Preserve licensed geography assets and their provenance checksums on Windows.
 packages/geography/** text eol=lf
 packages/ip2region-data/** text eol=lf

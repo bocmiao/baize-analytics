@@ -2,7 +2,7 @@
 
 ## 安装方式与实际依赖
 
-推荐 Linux Docker Engine + Compose v2，从私有 checkout 本地构建。私有交付现提供已验的应用镜像 save、Node-ready 与 bundled-node 运行包；没有公开 registry/Release 发布。三个入口及首次使用见 [部署方式](deployment-methods.md)。
+推荐 Linux Docker Engine + Compose v2，从仓库源码本地构建；也可使用经校验的应用镜像或预编译运行包。三个入口及首次使用见 [部署方式](deployment-methods.md)。
 
 ```bash
 ./install.sh
@@ -13,11 +13,11 @@
 
 初装只需 Docker/Compose 与 Bash 常规工具；**备份、恢复、升级还需宿主 Node 24+、sha256sum、支持 `sort -z` 的 GNU 工具、find/xargs/tar/cut**，升级还需 fallocate、GNU sed、mktemp。脚本在创建备份或停止应用前检查依赖；缺失时给出指引，不自动安装工具。推荐 Linux 运维；Windows `run.bat` 未实测。
 
-Node 24 源码方式需要独立 PostgreSQL 17，以及 `DATABASE_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录；Redis 7 和 `REDIS_URL` 可选，未配置时采用有界单机降级，不保证跨实例共享限流或缓存：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。原生运行包提供经完整性校验的 compiled 启动器、Node 面板入口和运营者审阅的 [systemd 示例](../deploy/baize.service.example)，已实测独立 supervisor 自动重启；未提供 Kubernetes/Helm 成品，也未替用户安装 systemd 或验收真实宝塔实例。源码 npm start 与运行包派生 npm start 不同，后者调用 compiled panel-start，无需 tsx。
+Node 24 源码方式需要独立 PostgreSQL 17，以及 `DATABASE_URL`、`DATA_DIR`、`KEYS_DIR`、`MASTER_KEY_FILE`（0600）与持久目录；Redis 7 和 `REDIS_URL` 可选，未配置时采用有界单机降级，不保证跨实例共享限流或缓存：`npm ci` → `npm run db:migrate` → `npm run build` → `node dist/server/src/server/main.js`。`npm start` 和维护工具仍用 tsx，不要直接 prune devDependencies。原生运行包提供经完整性校验的 compiled 启动器、Node 面板入口和运营者审阅的 [systemd 示例](../deploy/baize.service.example)。源码 npm start 与运行包派生 npm start 不同，后者调用 compiled panel-start，无需 tsx。
 
 Compose 默认连接内置 postgres/redis；只在 `.env` 写同名 `DATABASE_URL/REDIS_URL` 不会切换外部服务，需明确的 Compose override。默认 loopback 端口只供本机；`PUBLIC_URL` 不会配置 TLS 或开放公网。持久卷为 `app_data/app_keys/postgres_data/redis_data`，可选 CH 增加 `clickhouse_data`；不要删除业务卷或遗失密钥。
 
-[历史阶段记录](archive/validation/deployment-history.md) 保留原始失败和性能欠项；[运维验收记录](test-evidence/2026-10-12-ops-maintenance/summary.json) 标注各自对应版本。恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。真实域名、HTTPS、Windows 与跨机上线需按目标环境另行验收。
+恢复依赖当前源 Compose 环境、最新独立删除日志及 proof，不是可脱离源环境的跨机灾备安装包；恢复到新库/卷后不自动切流量。真实域名、HTTPS、Windows 与跨机上线需按目标环境另行验收。
 
 需 Docker Engine 与 Compose v2。源码安装器在本地构建应用；使用镜像 save 时按 [部署方式](deployment-methods.md) 加载交付镜像。运行 `./install.sh`：保持现有 .env、密钥和卷，随机生成数据库密码与 32 字节主密钥（0600），构建后等待健康检查。首次访问创建管理员，不提供固定初始密码。默认仅 `127.0.0.1:3000` 可访问。
 
@@ -29,9 +29,9 @@ Compose 中 PostgreSQL、Redis 不发布端口。密钥在 `.baize/master.key`�
 
 `./upgrade.sh LOCAL_IMAGE_TAG` 停止应用后创建恢复点，再迁移并启动新镜像，健康检查失败时还原数据库快照、应用卷及旧镜像（保留当前独立删除日志），并通过启动重放期间独立删除日志。当前为停机升级，不承诺零停机。版本兼容见 compatibility.md。升级镜像必须已经在本机，脚本不发布镜像。
 
-`bash scripts/ops-lifecycle-test.sh` 创建隔离命名栈验证安装、数据库备份、新库恢复、成功升级及失败回滚；结束删除这个测试栈的卷。只应对测试副本运行。相关结果见 validation-ops.md。
+`bash scripts/ops-lifecycle-test.sh` 创建隔离命名栈验证安装、数据库备份、新库恢复、成功升级及失败回滚；结束删除这个测试栈的卷。只应对测试副本运行。
 
-GeoIP 无离线库时降级未知；真实 MaxMind/GSC/SERP/AI 账号均由部署者配置，不会自动购买或创建生产凭证。Windows 有 run.bat 脚本，但未在本 Linux 环境实测；生产推荐 Linux。
+GeoIP 无离线库时显示未知；MaxMind、GSC、SERP 和 AI 使用部署者配置的账号与凭据。Windows 提供 run.bat 脚本，使用前需在目标主机检查依赖和运行情况；生产部署推荐 Linux。
 
 ## 反向代理与HTTPS示例（由部署者自行配置）
 

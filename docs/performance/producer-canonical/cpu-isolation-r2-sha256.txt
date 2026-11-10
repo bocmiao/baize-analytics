@@ -1,2 +1,0 @@
-3ca39353a754fcb7403a3c2c03cf843f5ba32b09030f0af212bf96770640d78b  docs/performance/producer-canonical/cpu-isolation-r2.json
-3ca39353a754fcb7403a3c2c03cf843f5ba32b09030f0af212bf96770640d78b  docs/performance/producer-canonical/cpu-isolation-r2.txt

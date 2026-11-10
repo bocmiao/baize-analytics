@@ -1,8 +1,0 @@
-Frozen source: de7222edfd6baa7478a4e32e22f6b5399fc34daf
-Actual runner exit: 1
-Original log: /tmp/baize-de7222e-local-final.log
-SHA256: 6efc04dd25f4d6a1a3c6a4191ad1039339cece3db853eb0ba4ae8c92c9e35e49
-Unit: 209 passed, 0 failed/skipped; 54 files
-Integration: 415 passed, 2 failed, 0 skipped; 154 files (153 passed/1 failed)
-Browser/image: NOT RUN
-Owned Compose cleanup completed. Raw service logs and key/state material excluded.

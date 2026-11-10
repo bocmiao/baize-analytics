@@ -18,3 +18,16 @@ public/tracker.LICENSE.txt
 public/tracker*.js.gz
 
 css-class-gaps.txt
+
+# Generated reports, historical prototypes and temporary design exports.
+docs/archive/
+docs/ci-reference/
+docs/correctness/
+docs/design/
+docs/performance/
+docs/research/
+docs/screenshots/
+docs/test-evidence/
+docs/ui-prototypes/
+docs/validation/
+output/imagegen/

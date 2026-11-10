@@ -1,3 +1,0 @@
-overallWallSeconds=16.503751509
-processPeakKiB=524992
-exit=0

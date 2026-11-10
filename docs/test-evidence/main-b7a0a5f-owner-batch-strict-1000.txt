@@ -1,2 +1,0 @@
-{"phase":"continuous","round":20,"accepted":1000,"elapsedMs":52852.837987,"lastSamples":[{"at":"2026-10-10T18:42:57.602Z","site":"4d6c6cd1153b1fcd60fa9126","coverage":0,"pv":400,"source":"clickhouse","generation":"22","processedGeneration":"10","lagMs":39618,"unpublishedWaitMs":null,"attempts":0}]}
-{"output":"/tmp/baize-r8-b7-owner-batch-1000.json","status":"passed","lagP95Ms":63527,"peakNodeRssBytes":643280896}

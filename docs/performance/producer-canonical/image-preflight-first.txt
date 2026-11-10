@@ -1,1 +1,0 @@
-Archive content mismatch: docs/screenshots/approved-ui/desktop-1440-collapsed.json

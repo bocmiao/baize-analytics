@@ -1,6 +1,6 @@
 # Lite 手动基础 SEO 与 BYOK AI
 
-这两个入口属于 Lite 的有限手动功能，沿用白泽品牌、AGPL 主体及 MIT tracker，不代表标准版完整 SEO/AI 功能。没有抓站、模型权重、自动后台 AI、搜索排名接口或内置账户。
+Lite 提供基础手动 SEO 和 BYOK AI。没有抓站、模型权重、自动后台 AI、搜索排名接口或内置账户。
 
 ## 基础 SEO：仅已观察路径证据
 
@@ -31,7 +31,3 @@ BYOK 使用站点绑定 AAD 的 AES-256-GCM 加密存入 SQLite 内部配置；�
 - 这是保守费用限制，不是准确账单；实际付费价格和模型可用性由用户的提供者账户决定。Lite 首版拒绝站点删除，实例额度汇总全部站点；未来支持删除须先提供独立实例账本，不能通过删除配置重置额度。恢复旧备份无法证明当天完整账本，因此恢复目标持久写入全实例 UTC 当日阻断标记：当天所有手动 AI 请求拒绝429，重新启用、更换 key、新建站点也不能绕过；下一 UTC 日自动解除。状态摘要显示 restoreBudgetBlockedDay；损坏、符号链接或多链接标记失败关闭，不自动删除标记。
 
 调用前后重新验证管理员权限、配置版本、站点隐私 epoch 及精确聚合 generation。调用期间发生删除或配置变化时，返回409，不展示旧答案。普通后续采集改变 generation 时同样拒绝旧答案。传出与返回证据包含 generation/epoch、UV/会话支持状态和 limitations；答案明确 answerVerified:false，只是未核验模型解释，不是事实权威。提供者失败503、额度耗尽429、未启用/覆盖不完整409；错误不回传提供者正文或凭据。
-
-## 已执行合成验收
-
-`tests/server/lite-optional-insights.test.ts` 使用真实 SQLite owner 与 Fastify HTTP、注入合成 transport，覆盖固定 endpoint、加密不回显、每日额度及 key 轮换不重置、默认关闭、管理员授权、显式外发同意、拒绝 endpoint 注入、SEO 零抓取、提供者失败仍耗用、删除期间输出 fence。新增合成 HTTP HTML 审计覆盖 title/description/h1/noindex/图片alt、安全相对 canonical、危险和跨站canonical、脚本不执行、域范围拒绝、畸形/超大请求拒绝及有限输出截断。真实提供者、模型可用性、公网网络及付费账单未验收。

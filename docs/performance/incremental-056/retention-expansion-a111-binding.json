@@ -1,6 +1,0 @@
-{
-  "productionSourceSha": "a111d639e57601b62669ab3a1ab838c2bb5ebc89",
-  "diagnosticFixture": "tests/integration/incremental-session-coverage-witness.test.ts",
-  "fixtureSha256": "215261ba941ceff929e218dffd560959d865b713383182db85583373805af3e7",
-  "scope": "a111 production sources plus new isolated regression fixture; not whole original Git tree"
-}

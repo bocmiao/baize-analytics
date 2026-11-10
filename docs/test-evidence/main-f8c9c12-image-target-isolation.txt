@@ -1,1 +1,0 @@
-/baize_round2_f8c9c12a54c8-clickhouse-target-1 {} baize_round2_f8c9c12a54c8_round2_target_data 

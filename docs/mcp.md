@@ -1,6 +1,6 @@
 # 标准 MCP 只读站点分析
 
-当前开发工作树新增 `registerMcp(app,ctx)`，路由 `/api/sites/:siteId/mcp`。独立真实PG/nativeHTTP/官方 `@modelcontextprotocol/sdk` 1.32.1 Client验收已通过；默认应用已注册；下一不可变main全量验收前，不能假定旧安装镜像包含此入口。本文不是前一版HTTP typed-query接口的改名：它实际提供JSON-RPC2的MCP初始化、工具发现和调用，并使用官方StreamableHTTP客户端执行。
+接口 /api/sites/:siteId/mcp 通过 JSON-RPC 2 和无状态 Streamable HTTP 提供站点只读分析。
 
 ## 连接
 
@@ -32,7 +32,7 @@ SDK作为仓库devDependency供测试/例子；运行服务本身不调用模型
 
 ## 协议与工具
 
-支持initialize、ping、tools/list、tools/call。有效无id通知返回202，无额外副作用；resources/prompts/mutation工具不提供。初始化协商2025-11-25、2025-06-18、2025-03-26；未知版本返回当前版本供客户端决定是否支持，后续显式未知MCP-Protocol-Version请求400。官方SDK1.32.1实际验收协商2025-11-25；不能由此推称全部历史客户端矩阵已实测。
+支持initialize、ping、tools/list、tools/call。有效无id通知返回202，无额外副作用；resources/prompts/mutation工具不提供。初始化协商2025-11-25、2025-06-18、2025-03-26；未知版本返回当前版本供客户端决定是否支持，后续显式未知MCP-Protocol-Version请求400。客户端需支持协商后的协议版本。
 
 capabilities仅tools/listChanged:false；工具仅 `query_analytics`，annotations readOnlyHint:true、destructiveHint:false、idempotentHint:true、openWorldHint:false。输入严格：
 
@@ -47,9 +47,3 @@ capabilities仅tools/listChanged:false；工具仅 `query_analytics`，annotatio
 不接受site_id、SQL、表名、原始事件、身份或任意URL，也无export/delete/模型工具。site来自路径授权，不能在工具参数切站。复用真实PG预聚合、exact访客集合与币种/隐私边界，不单独创造Mock答案。result含content text和structuredContent；成功status=ok，series包含metric/dimension/unit/points、truncated/totalGroups/timezone/precision，storage包含PG-preaggregate generation/epoch/watermark/coverage。跨日每日盐UV显式unsupported；dirty聚合返回tool isError与aggregation_pending，不显示假零。
 
 JSON-RPC错误：JSON解析失败-32700、无效请求-32600、未知方法-32601、未知工具/参数-32602。工具执行已知错误返回200的result.isError/content固定code；认证/撤销错误仍为HTTP401/403，不包含工具数据。服务异常使用应用固定错误，不泄露SQL/凭据。列表无分页游标（仅一个工具），数据上限通过limit/truncated披露；不支持批量JSON-RPC数组。
-
-## 已执行验证与限制
-
-`TEST_DATABASE_URL=... npx vitest run tests/integration/mcp.test.ts`：4/4通过，CLI EXIT0，1.72秒；相关lint/typecheck通过。独立PG schema、max1 pool、原生HTTP、实际管理员/站点/Token、实际collector→worker PV1→官方SDK标准初始化/列表/调用对账。拒绝SQL/foreign site/过长范围/limit101/未知工具，通知与GET/DELETE行为、每日盐UV/dirty状态均检查。持真实站点锁阻塞读取时真实撤销Token，返回前重新鉴权401且无result，证明没有持client再借池。schema/密钥清理完成，无外部模型调用。
-
-首次撤销回归错误地用admin默认public schema UPDATE0，导致预期401实际200，测试失败记录保留；改为限定测试schema并assert rowCount1后通过。该失败不称作生产权限漏洞。标准Client实际成功，不只是手写HTTP探针。第三方桌面MCP产品、远程OAuth、历史协议版本全矩阵、生产网络/负载尚未实测。

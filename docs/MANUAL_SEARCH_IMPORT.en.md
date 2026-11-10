@@ -1,6 +1,6 @@
 # Manual custom search-analysis import
 
-This is a Baize user-defined aggregate template, **not a native Baidu Search Resource CSV**. Compatibility with current provider exports and an official read API has not been verified. Baidu Analytics search words, SERP and referrers do not replace organic-search impressions/ranking.
+Manual import uses a Baize aggregate template. It does not directly read the Baidu Search Resource API or detect its native CSV format. Baidu Analytics search words, SERP and referrers do not replace organic-search impressions or ranking.
 
 A site administrator opens **SEO → Custom search-analysis CSV**, downloads the [empty template](templates/custom-search-analysis.csv), and supplies authorized real aggregates. The template contains no demonstration statistics.
 
@@ -26,5 +26,3 @@ URL queries/fragments are removed before storage. User-supplied paths, keywords 
 Batches remain independent. Imports never replace another period or automatically sum overlapping batches/providers. Only `manual_search_imports` and `manual_search_rows` receive data, without modifying GSC, raw events, PV/UV, identities, orders or causal conversion measures. Site admins can preview/import/download; site-read members can inspect batches through the API; other sites are denied. Full PostgreSQL backups include the tables. Full-site JSON/CSV exports include these independent manual tables and batch metadata, excluding authentication and credentials; they still cannot replace a full database restore.
 
 API prefix: `/api/sites/:siteId/manual-search`. GET lists imports; GET `/template` downloads headers; POST `/preview` and `/commit` take `{csv,label,mapping:{day,query,page,clicks,impressions,position},customTemplateAcknowledged:true}`; GET `/:id` reads a batch; GET `/:id/csv` downloads safe CSV. Lists cap at100 with explicit truncation; details cap at1,000 while reporting complete rowCount. Preview and commit both require site admin.
-
-Local actual PostgreSQL and Chromium upload/mapping/preview/idempotency/safe-download tests have run. They do not verify a real Baidu account, native provider CSV or external API. Immutable full-application counts are recorded separately by the integration owner.

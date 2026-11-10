@@ -1,3 +1,0 @@
-Command: bash -n /tmp/baize-round2-final-image.sh
-Actual exit: 0
-No image or database execution.

@@ -22,7 +22,7 @@ LITE_MIGRATION_TARGET_URL="$EXPLICIT_EMPTY_TARGET_URL" \
 
 完成报告在新数据目录 `lite-migration.json`，含签名manifest SHA256、数量、目标schema及未自动切流量标记；不包含连接URL、盐或密钥。部署标准应用时显式使用该schema的search_path、上述数据/密钥目录；原始数据库默认schema不受影响。先核验健康、worker完成、统计/重复ACK/删除拒绝后，管理员自行切流量。保留原Lite停止状态及备份可回退；未提供PG→Lite产品迁移。
 
-真实合成验收使用独立SQLite文件与本地CI PostgreSQL专用schema；测试包含共享统计、重复ACK、删除旧投递拒绝、篡改签名、源变化、导入中约束失败回滚。测试文件 `tests/server/lite-migration.test.ts`，必须纳入vitest include或使用显式包含该文件的配置，不将skip当通过。
+迁移回归入口为 tests/server/lite-migration.test.ts，使用独立 SQLite 文件和 PostgreSQL schema。
 
 ## 配置与隐私转换
 

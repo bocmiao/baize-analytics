@@ -1,11 +1,48 @@
 # 开发
 
-当前 cloud task 本身隔离，使用现有 checkout，不默认创建 Git worktree。Node 24，npm lockfile 冻结安装 `npm ci`。设置 DATABASE_URL、REDIS_URL、DATA_DIR 与 MASTER_KEY_FILE 后执行 `npm run db:migrate`、`npm run build`、`npm run dev`（新 checkout 必须先构建前端，否则返回 build_required）。`npm run build` 输出 dist/web、public/tracker*.js、dist/server；本地 Docker 默认只绑定 loopback。
+## 本地环境
 
-验证顺序：`npm run lint`、`npm run typecheck`、`npm run test:unit`、`npm run test:integration`（真实 PG）、`npm run test:e2e`（Playwright）、`npm run build`。运维验证 `bash scripts/ops-lifecycle-test.sh`。测试必须使用独立数据库与 Redis namespace，不向业务数据写 fixture。
+使用 Node 24 与仓库锁文件安装依赖：
 
-主目录主体 AGPL-3.0-only；packages/tracker 独立 MIT。sdk/miniprogram.ts 统一导出独立 MIT tracker 包的请求 transport 注入 TypeScript SDK（createMiniProgramTracker），要求同意时在授权前不生成身份、不缓存。失败重试保留 event_id；请注入符合运行环境的 UUID 生成器。plugins/wordpress/baize.php 提供后台受权限保护的地址/站点/同意配置，管理员自身浏览不采集。
+```sh
+npm ci
+npm run db:migrate
+npm run build
+npm run dev
+```
 
-存储模式须分开理解：默认 PostgreSQL 权威；可选 ClickHouse mirror；经显式迁移和激活后可使用严格 ClickHouse 权威，不能把该模式称为可丢弃副本。默认架构不变。历史 adapter 验收不能替代当前主应用验收，模式切换按迁移手册进行。
+先配置独立 PostgreSQL 17 的 DATABASE_URL，以及 DATA_DIR、KEYS_DIR 和 MASTER_KEY_FILE。Redis 7 可选；配置 REDIS_URL 后使用共享限流与缓存，未配置时采用有界单机降级。密钥文件权限为 0600，数据与密钥放在源码和公开目录之外。新 checkout 需要先构建前端，否则服务返回 build_required。
 
-编译生产入口为 `node dist/server/src/server/main.js`，需要 Node 24、独立 PostgreSQL 17/Redis 7、DATABASE_URL、REDIS_URL、DATA_DIR、KEYS_DIR、MASTER_KEY_FILE（0600）和持久化目录；服务守护由运营者配置。`npm start` 仍用 tsx；维护命令也依赖 tsx，因此不要直接删除 devDependencies。
+build 输出 dist/web、public/tracker*.js、dist/server 和独立更新执行器。编译后的服务入口为 node dist/server/src/server/main.js；源码 npm start 与维护脚本需要 tsx。部署包的依赖裁剪由[运行镜像构建](runtime-artifact.md)处理。
+
+## 检查与测试
+
+```sh
+npm run lint
+npm run typecheck
+npm run test:unit
+npm run build
+npm run test:integration
+npm run test:e2e
+```
+
+集成测试需配置 TEST_DATABASE_URL，浏览器测试需安装 Playwright Chromium 并准备对应应用。使用独立数据库、schema、Redis namespace 和数据目录，不把夹具写入业务实例。涉及安装、升级或恢复时运行 bash scripts/ops-lifecycle-test.sh。测试命令与依赖以 package.json 和相应测试配置为准。
+
+严格 ClickHouse 存储浏览器测试使用独立 PostgreSQL 与 ClickHouse，并从相同源码构建页面：
+
+```sh
+E2E_STRICT_FACTS=1 \
+TEST_DATABASE_URL="$ISOLATED_TEST_DATABASE_URL" \
+CLICKHOUSE_TEST_URL="$ISOLATED_CLICKHOUSE_URL" \
+npx playwright test --config playwright.strict.config.ts
+```
+
+该测试要求应用实际支持受控 canonical 激活；不要通过修改数据库标志绕过守卫。缺少显式开关或真实数据库地址会拒绝运行。记录 strict-storage.spec.ts 的实际结果；普通套件中跳过的严格用例不能算作通过。破坏与删除检查只允许作用于测试创建的随机站点及独立存储空间。
+
+## 模块与数据约束
+
+主应用采用 AGPL-3.0-only；packages/tracker 独立采用 MIT。sdk/miniprogram.ts 导出 createMiniProgramTracker，使用注入的请求 transport 和安全 UUID 生成器。要求同意的站点在授权前不生成身份、不缓存事件；重试保留 event_id。WordPress 插件保护管理配置并排除管理员访问。
+
+默认 PostgreSQL 权威、可选 ClickHouse 副本与受控 ClickHouse 权威迁移具有不同恢复要求。按[迁移手册](migration.md)处理模式切换，保持事务、独立删除日志、来源认证和覆盖率语义。统计规则见[统计口径](analytics-correctness.md)，Lite 约束见[Lite 实现](lite-implementation.md)。
+
+参阅[API](api.md)、[隐私](en/privacy.md)、[兼容性](compatibility.md)和[许可证](licenses/README.md)。

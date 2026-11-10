@@ -1,7 +1,0 @@
-{
-  "capturedAtUtc": "2026-10-12T00:05:38.164Z",
-  "postgres": "17.11 (Debian 17.11-1.pgdg13+2)",
-  "clickhouse": "25.8.33.6",
-  "node": "v24.19.0",
-  "meaning": "current runtime for forthcoming pair only; not substituted for historical239/72"
-}

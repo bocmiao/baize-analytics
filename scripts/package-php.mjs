@@ -72,10 +72,10 @@ for(const name of ['index.php','router.php','install.php','.htaccess'])if(exists
 copy(join(root,'dist/web'),join(output,'public'));
 for(const name of readdirSync(join(root,'public')).filter(n=>/^tracker(?:[.\w-]*)\.(?:js|json|txt)(?:\.gz)?$/.test(n)))copy(join(root,'public',name),join(output,'public',name));
 copy(join(root,'LICENSE'),join(output,'LICENSE'));
-const documentMap={'docs/PHP_INSTALLATION.md':'README.md','docs/PHP_VALIDATION_20261015.md':'VALIDATION.md'};
+const documentMap={'docs/PHP_INSTALLATION.md':'README.md'};
 for(const [source,target] of Object.entries(documentMap)){
  const text=readFileSync(join(root,source),'utf8').replace(/\]\(([^\s)]+)\)/g,(match,href)=>{if(href.startsWith('#')||/^[a-z][a-z\d+.-]*:/i.test(href)||href.startsWith('//'))return match;const [pathname,suffix='']=href.split(/(?=[?#])/);const path=releasePath(root,resolve(root,dirname(source),pathname));if(path.startsWith('../'))throw Error('PHP_RELEASE_DOCUMENTATION_LINK_ESCAPE');const mapped=documentMap[path];return ']('+(mapped?mapped+suffix:'https://github.com/bocmiao/baize-analytics/blob/'+revision+'/'+path.split('/').map(encodeURIComponent).join('/')+suffix)+')';});
- writeFileSync(join(output,target),'> 本包运行与安装文件离线可用；源码和历史验收材料链接需要网络及仓库访问权限。\n\n'+text);
+ writeFileSync(join(output,target),'> 本包运行与安装指南离线可用；源码及其他仓库文档链接需要网络访问。\n\n'+text);
 }
 mkdirSync(join(output,'private'),{recursive:true,mode:0o700});
 const files=[],directories=[];

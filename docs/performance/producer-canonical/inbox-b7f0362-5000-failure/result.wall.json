@@ -1,6 +1,0 @@
-{
-  "exitCode": 1,
-  "wallSeconds": 226.52515193200088,
-  "nodeChildPeakKiB": 666872,
-  "memoryScope": "maximum single child process, excluding independent PG/CH/Redis"
-}

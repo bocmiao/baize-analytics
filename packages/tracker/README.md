@@ -42,23 +42,21 @@ Web Vitals 官方 attribution、rrweb 回放和匿名网格位置热图分别放
 
 共享 UID 的 Cookie 名为 `_baize_uid_shared`；默认 host-only 继续使用 `_baize_uid`，因此移除共享选项不会隐式沿用旧共享 ID。共享拒绝名为 `_baize_denied_shared_<URL编码站点ID>`，仅存布尔值 `1`。撤回或再次同意的 wire 协议保持不变。
 
-真实本地跨子域回归见 `tests/integration/tracker-subdomain.test.ts`：Playwright 只路由提供两个 HTTPS 宿主页面；SDK、配置与采集均访问真实本地应用和 PostgreSQL。隔离 BrowserContext 明确授予 `local-network-access`（类似浏览器用户允许测试 HTTPS 页面访问 loopback），不关闭 CORS/TLS 或改变环境网络策略。首轮未授此权限被 Chromium address-space 检查拒绝，不能当作采集器故障；授予后实际共享、两页面撤回停止、默认 host-only、未知/HTTP 子域拒绝和私有公共后缀拒绝均有真实链路断言。
+跨子域回归见 `tests/integration/tracker-subdomain.test.ts`：测试浏览器需要 `local-network-access` 权限才能从 HTTPS 测试页面访问本地应用。用例覆盖共享身份、跨页面撤回、默认 host-only、未授权子域与公共后缀校验。
 
 标准模式的自动出站链接事件包含 `props.url`（仅 origin/path，移除查询与 hash）和 `props.text`（实际渲染的链接文字，归一空白后最多 50 个 Unicode 字符）。邮箱、长号码/手机号及明显 IPv6 字符串会替换为 `[redacted]`；隐藏文字不采集。输入/editable、`data-private` / `data-baize-private` / `data-baize-mask`、rrweb mask/block 及 `data-baize-ignore` 的链接或私密子树不会自动记录。原生跳转不被阻止；同意前仍不采集。每日盐模式的自动外链事件只记录 URL，不新增文字属性。
 
 这是最小化处理，不保证任意业务文字或 URL 路径都匿名。站长应给敏感链接添加忽略/私密标记，或用 before-send 钩子进一步清洗；自动文字过滤不能识别伪装账号、任意姓名或所有国际号码格式。真实 Chromium→本地 HTTP 采集→PG/EAV→worker 属性统计→JSON/CSV 导出回归见 `tests/integration/tracker-outbound-text.test.ts`，不使用 mock 采集器。
 
-Root独立索引快照实际lint/typecheck通过，完整build后5文件13 tracker/同意/跨子域/外链专项通过、0失败/0跳过。初次快照未先生成public SDK，导致3个浏览器用例404/ORB/超时；这是本次验证顺序错误，原失败报告保留outbound-isolated-sdk-not-built-failed.json，按CI先build再测后原断言全部通过，未改产品或弱化测试。核心gzip4583字节、min3994字节。本批随后仍需新整应用/Docker集成，不沿用bf77作为这些源码证明。
-
 ## 独立分发许可 / Standalone distribution license
 
 六个构建后的 JS 各自包含完整 MIT 版权、授权及免责声明，保留扩展捆绑的第三方许可注释；无需依赖链接才获得 MIT 全文。构建还生成相同许可的 `tracker.LICENSE.txt` 和预压缩 `.js.gz`。HTTP 精确脚本路由在客户端接受 gzip 时发送该预压缩文件，否则发送带完整许可的原始 JS；许可文本也有独立 `text/plain` 路由。独立浏览器 ZIP 和源码 ZIP 均保留完整许可文件。
 
-核心脚本的 5KB 指 **构建生成并实际 HTTP 提供的 Zopfli gzip 文件**（5120 字节上限），不是原始 JS 或默认 zlib 压缩大小。当前完整许可 core 为 5087 字节，min 为 4506 字节；默认 zlib core 为 5282 字节，不满足该上限。vitals/replay 等可选扩展不在核心 5KB 预算内。构建逐文件校验解压后与 JS 完全相同，超预算会失败。
+核心脚本的 5KB 指 **构建生成并实际 HTTP 提供的 Zopfli gzip 文件**（5120 字节上限），不是原始 JS 或默认 zlib 压缩大小。各文件大小以构建生成的 `public/tracker-sizes.json` 为准。vitals/replay 等可选扩展不在核心 5KB 预算内。构建逐文件校验解压后与 JS 完全相同，超预算会失败。
 
 Each of the six JavaScript artifacts includes the complete MIT copyright, permission and warranty notice, preserving bundled third-party comments. The build also emits a matching license text and precompressed gzip files. Exact HTTP script routes serve precompressed gzip when accepted, or the full-notice uncompressed JS otherwise; the license has a separate text/plain route. Both standalone ZIP distributions retain their complete license files.
 
-The core 5KB limit applies to the generated, actually served Zopfli gzip artifact (5120 bytes), not raw JS or default zlib compression. Full-notice core is 5087 bytes and min is 4506; default zlib core is 5282 bytes and exceeds the budget. Optional extensions have separate sizes. Build-time decompression checks preserve identical script contents.
+The core 5KB limit applies to the generated, actually served Zopfli gzip artifact (5120 bytes), not raw JS or default zlib compression. See the generated `public/tracker-sizes.json` for current sizes. Optional extensions have separate budgets. Build-time decompression checks preserve identical script contents.
 
 可选横幅支持固定中文/英文文案：`data-language="en"` 选择英文，省略或其他值使用中文。与核心一起嵌入时两个外部脚本都使用 `defer`，并保持核心在前；不要给核心添加 `async`，以免横幅先执行时尚无 tracker 实例：
 

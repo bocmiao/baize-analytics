@@ -1,2 +1,0 @@
-Filesystem     1024-blocks    Used Available Capacity Mounted on
-none              17453020 5285120  12167900      31% /tmp

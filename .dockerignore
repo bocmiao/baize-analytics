@@ -19,14 +19,17 @@ keys/
 **/*.key
 secrets/
 
-# Design drafts and historical validation output are not application build inputs.
-# Keep current guides, README images, licensing data, source and test fixtures.
+# Temporary documentation outputs may remain in local checkouts.
+docs/archive/
+docs/ci-reference/
+docs/correctness/
 docs/design/
-docs/ui-prototypes/
+docs/performance/
+docs/research/
 docs/screenshots/
 docs/test-evidence/
-docs/performance/
+docs/ui-prototypes/
 docs/validation/
-docs/archive/
+output/imagegen/
 coverage/
 *.log

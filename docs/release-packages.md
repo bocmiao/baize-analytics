@@ -1,20 +1,20 @@
 # Linux x64 precompiled release packages
 
-> 本包主要运行维护指南离线可用；源码和历史材料的固定 SHA 仓库链接需要网络及私有仓库权限。
+> 本包主要运行维护指南离线可用；源码及其他仓库文档链接需要网络访问。
 
 The small documentation whitelist includes both the systemd and Supervisor examples, deployment and
 maintenance guides, Lite guides, API/migration reference, both `README.md` and `README.en.md`, and the two
-explicit screenshot paths `docs/images/baize-desktop.png` and
-`docs/images/baize-mobile.png`. The PNG Git blobs remain byte for byte identical;
+explicit screenshot paths `docs/images/baize-reports-desktop.jpg` and
+`docs/images/baize-settings-mobile.jpg`. The screenshot Git blobs remain byte for byte identical;
 README image links to them stay local and work offline. Files are
 exported with `git show FULL_SHA:path` from the same frozen revision as the image.
 The systemd/Supervisor examples stay byte for byte identical. All whitelisted
 Markdown guides keep local links to included files; missing source, independent
-PHP guides or historical link targets point to the private repository at that exact SHA.
+PHP guides or other omitted documents point to the repository at that exact SHA.
 Only link targets change in the original body; each README also receives its own Chinese or English explicit
 offline/network-access notice shown above. Their manifest provenance records the source Git blob,
 source SHA-256, derived document SHA-256 and each rewrite. Historical evidence,
-screenshots, private configuration and secrets are not recursively packaged.
+screenshots, instance configuration and secrets are not recursively packaged.
 
 `scripts/package-release.mjs` is a publisher tool. It takes an existing, frozen
 local application image and a clean checkout at the same full Git revision. It
@@ -102,6 +102,6 @@ it. Do not recursively change release modes: strict inventory verification
 checks modes as well as content. The archive's numeric owner is packaging
 metadata; a normal non-root extraction is owned by the extracting account.
 
-## 新增实例更新执行器
+## 实例更新执行器
 
-本次增量更新源码接续自 `d4115f7a6bedaa0ae95c64f30cfdc22d99dde56b` 的已校验补丁，生成新的普通提交，不改变历史包身份。`npm run build` 同时生成独立执行器 `dist/updater`；运行包内离线保留 [实例增量更新指南](INSTANCE_INCREMENTAL_UPDATES.md)。运行包与执行器必须来自同一冻结源码。正式签名分发及首次主机接入仍需操作者按指南配置；本次不创建 Release、不上传生产源、不更改权限。
+`npm run build` 生成独立执行器 `dist/updater`。运行包和执行器应来自同一冻结源码，部署与签名源配置见[实例增量更新](INSTANCE_INCREMENTAL_UPDATES.md)。

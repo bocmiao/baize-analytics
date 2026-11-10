@@ -1,9 +1,0 @@
-{
-  "profile": "lite",
-  "status": "not_applicable_to_actual_deployment",
-  "reason": "downloads content report and /content are not in actual Lite capability/route set",
-  "initialExploratoryHarness": "Timed out waiting for unsupported content request; no source change or feature enabling",
-  "sharedMechanismFixtureStillPassed": true,
-  "actualLiteSupportedWorkflows": "5/5 E2E passed, including actual collection, goal, export, mobile and retention",
-  "notClaimed": "actual Lite content request count or nonempty content workflow"
-}

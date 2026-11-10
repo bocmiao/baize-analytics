@@ -12,8 +12,8 @@ docker compose -f docker-compose.yml -f docker-compose.clickhouse.yml --profile 
 
 优先恢复路径：独立新PG数据库/数据/密钥卷恢复→重放最新journal与物理导出清理→所有站点重算持久状态确认→目标存储模式postgres并清除旧上传/清理任务→检查对账→在不同ClickHouse endpoint重建mirror→验证后启用目标读取。默认新恢复禁止继承源CHendpoint；同endpoint换query参数不算独立namespace。源CH不应被新库恢复删除。
 
-若运营者另行做原生CH卷快照或BACKUP，它只能是**副本快照**，需单独保存版本、schema、site/epoch/generation/watermark与PG恢复点关系。恢复这些快照后禁止直接发布旧pointer或对外提供查询；必须先以当前PG/journal做删除和保留期复核并重新发布epoch，缺少最新删除日志时失败关闭。此项目尚未验收多节点CH集群备份、复制表一致性和PG仅元数据场景的canonical恢复，不使用单机副本profile作为这几项完成证据。
+若运营者另行做原生CH卷快照或BACKUP，它只能是**副本快照**，需单独保存版本、schema、site/epoch/generation/watermark与PG恢复点关系。恢复这些快照后禁止直接发布旧pointer或对外提供查询；必须先以当前PG/journal做删除和保留期复核并重新发布epoch，缺少最新删除日志时失败关闭。该单机副本 profile 不提供多节点集群灾备。ClickHouse 权威存储使用[迁移手册](migration.md)中的独立恢复流程。
 
-升级需要暂停非相关pull/build并准备磁盘余量，25.8 profile不是可自动跨版本滚动升级承诺。当前已验证的app升级备份/回滚矩阵仍以PG为权威；最终新镜像包含026及后续代码的真实矩阵等待root冻结后运行。配置与实际profile运行验收记录在validation-ops.md。
+升级需要暂停非相关pull/build并准备磁盘余量，25.8 profile不是可自动跨版本滚动升级承诺。升级前使用独立环境验证应用、数据库和存储兼容性。
 
 Pinned image: `clickhouse/clickhouse-server:25.8-alpine@sha256:87e0a5b72f5465b18eacca7c76850e7ff551c9795c50e451f5646299e5e24146`, matching the actual locally tested image and CI. This digest-only configuration update was validated without another pull or restart.

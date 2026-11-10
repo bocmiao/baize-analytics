@@ -1,11 +1,20 @@
-# Development and verification
+# Development and tests
 
-Use Node 24 and the checked-in npm lockfile: `npm ci`. Set `DATABASE_URL`, `REDIS_URL`, `DATA_DIR` and `MASTER_KEY_FILE`, then run `npm run db:migrate` and `npm run dev`. `npm run build` generates `dist/web`, `public/tracker*.js` and `dist/server`. Docker binds only to loopback by default.
+Use Node 24 and the checked-in lockfile. Configure an isolated PostgreSQL 17 DATABASE_URL, DATA_DIR, KEYS_DIR and MASTER_KEY_FILE; Redis 7 and REDIS_URL are optional. Keep data and private keys outside source and public directories.
 
-Run `npm run lint`, `npm run typecheck`, `npm run test:unit`, `npm run build`, then real PostgreSQL integration tests and Playwright tests. Set `TEST_DATABASE_URL` to an isolated test database; tests that skip without it are not evidence of database acceptance. Install Playwright Chromium before browser integration tests. Start the test application and confirm `/healthz` before `npm run test:e2e`. Use isolated database and Redis namespaces; never seed fixtures into business data. `bash scripts/ops-lifecycle-test.sh` validates the actual Docker installation/backup/restore/upgrade loop.
+```sh
+npm ci
+npm run db:migrate
+npm run build
+npm run dev
+```
 
-The main application is AGPL-3.0-only; `packages/tracker` is independently MIT licensed. `sdk/miniprogram.ts` re-exports `createMiniProgramTracker` from that package, with an injected request transport. When consent is required it generates no identity or persistent state before consent. Retries preserve event IDs; inject a cryptographically secure ID generator suitable for the platform. The WordPress plugin protects settings by administrative permissions and excludes administrator visits. Actual platform deployment remains a separate integration check.
+Build the frontend before starting a fresh checkout. The build generates dist/web, public/tracker assets, dist/server and the standalone updater. The compiled server entry is node dist/server/src/server/main.js; source npm start and maintenance scripts still require tsx. Follow [runtime staging](../runtime-artifact.md) when pruning dependencies.
 
-`sdk/clickhouse.ts` is an explicitly enabled replica adapter. Its `ReplacingMergeTree` deduplicates by site/event, reads use `FINAL` and typed parameters, and deletion waits for the mutation to finish. PostgreSQL remains authoritative. A tested adapter is not a completed reliable dual-write or online migration: application outbox coordination, journal-linked deletion, watermarks and end-to-end failure recovery must be implemented and verified before production enablement. The isolated ClickHouse 25.8 adapter checks covered schema creation, write, duplicate handling, parameterized query and synchronous deletion.
+Run lint, typecheck, unit tests and build, then PostgreSQL integration tests and Playwright browser tests. TEST_DATABASE_URL must reference isolated test storage. Install Chromium and start the appropriate test application. Never seed fixtures into a business instance. Deployment changes also require the lifecycle checks in scripts/ops-lifecycle-test.sh.
 
-See [API](api.md), [privacy](privacy.md), [compatibility](compatibility.md) and the [dependency inventory](../licenses/README.md). Generated npm SBOM/license metadata does not establish a formal distribution audit.
+Strict-storage browser tests use playwright.strict.config.ts with E2E_STRICT_FACTS=1, TEST_DATABASE_URL and CLICKHOUSE_TEST_URL. They require actual guarded canonical activation, not database flag overrides. Only random test sites and isolated body namespaces may be deleted by these tests; a skipped strict test is not a passing result. See the [complete test instructions](../development.md).
+
+The application is AGPL-3.0-only; packages/tracker is MIT. sdk/miniprogram.ts exports createMiniProgramTracker with injected transport and secure ID generation. Consent-disabled collection creates no visitor identity or event queue; retries preserve event IDs. The WordPress plugin protects administrative settings and excludes administrator visits.
+
+Default PostgreSQL authority, optional ClickHouse replicas and controlled canonical ClickHouse storage have different recovery requirements. Use the [migration runbook](migration.md) and preserve transaction, deletion-journal, authentication and coverage semantics. See [API](api.md), [privacy](privacy.md), [compatibility](compatibility.md) and [licenses](../licenses/README.md).

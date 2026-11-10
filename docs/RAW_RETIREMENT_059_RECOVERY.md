@@ -1,4 +1,4 @@
-# 059 unknown-origin operator guidance
+# Historical raw-data recovery
 
 `FACT_RAW_RETIREMENT_ORIGIN_UNKNOWN` means this upgraded site has no trustworthy evidence that expired raw history can be reconstructed. It does not mean historical sealed data was deleted. The strict worker refuses before owner, carry, hour-reference or coverage publication. Existing ownership is retained, but a dirty normal query must not report complete fresh coverage.
 
@@ -26,15 +26,17 @@ The current CLI status reports canonical migration state, not an authenticated o
 
 If an independently verified signed backup actually contains a 059 `authenticated_new_site` origin or a `known_frontier` with its authentic 058 frontier, use the existing isolated restore procedure with all original signed namespace and body sidecars and the latest deletion journal. Restore must preserve the original classification and physical cutoff. A package containing `legacy_unknown` remains unknown; an old package without an origin cannot be interpreted as new.
 
-The existing full-instance restore entry is:
+Full-instance recovery requires an exclusive source maintenance window. Pause independent workers, cron and all external writers, and confirm that the source has only one application instance. The script stops the source application to capture current proofs and restarts the same instance afterward. Read the [complete recovery requirements](en/deployment.md) before running:
 
 ```sh
+BAIZE_RESTORE_SOURCE_MAINTENANCE=1 \
+BAIZE_RESTORE_SOURCE_SINGLE_INSTANCE=1 \
 BAIZE_RESTORE_CLICKHOUSE_URL="$INDEPENDENT_TARGET_CLICKHOUSE_URL" \
 BAIZE_KEY_RESTORE_DIR="$INDEPENDENT_KEY_PACKAGE" \
   bash scripts/restore.sh "$BACKUP_DIRECTORY" baize_restore_SUFFIX
 ```
 
-The target database and storage volume must not already exist. Use a genuinely independent target CH namespace, the matching private key fingerprint, complete `SHA256SUMS`, original canonical and all signed derived sidecars including the 059 scope, and the latest independently retained deletion journal and retention proof. Use a release/image that implements these scopes. This restores into isolation and does not switch traffic. A passing native isolated fixture does not establish that a newly built Docker image has passed.
+The target database and storage volume must not already exist. Use a genuinely independent target CH namespace, the matching private key fingerprint, complete `SHA256SUMS`, original canonical and all signed derived sidecars including the 059 scope, and the latest independently retained deletion journal and retention proof. Use a release/image that implements these scopes. This restores into isolation and does not switch traffic.
 
 For an old unknown site with no such evidence, there is currently no supported in-place CLI command that can safely promote it. Preserve its database, sealed body namespace, backups and owner references. Continue new tracking in a genuinely new site through the existing site-creation API:
 
@@ -48,3 +50,9 @@ curl --fail --silent --show-error -b "$ADMIN_COOKIE_FILE" \
 Choose the real domain, timezone and privacy policy before creating it. Update the tracker configuration to the returned new site ID. Its first real FULL publication establishes the new-site origin; it does not recover the old site's lost raw window or merge historical totals. Do not delete the old site as part of this continuation.
 
 An in-place recovery would require a new explicit, authenticated complete-source proof and owner-preserving rebuild protocol. That path is not implemented here and must not be represented by a force flag or an operator-supplied boolean.
+
+## Physical retirement frontier
+
+The signed raw-retirement frontier records a confirmed physical expiry in the current canonical namespace. Its cutoff can only move forward. Expanding retention cannot reconstruct history before that boundary. A missing legacy frontier is not proof that nothing expired.
+
+Existing sites without a verifiable origin remain legacy_unknown; a new site becomes authenticated_new_site only after its authenticated first full publication. Restoring a signed backup preserves the original classification, origin UUID and physical cutoff. Unknown-origin backups remain unknown. A physical deletion followed by a database rollback can leave uncertain history; never repair that uncertainty by inventing a frontier or relabeling an old site as new.

@@ -1,4 +1,4 @@
-/* 白泽 v3「素」—— tokens from docs/design/v3/tokens.css, applied after style.css. */
+/* 白泽界面样式，在 style.css 之后加载。 */
 :root{
   --font-sans:"Inter","PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
   --font-mono:ui-monospace,"SFMono-Regular","JetBrains Mono",monospace;

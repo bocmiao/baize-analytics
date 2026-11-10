@@ -1,8 +1,8 @@
-# Lite 实现与资源优化方案
+# Lite 存储与运行约束
 
-标准版原基线为 `98f0437a36c9938e6ca79aa3a51ccd2d0037de57`；资源优化及完整运维验收版为 `023ea2613fb142c90f5e13c33943c533fa756402`，均已推送，旧交付与证据保留。Lite 同仓、同许可证、共用品牌、UI、tracker、采集协议和纯统计规则，采用单容器 TS 编译应用 + SQLite 本地持久卷；不要求 PostgreSQL、Redis 或 ClickHouse。本文记录实现与验收合同，容量只以绑定版本的实际测量为准。
+Lite 与标准版共用品牌、UI、tracker、采集协议和纯统计规则，使用单容器 Node 应用和 SQLite 本地持久卷，不依赖 PostgreSQL、Redis 或 ClickHouse。
 
-## 已核实职责
+## 模块职责
 
 | 标准职责 | 当前源码 | Lite 语义 |
 |---|---|---|
@@ -17,7 +17,7 @@
 
 ## 高层领域接口与持久性
 
-内核使用 `node:sqlite`，启动记录实际 sqlite_version/source_id 并拒绝未核实 WAL 修复的旧引擎。当前宿主 3.53.3、镜像 3.53.4，官方修复见 https://sqlite.org/releaselog/3_51_3.html 与 https://sqlite.org/wal.html 。Node 版本本身不能证明 SQLite 安全。
+内核使用 `node:sqlite`，启动记录实际 sqlite_version/source_id 并拒绝未核实 WAL 修复的旧引擎。SQLite WAL 兼容说明见 https://sqlite.org/releaselog/3_51_3.html 与 https://sqlite.org/wal.html 。Node 版本本身不能证明 SQLite 安全。
 
 数据库 owner 线程串行处理有界写队列；领域操作 `acceptBatch/deleteIdentity/publishAggregation/claimTask/completeTask/setupOwner/createSite` 各自规定事务边界，不对 HTTP 暴露通用 CRUD 或 SQL。`BEGIN IMMEDIATE`、WAL、foreign_keys=ON、synchronous=FULL；提交失败（包括磁盘满）明确拒绝，绝不提前 ACK。SQLite 数据在本地卷，拒绝网络文件系统。通过生命周期内的操作系统 flock 排他锁拒绝第二实例，不依赖仅 PID 文件。
 
@@ -29,9 +29,9 @@
 
 保留期严格使用毫秒 cutoff，无额外 grace。完整退休小时档案可保留；部分边界小时、不可证明的会话前缀及受影响派生指标明确 unknown/null，不回填零。访客删除使相关历史成员证明失效后清理档案，并重建仍保留正文。事件覆盖完整不等于所有会话指标可用。
 
-## 初版产品范围
+## 产品范围
 
-共用现有 HTML/UI/tracker；服务器提供可信 capabilities，菜单、总览隐式请求、设置表单和 deep link 同步适配。初版优先认证/逐站权限、站点、collect、stats（总览/页面/来源/受众/事件）、简单事件目标、导出、删除/保留、备份恢复。不支持功能在鉴权后明确拒绝；不能返回假数据或只隐藏菜单。首位 owner 不等于移除站点授权，测试要覆盖跨站拒绝。
+共用现有 HTML/UI/tracker；服务器提供可信 capabilities，菜单、总览隐式请求、设置表单和 deep link 同步适配。优先认证/逐站权限、站点、collect、stats（总览/页面/来源/受众/事件）、简单事件目标、导出、删除/保留、备份恢复。不支持功能在鉴权后明确拒绝；不能返回假数据或只隐藏菜单。首位 owner 不等于移除站点授权，测试要覆盖跨站拒绝。
 
 回放/heatmap、大爬站、复杂漏斗/路径、分布式、CH authority 迁移不进入首版。基础 SEO 和 AI 只按需执行，网络在事务外，有明确预算；BYOK 加密且需用户显式配置/允许发送，不内置模型、不发起真实付费调用。
 
@@ -43,16 +43,6 @@
 
 Lite→标准版首版是停写、一致快照、空目标导入、逐项校验后人工切换；保留事件/收据 ID、时间精度、规范化、删除状态与密钥，保留原 Lite 库可回退。不得承诺改连接串无损切换，往返数据核验是测试而非未经实现的反向迁移功能。
 
-## 验收与可对照资源优化
+## 开发验证
 
-真实进程 kill/重启、重复投递、任务崩溃、SQLITE_FULL、长读并发采集、删除重放竞争、schema 升级/备份恢复和离线迁移对账；共享纯业务用例在 PG 和 SQLite 上分别验证，不只换连接串。故障记录保留。资源测试另名列数据/配置，不改旧 5000 契约。
-
-标准版与 Lite 同机、同数据/配置分别记录应用和 PG/Redis/可选 CH 的逻辑/压缩镜像、启动/空闲/负载 RSS 与 cgroup（注明缓存）、CPU、数据/WAL/日志增长、ACK/查询延迟与任务积压。全栈与应用分开，采样峰值不称持续上限。优先实测镜像 staging 白名单、维护编译产物或保留必要 tsx、按需模块、有限连接池与后台预算/错峰、批量持久采集、精确预聚合/索引、前端按需加载、日志轮转/告警。默认标准配置保持兼容，不削弱权限、耐久提交、幂等、删除屏障或备份，不自动清用户数据。
-
-## 并行边界
-
-根统一高层接口、HTTP 集成、迁移与资源对照。独立模块负责 SQLite 内核/任务、采集事务、纯统计共享、运维与恢复、UI capabilities。每个模块有明确文件边界；先审查接口再合并，不让共享 SQL 仿真层进入产品。
-
-接口 v1约定：内核 owner worker 分发 `intake`、`identity_delete`、`retention`、`task_claim/complete/fail`、`accounts/sites/goals/exports` 等领域命令；只读 worker 分发 `stats_snapshot` 等受预算的快照命令。模块内部允许 SQLite 参数化 SQL，不向 HTTP/消费者暴露 SQL 或模拟 pg.Pool。基础 schema 由内核模块统一，其他模块不得改其 DDL。
-
-内核表协议：users(id,email,name,password_hash,is_admin,created_at)；auth_sessions(token_hash,user_id,expires_at)；sites(id,name,domain,timezone,privacy_mode,retention_days,salt_secret,config,owner_id,generation,epoch,processed_generation)；site_members(site_id,user_id,role)；events(site_id,event_id,ts,visitor_id,page_id,type,path,payload,dimensions)；receipts(site_id,event_id,wire_hash,ts,visitor_id,page_id,type,parent_event_id)；revenue_orders(site_id,order_hash,event_id,visitor_id,ts,currency,amount)；goals(id,site_id,name,definition)；jobs(id,site_id,kind,dedupe_key,status,payload,token,attempts,lease_until,next_at,epoch,generation,result,error)；rollups(site_id,hour,data,epoch,generation)；tombstones(seq,site_id,visitor_id,user_id,at,journal_hash)；exports(id,site_id,format,status,file,generation,epoch,created_at,error)。日期为UTC整数毫秒，JSON列为text，按站点/事件复合键及必要 FK/唯一索引。接口新增须由根协调，不能各模块猜不同列名。
+存储修改应覆盖进程重启、重复投递、任务崩溃、磁盘满、长读并发、删除日志重放、升级、备份恢复和离线迁移。测试使用独立数据目录；性能测量分别记录应用、数据库文件和 WAL 增长，不将应用 RSS 当作整机资源上限。

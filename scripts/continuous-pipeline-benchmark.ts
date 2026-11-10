@@ -35,7 +35,7 @@ const {createApp}=await import(pathToFileURL(join(appRoot,'src/server/app.ts')).
 const schema=`continuous_${randomBytes(8).toString('hex')}`,databaseURL=new URL(process.env.TEST_DATABASE_URL??'postgresql://baize_dev@127.0.0.1:5432/baize_dev');databaseURL.searchParams.delete('options');const connectionString=databaseURL.href;
 const admin=new pg.Pool({connectionString,max:1}),pool=new pg.Pool({connectionString,options:`-c search_path=${schema},public`,max:10});
 const redis=new Redis(process.env.REDIS_URL??'redis://127.0.0.1:6379',{maxRetriesPerRequest:1});redis.on('error',()=>{});
-const temporary=await mkdtemp(join(tmpdir(),'baize-continuous-'));const output=resolve(arg('output',`docs/test-evidence/continuous-${sites}site-${events}.json`));
+const temporary=await mkdtemp(join(tmpdir(),'baize-continuous-'));const output=resolve(arg('output',`.baize/test-evidence/continuous-${sites}site-${events}.json`));
 const chDatabase='continuous_'+randomBytes(8).toString('hex');let chCreated=false;const chBase=process.env.CLICKHOUSE_TEST_URL;
 if(strict&&!chBase)throw Error('Explicit local CLICKHOUSE_TEST_URL required for strict benchmark.');
 const chURL=strict?new URL(chBase!):undefined;if(chURL&&!['127.0.0.1','localhost','[::1]'].includes(chURL.hostname))throw Error('Strict benchmark uses the existing local test CH endpoint only.');

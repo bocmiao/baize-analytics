@@ -13,11 +13,11 @@ window.baize?.revokeConsent();  // 用户撤回后停止并清除追踪身份
 
 脚本载入前需要等待 `window.baize` 可用。关闭插件里的同意设置，仅在实例站点配置也没有强制同意时自动开始采集。站点管理员浏览页面时不会创建追踪身份。
 
-## 本地真实验收
+## 开发测试
 
 可复用运行器为仓库的 `scripts/wordpress-acceptance.ts`。它使用真实官方 WordPress/PHP/MariaDB、独立 PostgreSQL 测试库、真实 `createApp` 和 Chromium；不模拟插件钩子、页面、tracker 或采集响应。
 
-预先准备两个镜像并检查磁盘。Docker 使用 VFS 时层展开会远大于镜像显示大小，请顺序拉取并避免与其他构建同时进行：
+测试需要 Docker、Chromium、Python 3，以及可创建独立测试库的 PostgreSQL 账号。先准备镜像，再运行：
 
 ```sh
 docker pull mariadb:11.4
@@ -27,6 +27,6 @@ TEST_DATABASE_URL=postgresql://baize_dev@127.0.0.1:5432/baize_dev \
 ./node_modules/.bin/tsx scripts/wordpress-acceptance.ts
 ```
 
-运行器使用 Python 3 标准库生成临时 ZIP 包。PostgreSQL 测试账号需要创建和删除独立测试库的权限。镜像的实际 digest、PHP/WordPress 版本、逐项结果保存在 `docs/test-evidence/wordpress-actual-runtime.json`。运行器仅绑定 `127.0.0.1:3280`（WordPress）和 `127.0.0.1:3290`（白泽），端口可通过 `WORDPRESS_ACCEPTANCE_PORT` 与 `WORDPRESS_ACCEPTANCE_APP_PORT` 修改。WordPress 禁用外部 HTTP、自动更新和 cron；没有公网部署，也不需要生产账号或密钥。
+结果默认保存在 `.baize/test-evidence/wordpress/wordpress-actual-runtime.json`，可通过 `BAIZE_WORDPRESS_EVIDENCE_DIR` 更改目录。运行器绑定 `127.0.0.1:3280`（WordPress）和 `127.0.0.1:3290`（白泽），端口可通过 `WORDPRESS_ACCEPTANCE_PORT` 与 `WORDPRESS_ACCEPTANCE_APP_PORT` 修改。WordPress 禁用外部 HTTP、自动更新和 cron。
 
-运行器将当前插件打成临时 ZIP，在真实 WordPress UI 上传安装，再启用、保存设置、停用/重启。没有把宿主私有工作区的 0600 文件直接挂给 www-data，也没有修改宿主私有权限。匿名 Chromium 浏览器验证同意前不发送事件/不创建身份，同意后真实HTTP采集写入PG并由worker聚合，撤回后停止，关闭同意设置后自动采集。退出时清理自身容器、网络、卷、测试数据库、临时密码与密钥文件；不删除开发库或其他任务资源。
+运行器上传安装当前插件，检查启用、保存设置、停用、同意与撤回流程，并验证采集入库和聚合结果。退出时清理自身容器、网络、卷、测试数据库、临时密码与密钥文件。

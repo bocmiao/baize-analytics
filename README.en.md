@@ -25,7 +25,7 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 
 Traffic reports, visitor analysis and site settings share the same Baize interface, with light, dark and mobile layouts. Common filters sit above reports, while advanced configuration expands when needed.
 
-These screenshots show the current Node Standard application using a separate demonstration site's data. [Capture details](docs/images/README.md) · [UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) · [Loading and navigation](docs/validation/BAIZE_NAVIGATION_PERFORMANCE_20261110.md) · [Feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese)
+These screenshots show Node Standard using a separate demonstration site's data. [Capture details](docs/images/README.md)
 
 **Desktop traffic report**
 
@@ -89,9 +89,8 @@ Other installation paths:
 | Configure privacy and retention | [Privacy](docs/en/privacy.md) |
 | Back up, restore, upgrade or migrate | [Maintenance and migration](docs/en/migration.md) · [Lite maintenance](docs/lite-deployment.md) · [Instance updates](docs/INSTANCE_INCREMENTAL_UPDATES.md) |
 | Develop and test | [Development](docs/en/development.md) · [Contributing](CONTRIBUTING.md) |
-| Check feature coverage and past validation | [Feature checklist](docs/IMPLEMENTATION_CHECKLIST.md) · [Version status and acceptance records](docs/STATUS.md) |
 
-See the [documentation index](docs/README.md) for all guides. Historical test reports and runtime packages belong to their recorded source revisions; use the manifest and instructions for the version you deploy. The [repository maintenance record](docs/REPOSITORY_MAINTENANCE_20261110.md) lists this cleanup and the preserved historical attachments.
+See the [documentation index](docs/en/README.md) for all guides.
 
 ## Community and feedback
 

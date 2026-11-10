@@ -1,6 +1,6 @@
 # 手动自定义搜索分析导入
 
-这是一份白泽自定义聚合模板，不是百度搜索资源平台的原生 CSV，未宣称兼容其当前导出文件，也没有调用或实现百度官方读取 API。百度统计搜索词、SERP 排名和 referrer 不能替代自然搜索展现/排名。实际官方 CSV 样本及接口权限仍未验证。
+手动导入使用白泽自定义聚合模板，不直接读取百度搜索资源平台 API 或识别其原生 CSV。百度统计搜索词、SERP 排名和 referrer 不能替代自然搜索展现与排名。
 
 管理员进入 **SEO → 手动自定义搜索分析 CSV**，下载[空白模板](templates/custom-search-analysis.csv)，按自己有权使用的聚合数据填入以下六列。不会提供演示统计填充模板：
 
@@ -25,6 +25,4 @@
 
 各批次独立保存，不替换其他日期区间，不自动跨批次/provider求和，避免重叠文件重复计数。数据只进入 `manual_search_imports`/`manual_search_rows`，不写GSC、采集events、PV/UV、身份、订单或SEO因果转化。站点管理员可预览/提交/CSV下载，具有本站read权限的成员可按批次API读取；其他站点拒绝访问。全PostgreSQL备份自然包含这些表，整站JSON/CSV白名单包含这两张独立手动搜索表及批次元数据，仍不包含认证/凭据，不能替代全库恢复。
 
-接口前缀为 `/api/sites/:siteId/manual-search`：GET列表；GET `/template`；POST `/preview` 与 `/commit` 接收 `{csv,label,mapping:{day,query,page,clicks,impressions,position},customTemplateAcknowledged:true}`；GET `/:id`；GET `/:id/csv`。列表最多100批且有truncated标记；详情最多1,000行，报告完整rowCount。preview和commit均要求本站admin，不存在自动购买/申请外部凭据行为。
-
-本地真实PG和Chromium上传/映射/预览/幂等/安全下载已经专项执行；不代表百度真实账号、原生CSV格式或外部API验收，完整不可变主线计数由根验收记录另列。
+接口前缀为 `/api/sites/:siteId/manual-search`：GET列表；GET `/template`；POST `/preview` 与 `/commit` 接收 `{csv,label,mapping:{day,query,page,clicks,impressions,position},customTemplateAcknowledged:true}`；GET `/:id`；GET `/:id/csv`。列表最多100批且有truncated标记；详情最多1,000行，报告完整rowCount。preview和commit均要求本站admin。

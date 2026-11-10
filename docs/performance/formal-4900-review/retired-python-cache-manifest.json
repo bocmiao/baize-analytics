@@ -1,8 +1,0 @@
-{
-  "file": "scripts/benchmark/__pycache__/formal-controlled-trial.cpython-312.pyc",
-  "bytes": 7857,
-  "sha256": "64ec1d5595950ee0003e2fdff2cd19e8a67b7d8d086b4a48c039e47b7788dbba",
-  "archive": "/tmp/baize-checkpoints-preserved-20261011/retired-python-cache-20261012/formal-controlled-trial.cpython-312.pyc",
-  "reason": "only generated py_compile cache, source script preserved",
-  "method": "reversible move, not permanent deletion"
-}
