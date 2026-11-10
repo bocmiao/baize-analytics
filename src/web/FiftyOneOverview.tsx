@@ -1,6 +1,6 @@
 import {lazy,Suspense,useEffect,useState,type ComponentProps,type ReactNode} from 'react';
 import type {OverviewDashboard} from './OverviewDashboard';
-import {api,rows,type Row} from './api';
+import {rows,type Row} from './api';
 import {useReportRead} from './DensePrimitives';
 import {metricText} from './trafficModel';
 import {civilDate,previousDateRange} from './time';
@@ -26,15 +26,14 @@ function Ranking({data,label,metric='pv',heading='访客数',title,onSelect}:{da
 export function FiftyOneOverview({site,data,previous,compare,query,range,onRange,onReport,onFilter,reportHref,refresh=0,geographyStatus}:Props){
  const [selected,setSelected]=useState('pv'),[tick,setTick]=useState(0),[expanded,setExpanded]=useState(false);
  const [mobilePeriod,setMobilePeriod]=useState(0);
- const [summary,setSummary]=useState<{site:string;data?:Row;error?:string}>({site:site.id});
  const reportRefresh=`${refresh}:${tick}`;
+ const summary=useReportRead(`/api/v1/sites/${site.id}/overview-summary${expanded?'?extended=1':''}`,reportRefresh);
  const traffic=useReportRead(`/api/v1/sites/${site.id}/traffic-report?${query}`,reportRefresh);
  let priorQuery:string|null=null;try{if(compare)priorQuery=previousDateRange(query,site.timezone);}catch{/* A skipped civil date has no comparable period. */}
  const priorTraffic=useReportRead(priorQuery?`/api/v1/sites/${site.id}/traffic-report?${priorQuery}`:null,reportRefresh);
  const geography=useReportRead(`/api/v1/sites/${site.id}/geography?${query}&country=CN`,reportRefresh);
  useEffect(()=>{const timer=setInterval(()=>{if(document.visibilityState==='visible')setTick(n=>n+1);},30000);return()=>clearInterval(timer);},[]);
- useEffect(()=>{const controller=new AbortController();setSummary(old=>old.site===site.id?old:{site:site.id});void api<Row>(`/api/v1/sites/${site.id}/overview-summary${expanded?'?extended=1':''}`,undefined,'GET',controller.signal).then(result=>{if(!controller.signal.aborted)setSummary({site:site.id,data:result});}).catch(error=>{if(!controller.signal.aborted)setSummary({site:site.id,error:error.message});});return()=>controller.abort();},[site.id,refresh,tick,expanded]);
- const overview=summary.site===site.id?summary.data:undefined;
+ const overview=summary.data;
  const extended=(overview?.extended||{}) as Row;
  const extendedRows:[string,Row][]=[['本月合计',(extended.thisMonth||{}) as Row],['总流量',(extended.total||{}) as Row],['历史峰值',{totals:Object.fromEntries(metrics.map(([key])=>[key,((extended.peaks as Row|undefined)?.[key!] as Row|undefined)?.value]))}]];
  const today=civilDate(new Date().toISOString(),site.timezone),yesterday=shift(today,-1);

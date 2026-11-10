@@ -1,4 +1,5 @@
 import {registerSiteContentManagement} from './site-content-management.js';
+import {isWebAssetRequest,registerWebAssets,sendWebIndex,webAssetNotFound} from '../shared/web-assets.js';
 import {registerEventCaptureRules} from './event-capture-rules.js';
 import {registerIPFilterManagement} from './ip-filter-management.js';
 import {registerAdvancedReports} from './advanced-reports.js';
@@ -153,12 +154,12 @@ export async function createApp(options:AppOptions={}){
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
   await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerBotVisitLog(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
   await registerEventManagement(app,ctx);await registerSiteContentManagement(app,ctx);await registerEventCaptureRules(app,ctx);await registerIPFilterManagement(app,ctx);await registerAdvancedReports(app,ctx);
-  await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
+  await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false,preCompressed:true,cacheControl:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
-  if(web){app.get('/assets/*',async(req,reply)=>reply.sendFile((req.params as {'*':string})['*'],resolve('dist/web/assets')));
+  if(web){registerWebAssets(app);
  app.get('/brand/:file',async(req,reply)=>{const {file}=req.params as {file:string};if(!/^(?:baize-head(?:-16|-32|-48|-96|-512)?\.(?:png|webp)|favicon\.ico)$/.test(file))return reply.code(404).send();return reply.sendFile(file,resolve('public/brand'));});}
-  app.setNotFoundHandler(async(req,reply)=>{if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return reply.type('text/html').sendFile('index.html',resolve('dist/web'));return reply.code(503).send({error:'build_required',command:'npm run build'});});
+  app.setNotFoundHandler(async(req,reply)=>{if(isWebAssetRequest(req.url))return webAssetNotFound(reply);if(req.url.startsWith('/api/'))return reply.code(404).send({error:'not_found'});if(web)return sendWebIndex(reply);return reply.code(503).send({error:'build_required',command:'npm run build'});});
   const maintenance=createMaintenanceRunner([
     ()=>runGovernance(ctx),()=>enforceRetention(pool),
     ...(history?[()=>expireHistorySnapshots(pool,history),()=>cleanupHistoryFailures(pool,history)]:[]),

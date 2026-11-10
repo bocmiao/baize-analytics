@@ -19,13 +19,19 @@
 .workspace .la51-topbar .nav-identity small {color:var(--fg-2); font-size:11px; font-weight:400; flex:none;}
 .workspace .la51-topbar .nav-account-controls {top:calc(100% + 12px); right:0; z-index:65; max-height:calc(100dvh - 78px); max-width:calc(100vw - 24px); overflow:auto; overscroll-behavior:contain; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--fg); box-shadow:var(--shadow-pop);}
 .workspace .la51-sidebar {position:fixed; z-index:50; left:0; top:64px; bottom:0; display:flex; flex-direction:column; width:216px; margin:0; padding:12px 0; background:var(--surface); border-right:1px solid var(--border); overflow-y:auto; overflow-x:hidden; scrollbar-width:thin; scrollbar-color:var(--border-strong) transparent;}
-.workspace .la51-site-row {position:sticky; top:-12px; z-index:2; display:flex; align-items:center; gap:0; flex:none; height:60px; padding:4px 14px 14px; background:var(--surface);}
-.workspace .la51-site {display:flex; align-items:center; flex:1; min-width:0; height:38px; padding:0 0 0 10px; border:1px solid var(--border); border-right:0; border-radius:8px 0 0 8px; background:var(--surface-2);}
-.workspace .la51-site .site-switch-card {display:flex; width:100%; min-width:0; gap:0;}
-.workspace .la51-site .site-mark,.workspace .la51-site .site-switch-copy {display:none;}
-.workspace .la51-site .sidebar-site-select {display:block; width:100%; max-width:none; min-width:0; min-height:0; height:36px; margin:0; padding:0 3px 0 0; border:0; border-radius:0; background:transparent; color:var(--fg); font-family:inherit; font-size:12px; font-weight:500; text-overflow:ellipsis; box-shadow:none; appearance:auto;}
-.workspace .la51-site .sidebar-site-select:focus-visible {outline:2px solid var(--accent); outline-offset:1px;}
-.workspace .la51-sidebar-collapse {display:grid; place-items:center; flex:0 0 28px; min-height:0; width:28px; height:38px; padding:5px; border:1px solid var(--border); border-left:0; border-radius:0 8px 8px 0; background:var(--surface-2); color:var(--fg-2); box-shadow:none;}
+.workspace .la51-site-row {position:sticky; top:-12px; z-index:2; display:flex; align-items:center; gap:8px; flex:none; height:78px; padding:8px 12px 14px; background:var(--surface);}
+.workspace .la51-site {display:flex; align-items:center; flex:1; min-width:0; height:56px; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); transition:border-color .15s,background .15s;}
+.workspace .la51-site:hover {border-color:var(--fg-3); background:var(--surface-2);}
+.workspace .la51-site:focus-within {outline:2px solid var(--accent); outline-offset:2px;}
+.workspace .la51-site .site-switch-card {position:relative; display:flex; align-items:center; width:100%; height:100%; min-width:0; gap:8px;}
+.workspace .la51-site .site-mark {display:none;}
+.workspace .la51-site .site-switch-copy {display:flex; flex-direction:column; flex:1; min-width:0; gap:3px;}
+.workspace .la51-site .site-switch-copy b {display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:12px; line-height:18px; font-weight:600; color:var(--fg);}
+.workspace .la51-site .site-switch-copy small {display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:11px; line-height:15px; color:var(--fg-3);}
+.workspace .la51-site .site-switch-chevron {flex:none; width:14px; height:14px; color:var(--fg-3);}
+.workspace .la51-site .sidebar-site-select {position:absolute; inset:-8px -10px; display:block; width:calc(100% + 20px); max-width:none; min-width:0; min-height:0; height:calc(100% + 16px); margin:0; padding:0; border:0; opacity:0; cursor:pointer;}
+.workspace .la51-sidebar-collapse {display:grid; place-items:center; flex:0 0 28px; min-height:0; width:28px; height:32px; padding:5px; border:0; border-radius:6px; background:transparent; color:var(--fg-3); box-shadow:none;}
+.workspace .la51-sidebar-collapse:hover {background:var(--surface-2); color:var(--fg);}
 .workspace .la51-sidebar-collapse svg {display:block; width:18px; height:18px; padding:0; background:transparent;}
 .workspace #workspace-navigation nav.la51-report-nav {display:block; flex:none; width:216px; height:auto; min-height:0; margin:0; padding:0 10px 20px; border:0; background:var(--surface); overflow:visible;}
 .workspace #workspace-navigation nav.la51-report-nav a,.workspace #workspace-navigation nav.la51-report-nav .la51-nav-group > button {display:flex; align-items:center; gap:12px; position:relative; width:100%; min-height:42px; height:auto; padding:10px 12px; margin:2px 0; border:0; border-radius:8px; background:transparent; color:var(--fg-2); font-family:inherit; font-size:13px; line-height:22px; font-weight:500; letter-spacing:0; text-decoration:none; text-align:left; white-space:nowrap; box-shadow:none;}
@@ -90,9 +96,9 @@
  .workspace #workspace-navigation nav.la51-report-nav {width:260px; max-width:100%;}
  .workspace #workspace-navigation nav.la51-report-nav :is(a,.la51-nav-group > button) {min-height:44px;}
  .workspace #workspace-navigation nav.la51-report-nav .la51-overview-links {height:44px;}
- .workspace .la51-site-row {height:60px; padding:8px;}
- .workspace .la51-site {height:44px;}
- .workspace .la51-site .sidebar-site-select {height:42px; font-size:14px;}
+ .workspace .la51-site-row {height:78px; padding:8px 12px 14px;}
+ .workspace .la51-site {height:56px;}
+ .workspace .la51-site .site-switch-copy b {font-size:13px;}
  .workspace .la51-sidebar-collapse {width:44px; height:44px; flex-basis:44px;}
  .workspace .la51-navigation.is-drawer-open .la51-sidebar {display:flex;}
  .workspace #workspace-main {margin-left:0; padding:22px 16px 36px;}

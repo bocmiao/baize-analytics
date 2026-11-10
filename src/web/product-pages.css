@@ -1,5 +1,5 @@
 /* Shared page composition: reports, settings and account entry points. */
-html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
+html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin;scrollbar-gutter:stable}
 .workspace #workspace-main{min-width:0}
 .workspace :is(.settings-panel,.product-records,.record-management){min-width:0}
 .workspace .product-settings{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:1100px}

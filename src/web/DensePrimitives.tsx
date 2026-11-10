@@ -1,11 +1,35 @@
-import {useEffect,useState,type ReactNode,type CSSProperties} from 'react';
+import {useEffect,useRef,useState,type ReactNode,type CSSProperties} from 'react';
 import {api,type Row} from './api';
+import {continuesReportWindow,reportReadCache} from './reportReadCache';
 import {labelText,metricNames,metricText,primaryMetrics,previousDayChange,sortReportRows} from './trafficModel';
 
-export function useReportRead(path:string|null,refresh:number|string=0,keepPrevious=false){
- const [state,setState]=useState<{path:string|null;data?:Row;error?:string}>({path:null});
- useEffect(()=>{if(!path)return;const controller=new AbortController();setState(previous=>previous.path===path||keepPrevious?{path,data:previous.data}:{path});void api<Row>(path,undefined,'GET',controller.signal).then(data=>{if(!controller.signal.aborted)setState({path,data});}).catch(error=>{if(!controller.signal.aborted)setState(previous=>({path,data:previous.path===path?previous.data:undefined,error:error.message}));});return()=>controller.abort();},[path,refresh,keepPrevious]);
- return state.path===path||keepPrevious?state:{path};
+export function useReportRead(path:string|null,refresh:number|string=0,keepPrevious=false):{path:string|null;data?:Row;error?:string}{
+ const [state,setState]=useState<{path:string|null;revision:number;data?:Row;dataPath?:string|null;error?:string}>(()=>({path,revision:reportReadCache.revision,data:path?reportReadCache.peek<Row>(path):undefined,dataPath:path}));
+ const [invalidated,setInvalidated]=useState(0),previousRead=useRef<{path:string|null;refresh:number|string}|undefined>(undefined);
+ useEffect(()=>reportReadCache.subscribe(reason=>{
+  setState(previous=>({path:previous.path,revision:reportReadCache.revision,...reason==='refresh'?{data:previous.data,dataPath:previous.dataPath}:{}}));
+  setInvalidated(value=>value+1);
+ }),[]);
+ useEffect(()=>{
+  const force=previousRead.current?.path===path&&!Object.is(previousRead.current.refresh,refresh);
+  previousRead.current={path,refresh};
+  if(!path||reportReadCache.suspended)return;
+  const controller=new AbortController(),revision=reportReadCache.revision;
+  // Preserve exact-URL refreshes and explicitly opted-in short live ticks, never another site or filter.
+  setState(previous=>{
+   const retain=previous.revision===revision&&(previous.path===path||keepPrevious&&continuesReportWindow(previous.dataPath??previous.path,path));
+   return {path,revision,data:retain?previous.data:reportReadCache.peek<Row>(path),dataPath:retain?previous.dataPath:path};
+  });
+  void reportReadCache.read(path,signal=>api<Row>(path,undefined,'GET',signal),{signal:controller.signal,force,refreshKey:refresh}).then(data=>{
+   if(!controller.signal.aborted&&revision===reportReadCache.revision)setState({path,revision,data,dataPath:path});
+  }).catch(error=>{
+   if(!controller.signal.aborted&&revision===reportReadCache.revision)setState(previous=>({path,revision,data:previous.path===path?previous.data:undefined,dataPath:previous.dataPath,error:error instanceof Error?error.message:String(error)}));
+  });
+  return()=>controller.abort();
+ },[path,refresh,invalidated,keepPrevious]);
+ if(state.path===path&&state.revision===reportReadCache.revision)return state;
+ if(keepPrevious&&state.revision===reportReadCache.revision&&continuesReportWindow(state.dataPath??state.path,path))return {path,data:state.data};
+ return {path,data:path?reportReadCache.peek<Row>(path):undefined};
 }
 export function ReportIcon({name}:{name:'search'|'columns'|'download'|'up'|'down'|'left'|'right'|'info'|'filter'|'close'}){
  const paths={search:<><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></>,columns:<><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12m5-12v12"/></>,download:<><path d="M10 3v9m-3-3 3 3 3-3M4 13v4h12v-4"/></>,up:<path d="m5 12 5-5 5 5"/>,down:<path d="m5 8 5 5 5-5"/>,left:<path d="m12 5-5 5 5 5"/>,right:<path d="m8 5 5 5-5 5"/>,info:<><circle cx="10" cy="10" r="7"/><path d="M10 9v5m0-8v1"/></>,filter:<><path d="M3 5h14M6 10h8m-5 5h2"/></>,close:<path d="m5 5 10 10M15 5 5 15"/>};
