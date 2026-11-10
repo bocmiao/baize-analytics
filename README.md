@@ -25,14 +25,14 @@
 
 工作台采用白泽蓝白配色，支持深色模式和手机布局。统计、转化和行为分析按任务分组，管理工具收进设置。预览使用独立演示站点的数据；[截图来源与验证范围](docs/images/README.md)。
 
-这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。本次界面整理见[产品界面验收](docs/validation/BAIZE_PRODUCT_UI_20261110.md)，完整能力范围见[逐项功能对照](docs/51LA_FUNCTION_MATRIX.md)。
+这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。本次界面整理见[全页面界面验收](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md)，完整能力范围见[逐项功能对照](docs/51LA_FUNCTION_MATRIX.md)。
 
-![白泽桌面端界面](docs/images/baize-desktop.jpg)
+![白泽桌面流量报表](docs/images/baize-reports-desktop.jpg)
 
 <details>
 <summary>查看手机布局</summary>
 
-![白泽手机端界面](docs/images/baize-mobile.jpg)
+![白泽手机站点设置](docs/images/baize-settings-mobile.jpg)
 
 </details>
 

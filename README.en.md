@@ -23,14 +23,14 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 
 The workspace uses Baize’s blue and white palette, with dark mode and mobile layouts. Analytics are organized by task, with administration grouped under Settings. The preview uses a separate demonstration site's data. See [capture details and validation scope](docs/images/README.md).
 
-The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See the [product UI validation](docs/validation/BAIZE_PRODUCT_UI_20261110.md) and [feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese).
+The new traffic reports in this interface are available in **Node Standard**. Node Lite and the independent PHP application retain their existing capabilities. See the [all-pages UI validation](docs/validation/BAIZE_ALL_PAGES_UI_20261110.md) and [feature matrix](docs/51LA_FUNCTION_MATRIX.md) (Chinese).
 
-![Baize desktop interface](docs/images/baize-desktop.jpg)
+![Baize desktop traffic report](docs/images/baize-reports-desktop.jpg)
 
 <details>
 <summary>Mobile layout</summary>
 
-![Baize mobile interface](docs/images/baize-mobile.jpg)
+![Baize mobile site settings](docs/images/baize-settings-mobile.jpg)
 
 </details>
 
