@@ -33,7 +33,7 @@ describe('Baize customer navigation',()=>{
   const settings=referenceNavigation.find(group=>group.id==='configuration')!;
   for(const key of ['jobs','tokens','audit','updates'])expect(settings.links.find(link=>link.key===key)?.section).toBe('administration');
   expect(navigationSections.map(section=>section.zh)).toEqual(['通知与报告','高级管理']);
-  const closed=render('settings');expect(closed('.baize-nav-settings-section[open]')).toHaveLength(0);
+  const closed=render('settings');expect(closed('.baize-nav-settings-section[open]')).toHaveLength(0);expect(closed('.baize-nav-settings-section>summary .baize-settings-chevron')).toHaveLength(2);
   const selected=render('jobs');expect(selected('#la51-nav-configuration').attr('hidden')).toBeUndefined();expect(selected('.baize-nav-settings-section[open] > summary').text()).toBe('高级管理');expect(selected('nav a[aria-current="page"]').text()).toBe('任务管理');
  });
  it('keeps selected report, dates and filters in links and a named keyboard disclosure',()=>{

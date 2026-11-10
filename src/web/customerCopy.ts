@@ -1,6 +1,8 @@
 import {language,t} from './i18n';
 
 const english:Record<string,string>={
+ '各榜单最多展示 20 项，搜索和下载仅限当前榜单。':'Rankings show up to 20 entries. Search and downloads apply only to the displayed ranking.',
+ '选择指标':'Choose a metric','搜索记录':'Search records',
  '访问时间':'Visit time','IP 标识':'IP identifier','浏览页数':'Pages viewed','访问时长':'Visit duration','渠道来源':'Campaign source','活动名称':'Campaign name','渠道媒介':'Campaign medium','推广内容':'Campaign content',
  '访问次数':'Visits','访问 URL 总数':'Unique URLs','IP数':'Unique IPs','浏览量(PV)':'Pageviews (PV)','访客数(UV)':'Visitors (UV)','会话数':'Sessions','平均访问时长':'Average duration','入口页次数':'Entries','退出次数':'Exits','退出率':'Exit rate','新访客数':'New visitors','老访客数':'Returning visitors','平均访问页数':'Pages per visit','总次数':'Total','人均次数':'Per visitor','外部链接':'Referrals','付费推广':'Paid campaigns','邮件':'Email','站内跳转':'Internal','电脑端':'Desktop','移动端':'Mobile','平板':'Tablet',
  '请输入本站域名或已配置别名的完整网址；预览页必须与统计后台不同源。':'Enter a full URL on this site or an allowed alias. The preview must use a different origin from this dashboard.',

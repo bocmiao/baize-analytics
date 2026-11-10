@@ -2,7 +2,7 @@ import {dimensionText} from './dimensionLabels';
 import {language} from './i18n';
 import type {Row} from './api';
 
-const colors=['#1F7A68','#5C5C5C','#8F8F8F','#A86A12','#C2412D','#3D6B8A'];
+const colors=['var(--accent)','var(--chart-prev)','var(--pos)','#64748b','#60a5fa','#7dd3fc'];
 
 /** Stacked channel bar from rows the sources report already returns. */
 export function SourceMix({rows}:{rows:Row[]}){

@@ -1,6 +1,13 @@
 import {describe,expect,it} from 'vitest';
 import {cleanFilters,navigationGroups,readWorkspaceRoute,validCivilDate,workspaceReports,workspaceUrl} from '../../src/web/workspaceRoute.js';
+import {workspacePageChanged} from '../../src/web/useWorkspaceRoute';
 describe('workspace navigation URL contract',()=>{
+ it('resets scroll for report/site transitions while keeping date and filter edits in place',()=>{
+  const route=readWorkspaceRoute('?site=demo&report=sources&from=2026-11-01&to=2026-11-10');
+  expect(workspacePageChanged(route,{...route,report:'pages'})).toBe(true);
+  expect(workspacePageChanged(route,{...route,siteId:'next'})).toBe(true);
+  expect(workspacePageChanged(route,readWorkspaceRoute('?site=demo&report=sources&from=2026-11-09&to=2026-11-10&path=%2Fpricing'))).toBe(false);
+ });
  it('keeps the daily report on the selected last day when opened from a multi-day report',()=>{
   const route=readWorkspaceRoute('?site=demo&report=daily&from=2026-10-27&to=2026-11-09&path=%2Fdocs');
   expect(route).toEqual({siteId:'demo',report:'daily',from:'2026-11-09',to:'2026-11-09',filters:{path:'/docs'}});

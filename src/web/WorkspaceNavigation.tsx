@@ -34,7 +34,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
  const [collapsed,setCollapsed]=useState(()=>typeof window!=='undefined'&&window.matchMedia('(min-width:768px) and (max-width:1023px)').matches);
  const [mobile,setMobile]=useState(()=>typeof window!=='undefined'&&window.matchMedia('(max-width:767px)').matches);
  const [flyout,setFlyout]=useState<{id:string;top:number}|null>(null);
- const menuRef=useRef<HTMLButtonElement>(null),sidebarRef=useRef<HTMLElement>(null);
+ const menuRef=useRef<HTMLButtonElement>(null),sidebarRef=useRef<HTMLElement>(null),accountRef=useRef<HTMLDetailsElement>(null);
  const flyoutRef=useRef<HTMLDivElement>(null),flyoutTriggerRef=useRef<HTMLElement|null>(null);
  const closeTimerRef=useRef<ReturnType<typeof setTimeout>|null>(null),focusFlyoutRef=useRef<'first'|'last'|null>(null),skipFocusOpenRef=useRef(false);
  const rail=collapsed&&!mobile;
@@ -55,6 +55,12 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
   setFlyout(null);
  },[route.report,route.siteId]);
  useEffect(()=>{setFlyout(null);},[collapsed,mobile]);
+ useEffect(()=>{
+  const outside=(event:PointerEvent)=>{if(accountRef.current?.open&&!accountRef.current.contains(event.target as Node))accountRef.current.open=false;};
+  const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'&&accountRef.current?.open){accountRef.current.open=false;accountRef.current.querySelector('summary')?.focus();}};
+  document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);
+  return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);};
+ },[]);
  useEffect(()=>()=>{if(closeTimerRef.current)clearTimeout(closeTimerRef.current);},[]);
  useEffect(()=>{
   if(!flyout)return;
@@ -84,7 +90,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
   return()=>{document.removeEventListener('keydown',keydown);document.body.style.overflow=previousOverflow;if(main)main.inert=previousInert??false;menuRef.current?.focus();};
  },[mobile,drawerOpen]);
  function cancelFlyoutClose(){if(closeTimerRef.current){clearTimeout(closeTimerRef.current);closeTimerRef.current=null;}}
- function close(){setDrawerOpen(false);setFlyout(null);cancelFlyoutClose();}
+ function close(){setDrawerOpen(false);setFlyout(null);cancelFlyoutClose();if(accountRef.current)accountRef.current.open=false;}
  function openFlyout(id:string,trigger:HTMLElement,focus?:'first'|'last'){
   if(!rail)return;
   cancelFlyoutClose();flyoutTriggerRef.current=trigger;focusFlyoutRef.current=focus||null;
@@ -124,7 +130,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
   return <>{group.links.filter(item=>!item.section).map(item=>link(item,undefined,inFlyout))}{navigationSections.map(section=>{
    const members=group.links.filter(item=>item.section===section.id);if(!members.length)return null;
    if(inFlyout)return <div key={section.id} role="group" aria-label={en?section.en:section.zh}><div className="la51-flyout-group-title" role="presentation">{en?section.en:section.zh}</div>{members.map(item=>link(item,undefined,true))}</div>;
-   return <details key={section.id} className="baize-nav-settings-section" open={members.some(item=>item.key===route.report)}><summary>{en?section.en:section.zh}</summary>{members.map(item=>link(item))}</details>;
+   return <details key={section.id} className="baize-nav-settings-section" open={members.some(item=>item.key===route.report)}><summary><span>{en?section.en:section.zh}</span><svg className="baize-settings-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 2 4 4-4 4"/></svg></summary>{members.map(item=>link(item))}</details>;
   })}</>;
  }
  return <div id="workspace-navigation" className={`la51-navigation${collapsed&&!mobile?' is-collapsed':''}${drawerOpen?' is-drawer-open':''}`} aria-label={en?'Workspace navigation':'工作空间导航'}>
@@ -132,7 +138,7 @@ export function WorkspaceNavigation({route,items,onNavigate,children,account,ide
    <a href="/" className="brand la51-brand" aria-label={en?'Baize Analytics':'白泽统计'}><img src="/brand/baize-head-96.png" width="32" height="32" alt=""/><span className="brand-name">{en?'Baize':'白泽统计'}<small>{en?'ANALYTICS':'BAIZE ANALYTICS'}</small></span></a>
    <button ref={menuRef} type="button" className="la51-menu-toggle" aria-label={en?'Menu':'菜单'} aria-expanded={drawerOpen} aria-controls="la51-sidebar" onClick={()=>setDrawerOpen(value=>!value)}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
    <span className="la51-topbar-space"/>
-   {account&&<details className="nav-account"><summary><span className="nav-identity"><b>{identity?.name||(en?'Account':'账户')}</b><small>{identity?.detail||(en?'Account and language':'账户与语言')}</small></span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg></summary><div className="nav-account-controls">{account(close)}</div></details>}
+   {account&&<details ref={accountRef} className="nav-account"><summary aria-label={en?'Account settings':'账户设置'}><span className="nav-identity"><b title={identity?.name}>{identity?.name||(en?'Account':'账户')}</b><small>{identity?.detail||(en?'Account and language':'账户与语言')}</small></span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg></summary><div className="nav-account-controls">{account(close)}</div></details>}
   </header>
   {mobile&&drawerOpen&&<button type="button" className="la51-drawer-backdrop" tabIndex={-1} aria-label={en?'Close navigation':'关闭导航'} onClick={close}/>}
   <aside id="la51-sidebar" ref={sidebarRef} className="la51-sidebar" role={mobile?'dialog':undefined} aria-modal={mobile&&drawerOpen?true:undefined} aria-label={en?'Reports and settings':'分析与设置'} aria-hidden={mobile&&!drawerOpen?true:undefined}>

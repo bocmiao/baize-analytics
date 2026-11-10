@@ -1,0 +1,109 @@
+/* Shared page composition: reports, settings and account entry points. */
+html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
+.workspace #workspace-main{min-width:0}
+.workspace :is(.settings-panel,.product-records,.record-management){min-width:0}
+.workspace .product-settings{display:grid;gap:20px;max-width:1100px}
+.workspace .product-settings>.panel{margin:0}
+.workspace .product-settings>.settings-panel>h2{margin-bottom:20px}
+.workspace :is(.settings-form,.connector-form,.segment-filters){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px;align-items:start;max-width:960px}
+.workspace :is(.settings-form,.connector-form,.segment-filters)>label{display:flex;flex-direction:column;gap:8px;min-width:0;margin:0;font-size:13px;color:var(--fg-2)}
+.workspace :is(.settings-form,.connector-form,.segment-filters) label:has(>input[type=checkbox]){flex-direction:row;align-items:center;min-height:36px}
+.workspace :is(.settings-form,.connector-form,.segment-filters)>:is(button,.settings-actions,.settings-wide,.settings-advanced,details,p,small,h2,h3,fieldset){grid-column:1/-1}
+.workspace :is(.settings-form,.connector-form,.segment-filters)>button{justify-self:start;width:auto;min-width:100px}
+.workspace :is(.settings-form,.connector-form,.segment-filters) :is(input:not([type=checkbox]):not([type=radio]),textarea,select){width:100%;max-width:100%;min-width:0;background:var(--surface);color:var(--fg);border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;box-sizing:border-box}
+.workspace :is(.settings-form,.connector-form,.segment-filters) textarea{min-height:104px;resize:vertical;line-height:1.6}
+.workspace .settings-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.workspace .settings-actions :is(button,.button){width:auto}
+.workspace .settings-feedback{font-size:13px;line-height:1.7;color:var(--fg-2);margin:16px 0 0;overflow-wrap:anywhere}
+.workspace .settings-feedback[role=status]{color:var(--pos)}
+.workspace .settings-advanced{min-width:0}
+.workspace .settings-advanced>summary{display:flex;align-items:center;gap:12px;min-height:36px;list-style:none;font-size:14px;font-weight:500;color:var(--fg)}
+.workspace .settings-advanced>summary::-webkit-details-marker{display:none}
+.workspace .settings-advanced>summary::after{content:'';width:7px;height:7px;border:solid var(--fg-3);border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin-left:auto;margin-right:5px;flex:none;transition:transform .15s}
+.workspace .settings-advanced[open]>summary::after{transform:rotate(225deg)}
+.workspace .settings-advanced[open]>summary{margin-bottom:20px}
+.workspace .settings-advanced>.panel{padding:20px 0;margin:0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent}
+.workspace .settings-danger>summary,.workspace .settings-danger h2{color:var(--neg)}
+.workspace .settings-danger button:not(.secondary){background:var(--neg);border-color:var(--neg);color:var(--bg)}
+.workspace .settings-list{display:flex;flex-direction:column;gap:0}
+.workspace :is(.settings-record,.row-card){display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:14px 0;margin:0;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;overflow-wrap:anywhere}
+.workspace :is(.settings-record,.row-card)>button{margin-left:auto;flex-shrink:0}
+.workspace :is(.settings-record,.row-card):last-child{border-bottom:0}
+.workspace .product-facts{display:flex;flex-wrap:wrap;gap:24px 56px;margin:0 0 20px}
+.workspace .product-facts>div{min-width:120px;display:flex;flex-direction:column;gap:8px}
+.workspace .product-facts dt{font-size:12px;color:var(--fg-2)}
+.workspace .product-facts dd{margin:0;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.workspace :is(.prop-list,.installation-check){min-width:0}
+.workspace .prop-list{display:flex;flex-wrap:wrap;gap:24px;margin:16px 0}
+.workspace .prop-list>div{min-width:120px}
+.workspace .prop-list dt{font-size:12px;color:var(--fg-2);margin-bottom:8px}
+.workspace .prop-list dd{font-size:17px;margin:0;color:var(--fg)}
+.workspace :is(pre,code){max-width:100%;overflow:auto;scrollbar-width:thin}
+.workspace pre{background:var(--surface-2);color:var(--fg);border:1px solid var(--border);border-radius:8px;padding:16px;line-height:1.7;font-size:12px}
+.workspace :is(.settings-layout,.settings-panel,.connector-form) small{font-size:12px;color:var(--fg-2);line-height:1.6}
+.workspace .product-records:empty{display:none}
+.workspace #workspace-main>.panel:has(>.segment-filters){padding:12px 18px;margin-block:0 20px;background:transparent}
+.workspace #workspace-main>.panel:has(>.segment-filters)[open]{background:var(--surface);padding:18px}
+.workspace .segment-filters{margin-top:20px}
+.workspace .segment-filters .filter-actions{display:flex;gap:10px;grid-column:1/-1}
+.workspace .product-report-result{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
+.auth.auth-entry.login{background:var(--bg);padding:56px 24px}
+.auth.auth-entry.login::before,.auth.auth-entry.login::after{display:none}
+.auth.auth-entry.login>.brand{position:static;margin:0 0 28px;color:var(--fg);font-size:21px;gap:10px}
+.auth.auth-entry.login .brand small{display:none}
+.auth.auth-entry.login main{width:min(440px,100%);position:relative}
+.auth.auth-entry.login main>.panel{padding:36px;border:1px solid var(--border);border-radius:16px;box-shadow:none;background:var(--surface)}
+.auth h1{font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--fg);margin:0 0 28px}
+.auth form{display:flex;flex-direction:column;gap:20px}
+.auth form label{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--fg-2);min-width:0}
+.auth :is(input,select,textarea){min-height:44px;border-radius:8px;border:1px solid var(--border-strong);padding:10px 12px;background:var(--surface);color:var(--fg);max-width:100%;box-sizing:border-box}
+.auth :is(button,.button){min-height:44px;border-radius:8px}
+.auth .auth-foot{margin-top:24px;color:var(--fg-2);font-size:12px}
+.auth .language{display:flex;align-items:center;gap:12px;justify-content:center}
+.auth .language select{font-size:13px;min-height:36px;padding:6px 10px}
+.auth .notice{background:var(--surface-2);border:1px solid var(--border);color:var(--fg-2);padding:14px;border-radius:8px}
+.auth .error{color:var(--neg);font-size:13px;line-height:1.6}
+.auth p{line-height:1.7;color:var(--fg-2)}
+.auth:not(.shared-dashboard-page):not(.auth-entry){max-width:480px;margin:64px auto;padding:0 20px}
+.auth:not(.shared-dashboard-page):not(.auth-entry)>.panel{padding:28px;border-radius:12px;border:1px solid var(--border);background:var(--surface)}
+.product-entry{max-width:1160px;margin:auto;padding:0 40px;color:var(--fg)}
+.product-entry header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 0}
+.product-entry .brand{display:flex;align-items:center;gap:12px;font-size:20px;color:var(--fg)}
+.product-entry .button{border-radius:8px;min-height:44px;display:inline-flex;align-items:center;padding:10px 20px}
+.product-intro{max-width:760px;padding:112px 0 100px}
+.product-intro h1{font-size:clamp(36px,4.5vw,62px);letter-spacing:-.035em;line-height:1.2;margin:0 0 24px;font-weight:600;text-wrap:balance}
+.product-intro p{max-width:560px;font-size:18px;line-height:1.85;color:var(--fg-2);margin:0 0 32px}
+.product-capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;border-top:1px solid var(--border);padding:36px 0 64px}
+.product-capabilities h2{font-size:17px;font-weight:600;margin:0 0 12px}
+.product-capabilities p{font-size:14px;line-height:1.8;color:var(--fg-2);margin:0}
+.product-entry footer{border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--fg-2)}
+.product-entry footer a{color:var(--fg-2);text-underline-offset:4px}
+@media(max-width:1000px){
+ .workspace :is(.settings-form,.connector-form,.segment-filters){gap:16px}
+ .workspace .product-settings{gap:16px}
+}
+@media(max-width:767px){
+ .workspace :is(.settings-form,.connector-form,.segment-filters){grid-template-columns:minmax(0,1fr);max-width:100%;gap:18px}
+ .workspace :is(.settings-form,.connector-form,.segment-filters) :is(input,select,textarea){font-size:16px}
+ .workspace :is(.settings-form,.connector-form,.segment-filters)>button{justify-self:stretch}
+ .workspace .settings-actions>*{flex:1 1 auto;min-height:44px;text-align:center;justify-content:center}
+ .workspace :is(.settings-panel,.settings-advanced,.product-records) h2{font-size:16px}
+ .workspace .settings-advanced[open]>summary{margin-bottom:16px}
+ .workspace .product-facts{gap:20px 28px}
+ .workspace .product-facts dd{font-size:15px}
+ .workspace :is(.settings-record,.row-card){align-items:flex-start;gap:12px;font-size:13px}
+ .workspace .settings-record>*{min-width:0;max-width:100%}
+ .workspace .table-wrap{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+ .auth.auth-entry.login{display:flex;flex-direction:column;justify-content:flex-start;padding:52px 20px;min-height:100dvh}
+ .auth.auth-entry.login main>.panel{padding:24px}
+ .auth :is(input,select,textarea){font-size:16px}
+ .auth h1{font-size:22px}
+ .product-entry{padding:0 24px}
+ .product-entry header{gap:16px;padding:20px 0}
+ .product-entry .brand{font-size:17px;gap:8px}
+ .product-entry header .button{font-size:13px;padding:10px 12px}
+ .product-intro{padding:72px 0 64px}
+ .product-intro p{font-size:16px}
+ .product-capabilities{grid-template-columns:1fr;gap:28px;padding:28px 0 40px}
+}
+@media(prefers-reduced-motion:reduce){.workspace .settings-advanced>summary::after{transition:none}}

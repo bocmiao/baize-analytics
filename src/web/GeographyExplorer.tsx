@@ -1,7 +1,7 @@
 import {provinceAssets} from './geographyNames';
 import {useCallback,useEffect,useState,lazy,Suspense} from 'react';
 import {rows,type Row} from './api';
-import {DensePanel,DenseTable,MetricStrip,MetricTabs,useReportRead,type DenseColumn} from './DensePrimitives';
+import {DensePanel,DenseTable,MetricStrip,MetricTabs,ReportDisclosure,useReportRead,type DenseColumn} from './DensePrimitives';
 import {FiftyOneChart} from './FiftyOneCharts';
 import {metricNames,metricText} from './trafficModel';
 const GeographicMap=lazy(()=>import('./GeographicMap'));
@@ -39,7 +39,7 @@ export function GeographyExplorer({siteId,query,geographyStatus}:{siteId:string;
    {state.error&&<p role="alert" className="error">{state.error}</p>}
    {!state.data&&!state.error&&<p className="dense-note" role="status">正在加载地域数据…</p>}
    {unavailable[String(data.status)]&&<p className="notice" role="status">{unavailable[String(data.status)]}</p>}
-   <p className="dense-note">当前：{selectedLabel} · 明细覆盖 {Math.round(Number(data.coverage||0)*100)}% · 地域已知 {Math.round(Number(data.geographyCoverage||0)*100)}%</p>
+   <p className="dense-note">{selectedLabel}</p><ReportDisclosure title="数据覆盖"><p>明细覆盖 {Math.round(Number(data.coverage||0)*100)}% · 地域已知 {Math.round(Number(data.geographyCoverage||0)*100)}%</p></ReportDisclosure>
    <MetricStrip totals={totals} metrics={['pv','uv','ips','sessions','newVisitors']}/>
    {totals.ipStatus==='partial_ip_identity'&&<p className="dense-note">部分历史记录没有完整 IP 标识，已知独立 IP 为 {metricText(totals.knownIps)}，覆盖 {Math.round(Number(totals.ipCoverage)*100)}%。</p>}
    {totals.ipStatus==='not_collected'&&<p className="dense-note">这段时间的记录没有采集完整 IP 标识，独立 IP 显示为 —。</p>}
@@ -49,16 +49,16 @@ export function GeographyExplorer({siteId,query,geographyStatus}:{siteId:string;
   </DensePanel>
   <div className="dense-two">
    <DensePanel title="地域分布" action={<MetricTabs value={metric} onChange={setMetric} metrics={['pv','uv','ips','sessions','newVisitors']} label="地域图表指标"/>}>
-    {unconfigured?<p className="dense-note">地域库未配置；已知位置仍显示在下方明细中。</p>:country==='CN'?<><p className="dense-note">按{metricNames[metric]}显示。点击省份或城市继续查看，灰色表示没有可用值。</p>{region&&<button type="button" className="secondary" onClick={()=>chooseRegion('')}>返回中国省级地图</button>}<Suspense fallback={<p className="dense-note">正在加载地图…</p>}><GeographicMap region={region} values={(region?cities:rows(data.regions)).map(row=>({...row,pv:typeof row[metric]==='number'?row[metric]:null}))} onRegion={chooseRegion} onCity={chooseCity}/></Suspense></>:<><p className="dense-note">选择中国可查看省市地图。其他国家的地域分布见下方表格。</p><DenseTable data={rows(data.countries)} columns={[{key:'country',label:'国家 / 地区',render:row=><button type="button" className="dense-text-button" onClick={()=>chooseCountry(String(row.country))}>{countryName(row.country)}</button>},...metrics]} exportName="国家分布" searchable={false}/></>}
+    {unconfigured?<p className="dense-note">地域库未配置；已知位置仍显示在下方明细中。</p>:country==='CN'?<><p className="dense-note" title="灰色表示没有可用值">点击省份或城市查看明细</p>{region&&<button type="button" className="secondary" onClick={()=>chooseRegion('')}>返回中国省级地图</button>}<Suspense fallback={<p className="dense-note">正在加载地图…</p>}><GeographicMap region={region} values={(region?cities:rows(data.regions)).map(row=>({...row,pv:typeof row[metric]==='number'?row[metric]:null}))} onRegion={chooseRegion} onCity={chooseCity}/></Suspense></>:<><p className="dense-note">选择中国可查看省市地图。其他国家的地域分布见下方表格。</p><DenseTable data={rows(data.countries)} columns={[{key:'country',label:'国家 / 地区',render:row=><button type="button" className="dense-text-button" onClick={()=>chooseCountry(String(row.country))}>{countryName(row.country)}</button>},...metrics]} exportName="国家分布" searchable={false}/></>}
    </DensePanel>
    <DensePanel title="选定地域趋势" action={<span className="dense-note">{metricNames[metric]}</span>}>
-    <p className="dense-note">{selectedLabel} · 按站点时区逐日统计</p>
+    <p className="dense-note" title="按站点时区逐日统计">{selectedLabel}</p>
     <FiftyOneChart labels={trend.map(row=>String(row.time))} series={[{name:metricNames[metric]||metric,values:trend.map(row=>typeof row[metric]==='number'?row[metric] as number:null)}]} height={330}/>
    </DensePanel>
   </div>
   <DensePanel title="地域明细" action={<div className="dense-tabs" role="group" aria-label="地域层级">{([['countries','国家'],['regions','省 / 区域'],['cities','城市']] as const).map(([value,label])=><button type="button" key={value} aria-pressed={level===value} onClick={()=>setLevel(value)}>{label}</button>)}</div>}>
    <DenseTable key={level} data={displayed} columns={[...locationColumns,...metrics]} exportName="地域明细" searchLabel="搜索国家、省份或城市"/>
-   <p className="dense-note">未知地域：{rows(data.countries).filter(row=>row.country==='unknown').reduce((sum,row)=>sum+Number(row.pv),0)} PV。各地域独立去重，同一 IP 在多个地域出现时，合计不会重复相加。</p>
+   <ReportDisclosure title="地域统计口径"><p>未知地域：{rows(data.countries).filter(row=>row.country==='unknown').reduce((sum,row)=>sum+Number(row.pv),0)} PV。各地域独立去重，同一 IP 在多个地域出现时，合计不会重复相加。</p></ReportDisclosure>
   </DensePanel>
   <DensePanel title="选定地域的运营商" action={isp?<button type="button" className="secondary" onClick={()=>setIsp('')}>清除运营商筛选</button>:undefined}>
    <DenseTable data={providers} columns={[{key:'isp',label:'运营商',render:row=><button type="button" className="dense-text-button" onClick={()=>setIsp(String(row.isp))}>{geoName(row.isp)}</button>},...metrics]} exportName="地域运营商" searchLabel="搜索运营商"/>
