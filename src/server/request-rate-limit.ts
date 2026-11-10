@@ -6,6 +6,8 @@ export type RequestBudget='authenticated'|'public';
 export interface RequestRateLimitOptions{authenticatedLimit?:number;publicLimit?:number;windowMs?:number;maxEntries?:number;redisTimeoutMs?:number;clock?:()=>number}
 /** Deliberately never includes site, query, token, body or supplied proxy headers. */
 export function requestBudget(method:string,path:string):RequestBudget|null{
+ // This endpoint uses a site write key, signed batches and its own per-site budget, not a user API token.
+ if(method==='POST'&&/^\/api\/v1\/sites\/[^/]+\/bot-visits\/ingest$/.test(path))return null;
  if((method==='POST'&&/^\/api\/v1\/shares\/[^/]+$/.test(path))||(['GET','HEAD'].includes(method)&&path==='/embed/chart'))return 'public';
  if(path==='/api/stats'||/^\/api\/(?:v1\/)?sites(?:\/|$)/.test(path)||/^\/api\/admin(?:\/|$)/.test(path))return 'authenticated';
  return null;

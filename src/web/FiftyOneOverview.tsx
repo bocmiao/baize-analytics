@@ -7,6 +7,7 @@ import {civilDate,dateRange,previousDateRange} from './time';
 import {FiftyOneChart} from './FiftyOneCharts';
 import {dimensionText} from './dimensionLabels';
 import './51la-overview.css';
+import {ForecastNote} from './ForecastNote';
 
 const GeographicMap=lazy(()=>import('./GeographicMap'));
 const metrics=[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['sessions','会话数'],['bounceRate','跳出率'],['averageDuration','平均访问时长']];
@@ -25,13 +26,14 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
  const [selected,setSelected]=useState('pv'),[tick,setTick]=useState(0),[expanded,setExpanded]=useState(false),[calendar,setCalendar]=useState(false),[draftFrom,setDraftFrom]=useState(range.from),[draftTo,setDraftTo]=useState(range.to);
  const [mobilePeriod,setMobilePeriod]=useState(0);
  const [summary,setSummary]=useState<{site:string;data?:Row;error?:string}>({site:site.id});
- const traffic=useReportRead(`/api/v1/sites/${site.id}/traffic-report?${query}`,refresh);
+ const reportRefresh=`${refresh}:${tick}`;
+ const traffic=useReportRead(`/api/v1/sites/${site.id}/traffic-report?${query}`,reportRefresh);
  let priorQuery:string|null=null;try{if(compare)priorQuery=previousDateRange(query,site.timezone);}catch{/* A skipped civil date has no comparable period. */}
- const priorTraffic=useReportRead(priorQuery?`/api/v1/sites/${site.id}/traffic-report?${priorQuery}`:null,refresh);
- const geography=useReportRead(`/api/v1/sites/${site.id}/geography?${query}&country=CN`,refresh);
+ const priorTraffic=useReportRead(priorQuery?`/api/v1/sites/${site.id}/traffic-report?${priorQuery}`:null,reportRefresh);
+ const geography=useReportRead(`/api/v1/sites/${site.id}/geography?${query}&country=CN`,reportRefresh);
  useEffect(()=>{setDraftFrom(range.from);setDraftTo(range.to);},[range.from,range.to]);
  useEffect(()=>{const timer=setInterval(()=>{if(document.visibilityState==='visible')setTick(n=>n+1);},30000);return()=>clearInterval(timer);},[]);
- useEffect(()=>{const controller=new AbortController();setSummary(old=>old.site===site.id?old:{site:site.id});void api<Row>(`/api/v1/sites/${site.id}/overview-summary${expanded?'?extended=1':''}`,undefined,'GET',controller.signal).then(result=>setSummary({site:site.id,data:result})).catch(error=>{if(!controller.signal.aborted)setSummary({site:site.id,error:error.message});});return()=>controller.abort();},[site.id,refresh,tick,expanded]);
+ useEffect(()=>{const controller=new AbortController();setSummary(old=>old.site===site.id?old:{site:site.id});void api<Row>(`/api/v1/sites/${site.id}/overview-summary${expanded?'?extended=1':''}`,undefined,'GET',controller.signal).then(result=>{if(!controller.signal.aborted)setSummary({site:site.id,data:result});}).catch(error=>{if(!controller.signal.aborted)setSummary({site:site.id,error:error.message});});return()=>controller.abort();},[site.id,refresh,tick,expanded]);
  const overview=summary.site===site.id?summary.data:undefined;
  const extended=(overview?.extended||{}) as Row;
  const extendedRows:[string,Row][]=[['本月合计',(extended.thisMonth||{}) as Row],['总流量',(extended.total||{}) as Row],['历史峰值',{totals:Object.fromEntries(metrics.map(([key])=>[key,((extended.peaks as Row|undefined)?.[key!] as Row|undefined)?.value]))}]];
@@ -44,10 +46,10 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
  const chartRows=!sameDay?days:rows(traffic.data?.hours).length?rows(traffic.data?.hours):rows(data.trend);
  const labels=chartRows.map(row=>{const stamp=String(row.time||row.day||row.date||'');const d=new Date(stamp);if(!Number.isFinite(+d))return stamp;return new Intl.DateTimeFormat('zh-CN',{timeZone:site.timezone,...sameDay?{hour:'2-digit',hourCycle:'h23'}:{month:'2-digit',day:'2-digit'}}).format(d);});
  const chartMetric=selected==='newVisitors'?'newVisitors':selected;
- const currentValues=chartRows.map(row=>selected==='ips'?null:numeric(row[chartMetric]));
+ const currentValues=chartRows.map(row=>numeric(row[chartMetric]));
  const previousRows=sameDay?(rows(priorTraffic.data?.hours).length?rows(priorTraffic.data?.hours):rows(previous.trend)):rows(priorTraffic.data?.days);
  const canCompare=compare&&(priorTraffic.data?.coverage===1||previous.coverage===1)&&previousRows.length>=chartRows.length;
- const series=[{name:range.from===range.to?range.from:`${range.from} ~ ${range.to}`,values:currentValues},...(canCompare?[{name:sameDay?shift(range.from,-1):'上一周期',values:previousRows.slice(0,chartRows.length).map(row=>selected==='ips'?null:numeric(row[chartMetric]))}]:[])];
+ const series=[{name:range.from===range.to?range.from:`${range.from} ~ ${range.to}`,values:currentValues},...(canCompare?[{name:sameDay?shift(range.from,-1):'上一周期',values:previousRows.slice(0,chartRows.length).map(row=>numeric(row[chartMetric]))}]:[])];
  const trafficVisitors=(traffic.data?.visitors||{}) as Row;
  const visitorNumber=(record:Row|undefined,key:string)=>numeric(typeof record?.[key]==='object'?(record[key] as Row).uv:record?.[key]);
  const newOldSeries=[{name:'新访客',values:[visitorNumber(trafficVisitors,'new')]},{name:'老访客',values:[visitorNumber(trafficVisitors,'returning')]}];
@@ -65,11 +67,12 @@ export function FiftyOneOverview({site,data,previous,compare,query,range,onRange
    <section className="l51-live-card"><h2><span aria-hidden="true">◈</span> 最近15分钟活跃访客数</h2><strong>{metricText(active.visitors)}</strong><a href={reportHref('realtime')} onClick={event=>{event.preventDefault();onReport('realtime');}}>查看实时 <span aria-hidden="true">›</span></a>{summary.error&&<small role="status">实时数据暂不可用</small>}</section>
    <section className="l51-summary">
     <div className="l51-summary-mobile"><div className="l51-mobile-periods" role="group" aria-label="概况统计周期">{timeRows.map(([label],index)=><button key={label} type="button" aria-pressed={mobilePeriod===index} onClick={()=>setMobilePeriod(index)}>{label}</button>)}</div><div className="l51-mobile-metrics">{metrics.map(([key,label])=><div key={key}><span>{label}</span><strong>{metricText((timeRows[mobilePeriod]?.[1]?.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div>{expanded&&<div className="l51-mobile-history">{extendedRows.map(([label,row])=><section key={label}><h3>{label}</h3><div className="l51-mobile-metrics">{metrics.map(([key,name])=><div key={key}><span>{name}</span><strong>{metricText((row.totals as Row|undefined)?.[key!],key)}</strong></div>)}</div></section>)}</div>}</div>
-    <div className="l51-summary-grid"><div className="l51-summary-labels"><span/><span>今日</span><span>昨日</span><span>预计今日</span><span>昨日此时</span></div>{metrics.map(([key,label])=><div key={key} className="l51-summary-metric"><span className="l51-summary-name">{label} <span title={key==='ips'?'当前采集只保留脱敏网段，无法还原独立IP数。':label} aria-label={label+'说明'}>ⓘ</span></span>{timeRows.map(([name,row],index)=><span key={name} className={index===0?'l51-today-value':''} title={name==='预计今日'?'当前未启用流量预测':undefined}>{metricText(value(row.totals as Row,key!),key)}</span>)}</div>)}</div>
+    <div className="l51-summary-grid"><div className="l51-summary-labels"><span/><span>今日</span><span>昨日</span><span>预计今日</span><span>昨日此时</span></div>{metrics.map(([key,label])=><div key={key} className="l51-summary-metric"><span className="l51-summary-name">{label} <span title={key==='ips'?'按站点内的独立网络地址去重；早期未采集的记录不补造。 ':label} aria-label={label+'说明'}>ⓘ</span></span>{timeRows.map(([name,row],index)=><span key={name} className={index===0?'l51-today-value':''} title={name==='预计今日'?'依据历史日内分布和当前流量估算，实际结果会变化':undefined}>{metricText(value(row.totals as Row,key!),key)}</span>)}</div>)}</div>
     {expanded&&<div className="l51-summary-grid l51-history-grid"><div className="l51-history-labels">{extendedRows.map(([label])=><span key={label}>{label}</span>)}</div>{metrics.map(([key])=><div key={key} className="l51-history-metric">{extendedRows.map(([label,row])=><span key={label}>{metricText(value(row.totals as Row,key!),key)}{label==='历史峰值'&&typeof((extended.peaks as Row|undefined)?.[key!] as Row|undefined)?.date==='string'&&<small>({String(((extended.peaks as Row)[key!] as Row).date)})</small>}</span>)}</div>)}</div>}
     <button className="l51-summary-expand" type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)} aria-label={expanded?'收起历史统计':'展开历史统计'}>{expanded?'⌃':'⌄'}</button>
    </section>
   </div>
+  <ForecastNote forecast={overview?.forecast as Row|undefined}/>
   <div className="l51-range-bar"><div role="group" aria-label="日期范围">{[['今日',today,today],['昨日',yesterday,yesterday],['最近七日',shift(today,-6),today],['最近30日',shift(today,-29),today]].map(([label,from,to])=><button key={label} aria-pressed={range.from===from&&range.to===to} onClick={()=>apply(from!,to!)}>{label}</button>)}</div><div className="l51-calendar-control"><button aria-expanded={calendar} onClick={()=>setCalendar(v=>!v)} aria-label="自定义日期范围">▦ {range.from} ~ {range.to}</button>{calendar&&<form onSubmit={event=>{event.preventDefault();try{dateRange(draftFrom,draftTo,site.timezone);apply(draftFrom,draftTo);}catch{/* Native date inputs retain the invalid selection for correction. */}}} className="l51-date-popover"><label>开始日期<input type="date" required value={draftFrom} max={draftTo} onChange={event=>setDraftFrom(event.target.value)}/></label><label>结束日期<input type="date" required value={draftTo} min={draftFrom} onChange={event=>setDraftTo(event.target.value)}/></label><button type="submit">确定</button><button type="button" onClick={()=>setCalendar(false)}>取消</button></form>}</div></div>
   <div className="l51-overview-first">
    <Panel title="趋势分析" detail={detail('trend')}><div className="l51-metric-tabs" role="tablist" aria-label="趋势指标">{[['ips','IP数'],['pv','浏览量(PV)'],['uv','访客数(UV)'],['newVisitors','新访客数'],['sessions','会话数']].map(([key,label])=><button role="tab" aria-selected={selected===key} key={key} onClick={()=>setSelected(key!)}>{label}</button>)}</div>{currentValues.some(v=>v!==null)?<FiftyOneChart labels={labels} series={series} height={270}/>:<div className="l51-chart-empty">{selected==='ips'?'尚无独立 IP 数据':traffic.error?'数据读取失败':'暂无数据'}</div>}</Panel>

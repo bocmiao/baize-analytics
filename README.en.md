@@ -13,6 +13,7 @@ Baize is under active development. [Bug reports and suggestions](https://github.
 ## Features
 
 - **Understand visits:** pageviews, visitors, sessions, channels, UTM, popular pages, devices, geography and Web Vitals, with date filters and period comparisons.
+- **Complete traffic details (Node Standard):** distinct IPs, offline IPv4/IPv6 geography and ISP data, today’s traffic forecast, event definitions and crawler access logs. [Setup guide](docs/TRAFFIC_DATA_SETUP.md) (Chinese).
 - **Track events and conversions:** custom events and goals. Standard also offers funnels, paths, retention and experiment attribution.
 - **Manage multiple sites:** site permissions, exports, data retention and visitor deletion. Standard adds team invitations, sharing, scheduled reports and alerts.
 - **Explore when needed:** opt-in replay, heatmaps, search connectors and AI in Standard; manual HTML checks and manual BYOK AI in Lite.

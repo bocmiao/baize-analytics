@@ -1,4 +1,5 @@
 import {captureRevenueIntakeCoverage,advanceRevenueIntakeCoverage} from './fact-coverage-witness.js';
+import {recordBotVisit} from './bot-visit-log.js';
 import {recordBotObservation} from './bot-observations.js';
 import {recordIntakeObservation} from './intake-status.js';
 import {replayPayloadHash} from './replay-hash.js';
@@ -19,6 +20,7 @@ import {resolveCanonicalIngest,publishCanonicalIngest,verifyCanonicalRetryReceip
 import {recordControlledEventProvenance} from './canonical-shadow-provenance.js';
 import type {StoredEvent} from './clickhouse-store.js';
 import {normalizeCanonicalEvent,type CanonicalInput} from './canonical-clickhouse.js';
+import {networkIPIdentity} from './network-ip.js';
 export {dimensions};
 function cleanEvent(event:WireEvent,ip:string,privacy=false){
   const out={...event};const url=new URL(event.url);url.search='';url.hash='';out.url=url.toString();
@@ -44,10 +46,10 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
     if(rate.size>10000){for(const [key,v] of rate)if(v.expires<Date.now())rate.delete(key);while(rate.size>10000)rate.delete(rate.keys().next().value!);}
     if(ctx.redis){try{count=Math.max(count,Number(await ctx.redis.eval("local c=redis.call('INCR',KEYS[1]); if c==1 then redis.call('EXPIRE',KEYS[1],60) end; return c",1,limitKey)));}catch{/* Cache failure retains bounded local intake limits; durable PG remains authoritative. */}}
     if(count>100){reply.header('Retry-After','60');throw new HttpError(429,'rate_limited');}
-    const bot=await botFilter.inspect({siteId:site.id,secret:site.salt_secret,ip,userAgent:ua});
-    if(bot.isBot){await recordBotObservation(ctx.pool,site.id,site.timezone,bot,botFilter.ruleVersion,envelope.events.length);return reply.code(204).send();}
     if((site.config.excluded_ips??[]).some((cidr:string)=>matchesCIDR(ip,cidr)))return reply.code(204).send();
     if(req.headers.authorization){const write=site.config.write_key_hash;const token=req.headers.authorization.replace(/^Bearer /,'');if(!write||hashToken(token)!==write)throw new HttpError(401,'invalid_write_key');const signature=req.headers['x-baize-signature'];const expected=createHmac('sha256',token).update(canonical(envelope)).digest();let supplied:Buffer;try{supplied=Buffer.from(String(signature),'hex');}catch{throw new HttpError(401,'invalid_signature');}if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected))throw new HttpError(401,'invalid_signature');}
+    const bot=await botFilter.inspect({siteId:site.id,secret:site.salt_secret,ip,userAgent:ua});
+    if(bot.isBot){await recordBotObservation(ctx.pool,site.id,site.timezone,bot,botFilter.ruleVersion,envelope.events.length);await recordBotVisit(ctx.pool,{siteId:site.id,ip,userAgent:ua,path:(envelope.events.find((event:unknown)=>event&&typeof event==='object'&&'path' in event) as {path?:unknown}|undefined)?.path,decision:bot});return reply.code(204).send();}
     const geo=geoLookup(ip);const rejected:{index:number;event_id?:string;reason:string}[]=[];let duplicates=0,accepted=0,ignored=false,lastAcceptedEventTime=0;
     await transaction(ctx.pool,async client=>{
       await lockSite(client,site.id);
@@ -104,7 +106,7 @@ export async function registerCollect(app:FastifyInstance,ctx:AppContext,geoLook
         if(wire.type==='identify'&&userId){if(!await registerIdentity(client,site.id,visitor,userId,wire.ts)){rejected.push({index,event_id:wire.event_id,reason:'identity_time_conflict'});continue;}}if(site.privacy_mode==='standard'){const resolved=wire.type==='identify'?await checkIdentity(client,site.id,visitor,wire.ts,userId??null):identity;if(!resolved.allowed){rejected.push({index,event_id:wire.event_id,reason:resolved.reason??'identity_mismatch'});continue;}userId=resolved.user_id??undefined;}
         let clean=cleanEvent(wire,ip,site.privacy_mode==='daily_salt');clean.visitor_id=visitor as any;if(userId)clean.user_id=userId;if(orderHash)clean.order_id=orderHash;
         if(site.privacy_mode==='daily_salt')clean.page_id=dayScopedPageId(site.salt_secret,day,wire.page_id);
-        let metadata={...batchDimensions(wire),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip)};
+        let metadata={...batchDimensions(wire),ip_truncated:site.privacy_mode==='daily_salt'?null:anonymizeIP(ip),...(site.privacy_mode==='standard'?{client_ip_id:networkIPIdentity(ip,site.id,site.salt_secret)}:{})};
         if(site.privacy_mode==='daily_salt'){clean=sanitizeDailyPayload(clean,{visitorId:visitor,pageId:clean.page_id});metadata=sanitizeDailyDimensions(metadata);}
         // Replay is revalidated by the governance module before raw JSON can be retained.
         if(wire.type==='replay'){

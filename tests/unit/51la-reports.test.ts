@@ -21,7 +21,7 @@ beforeEach(async()=>{
   if(sql.includes('SELECT timezone,privacy_mode'))return {rows:[{timezone:'Asia/Shanghai',privacy_mode:privacy,retention_days:365,config:{}}]};
   if(sql.includes('analytics_raw_retirement_frontiers'))return {rows:retiredBefore?[{retired_before:retiredBefore}]:[]};
   if(sql.includes('visitor_first_seen'))return {rows:[{visitor_id:'visitor-1',first_date:'2026-11-03'}]};
-  if(sql.includes('AS today_start'))return {rows:[{today_start:'2026-11-02T16:00:00.000Z',yesterday_start:'2026-11-01T16:00:00.000Z',yesterday_same:'2026-11-02T08:30:00.000Z'}]};
+  if(sql.includes('AS today_start'))return {rows:[{today_start:'2026-11-02T16:00:00.000Z',today_end:'2026-11-03T16:00:00.000Z',history_start:'2026-10-19T16:00:00.000Z',yesterday_start:'2026-11-01T16:00:00.000Z',yesterday_same:'2026-11-02T08:30:00.000Z'}]};
   throw Error('Unexpected query: '+sql);
  });
  mocks.snapshot.mockImplementation(async(_ctx:unknown,_site:string,_from:string,_to:string,read:(value:typeof client)=>Promise<unknown>)=>({value:await read(client),dirty}));
@@ -65,7 +65,8 @@ describe('authenticated 51LA report routes',()=>{
  it('queries three site-calendar periods through existing exact facts in one snapshot',async()=>{
   const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);
   expect(mocks.snapshot).toHaveBeenCalledTimes(1);expect(mocks.stats.mock.calls.map(call=>call.slice(1,4))).toEqual([['site-a','2026-11-02T16:00:00.000Z','2026-11-03T08:30:00.000Z'],['site-a','2026-11-01T16:00:00.000Z','2026-11-02T16:00:00.000Z'],['site-a','2026-11-01T16:00:00.000Z','2026-11-02T08:30:00.000Z']]);
-  expect(mocks.stats.mock.calls.every(call=>call[5].client===client)).toBe(true);expect(response.json()).toMatchObject({today:{totals:{pv:13,uv:7,ips:null}},active15:{visitors:1,pageviews:1},forecast:{pv:null,uv:null,ips:null,status:'not_estimated'}});
+  expect(mocks.stats.mock.calls.every(call=>call[5].client===client)).toBe(true);expect(response.json()).toMatchObject({today:{totals:{pv:13,uv:7,ips:null}},active15:{visitors:1,pageviews:1},forecast:{pv:19,uv:null,ips:null,status:'partially_estimated',details:{pv:{method:'run_rate',sampleDays:0}}}});
+  expect(mocks.snapshot.mock.calls[0]![2]).toBe('2026-10-17T08:30:00.000Z');expect(mocks.read).toHaveBeenCalledWith(ctx.pool,'site-a',expect.objectContaining({from:new Date('2026-10-19T15:30:00.000Z'),to:new Date('2026-11-02T16:00:00.000Z'),client,statsMirrorRead:true}));
   expect(mocks.history).not.toHaveBeenCalled();expect(response.json()).not.toHaveProperty('extended');
  });
  it('only loads optional historical facts after extended=1 is explicitly requested',async()=>{
@@ -73,7 +74,7 @@ describe('authenticated 51LA report routes',()=>{
   const response=await app.inject('/api/v1/sites/site-a/overview-summary?extended=1');expect(response.statusCode).toBe(200);expect(mocks.history).toHaveBeenCalledWith(ctx,client,'site-a','2026-11-03T08:30:00.000Z',expect.objectContaining({timezone:'Asia/Shanghai'}),{});expect(response.json().extended).toMatchObject({total:{totals:{pv:100,uv:9}},peaks:{pv:{value:50,date:'2026-11-01'}}});
  });
  it('marks fact-based periods pending when publication generation changed',async()=>{
-  dirty=true;const response=await app.inject('/api/v1/sites/site-a/overview-summary');const body=response.json();expect(body).toMatchObject({aggregationPending:true,today:{coverage:0},yesterday:{coverage:0},yesterdaySameTime:{coverage:0}});
+  dirty=true;const response=await app.inject('/api/v1/sites/site-a/overview-summary');const body=response.json();expect(body).toMatchObject({aggregationPending:true,today:{coverage:0},yesterday:{coverage:0},yesterdaySameTime:{coverage:0},forecast:{pv:null,uv:null,ips:null,sessions:null,coverage:0,status:'aggregation_pending',details:{pv:{value:null,interval:null,status:'unavailable'}}}});
  });
  it('retains complete today visitor data when yesterday raw bodies were retired',async()=>{
   retiredBefore='2026-11-02T12:00:00.000Z';const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);expect(response.json()).toMatchObject({today:{visitors:{new:1,returning:0,unknown:0,status:'complete'}},yesterday:{visitors:{new:null,status:'raw_detail_retired'}},yesterdaySameTime:{visitors:{new:null,status:'raw_detail_retired'}}});
@@ -86,5 +87,23 @@ describe('authenticated 51LA report routes',()=>{
  it('preserves daily-salt privacy in visit rows and new/returning statistics',async()=>{
   privacy='daily_salt';const response=await app.inject('/api/v1/sites/site-a/visits?'+range);expect(response.json().rows[0]).toMatchObject({ipPrefix:null,visitorType:'unknown'});
   const report=await app.inject('/api/v1/sites/site-a/traffic-report?'+range);expect(report.json().visitors).toEqual({new:null,returning:null,unknown:null,status:'unsupported_in_this_mode'});expect(report.json().groups.visitorType).toEqual([]);
+ });
+ it('trains daily predictions on complete raw days and reports actual IP/provider availability',async()=>{
+  const ipId='v1:'+'a'.repeat(64),current={...input[0]!,dimensions:{...input[0]!.dimensions,client_ip_id:ipId,isp:'中国联通'}};
+  const events=[current];for(let days=1;days<=14;days++){const date=new Date(Date.parse('2026-11-03T12:00:00Z')-days*86400000).toISOString().slice(0,10);for(let index=0;index<20;index++){const id=`history-${days}-${index}`;events.push({...current,event_id:id,page_id:id,visitor_id:id,ts:date+(index<8?'T02:00:00Z':'T12:00:00Z')});}}
+  mocks.read.mockImplementation(async(_pool:unknown,_site:string,query:{from:Date;to:Date})=>({events:events.filter(event=>+new Date(event.ts)>=+query.from&&+new Date(event.ts)<+query.to),coverage:1,source:'postgres',mode:'postgres',rangeStatus:'complete',truncated:false}));
+  const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);expect(response.json()).toMatchObject({ipStatus:'complete',ipCoverage:1,providerStatus:'complete',providerCoverage:1,today:{totals:{ips:1}},forecast:{pv:27,historyCoverage:1,historyStatus:'complete',details:{pv:{sampleDays:14,method:'historical_remaining',value:27},ips:{value:1}}}});
+ });
+ it('falls back transparently when history is truncated and previous fact periods are incomplete',async()=>{
+  mocks.read.mockImplementation(async(_pool:unknown,_site:string,query:{from:Date;to:Date})=>({events:input,coverage:+query.from<Date.parse('2026-11-01T16:00:00Z')?0:1,source:'postgres',mode:'postgres',rangeStatus:'complete',truncated:+query.from<Date.parse('2026-11-01T16:00:00Z')}));
+  mocks.stats.mockImplementation(async(_ctx:unknown,_site:string,from:string)=>({totals:{pv:13,uv:7,sessions:9,bounceRate:0,averageDuration:1},coverage:from==='2026-11-02T16:00:00.000Z'?1:0,rangeStatus:'complete'}));
+  const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);expect(response.json().forecast).toMatchObject({pv:19,historyCoverage:0,historyStatus:'detail_limit_exceeded',sampleDays:0,details:{pv:{method:'run_rate',confidence:'low'},uv:{value:null,status:'insufficient_data'}}});
+ });
+ it('can use complete yesterday facts when the older raw history has expired',async()=>{
+  retiredBefore='2026-11-01T16:00:00.000Z';const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);expect(response.json().forecast).toMatchObject({pv:13,historyCoverage:0,historyStatus:'raw_detail_retired',details:{pv:{method:'yesterday_remaining',sampleDays:1}}});
+ });
+ it('reports unavailable provider data without presenting a missing raw sample as complete',async()=>{
+  mocks.read.mockResolvedValue({events:input,coverage:0,source:'postgres',mode:'postgres',truncated:true,rangeStatus:'complete'});
+  const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode).toBe(200);expect(response.json()).toMatchObject({ipStatus:'detail_limit_exceeded',ipCoverage:0,providerStatus:'detail_limit_exceeded',providerCoverage:0,forecast:{ips:null}});
  });
 });

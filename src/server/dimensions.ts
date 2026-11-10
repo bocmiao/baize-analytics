@@ -6,15 +6,15 @@ const search=['google.com','google.cn','google.com.hk','google.co.uk','google.co
 const social=['weixin.qq.com','wechat.com','weibo.com','facebook.com','twitter.com','x.com','t.co','zhihu.com','douyin.com','xiaohongshu.com'];
 export const matchesHost=(host:string,domain:string,subdomains=true)=>host===domain||(subdomains&&host.endsWith('.'+domain));
 /** Screen dimensions are CSS pixels; DPR describes density, not extra desktop width. */
-export function terminalDimensions(ua:string,event:Pick<WireEvent,'screen'|'device_pixel_ratio'>){
+export function terminalDimensions(ua:string,event:Pick<WireEvent,'screen'|'device_pixel_ratio'|'color_depth'>){
  return terminalDimensionsFromParsed(new UAParser(ua.slice(0,4096)).getResult(),event);
 }
-function terminalDimensionsFromParsed(parsed:ReturnType<UAParser['getResult']>,event:Pick<WireEvent,'screen'|'device_pixel_ratio'>){
+function terminalDimensionsFromParsed(parsed:ReturnType<UAParser['getResult']>,event:Pick<WireEvent,'screen'|'device_pixel_ratio'|'color_depth'>){
  const kind=parsed.device.type;
  const [width,height]=(event.screen??'').split('x').map(Number),valid=Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>0&&width<=32768&&height<=32768;
  const size=valid?Math.min(width,height):undefined;
  const device=kind==='tablet'?'tablet':kind==='mobile'?(size!==undefined&&size>=600?'tablet':'mobile'):kind?kind:parsed.browser.name||parsed.os.name?(size!==undefined&&size<600?'mobile':size!==undefined&&size<1024?'tablet':'desktop'):'unknown';
- return {device,browser:parsed.browser.name??'unknown',os:parsed.os.name??'unknown',screen:valid?`${width}x${height}`:'unknown',device_pixel_ratio:event.device_pixel_ratio??null};
+ return {device,brand:parsed.device.vendor??'unknown',colorDepth:event.color_depth?String(event.color_depth):'unknown',browser:parsed.browser.name??'unknown',os:parsed.os.name??'unknown',screen:valid?`${width}x${height}`:'unknown',device_pixel_ratio:event.device_pixel_ratio??null};
 }
 /** Classification only: configurable domain strings never initiate DNS or network access. */
 export function eventDimensions(ua:string,event:WireEvent,geo:Record<string,string>={},config:Record<string,unknown>={},ip=''){

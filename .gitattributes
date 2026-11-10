@@ -6,6 +6,8 @@
 docs/archive/** text eol=lf
 # Preserve licensed geography assets and their provenance checksums on Windows.
 packages/geography/** text eol=lf
+packages/ip2region-data/** text eol=lf
+db/migrations/062_bot_visit_log.sql text eol=lf
 
 *.png binary
 *.jpg binary

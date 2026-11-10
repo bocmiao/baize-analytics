@@ -20,7 +20,7 @@ export const eventSchema=z.object({
   visible_ms:z.number().int().min(0).max(86400000).optional(),interval_start:z.number().int().optional(),interval_end:z.number().int().optional(),replay_seq:z.number().int().nonnegative().optional(),
   vitals:z.partialRecord(vitalKeySchema,z.number().nonnegative()).optional(),
   revenue:z.number().finite().nonnegative().max(1e12).optional(),currency:z.string().regex(/^[A-Z]{3}$/).optional(),order_id:z.string().min(1).max(128).optional(),user_id:z.string().min(1).max(256).optional(),
-  screen:z.string().max(64).optional(),device_pixel_ratio:z.number().finite().min(0.1).max(16).optional(),language:z.string().max(64).optional(),replay:z.array(z.unknown()).max(500).optional(),heatmap:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),kind:z.enum(['click','scroll']),width:z.number().positive().optional(),height:z.number().positive().optional()}).optional()
+  screen:z.string().max(64).optional(),color_depth:z.number().int().min(1).max(64).optional(),device_pixel_ratio:z.number().finite().min(0.1).max(16).optional(),language:z.string().max(64).optional(),replay:z.array(z.unknown()).max(500).optional(),heatmap:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),kind:z.enum(['click','scroll']),width:z.number().positive().optional(),height:z.number().positive().optional()}).optional()
 }).superRefine((e,c)=>{
   const require=(key:keyof typeof e)=>{if(e[key]===undefined)c.addIssue({code:'custom',path:[key],message:`${key} required for ${e.type}`});};
   if(e.type==='event')require('event_name');

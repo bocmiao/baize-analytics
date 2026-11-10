@@ -25,8 +25,10 @@ it('keeps all UTM dimensions and removes directly identifying search terms',()=>
 it('parses actual terminal UA, CSS screen and density without inventing devices for unknown UA',()=>{
  const phone='Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
  expect(terminalDimensions(phone,{screen:'390x844',device_pixel_ratio:3})).toMatchObject({device:'mobile',browser:'Mobile Safari',os:'iOS',device_pixel_ratio:3});
+ expect(terminalDimensions(phone,{color_depth:24})).toMatchObject({brand:'Apple',colorDepth:'24'});
  expect(terminalDimensions('Mozilla/5.0 (Linux; Android 13; Pixel C) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',{screen:'1280x800',device_pixel_ratio:2})).toMatchObject({device:'tablet',browser:'Chrome',os:'Android'});
  expect(terminalDimensions('unrecognized-client',{screen:'not-a-screen'})).toMatchObject({device:'unknown',browser:'unknown',os:'unknown',screen:'unknown'});
+ expect(terminalDimensions('unrecognized-client',{})).toMatchObject({brand:'unknown',colorDepth:'unknown'});
 });
 
 it('marks advertising origin without retaining click IDs',()=>{expect(eventDimensions('',event({ad_click_source:'both'}))).toMatchObject({channel:'paid',ad_click_source:'both'});});

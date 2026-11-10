@@ -7,6 +7,9 @@ const days:HistoryDay[]=[
  {day:'2026-11-02',pv:30,uv:6,newVisitors:0,sessions:5,bounces:2,duration:200}
 ];
 describe('51LA published historical summary',()=>{
+ it('uses exact all-history IP membership instead of adding per-day distincts',()=>{
+  const result=summarizePublishedHistory(days.map((day,index)=>({...day,ips:[2,4,3][index]})),{uv:11,newVisitors:9,ips:5});expect(result.totals.ips).toBe(5);expect(result.peaks.ips).toEqual({value:4,date:'2026-11-01'});
+ });
  it('uses whole-history exact membership rather than adding daily UV',()=>{
   const summary=summarizePublishedHistory(days,{uv:11,newVisitors:9});expect(summary.totals).toMatchObject({pv:70,uv:11,newVisitors:9,ips:null,sessions:17});expect(summary.totals.uv).not.toBe(19);
  });

@@ -1,0 +1,31 @@
+{
+  "provider": "ip2region",
+  "revision": "d003e9ea1cbce169488cea7d7de3ac6d6fd00249",
+  "license": "Apache-2.0 OR MIT",
+  "source": "https://github.com/lionsoul2014/ip2region",
+  "files": [
+    {
+      "name": "ip2region_v4.xdb",
+      "path": "data/ip2region_v4.xdb",
+      "family": 4,
+      "bytes": 11122742,
+      "sha256": "a12ad5aca1277d67e525efcda531a20cc0d654ff4f087150d45bc17fca4bc260",
+      "gitBlob": "3e2eb3568a704401325a0afa51d4759ab665a5ec"
+    },
+    {
+      "name": "ip2region_v6.xdb",
+      "path": "data/ip2region_v6.xdb",
+      "family": 6,
+      "bytes": 37277813,
+      "sha256": "939f6b46bd2b8bec3cf7c5ceb8ba782266ae9b1f35b5ba7916700dec0b7506ed",
+      "gitBlob": "15002d535f31336cc556b672a617186c827ea14c"
+    }
+  ],
+  "licenseFile": {
+    "name": "LICENSE.ip2region.md",
+    "path": "LICENSE.md",
+    "bytes": 12976,
+    "sha256": "fe01f2f8fcaafac539154e6aa80b0b7f8af54e01dc4d52322f72971991c6280e",
+    "gitBlob": "82c2274323688510d87cfdfcf30c38eb6ce2d9b1"
+  }
+}

@@ -29,9 +29,9 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('51LA reports with real PostgreS
  it('paginates actual sessions and retains their complete in-window paths',async()=>{
   const response=await app.inject(url('visits')+'&pageSize=1');expect(response.statusCode,response.body).toBe(200);const body=response.json();expect(body).toMatchObject({total:2,pageSize:1,coverage:1});expect(body.rows).toHaveLength(1);expect(body.live.active[15]).toBe(2);expect(body.live.pages.reduce((sum:number,row:{pv:number})=>sum+row.pv,0)).toBe(3);
  });
- it('matches site-calendar SQL counts for all overview periods and leaves IP unknown',async()=>{
+ it('matches site-calendar SQL counts, reports zero IP for empty periods and unknown IP for unidentified visits',async()=>{
   const response=await app.inject(`/api/v1/sites/${site}/overview-summary`);expect(response.statusCode,response.body).toBe(200);const body=response.json();
-  for(const key of ['today','yesterday','yesterdaySameTime']){const period=body[key],expected=(await pool.query("SELECT count(*)::int AS pv,count(DISTINCT e.visitor_id)::int AS uv FROM events e WHERE e.site_id=$1 AND e.ts>=$2 AND e.ts<$3 AND e.type='pageview' AND NOT e.is_bot AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id)",[site,period.from,period.to])).rows[0];expect(period.totals).toMatchObject({...expected,ips:null});expect(period.coverage).toBe(1);}
+  for(const key of ['today','yesterday','yesterdaySameTime']){const period=body[key],expected=(await pool.query("SELECT count(*)::int AS pv,count(DISTINCT e.visitor_id)::int AS uv FROM events e WHERE e.site_id=$1 AND e.ts>=$2 AND e.ts<$3 AND e.type='pageview' AND NOT e.is_bot AND NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=e.site_id AND t.visitor_id=e.visitor_id)",[site,period.from,period.to])).rows[0];expect(period.totals).toMatchObject({...expected,ips:expected.pv===0?0:null});expect(period.coverage).toBe(1);}
   expect(body.active15.visitors).toBe(2);expect(body.forecast.pv).toBeNull();
  });
  it('reads whole-history exact facts after old raw events expire and returns separate peak dates',async()=>{

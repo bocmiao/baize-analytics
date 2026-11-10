@@ -60,16 +60,16 @@ export const SITE_EXPORT_QUERIES={
 } as const;
 const noDailyIdentity=new Set(['visitor_first_seen','identity_map','identity_bindings','identity_tombstones','experiment_assignments','experiment_contributions']);
 const jsonColumns=new Set(['payload','dimensions','data','config','steps','variants','dsl','body','target','results','metadata','evidence','recheck','priority_basis','settings','tags']);
-const secretKey=(key:string)=>/(?:password|secret|credential|authorization|encrypted|salt_secret|token_hash|access_token|refresh_token|api[_-]?key|license[_-]?key|write[_-]?key)/i.test(key);
+const secretKey=(key:string)=>/(?:^client_ip_id$|password|secret|credential|authorization|encrypted|salt_secret|token_hash|access_token|refresh_token|api[_-]?key|license[_-]?key|write[_-]?key)/i.test(key);
 const email=(value:unknown)=>typeof value==='string'&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 export function scrubExportJson(value:unknown,dailySalt:boolean):unknown{
  if(Array.isArray(value))return value.filter(item=>!dailySalt||!email(item)).map(item=>scrubExportJson(item,dailySalt));
  if(!value||typeof value!=='object'||value instanceof Date)return value;
  const output:Record<string,unknown>=Object.create(null);
  for(const [key,item] of Object.entries(value)){
-  if(secretKey(key)||dailySalt&&(stableIdentityKey(key)||email(item)))continue;
+  if(key==='client_ip_id'||secretKey(key)||dailySalt&&(stableIdentityKey(key)||email(item)))continue;
   // Joint dimension keys are JSON-encoded. Unsafe dimensions are not allowed to escape as key strings.
-  if(dailySalt&&key.startsWith('{')){try{const parsed=JSON.parse(key);if(Object.keys(parsed).some(stableIdentityKey)||Object.values(parsed).some(email))continue;}catch{/* ordinary text key */}}
+  if(key.startsWith('{')){try{const parsed=JSON.parse(key);if(Object.hasOwn(parsed,'client_ip_id')||dailySalt&&(Object.keys(parsed).some(stableIdentityKey)||Object.values(parsed).some(email)))continue;}catch{/* ordinary text key */}}
   output[key]=scrubExportJson(item,dailySalt);
  }
  return output;

@@ -7,17 +7,18 @@ import {withCacheReadSource} from './cache-store-source.js';
 import {factReadSql} from './fact-read-context.js';
 import {factSelection,publishedFactPredicate,publishedMemberSource} from './fact-member-query.js';
 import {ApplicationError} from '../shared/error-codes.js';
+import {queryPublishedIPMetrics} from './published-ip-metrics.js';
 
 const historyStart='0001-01-01T00:00:00.000Z';
-export interface HistoryDay {day:string;pv:number;sessions:number;bounces:number;duration:number;uv:number|null;newVisitors:number|null}
-export interface HistoryTotals {pv:number|null;uv:number|null;ips:null;newVisitors:number|null;sessions:number|null;bounceRate:number|null;averageDuration:number|null;averagePages:number|null}
+export interface HistoryDay {day:string;pv:number;sessions:number;bounces:number;duration:number;uv:number|null;newVisitors:number|null;ips?:number|null}
+export interface HistoryTotals {pv:number|null;uv:number|null;ips:number|null;newVisitors:number|null;sessions:number|null;bounceRate:number|null;averageDuration:number|null;averagePages:number|null}
 const unavailable=():HistoryTotals=>({pv:null,uv:null,ips:null,newVisitors:null,sessions:null,bounceRate:null,averageDuration:null,averagePages:null});
 export type PeakMetric='pv'|'uv'|'ips'|'newVisitors'|'sessions'|'bounceRate'|'averageDuration'|'averagePages';
 const peakMetrics:PeakMetric[]=['pv','uv','ips','newVisitors','sessions','bounceRate','averageDuration','averagePages'];
-function dailyMetrics(row:HistoryDay):HistoryTotals{return {pv:row.pv,uv:row.uv,ips:null,newVisitors:row.newVisitors,sessions:row.sessions,bounceRate:row.sessions?row.bounces/row.sessions:0,averageDuration:row.sessions?row.duration/row.sessions:0,averagePages:row.sessions?row.pv/row.sessions:0};}
+function dailyMetrics(row:HistoryDay):HistoryTotals{return {pv:row.pv,uv:row.uv,ips:row.ips??null,newVisitors:row.newVisitors,sessions:row.sessions,bounceRate:row.sessions?row.bounces/row.sessions:0,averageDuration:row.sessions?row.duration/row.sessions:0,averagePages:row.sessions?row.pv/row.sessions:0};}
 
 /** Whole-history UV is supplied by a DISTINCT SQL query; daily UV must never be summed. */
-export function summarizePublishedHistory(days:HistoryDay[],distinct:{uv:number|null;newVisitors:number|null},status='complete'){
+export function summarizePublishedHistory(days:HistoryDay[],distinct:{uv:number|null;newVisitors:number|null;ips?:number|null},status='complete'){
  const peaks=Object.fromEntries(peakMetrics.map(key=>[key,{value:null as number|null,date:null as string|null}])) as Record<PeakMetric,{value:number|null;date:string|null}>;
  if(status!=='complete')return {totals:unavailable(),peaks:{...peaks,coverage:0,status}};
  const sum=days.reduce((all,row)=>({pv:all.pv+row.pv,sessions:all.sessions+row.sessions,bounces:all.bounces+row.bounces,duration:all.duration+row.duration}),{pv:0,sessions:0,bounces:0,duration:0});
@@ -36,6 +37,7 @@ export async function query51laHistory(ctx:AppContext,client:PoolClient,siteId:s
   const read=(sql:string,values:unknown[])=>client.query(factReadSql(client,sql),values);
   const state=(await client.query('SELECT generation::text,processed_generation::text FROM aggregation_state WHERE site_id=$1',[siteId])).rows[0];
   const selected=factSelection(historyStart,asOf,filters),params:unknown[]=[siteId,...selected.values],zone=params.length+1;
+  const notErased="NOT EXISTS(SELECT 1 FROM tombstones t WHERE t.site_id=$1 AND t.visitor_id=e.visitor_id) AND NOT EXISTS(SELECT 1 FROM identity_tombstones t WHERE t.site_id=$1 AND t.visitor_id=e.visitor_id AND t.started_at<=e.event_ts AND t.ended_at>e.event_ts)";
   const hasFilters=Object.values(filters).some(value=>value!==undefined);
   const unavailableArchive=(await read("SELECT 1 FROM stats_hourly h WHERE site_id=$1 AND h.hour<$2::timestamptz AND ((h.data ? 'relationalUnavailable') OR (h.data ? 'relationalVersion' AND NOT EXISTS(SELECT 1 FROM analytics_relational_buckets p WHERE p.site_id=h.site_id AND p.hour=h.hour))) LIMIT 1",[siteId,asOf])).rowCount;
   const legacy=(await read("SELECT count(*)::int AS n,bool_or(hour+interval '1 hour'>$2::timestamptz) AS partial_end,bool_or((hour AT TIME ZONE $3)::date<>((hour+interval '1 hour'-interval '1 millisecond') AT TIME ZONE $3)::date) AS crosses_day FROM stats_hourly WHERE site_id=$1 AND hour<$2::timestamptz AND NOT(data ? 'relationalVersion')",[siteId,asOf,site.timezone])).rows[0];
@@ -45,7 +47,7 @@ export async function query51laHistory(ctx:AppContext,client:PoolClient,siteId:s
   const overlap=(await read(`SELECT min(h.hour) AS first_hour,max(h.hour) AS last_hour FROM stats_hourly h WHERE h.site_id=$1 AND NOT(h.data ? 'relationalVersion') AND h.hour<$3::timestamptz AND EXISTS(SELECT 1 FROM analytics_effect_facts e WHERE ${publishedFactPredicate} AND NOT e.member AND e.metric IN('pv','sessions','bounces','duration_s') AND ${selected.sql} AND e.event_ts>=h.hour AND e.event_ts<h.hour+interval '1 hour')`,params)).rows[0];
   const overlapping=Boolean(overlap.first_hour),monthOverlapping=overlapping&&+new Date(overlap.last_hour)+3600000>+new Date(monthStart);
   let status=!state||state.generation!==state.processed_generation?'aggregation_pending':unavailableArchive?'unavailable_archive':overlapping?'overlapping_legacy_history':hasFilters&&Number(legacy.n)>0?'filtered_legacy_history_unavailable':legacy.partial_end?'partial_legacy_boundary':legacy.crosses_day?'legacy_timezone_boundary':'complete';
-  const numericSource=`SELECT e.event_ts AS ts,e.metric,e.value FROM analytics_effect_facts e WHERE ${publishedFactPredicate} AND NOT e.member AND e.metric IN('pv','sessions','bounces','duration_s') AND ${selected.sql}
+  const numericSource=`SELECT e.event_ts AS ts,e.metric,e.value FROM analytics_effect_facts e WHERE ${publishedFactPredicate} AND NOT e.member AND e.metric IN('pv','sessions','bounces','duration_s') AND ${selected.sql} AND ${notErased}
    UNION ALL SELECT h.hour,m.metric,COALESCE((h.data->>m.metric)::numeric,0) FROM stats_hourly h CROSS JOIN (VALUES('pv'),('sessions'),('bounces'),('duration_s')) m(metric) WHERE h.site_id=$1 AND h.hour>=$2::timestamptz AND h.hour+interval '1 hour'<=$3::timestamptz AND NOT(h.data ? 'relationalVersion')${hasFilters?' AND false':''}`;
   const numeric=(await read(`SELECT (ts AT TIME ZONE $${zone})::date::text AS day,min(ts) AS first_ts,COALESCE(sum(value) FILTER(WHERE metric='pv'),0)::text AS pv,COALESCE(sum(value) FILTER(WHERE metric='sessions'),0)::text AS sessions,COALESCE(sum(value) FILTER(WHERE metric='bounces'),0)::text AS bounces,COALESCE(sum(value) FILTER(WHERE metric='duration_s'),0)::text AS duration FROM (${numericSource}) n GROUP BY 1 ORDER BY 1 LIMIT 36601`,[...params,site.timezone])).rows;
   if(numeric.length>36600)throw new ApplicationError('analytics_query_limit');
@@ -60,9 +62,14 @@ export async function query51laHistory(ctx:AppContext,client:PoolClient,siteId:s
   const days:HistoryDay[]=numeric.map(row=>({day:row.day,pv:Number(row.pv),sessions:Number(row.sessions),bounces:Number(row.bounces),duration:Number(row.duration),uv:membersByDay.get(row.day)?.uv??0,newVisitors:privacy?null:membersByDay.get(row.day)?.new_visitors??0}));
   const unknown=Number(exact.unknown_visitors)>0;
   const numericDays=new Set(numeric.map(row=>row.day));if(daily.some(row=>!numericDays.has(row.day)))status='incomplete_numeric_history';
-  const summary=summarizePublishedHistory(days,{uv:privacy?null:Number(exact.uv),newVisitors:privacy||unknown?null:Number(exact.new_visitors)},status);
+  const ipSummary=await queryPublishedIPMetrics(client,siteId,historyStart,asOf,site.timezone,privacy,monthStart,filters);
+  const numericPV=days.reduce((sum,day)=>sum+day.pv,0),ipHistoryComplete=status==='complete'&&ipSummary.total.pageviews===numericPV;
+  for(const day of days){const ip=ipSummary.days.get(day.day);day.ips=privacy?null:ip?.pageviews===day.pv?ip.ips:day.pv===0?0:null;}
+  const summary=summarizePublishedHistory(days,{uv:privacy?null:Number(exact.uv),newVisitors:privacy||unknown?null:Number(exact.new_visitors),ips:ipHistoryComplete?ipSummary.total.ips:null},status);
+  if(!ipHistoryComplete||ipSummary.total.ipStatus!=='complete')summary.peaks.ips={value:null,date:null};
   if(unknown){summary.peaks.newVisitors={value:null,date:null};}
-  const thisMonth=monthOverlapping?{...monthBase,totals:unavailable(),coverage:0,status:'overlapping_legacy_history'}:{...monthBase,totals:{...monthBase.totals,newVisitors:privacy||unknown||status!=='complete'?null:Number(exact.month_new_visitors)}};
-  return {thisMonth,total:{from,to:asOf,totals:summary.totals,coverage:status==='complete'?1:0,status:status==='complete'&&!days.length?'empty':status},peaks:summary.peaks,history:{from,to:asOf,timezone:site.timezone,scope:'available_published_history',source:'authenticated_fact_and_legacy_cache',visitorStatus:privacy?'unsupported_in_this_mode':unknown?'partial_first_seen':'complete',ipStatus:'not_collected',overlap:overlapping?{from:new Date(overlap.first_hour).toISOString(),to:new Date(+new Date(overlap.last_hour)+3600000).toISOString()}:null},dailyCount:days.length};
+  const monthIPComplete=monthBase.coverage===1&&ipSummary.recent.pageviews===monthBase.totals.pv;
+  const thisMonth=monthOverlapping?{...monthBase,totals:unavailable(),coverage:0,status:'overlapping_legacy_history'}:{...monthBase,ipStatus:privacy?'unsupported_in_this_mode':monthIPComplete?ipSummary.recent.ipStatus:'incomplete_numeric_history',ipCoverage:monthIPComplete?ipSummary.recent.ipCoverage:0,knownIps:monthIPComplete?ipSummary.recent.knownIps:null,totals:{...monthBase.totals,ips:monthIPComplete?ipSummary.recent.ips:null,newVisitors:privacy||unknown||status!=='complete'?null:Number(exact.month_new_visitors)}};
+  return {thisMonth,total:{from,to:asOf,totals:summary.totals,coverage:status==='complete'?1:0,status:status==='complete'&&!days.length?'empty':status},peaks:summary.peaks,history:{from,to:asOf,timezone:site.timezone,scope:'available_published_history',source:'authenticated_fact_and_legacy_cache',visitorStatus:privacy?'unsupported_in_this_mode':unknown?'partial_first_seen':'complete',ipStatus:privacy?'unsupported_in_this_mode':!ipHistoryComplete?status==='complete'?'incomplete_numeric_history':status:ipSummary.total.ipStatus,ipCoverage:ipHistoryComplete?ipSummary.total.ipCoverage:0,knownIps:ipHistoryComplete?ipSummary.total.knownIps:null,overlap:overlapping?{from:new Date(overlap.first_hour).toISOString(),to:new Date(+new Date(overlap.last_hour)+3600000).toISOString()}:null},dailyCount:days.length};
  },{kinds:['hourly_rollup']});
 }

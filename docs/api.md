@@ -176,12 +176,12 @@ curl --fail-with-body --no-buffer -H "Authorization: Bearer $BAIZE_API_TOKEN" \
 | GET 路径 | 参数 | 返回摘要 |
 | --- | --- | --- |
 | `S/traffic-report` | `from?`、`to?`；`path`、`channel`、`utm_source`、`utm_medium`、`utm_campaign`、`utm_term`、`utm_content` 可选精确过滤 | `totals`、`groups`、`days`、`hours`、`dimensionTrend`、`visitors`、`engagement`，以及覆盖率与隐私状态 |
-| `S/visits` | 同上；`page=1`、`pageSize=25`；另可按 `visitorType=new/returning/unknown`、`referrer`、`city`、`entry`、`visitorKey`、`ipPrefix`、`keyword`、`browser` 精确过滤 | 分页会话 `rows`、`total`、`page`、`pageSize`、独立实时窗口 `live`，以及明细覆盖率 |
+| `S/visits` | 同上；`page=1`、`pageSize=25`；另可按 `visitorType=new/returning/unknown`、`referrer`、`city`、`entry`、`visitorKey`、`ipPrefix`、`ipKey`、`ipLabel`、`isp`、`keyword`、`browser` 过滤 | 分页会话 `rows`、`total`、`page`、`pageSize`、独立实时窗口 `live`，以及明细覆盖率 |
 | `S/overview-summary` | 同样的七项内容过滤；`extended=0/1` 可选，默认不读取扩展历史 | `asOf`、`timezone`、`today`、`yesterday`、`yesterdaySameTime`、`active15`、`live`、`forecast`；`extended=1` 时附加 `extended` |
 
 **日期与分页。** `traffic-report`、`visits` 的时间均为 ISO 8601 UTC，区间为 **`[from,to)`，不包含结束时刻**。默认最近 7 天，最长 366 天；未来的 `to` 截至查询时刻，响应 `to` 是实际结束时刻，`requestedTo` 保留请求值。会话分页 `page` 为 1–100000，`pageSize` 为 1–100，过滤先于分页。`overview-summary` 固定使用站点日历周期，传入 `from/to` 不改变这些周期。
 
-**流量报表。** `groups` 包含 `channel`、`page`、`entry`、`visitorType`、`country`、`city`、`referrer`、`searchEngine`、`external`、`keyword`、`directory`、`domain`、`isp`、`ipPrefix`、`campaign`、`utm_source`、`utm_medium`、`device`、`browser`、`os`、`screen`、`language`、`week`、`month`。每行提供 `label`、`pv`、`uv`、`ips`、`sessions`、`bounceRate`、`averageDuration`、`newVisitors`、`returningVisitors`、`unknownVisitors`；比率为 0–1，时长单位为秒。入口页的 PV 是从该页进入的会话在窗口内产生的浏览量。
+**流量报表。** `groups` 包含 `channel`、`page`、`entry`、`visitorType`、`country`、`city`、`referrer`、`searchEngine`、`external`、`keyword`、`directory`、`domain`、`isp`、`ip`、`ipPrefix`、`region`、`brand`、`colorDepth`、`campaign`、`utm_source`、`utm_medium`、`device`、`browser`、`os`、`screen`、`language`、`week`、`month`。每行提供 `label`、`pv`、`uv`、`ips`、`sessions`、`bounceRate`、`averageDuration`、`newVisitors`、`returningVisitors`、`unknownVisitors`；比率为 0–1，时长单位为秒。入口页的 PV 是从该页进入的会话在窗口内产生的浏览量。
 
 `days` 使用站点时区的 `day=YYYY-MM-DD`。`hours` 仅在所选范围属于单个站点日且明细完整时提供，`time` 是站点当地整点对应的 ISO 时间戳，补齐 `[from,min(to,now))` 中没有事件的小时；夏令时切换日按实际时间递增，可有 23 或 25 个小时。多日或覆盖缺失时返回 `hours=[]`，不能据此补成全天零流量。`dimensionTrend.channel/page` 提供当前范围 Top 5 的逐日数据；`dimensionTrend.visitorType` 按每一天的新访客、回访访客和未知访客分别计算。
 
@@ -191,13 +191,19 @@ curl --fail-with-body --no-buffer -H "Authorization: Bearer $BAIZE_API_TOKEN" \
 
 **概况与实时。** 三个概况周期分别为站点今日零点至 `asOf`、昨日零点至今日零点、昨日零点至昨日相同当地时刻；不是简单减去固定 24 小时。每个周期都有独立的 `totals`、`coverage`、`rangeStatus` 和 `visitors` 状态。昨日明细过期或截断，不会使今日已完整读取的访客分类失效。
 
-`live` 固定读取查询时刻前 30 分钟，不随历史筛选日期移动：`active` 提供最近 5/15/30 分钟页面访问或心跳的去重访客，`pageviews` 是由旧到新的 30 个逐分钟 PV 桶，`pages` 是该实时窗口内的页面 PV。`active15` 单独提供最近 15 分钟的访客与 PV。实时窗口有自己的 `from/to/coverage/status`。`forecast` 当前为 `status=not_estimated`，数值为 `null`，没有填入预测或演示数值。
+`live` 固定读取查询时刻前 30 分钟，不随历史筛选日期移动：`active` 提供最近 5/15/30 分钟页面访问或心跳的去重访客，`pageviews` 是由旧到新的 30 个逐分钟 PV 桶，`pages` 是该实时窗口内的页面 PV。`active15` 单独提供最近 15 分钟的访客与 PV。实时窗口有自己的 `from/to/coverage/status`。`forecast` 提供预计全天 `pv/uv/ips/sessions`，`details` 包括每项的 `method/reason/sampleDays/sampleDates/interval`。方法是 `historical_remaining_v1`，优先使用最近 14 个完整自然日的同期和剩余流量；历史缺失时可降级到昨日或今日运行速度，样本不足保持 `null`。区间是启发式参考范围；聚合变化时 `status=aggregation_pending` 并清空预测。
 
 **历史展开。** `extended=1` 才读取 `extended.thisMonth`、`extended.total`、`extended.peaks` 和 `extended.history`。本月、总流量分别返回 `from/to/totals/coverage/status`；峰值按指标返回 `{value,date}`，日期为站点时区的 `YYYY-MM-DD`，并列时取最近日期。历史来源为已发布事实与可用旧汇总，`history.scope=available_published_history`，起点不等于原始明细保留期。总 UV 使用跨历史集合去重；总跳出率和平均时长使用总跳出次数、总时长除以总会话量。
 
 历史旧小时汇总与当前事实同小时重叠、缺少档案、旧汇总无法精确过滤或日期边界不可拆分时，不把两份数值相加。`overlapping_legacy_history` 会使受影响的总值和峰值为 `null`，`history.overlap` 给出边界；本月覆盖同一重叠时也标不可用。分别检查 `thisMonth`、`total`、`peaks` 的覆盖率，不能把折叠行能显示当作完整历史已还原。
 
-**隐私与不可用值。** 这三个接口没有新增原始 IP 或独立 IP 身份的采集。现有标准隐私模式只保留脱敏网段，因此 `ipStatus=not_collected`、`ips=null`；网段 PV/UV 不是独立 IP 数。运营商未采集，`providerStatus=not_collected`，不根据网段猜测运营商。`daily_salt` 模式不返回 IP 网段、新老访客或跨日 UV；同日 UV 可用，跨日实时窗口的活跃访客也可能为 `null`。
+**独立 IP 与不可用值。** 新采集的标准模式事件保存由规范化完整 IPv4/IPv6 地址生成的站点隔离 HMAC，原地址不落库。内部标识不经统计 API、导出或共享返回；`ipKey` 是二次散列的筛选标识，`ipLabel` 是脱敏网段与展示编号。周期 IP 直接去重，不累加每日数值。旧事件缺少标识时 `ips=null`，同时返回 `knownIps/ipCoverage/ipStatus`；不能用网段或 UV 补算。安装离线库后，运营商由服务器实时 IP 查询产生，`providerCoverage` 区分未知和已知记录。`daily_salt` 模式不保存稳定 IP，也不返回网段、新老访客或跨日 UV；同日 UV 可用。
+
+`traffic-report` 可选 `trendDimension`（合法 `groups` 维度）及 `trendLabel`，请求指定维度的逐日 Top 5 或单项历史趋势；IP 单项传 `ipKey`。明细会话包含 `ipKey/ipLabel/isp`，路径项包含当次页面的 IP 展示信息，IP 筛选匹配会话内任一页面。
+
+**事件定义。** `GET S/event-definitions` 要求 read，返回 `{definitions,limit:100}`。`POST` 要求 admin，接收 `{name,displayName,description?}`；`PATCH S/event-definitions/:name` 修改显示名和说明，`DELETE` 删除定义但保留历史事件。`name` 是 SDK 采集标识，不随显示名改变。
+
+**蜘蛛访问。** `GET S/bot-visits` 要求 read，按站点时区的日期 `from/to` 查询，最多 31 天；`page/limit/engine/source` 可选。返回引擎汇总、脱敏 IP/URL 日志及来源说明。`POST S/bot-visits/ingest` 使用服务端 write-key 和 HMAC 签名，不接受浏览器 Origin/Cookie。完整协议、保留期和地域库安装见[流量数据配置](TRAFFIC_DATA_SETUP.md)。
 
 单次明细读取上限为 100000 条事件，JSON 响应上限为 8 MiB。请同时检查 `coverage`、`status`、`sessionStatus`、`uvStatus`、`visitors.status`、`aggregationPending` 和实时窗口状态。`detail_limit_exceeded`、`raw_detail_retired`、`outside_raw_retention`、`detail_unavailable` 表示无法给出完整明细，空数组或 `null` 不等于零访问。聚合指标和原始明细的覆盖范围可以不同。
 

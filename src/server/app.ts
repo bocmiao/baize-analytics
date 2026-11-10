@@ -1,5 +1,6 @@
 import {registerUpdates} from '../update/http.js';
 import {register51laReports} from './51la-reports.js';
+import {registerEventManagement} from './event-management.js';
 import {maintenanceActive,runningUpdateIdentity} from '../update/maintenance.js';
 import {installFactStore} from './fact-store.js';
 import {installRemainingFactStore} from './remaining-fact-store.js';
@@ -10,6 +11,7 @@ import {cleanupFactStoreOrphans} from './fact-store-maintenance.js';
 import {installSessionHeaderStore,cleanupSessionHeaderOrphans} from './session-header-store.js';
 import {registerManualSearchImport} from './manual-search-import.js';
 import {registerIntakeStatus} from './intake-status.js';
+import {registerBotVisitLog} from './bot-visit-log.js';
 import {registerBotObservations} from './bot-observations.js';
 import {registerSelfHostDiagnostics} from './self-host-diagnostics.js';
 import {registerSiteAnnotations} from './site-annotations.js';
@@ -112,13 +114,13 @@ export async function createApp(options:AppOptions={}){
     await invalidateSiteCache(ctx,site.id);
   }
   await runFileCleanup(ctx);
-  const geo=new GeoIP();await geo.open(dataDir);
-  ctx.geoReload=async(enabled=true)=>{if(enabled)await geo.open(dataDir);else geo.disable();};
+  const geo=new GeoIP();
   const configuredGeo=await configuredGeoCredentials(ctx);
-  if(configuredGeo?.enabled===false)geo.disable();
-  const geoAccount=configuredGeo?configuredGeo.enabled?configuredGeo.accountId:undefined:process.env.MAXMIND_ACCOUNT_ID;
-  const geoLicense=configuredGeo?configuredGeo.enabled?configuredGeo.licenseKey:undefined:process.env.MAXMIND_LICENSE_KEY;
-  if(process.env.BAIZE_NATIVE_VALIDATE_ONLY!=='1'&&geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir);}catch{/* Optional GeoIP unavailable: clear unknown status; do not echo credentials. */}}
+  if(configuredGeo?.enabled!==false)await geo.open(dataDir,configuredGeo?.provider);
+  ctx.geoReload=async(enabled=true)=>{const current=await configuredGeoCredentials(ctx);if(enabled&&current?.enabled!==false)await geo.open(dataDir,current?.provider);else geo.disable();};
+  const geoAccount=configuredGeo?configuredGeo.enabled&&configuredGeo.provider==='maxmind'?configuredGeo.accountId:undefined:process.env.MAXMIND_ACCOUNT_ID;
+  const geoLicense=configuredGeo?configuredGeo.enabled&&configuredGeo.provider==='maxmind'?configuredGeo.licenseKey:undefined:process.env.MAXMIND_LICENSE_KEY;
+  if(process.env.BAIZE_NATIVE_VALIDATE_ONLY!=='1'&&geo.status==='unknown'&&geoAccount&&geoLicense){try{await downloadGeoIP(dataDir,geoAccount,geoLicense);await geo.open(dataDir,'maxmind');}catch{/* Optional GeoIP unavailable: do not echo credentials. */}}
   const updateIdentity=runningUpdateIdentity();
   const trustedProxies=process.env.TRUSTED_PROXIES?.split(',').filter(Boolean)??[];
   let proxyWarningShown=false;
@@ -144,7 +146,8 @@ export async function createApp(options:AppOptions={}){
   registerRequestRateLimits(app,ctx);
   await registerAuth(app,ctx);registerUpdates(app,{profile:'standard',owner:async req=>{const u=await requireAdminSession(ctx,req);const row=(await pool.query('SELECT claimed_user_id FROM install_bootstrap WHERE id=1')).rows[0];return {id:u.id,claimedOwnerId:row?.claimed_user_id??null};}});registerStandardDeploymentDiagnostics(app,ctx);await registerSites(app,ctx);await registerCollect(app,ctx,ip=>geo.lookup(ip));await registerAnalytics(app,ctx);await register51laReports(app,ctx);await registerGovernance(app,ctx);const external=await registerExternal(app,ctx,options.externalTransport);await registerSSO(app,ctx);await registerGeoIPSettings(app,ctx);await registerClickHouseRoutes(app,ctx,ctx.clickhouseMirror);
   await registerMcp(app,ctx);await registerCanonicalOperations(app,ctx);await registerManualSearchImport(app,ctx);
-  await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
+  await registerIntakeStatus(app,ctx);await registerBotObservations(app,ctx);await registerBotVisitLog(app,ctx);await registerSelfHostDiagnostics(app,ctx);await registerSiteAnnotations(app,ctx);
+  await registerEventManagement(app,ctx);
   await app.register(staticFiles,{root:resolve('public'),prefix:'/',decorateReply:true,serve:false});
   registerTrackerAssets(app);
   let web=false;try{await access(resolve('dist/web/index.html'));web=true;}catch{/* Build required before UI can run. */}
