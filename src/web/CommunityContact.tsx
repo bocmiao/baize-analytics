@@ -17,7 +17,9 @@ export function CommunityContact({placement='menu'}:{placement?:'menu'|'footer'}
   let copied=false;
   // Only report success when the browser's Clipboard API confirms the write.
   // Plain HTTP and denied clipboard access use the visible, selectable number.
-  try{await navigator.clipboard.writeText(QQ_GROUP);copied=true;}catch{copied=false;}
+  if(window.isSecureContext&&navigator.clipboard){
+   try{await navigator.clipboard.writeText(QQ_GROUP);copied=true;}catch{copied=false;}
+  }
   setFeedback(copied?'copied':'manual');
   if(!copied&&numberRef.current){
    const range=document.createRange();range.selectNodeContents(numberRef.current);
