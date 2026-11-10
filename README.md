@@ -25,7 +25,7 @@
 
 当前后台采用白色桌面工作台，手机端提供适配的导航与报表布局。预览使用独立演示站点的数据；[截图来源与验证范围](docs/images/README.md)。
 
-这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。具体范围见[界面与报表说明](docs/51LA_ALIGNMENT.md)和[逐项功能对照](docs/51LA_FUNCTION_MATRIX.md)。
+这版新增的流量报表由 **Node 标准版**提供；Node Lite 和独立 PHP 版保留各自既有能力。具体范围见[界面与报表说明](docs/51LA_ALIGNMENT.md)、[逐项功能对照](docs/51LA_FUNCTION_MATRIX.md)和[桌面与手机实机验收](docs/validation/51LA_FUNCTIONAL_NAS_20261110.md)。
 
 ![白泽桌面端界面](docs/images/baize-desktop.jpg)
 

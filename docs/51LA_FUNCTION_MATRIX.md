@@ -10,7 +10,7 @@
 
 主要参考为 [51.LA V6](https://v6.51.la/)、[趋势分析](https://v6.51.la/help-doc/doc/dssn4w.html)、[日期比较](https://v6.51.la/help-doc/doc/cqg85b.html)、[访问明细](https://v6.51.la/help-doc/doc/fn3i2r.html)、[渠道追踪](https://v6.51.la/help-doc/doc/xsad85.html)、[热力图](https://v6.51.la/help-doc/doc/iaautew820makaqi.html)、[事件分析](https://v6.51.la/help-doc/doc/kadxe7.html)、[事件管理](https://v6.51.la/help-doc/doc/lfnd22.html)、[IP 过滤](https://v6.51.la/help-doc/doc/usuc46.html)、[参数设置](https://v6.51.la/help-doc/doc/ggktml.html)。公开资料不能证明其私有服务端的算法或内部实现。
 
-表中“已接入”表示有真实数据或配置读写路径；“既有验证”只引用此前执行记录。本轮新增功能仍须经过本次部署后的浏览器验收，不能把旧截图算作新交互已通过。
+表中“已接入”表示有真实数据或配置读写路径；“既有验证”只引用此前执行记录。最终源码 `80c2e79` 已完成 801 项全量单测、67 项 NAS HTTP 检查，以及桌面、手机、窄屏和平板共 190 次页面检查。真实圈选、热图、录屏、推广和导出的操作证据见[本轮实机验收](validation/51LA_FUNCTIONAL_NAS_20261110.md)。
 
 ## 站点、安装与访问统计
 
@@ -89,7 +89,7 @@
 | OpenAPI 密钥与权限 | token 设置 | 站点限定 read/write/admin REST | 已接入；已有 NAS 401/403/撤销验证，不输出可恢复原密钥 |
 | 保存报表与定时通知 | `SavedReport`、`ReportSchedule`、`GovernanceRecordManagement` | report definitions、governance-worker、通知队列 | 保存查询按固定日期重放；推送计划按日 / 周 / 月滚动周期应用保存的筛选；支持删除计划 / 渠道 / 告警并撤销未发送任务，停用站点暂停新任务 |
 | 保留期、访客删除与恢复保护 | 数据管理 | retention、tombstones、backup restore | 既有能力；本轮新增功能沿用删除、身份和站点隔离规则 |
-| 手机与平板 | 工作区抽屉、表格局部滚动 | 与桌面共用 API | 本轮组件已适配；320 / 375 / 768 / 桌面及实际操作以新部署验收为准 |
+| 手机与平板 | 工作区抽屉、表格局部滚动 | 与桌面共用 API | 320 / 375 / 768 / 1440 共 190 次页面检查通过；抽屉、日期焦点、筛选、回放、CSV 下载已实测 |
 
 ## 已执行检查
 
@@ -97,10 +97,10 @@
 
 - **[T1] 目录与推广**：`tests/unit/site-content-management.test.ts` 10 项通过；`tests/integration/site-content-management.test.ts` 5 项在 NAS PostgreSQL 通过。覆盖规则边界、重叠、URL/UTM、二维码往返、权限、并发重复、容量回滚和无关配置保留。本地证据 `.baize/nas/site-content-resources/`。
 - **[T2] 访问与维度**：`tests/integration/network-ip-reports.test.ts` 在 NAS PostgreSQL 上 12 项通过，包含目录配置到 groups / trend / visits、28 会话分页与 CSV、访客轨迹、地域和版本维度。相关 8 个 unit 文件合计 54 项通过。本地证据 `.baize/nas/ip-metrics/`。
-- **[T3] 事件与热图**：11 个定向 unit 文件共 68 项通过；NAS `tests/integration/advanced-functions.test.ts` 7 项通过，覆盖 collector → 事件参数 UV → 热图日期 / 元素 → 暂停 / 删除拒绝 → IPv4 / IPv6 过滤 → read token 权限 → 完整 JSON 导出下载。tracker 构建及 7 个分发变体版权与 gzip 往返 2 项通过。本地证据 `.baize/nas/advanced-functions-20261110/`。实际浏览器圈选和叠图需在部署后另验。
+- **[T3] 事件与热图**：11 个定向 unit 文件共 68 项通过；NAS `tests/integration/advanced-functions.test.ts` 7 项通过，覆盖 collector → 事件参数 UV → 热图日期 / 元素 → 暂停 / 删除拒绝 → IPv4 / IPv6 过滤 → read token 权限 → 完整 JSON 导出下载。tracker 构建及 7 个分发变体版权与 gzip 往返 2 项通过。本地证据 `.baize/nas/advanced-functions-20261110/`。实际浏览器圈选、规则保存、普通访客点击入库及真实网页叠图已通过，详见本轮实机验收。
 - **[T4] 生命周期与蜘蛛趋势**：NAS `tests/integration/site-lifecycle.test.ts` 4 项和 `bot-visit-log.test.ts` 10 项通过，包含站点管理、采集停用、授权竞态和蜘蛛趋势。本地证据 `.baize/nas/site-lifecycle/`。
 - **[T5] 分享**：`tests/unit/shared-dashboard.test.ts` 8 项通过；NAS 上 `tests/integration/shared-dashboard.test.ts` 3 项和 `legacy-share-password.test.ts` 1 项通过。覆盖所有五种嵌入、真实汇总、身份隔离、CSP、密码、有效期、撤销和归档。本地证据 `.baize/nas/shared-dashboard/`。
-- 新增文件通过定向 ESLint，完整 `npm run typecheck` 通过。Linux 全量 unit 在补齐隔离容器工具、校验合法迁移换行变体并增加篡改拒绝回归后，**135 个文件、797 项一次通过**；历史迁移 SQL 字节和数据库已应用校验值未改。本地证据 `.baize/nas/completion-unit-linux-final-20261110/`，处理说明见 [历史迁移换行兼容](validation/HISTORY_MIGRATION_LINE_ENDINGS_20261110.md)。最终构建和浏览器验收以最终源码版本的记录为准。
+- 新增文件通过定向 ESLint，完整 `npm run typecheck` 通过。Linux 全量 unit 在补齐隔离容器工具、校验合法迁移换行变体并增加篡改拒绝回归后，**最终 80c2e79 的 136 个文件、801 项一次通过**；历史迁移 SQL 字节和数据库已应用校验值未改。本地证据 `.baize/nas/completion-unit-final-80c2e79/`，处理说明见 [历史迁移换行兼容](validation/HISTORY_MIGRATION_LINE_ENDINGS_20261110.md)。最终构建与实际浏览器验收见本轮实机验收报告。
 
 - **[T6] 删除管理**：NAS `tests/integration/governance-resource-deletion.test.ts` 5 项通过，验证匿名 / 只读 / 跨站权限、计划和告警任务撤销、已保存报表删除关联计划与任务、通知渠道关联清理及已发送记录保留；原 3 站事件摘要前后相同。本地证据 `.baize/nas/governance-resource-deletion/`。设置页的安装检查与移除入口已移到实际渲染分支，回收站保留在站点列表。
 

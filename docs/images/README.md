@@ -5,15 +5,15 @@
 本批截图的运行镜像：
 
 ```text
-sha256:6a24156a5220f217d7858f00b59258b6d4dc20110bf6f2d4d3ad449a04ebdec4
+sha256:f1e284539bc4d9923eb4137cee2cf96e9ef7e5079482c529356115d632f53257
 ```
 
-构建源码提交：`19b171f79c45daf2b7f8a46bed19fb4d3c71cd34`。
+构建源码提交：`80c2e793c12adecf3d2b8e8c68e816e3b6d35b8e`。
 
 | 图片 | 浏览器视口 | JPG 实际像素 | 内容 |
 | --- | --- | --- | --- |
-| [baize-desktop.jpg](baize-desktop.jpg) | 1440 × 1000 | 1424 × 1791 | 桌面概况，全页截图 |
-| [baize-mobile.jpg](baize-mobile.jpg) | 390 × 844 | 375 × 812 | 手机概况，首屏截图 |
+| [baize-desktop.jpg](baize-desktop.jpg) | 1440 × 1000 | 1440 × 1000 | 桌面概况，首屏截图 |
+| [baize-mobile.jpg](baize-mobile.jpg) | 375 × 812 | 375 × 812 | 手机概况，首屏截图 |
 
 浏览器视口与图片实际像素分别记录。图片未替换接口、注入样式或后期修改页面内容。
 
@@ -21,11 +21,11 @@ sha256:6a24156a5220f217d7858f00b59258b6d4dc20110bf6f2d4d3ad449a04ebdec4
 
 桌面下方选中 2026-11-04 至 2026-11-10，概况顶部按站点日历单独计算今日、昨日、预计今日及昨日同期。手机首屏选择“今日”。独立 IP、运营商和预测已接真实统计逻辑，地域库状态为 ready。预测是白泽独立实现的历史同期估算，展开依据可查看样本和参考范围。
 
-原有站点没有完整 IP 标识的旧记录仍显示不可用；没有为旧记录补造 IP 或地域。完整的输入、测试范围、数据保留与运行检查见 [本轮 NAS 验收记录](../validation/51LA_COMPLETION_NAS_20261110.md)。
+原有站点没有完整 IP 标识的旧记录仍显示不可用；没有为旧记录补造 IP 或地域。原始输入与统计核验见 [流量统计验收记录](../validation/51LA_COMPLETION_NAS_20261110.md)，本版 801 项单测、190 次页面检查和真实交互见 [本轮功能验收记录](../validation/51LA_FUNCTIONAL_NAS_20261110.md)。
 
 图片 SHA-256：
 
 ```text
-81de8fa60e91b989ee41ac3c1896fb3241de777142f5c1d6b900d1977fabbd82  baize-desktop.jpg
-3d870a2f947346539b78baf29d74b8c877a5dbabd8ddc5a16397c932eea4cea1  baize-mobile.jpg
+94d21139781f0656e8fb5571c95d7a0dbae07e73382cf745170bbbf6934a849f  baize-desktop.jpg
+40db945ca2d6b7729d340cd1ea8e3b1a225c195e458e0602f8c46184082bd033  baize-mobile.jpg
 ```
