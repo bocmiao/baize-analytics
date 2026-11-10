@@ -20,6 +20,8 @@
 | --- | --- |
 | 配置隐私、同意与数据保留 | [隐私说明（英文）](en/privacy.md) |
 | 配置地域、运营商、独立 IP 和流量预测 | [流量数据配置](TRAFFIC_DATA_SETUP.md) · [报表范围](51LA_ALIGNMENT.md) |
+| 配置目录规则、推广链接和二维码 | [目录与推广管理](CONTENT_CAMPAIGN_SETUP.md) |
+| 分享只读看板、嵌入图表 | [授权与图表嵌入](SHARED_DASHBOARDS.md) |
 | 接入服务器蜘蛛访问日志 | [签名上报、重试与查询](spider-log-ingest.md) |
 | 使用 MCP 或导入搜索数据 | [MCP](mcp.md) · [手动搜索导入](MANUAL_SEARCH_IMPORT.md) |
 | 备份、恢复与迁移 | [迁移与恢复](migration.md) · [Node 原生维护](release-native-ops.md) · [Lite 维护](lite-deployment.md) |
@@ -33,6 +35,7 @@
 | --- | --- |
 | 修改源码和运行测试 | [开发指南](development.md) · [贡献说明](../CONTRIBUTING.md) |
 | 查项目设计与功能范围 | [项目规格](PROJECT_SPEC.md) · [逐项实现清单](IMPLEMENTATION_CHECKLIST.md) |
+| 核对 51.LA 对应功能与实现差异 | [完整功能对照](51LA_FUNCTION_MATRIX.md) |
 | 查版本状态与验收记录 | [状态记录](STATUS.md) · [完整目标核对](PROJECT_ACCEPTANCE_MATRIX.md) |
 | 核对依赖许可证 | [依赖与许可证](licenses/README.md) |
 | 查旧文档与原始路径 | [历史文档归档](archive/README.md) · [仓库整理记录](REPOSITORY_ORGANIZATION_20261015.md) |
