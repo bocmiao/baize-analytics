@@ -7,6 +7,7 @@ import {migrate} from '../../src/server/db.js';
 import {authFunctions} from '../../src/server/auth.js';
 import {registerRequestRateLimits} from '../../src/server/request-rate-limit.js';
 import {registerCollect} from '../../src/server/collect.js';
+import {registerSites} from '../../src/server/sites.js';
 import {canonical,hashToken} from '../../src/server/security.js';
 import {recordBotVisit,purgeExpiredBotVisits,registerBotVisitLog} from '../../src/server/bot-visit-log.js';
 import type {AppContext} from '../../src/server/context.js';
@@ -32,7 +33,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('spider visit ledger with real P
   await pool.query("INSERT INTO users(id,email,name,password_hash,is_admin) VALUES($1,'bot-ledger@example.test','fixture','unused',false)",[user]);
   await pool.query("INSERT INTO auth_sessions(token_hash,user_id,expires_at) VALUES($1,$2,now()+interval '1 day')",[hashToken(session),user]);
   ctx={pool,redis:null,config:{masterKey:Buffer.alloc(32,9)},...authFunctions(pool)} as AppContext;
-  await app.register(cookie);registerRequestRateLimits(app,ctx);await registerBotVisitLog(app,ctx);await registerCollect(app,ctx);
+  await app.register(cookie);registerRequestRateLimits(app,ctx);await registerBotVisitLog(app,ctx);await registerCollect(app,ctx);await registerSites(app,ctx);
  });
  afterAll(async()=>{await app.close();await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();});
  it('stores site-isolated HMACs, masked IPs and sanitized paths; paginates and counts exact distinct IPs/URLs',async()=>{
@@ -101,6 +102,36 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('spider visit ledger with real P
   expect((await app.inject({url:view(id),headers})).json().rows).toHaveLength(0);await purgeExpiredBotVisits(pool);
   await recordBotVisit(pool,{siteId:id,ip:'203.0.113.73',path:'/cascade',userAgent:'Googlebot',decision});
   await pool.query('DELETE FROM sites WHERE id=$1',[id]);expect((await pool.query('SELECT id FROM bot_visit_log WHERE site_id=$1',[id])).rows).toHaveLength(0);
+ });
+ it('blocks privacy-mode changes when a site has only spider visits and no normal events',async()=>{
+  for(const privacy of ['standard','daily_salt']){
+   const id=await site(privacy);
+   await recordBotVisit(pool,{siteId:id,ip:'203.0.113.73',path:'/',userAgent:'Googlebot',decision});
+   expect((await pool.query('SELECT 1 FROM event_keys WHERE site_id=$1',[id])).rowCount).toBe(0);
+   const response=await app.inject({method:'PATCH',url:`/api/v1/sites/${id}`,headers,payload:{privacy_mode:privacy==='standard'?'daily_salt':'standard'}});
+   expect(response.statusCode,response.body).toBe(409);
+   expect((await pool.query('SELECT privacy_mode FROM sites WHERE id=$1',[id])).rows[0].privacy_mode).toBe(privacy);
+  }
+ });
+ it('reports incomplete identities honestly for old mixed-mode records and hides prefixes in daily mode',async()=>{
+  const id=await site('daily_salt');
+  await recordBotVisit(pool,{siteId:id,ip:'203.0.113.73',path:'/private',userAgent:'Googlebot',decision});
+  // Simulate data restored from a deployment before the spider mode guard.
+  await pool.query("UPDATE sites SET privacy_mode='standard' WHERE id=$1",[id]);
+  let data=(await app.inject({url:view(id),headers})).json();
+  expect(data).toMatchObject({ipStatus:'not_collected',ipCoverage:0,totals:{visits:1,ips:null,knownIps:0}});
+  await recordBotVisit(pool,{siteId:id,ip:'203.0.113.73',path:'/known',userAgent:'Googlebot',decision});
+  await recordBotVisit(pool,{siteId:id,ip:'203.0.113.73',path:'/bing',userAgent:'bingbot',decision});
+  data=(await app.inject({url:view(id),headers})).json();
+  expect(data).toMatchObject({ipStatus:'partial_ip_identity',ipCoverage:2/3,totals:{visits:3,ips:null,knownIps:1}});
+  expect(data.summary.find((row:Record<string,unknown>)=>row.engine==='google')).toMatchObject({ips:null,knownIps:1,ipCoverage:0.5,ipStatus:'partial_ip_identity'});
+  expect(data.summary.find((row:Record<string,unknown>)=>row.engine==='bing')).toMatchObject({ips:1,ipCoverage:1,ipStatus:'complete'});
+  await pool.query("UPDATE sites SET privacy_mode='daily_salt' WHERE id=$1",[id]);
+  data=(await app.inject({url:view(id),headers})).json();
+  expect(data).toMatchObject({ipStatus:'unsupported_in_this_mode',ipCoverage:0,totals:{ips:null,knownIps:null}});
+  expect(data.rows.every((row:Record<string,unknown>)=>row.ip_prefix===null)).toBe(true);
+  expect(JSON.stringify(data)).not.toContain('203.0.113.0');
+  expect(JSON.stringify(data.rows)).not.toContain('ip_identity');
  });
  it('bounds authenticated ingestion even when Redis is unavailable',async()=>{
   const id=await site(),body={sent_at:Date.now(),visits:[sample()]};

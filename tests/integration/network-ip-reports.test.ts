@@ -47,6 +47,13 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('51LA full IP collection and pub
  it('never writes stable network identities in daily-salt mode',async()=>{
   const response=await send(daily,'192.0.2.1',[packet(randomUUID(),'/daily',now-10000)]);expect(response.statusCode,response.body).toBe(202);const row=(await pool.query('SELECT dimensions FROM events WHERE site_id=$1',[daily])).rows[0];expect(row.dimensions).not.toHaveProperty('client_ip_id');expect(row.dimensions.ip_truncated).toBeNull();await publish();
  },120000);
+ it('accepts bounded repeated trend labels over HTTP and keeps absent group totals exact',async()=>{
+  const params=new URLSearchParams({from,to,trendDimension:'city'});params.append('trendLabels','洛阳');params.append('trendLabels','不存在的城市');
+  const response=await app.inject(`/api/v1/sites/${site}/traffic-report?${params}`);expect(response.statusCode,response.body).toBe(200);
+  const body=response.json();expect(body.groups.city.find((row:Record<string,unknown>)=>row.label==='不存在的城市')).toMatchObject({pv:0,uv:0,ips:0,sessions:0});
+  expect(new Set(body.dimensionTrend.city.map((row:Record<string,unknown>)=>row.label))).toEqual(new Set(['洛阳','不存在的城市']));
+  expect(body.dimensionTrend.city.filter((row:Record<string,unknown>)=>row.label==='洛阳').reduce((sum:number,row:{pv:number})=>sum+row.pv,0)).toBe(2);
+ },120000);
  it('drills geography into exact IP/ISP totals and site-calendar trends while preserving privacy limits',async()=>{
   const response=await app.inject(`/api/v1/sites/${site}/geography?`+new URLSearchParams({from,to,country:'CN',region:'河南',city:'洛阳市',isp:'中国联通'}));expect(response.statusCode,response.body).toBe(200);const body=response.json();expect(body).toMatchObject({coverage:1,status:'supported',selected:{totals:{pv:2,uv:2,ips:1,ipCoverage:1}}});expect(body.regions[0]).toMatchObject({region:'河南',pv:2,ips:1});expect(body.isps).toEqual([expect.objectContaining({isp:'中国联通',ips:1})]);expect(body.trend.reduce((sum:number,row:{pv:number})=>sum+row.pv,0)).toBe(2);expect(response.body).not.toContain('client_ip_id');
   const privateReport=await app.inject(`/api/v1/sites/${daily}/geography?`+new URLSearchParams({from:new Date(now-2*86400000).toISOString(),to}));expect(privateReport.statusCode,privateReport.body).toBe(200);expect(privateReport.json().selected.totals).toMatchObject({pv:1,uv:null,ips:null,ipStatus:'unsupported_in_this_mode'});expect(privateReport.json().trend.reduce((sum:number,row:{uv:number})=>sum+row.uv,0)).toBe(1);

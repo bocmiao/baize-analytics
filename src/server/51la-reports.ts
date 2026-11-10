@@ -10,10 +10,18 @@ import {ApplicationError} from '../shared/error-codes.js';
 import {buildLiveTraffic,buildTrafficReport,filterVisits,visitorCounts,trafficDimensions,type VisitorCounts} from './51la-report-model.js';
 import {countIPIdentities} from './network-ip.js';
 import {query51laHistory} from './51la-history-summary.js';
-import {buildForecastHistory,buildTrafficForecast} from './traffic-forecast.js';
+import {buildForecastHistory,buildTrafficForecast,forecastCalendar} from './traffic-forecast.js';
 
-const rangeSchema=contentFilterSchema.extend({from:z.iso.datetime().optional(),to:z.iso.datetime().optional(),trendDimension:z.enum(trafficDimensions).optional(),trendLabel:z.string().max(2048).optional()});
-const visitsSchema=rangeSchema.extend({page:z.coerce.number().int().min(1).max(100000).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25),visitorType:z.enum(['new','returning','unknown']).optional(),referrer:z.string().max(253).optional(),city:z.string().max(200).optional(),entry:z.string().max(2048).optional(),visitorKey:z.string().max(256).optional(),ipPrefix:z.string().max(128).optional(),ipKey:z.string().regex(/^[a-f0-9]{24}$/).optional(),ipLabel:z.string().max(160).optional(),isp:z.string().max(128).optional(),keyword:z.string().max(128).optional(),browser:z.string().max(200).optional()});
+const trafficRangeBase=contentFilterSchema.extend({from:z.iso.datetime().optional(),to:z.iso.datetime().optional(),trendDimension:z.enum(trafficDimensions).optional(),trendLabel:z.string().max(2048).optional(),trendLabels:z.preprocess(value=>typeof value==='string'?[value]:value,z.array(z.string().max(2048)).min(1).max(5)).optional()});
+function validateTrendSelection(query:{trendDimension?:string;trendLabel?:string;trendLabels?:string[]},ctx:z.RefinementCtx){
+ if(query.trendLabel!==undefined&&query.trendLabels!==undefined)ctx.addIssue({code:'custom',path:['trendLabels'],message:'选择一个趋势项目或一组趋势项目'});
+ const labels=query.trendLabels??(query.trendLabel!==undefined?[query.trendLabel]:[]);
+ if(labels.length&&!query.trendDimension)ctx.addIssue({code:'custom',path:['trendDimension'],message:'请选择趋势维度'});
+ if(query.trendDimension==='ip'&&labels.some(value=>!/^[a-f0-9]{24}$/.test(value)))ctx.addIssue({code:'custom',path:['trendLabels'],message:'无效的 IP 报表标识'});
+}
+export const trafficRangeSchema=trafficRangeBase.superRefine(validateTrendSelection);
+const rangeSchema=trafficRangeSchema;
+const visitsSchema=trafficRangeBase.extend({page:z.coerce.number().int().min(1).max(100000).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25),visitorType:z.enum(['new','returning','unknown']).optional(),referrer:z.string().max(253).optional(),city:z.string().max(200).optional(),entry:z.string().max(2048).optional(),visitorKey:z.string().max(256).optional(),ipPrefix:z.string().max(128).optional(),ipKey:z.string().regex(/^[a-f0-9]{24}$/).optional(),ipLabel:z.string().max(160).optional(),isp:z.string().max(128).optional(),keyword:z.string().max(128).optional(),browser:z.string().max(200).optional()}).superRefine(validateTrendSelection);
 interface Site {timezone:string;privacy_mode:string;retention_days:number;config:Record<string,unknown>}
 const iso=(value:Date|string|number)=>new Date(value).toISOString();
 const unavailableVisitors=(status:string):VisitorCounts=>({new:null,returning:null,unknown:null,status});
@@ -51,7 +59,7 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
    const site=await getSite(client,siteId),privacy=site.privacy_mode!=='standard',timeoutMs=sessionTimeoutMs(site.config);
    const detail=await readDetail(ctx,client,siteId,range.from,range.effectiveTo,timeoutMs);
    const seen=await firstSeen(client,siteId,detail.events,privacy);
-   const {visits:_visits,...report}=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel}:{}});
+   const {visits:_visits,...report}=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel,trendLabels:query.trendLabels}:{}});
    return {...modelMetadata(site,range.from,range.effectiveTo,detail,filters),requestedTo:range.to,filters,...report,...(detail.coverage===1?{}:{totals:{pv:null,uv:null,ips:null,sessions:null,bounceRate:null,averageDuration:null},visitors:unavailableVisitors(detail.status),groups:{},days:[],hours:[],dimensionTrend:{channel:[],page:[],visitorType:[]},engagement:{depth:[],duration:[]}})};
   });return boundResponse({...snapshot.value,aggregationPending:snapshot.dirty});
  });
@@ -59,7 +67,7 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
   const {siteId}=req.params as {siteId:string};await ctx.authorize(req,siteId);const query=visitsSchema.parse(req.query),now=Date.now(),range=selectedRange(query,now),filters=contentFilterSchema.parse(query),asOf=iso(now);
   const snapshot=await withStatsReadSnapshot(ctx,siteId,iso(Math.min(+new Date(range.from),now-30*60000)),asOf,async client=>{
    const site=await getSite(client,siteId),privacy=site.privacy_mode!=='standard',timeoutMs=sessionTimeoutMs(site.config),detail=await readDetail(ctx,client,siteId,range.from,range.effectiveTo,timeoutMs),seen=await firstSeen(client,siteId,detail.events,privacy);
-   const model=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel}:{}});
+   const model=buildTrafficReport(detail.events,{from:range.from,to:range.effectiveTo,timezone:site.timezone,privacy,timeoutMs,firstSeen:seen,filters,sessionContextComplete:detail.sessionContextComplete,...query.trendDimension?{trendDimensions:[query.trendDimension],trendLabel:query.trendLabel,trendLabels:query.trendLabels}:{}});
    const {visitorType,referrer,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser}=query;
    const rows=filterVisits(model.visits,{visitorType,referrer,city,entry,visitorKey,ipPrefix,ipKey,ipLabel,isp,keyword,browser});
    const complete=detail.coverage===1&&detail.sessionContextComplete;
@@ -72,9 +80,10 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
   // session lookback, before the site's time zone has been read in this snapshot.
   const snapshot=await withStatsReadSnapshot(ctx,siteId,iso(now-17*86400000),asOf,async client=>{
    const site=await getSite(client,siteId),privacy=site.privacy_mode!=='standard',timeoutMs=sessionTimeoutMs(site.config);
-   // PostgreSQL performs IANA calendar arithmetic, including 23/25-hour DST days.
-   const calendar=(await client.query("SELECT (($1::timestamptz AT TIME ZONE $2)::date::timestamp AT TIME ZONE $2) AS today_start, ((($1::timestamptz AT TIME ZONE $2)::date+1)::timestamp AT TIME ZONE $2) AS today_end, ((($1::timestamptz AT TIME ZONE $2)::date-14)::timestamp AT TIME ZONE $2) AS history_start, ((($1::timestamptz AT TIME ZONE $2)::date-1)::timestamp AT TIME ZONE $2) AS yesterday_start, ((($1::timestamptz AT TIME ZONE $2)-interval '1 day') AT TIME ZONE $2) AS yesterday_same",[asOf,site.timezone])).rows[0];
-   const todayStart=iso(calendar.today_start),todayEnd=iso(calendar.today_end),historyStart=iso(calendar.history_start),yesterdayStart=iso(calendar.yesterday_start),yesterdaySame=iso(calendar.yesterday_same);
+   // Use the same civil-day and ambiguous-clock policy for the summary and
+   // training data. A SQL midnight cast may choose the second repeated midnight.
+   const calendar=forecastCalendar(asOf,site.timezone);
+   const {dayStart:todayStart,historyStart,yesterdayStart,yesterdayCutoff:yesterdaySame}=calendar;
    // Each period has its own coverage: expired or busy yesterday must not hide
    // today's complete visitor data. Reuse yesterday only when it is complete.
    const todayRaw=await readDetail(ctx,client,siteId,todayStart,asOf);
@@ -89,9 +98,8 @@ export async function register51laReports(app:FastifyInstance,ctx:AppContext){
    };
    const today=await period(todayStart,asOf,todayRaw),yesterday=await period(yesterdayStart,todayStart,yesterdayRaw),yesterdaySameTime=await period(yesterdayStart,yesterdaySame,sameTimeRaw);
    const historyRaw=await readDetail(ctx,client,siteId,historyStart,todayStart,timeoutMs);
-   const forecastCalendar={asOf,timezone:site.timezone,dayStart:todayStart,dayEnd:todayEnd};
-   const history=buildForecastHistory(historyRaw.events,{...forecastCalendar,historyFrom:historyStart,historyCoverage:historyRaw.coverage,privacy,sessionContextComplete:historyRaw.sessionContextComplete,timeoutMs,filters});
-   const forecast={...buildTrafficForecast({...forecastCalendar,today,history:history.history,yesterday,yesterdaySameTime}),historyCoverage:historyRaw.coverage,historyStatus:historyRaw.status};
+   const history=buildForecastHistory(historyRaw.events,{...calendar,historyFrom:historyStart,historyCoverage:historyRaw.coverage,privacy,sessionContextComplete:historyRaw.sessionContextComplete,timeoutMs,filters});
+   const forecast={...buildTrafficForecast({...calendar,today,history:history.history,yesterday,yesterdaySameTime}),historyCoverage:historyRaw.coverage,historyStatus:historyRaw.status};
    const metadata=modelMetadata(site,todayStart,asOf,todayRaw,filters);
    const live=await liveRead(ctx,client,siteId,site,asOf,filters);
    const extended=query.extended==='1'?await query51laHistory(ctx,client,siteId,asOf,site,filters):undefined;

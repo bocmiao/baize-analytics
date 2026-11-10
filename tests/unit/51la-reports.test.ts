@@ -13,15 +13,14 @@ import {register51laReports} from '../../src/server/51la-reports.js';
 
 const now=Date.parse('2026-11-03T08:30:00.000Z');
 const input:AnalyticsEvent[]=[{site_id:'site-a',event_id:'event-1',visitor_id:'visitor-1',page_id:'page-1',type:'pageview',ts:'2026-11-03T08:29:00.000Z',path:'/guide',payload:{url:'https://example.test/guide'},dimensions:{browser:'Firefox',ip_truncated:'192.0.2.0'}}];
-let app:FastifyInstance,ctx:AppContext,retiredBefore:string|undefined,privacy:string,dirty:boolean;
+let app:FastifyInstance,ctx:AppContext,retiredBefore:string|undefined,privacy:string,timezone:string,dirty:boolean;
 const client={query:mocks.query};
 beforeEach(async()=>{
- vi.clearAllMocks();vi.spyOn(Date,'now').mockReturnValue(now);retiredBefore=undefined;privacy='standard';dirty=false;
+ vi.clearAllMocks();vi.spyOn(Date,'now').mockReturnValue(now);retiredBefore=undefined;privacy='standard';timezone='Asia/Shanghai';dirty=false;
  mocks.query.mockImplementation(async(sql:string)=>{
-  if(sql.includes('SELECT timezone,privacy_mode'))return {rows:[{timezone:'Asia/Shanghai',privacy_mode:privacy,retention_days:365,config:{}}]};
+  if(sql.includes('SELECT timezone,privacy_mode'))return {rows:[{timezone,privacy_mode:privacy,retention_days:365,config:{}}]};
   if(sql.includes('analytics_raw_retirement_frontiers'))return {rows:retiredBefore?[{retired_before:retiredBefore}]:[]};
   if(sql.includes('visitor_first_seen'))return {rows:[{visitor_id:'visitor-1',first_date:'2026-11-03'}]};
-  if(sql.includes('AS today_start'))return {rows:[{today_start:'2026-11-02T16:00:00.000Z',today_end:'2026-11-03T16:00:00.000Z',history_start:'2026-10-19T16:00:00.000Z',yesterday_start:'2026-11-01T16:00:00.000Z',yesterday_same:'2026-11-02T08:30:00.000Z'}]};
   throw Error('Unexpected query: '+sql);
  });
  mocks.snapshot.mockImplementation(async(_ctx:unknown,_site:string,_from:string,_to:string,read:(value:typeof client)=>Promise<unknown>)=>({value:await read(client),dirty}));
@@ -68,6 +67,15 @@ describe('authenticated 51LA report routes',()=>{
   expect(mocks.stats.mock.calls.every(call=>call[5].client===client)).toBe(true);expect(response.json()).toMatchObject({today:{totals:{pv:13,uv:7,ips:null}},active15:{visitors:1,pageviews:1},forecast:{pv:19,uv:null,ips:null,status:'partially_estimated',details:{pv:{method:'run_rate',sampleDays:0}}}});
   expect(mocks.snapshot.mock.calls[0]![2]).toBe('2026-10-17T08:30:00.000Z');expect(mocks.read).toHaveBeenCalledWith(ctx.pool,'site-a',expect.objectContaining({from:new Date('2026-10-19T15:30:00.000Z'),to:new Date('2026-11-02T16:00:00.000Z'),client,statsMirrorRead:true}));
   expect(mocks.history).not.toHaveBeenCalled();expect(response.json()).not.toHaveProperty('extended');
+ });
+ it.each([
+  ['America/Havana','2026-11-01T04:30:00Z','2026-11-01T04:00:00.000Z','2026-10-31T04:30:00.000Z'],
+  ['America/New_York','2026-11-02T06:30:00Z','2026-11-02T05:00:00.000Z','2026-11-01T05:30:00.000Z'],
+  ['America/New_York','2026-03-09T06:30:00Z','2026-03-09T04:00:00.000Z','2026-03-08T07:30:00.000Z'],
+ ])('uses a consistent civil clock without a DST 500 in %s at %s',async(zone,asOf,start,sameTime)=>{
+  timezone=zone;vi.mocked(Date.now).mockReturnValue(Date.parse(asOf));const response=await app.inject('/api/v1/sites/site-a/overview-summary');expect(response.statusCode,response.body).toBe(200);
+  expect(response.json()).toMatchObject({today:{from:start,to:new Date(asOf).toISOString()},yesterdaySameTime:{to:sameTime},forecast:{dayStart:start}});
+  expect(mocks.stats.mock.calls.every(call=>Date.parse(call[2])<=Date.parse(call[3]))).toBe(true);
  });
  it('only loads optional historical facts after extended=1 is explicitly requested',async()=>{
   mocks.history.mockResolvedValue({thisMonth:{coverage:1,totals:{pv:7}},total:{coverage:1,totals:{pv:100,uv:9}},peaks:{coverage:1,pv:{value:50,date:'2026-11-01'}}});

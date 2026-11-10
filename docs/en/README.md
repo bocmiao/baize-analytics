@@ -6,6 +6,8 @@ These guides describe the original Node application. For the independent PHP-FPM
 - [Lite: one local SQLite container, backup and restore](../lite-deployment.md)
 - [Development and tests](development.md)
 - [API and collection protocol](api.md)
+- [Offline geography, ISP, distinct IPs and forecasts](../TRAFFIC_DATA_SETUP.md) (Chinese)
+- [Signed server-to-server crawler log ingestion](../spider-log-ingest.md) (Chinese, with a Node.js example)
 - [Privacy behavior](privacy.md)
 - [Application/database compatibility](compatibility.md)
 - [Forward migrations, GA4 boundaries, journal/files/keys recovery and downtime upgrades](migration.md)

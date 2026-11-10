@@ -21,6 +21,8 @@ export interface ForecastMetricResult {
  sampleDates:string[];
  confidence:'medium'|'low'|'none';
  interval:{lower:number;upper:number;kind:'heuristic_range'}|null;
+ constraint?:'at_most_pageviews';
+ unconstrainedValue?:number;
 }
 const metrics:ForecastMetric[]=['pv','uv','ips','sessions'];
 const hour=3600000;
@@ -51,6 +53,19 @@ function civilResolver(timezone:string){
   return forward[0]??null;
  };
  return {civil,resolve};
+}
+
+/** Shared overview/forecast periods. A repeated midnight starts at its first
+ * occurrence, matching the date picker and retaining the whole civil day.
+ * Yesterday's repeated clock also chooses the earlier occurrence; missing
+ * wall-clock times advance through the gap, as in historical sample cutoffs. */
+export function forecastCalendar(asOf:string,timezone:string){
+ const instant=Date.parse(asOf),resolver=civilResolver(timezone),day=dayOf(asOf,timezone),yesterday=dateShift(day,-1);
+ const dayStart=resolver.resolve(day,0),dayEnd=resolver.resolve(dateShift(day,1),0),historyStart=resolver.resolve(dateShift(day,-14),0),yesterdayStart=resolver.resolve(yesterday,0);
+ const clock=resolver.civil(instant)-Date.parse(day+'T00:00:00Z'),yesterdayCutoff=resolver.resolve(yesterday,clock);
+ if([dayStart,dayEnd,historyStart,yesterdayStart,yesterdayCutoff].some(value=>value===null))throw new RangeError('Forecast civil date is not representable');
+ const result={asOf,timezone,dayStart:new Date(dayStart!).toISOString(),dayEnd:new Date(dayEnd!).toISOString(),historyStart:new Date(historyStart!).toISOString(),yesterdayStart:new Date(yesterdayStart!).toISOString(),yesterdayCutoff:new Date(Math.min(dayStart!,Math.max(yesterdayStart!,yesterdayCutoff!))).toISOString()};
+ calendar(result);return result;
 }
 
 export interface ForecastHistoryOptions extends ForecastCalendar {
@@ -133,6 +148,15 @@ export function buildTrafficForecast(input:ForecastInput){
   }else {details[key]=unavailable(time.elapsed<2*hour?'历史不足且今日运行未满两小时，暂不外推':'历史及今日样本不足，暂不预测','insufficient_data');continue;}
   const bounded=(value:number)=>Math.min(Number.MAX_SAFE_INTEGER,Math.max(current,Math.round(value)));
   details[key]={value:bounded(estimate),status:'estimated',method,reason,sampleDays:samples.length,sampleDates:samples.map(sample=>sample.day).sort(),confidence:samples.length>=7&&time.elapsed>=2*hour&&current>=10?'medium':'low',interval:{lower:bounded(lower),upper:bounded(upper),kind:'heuristic_range'}};
+ }
+ // Distinct visitors, networks and pageview-backed sessions cannot exceed PV.
+ // Separate same-time growth factors can otherwise violate this even when every
+ // observed sample is valid. Keep point estimates and both range bounds coherent.
+ const pageviews=details.pv;
+ if(pageviews.value!==null)for(const key of ['uv','ips','sessions'] as const){
+  const result=details[key];if(result.value===null)continue;
+  const value=Math.min(result.value,pageviews.value),interval=result.interval&&pageviews.interval?{...result.interval,lower:Math.min(result.interval.lower,pageviews.interval.lower,value),upper:Math.min(result.interval.upper,pageviews.interval.upper)}:result.interval;
+  if(value!==result.value||interval?.lower!==result.interval?.lower||interval?.upper!==result.interval?.upper)details[key]={...result,value,interval,constraint:'at_most_pageviews',unconstrainedValue:result.value,confidence:'low',reason:result.reason+'；已按预计浏览量上限校正'};
  }
  const values=Object.fromEntries(metrics.map(key=>[key,details[key].value])) as ForecastTotals,estimated=metrics.filter(key=>details[key].status==='estimated');
  return {...values,status:estimated.length===metrics.length?'estimated':estimated.length?'partially_estimated':'unavailable',asOf:input.asOf,timezone:input.timezone,dayStart:input.dayStart,dayEnd:input.dayEnd,elapsedFraction,coverage:input.today.coverage,sampleDays:Math.max(...metrics.map(key=>details[key].sampleDays)),algorithm:'historical_remaining_v1',intervalKind:'heuristic_not_calibrated',details};

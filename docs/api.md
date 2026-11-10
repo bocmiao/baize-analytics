@@ -191,7 +191,7 @@ curl --fail-with-body --no-buffer -H "Authorization: Bearer $BAIZE_API_TOKEN" \
 
 **概况与实时。** 三个概况周期分别为站点今日零点至 `asOf`、昨日零点至今日零点、昨日零点至昨日相同当地时刻；不是简单减去固定 24 小时。每个周期都有独立的 `totals`、`coverage`、`rangeStatus` 和 `visitors` 状态。昨日明细过期或截断，不会使今日已完整读取的访客分类失效。
 
-`live` 固定读取查询时刻前 30 分钟，不随历史筛选日期移动：`active` 提供最近 5/15/30 分钟页面访问或心跳的去重访客，`pageviews` 是由旧到新的 30 个逐分钟 PV 桶，`pages` 是该实时窗口内的页面 PV。`active15` 单独提供最近 15 分钟的访客与 PV。实时窗口有自己的 `from/to/coverage/status`。`forecast` 提供预计全天 `pv/uv/ips/sessions`，`details` 包括每项的 `method/reason/sampleDays/sampleDates/interval`。方法是 `historical_remaining_v1`，优先使用最近 14 个完整自然日的同期和剩余流量；历史缺失时可降级到昨日或今日运行速度，样本不足保持 `null`。区间是启发式参考范围；聚合变化时 `status=aggregation_pending` 并清空预测。
+`live` 固定读取查询时刻前 30 分钟，不随历史筛选日期移动：`active` 提供最近 5/15/30 分钟页面访问或心跳的去重访客，`pageviews` 是由旧到新的 30 个逐分钟 PV 桶，`pages` 是该实时窗口内的页面 PV。`active15` 单独提供最近 15 分钟的访客与 PV。实时窗口有自己的 `from/to/coverage/status`。`forecast` 提供预计全天 `pv/uv/ips/sessions`，`details` 包括每项的 `method/reason/sampleDays/sampleDates/interval`。方法是 `historical_remaining_v1`，优先使用最近 14 个完整自然日的同期和剩余流量；历史缺失时可降级到昨日或今日运行速度，样本不足保持 `null`。预计 UV、IP、会话数及各自区间不超过 PV 的对应值，区间不低于已观察计数；触发校正时，详情返回 `constraint=at_most_pageviews` 和 `unconstrainedValue`。区间是启发式参考范围；聚合变化时 `status=aggregation_pending` 并清空预测。
 
 **历史展开。** `extended=1` 才读取 `extended.thisMonth`、`extended.total`、`extended.peaks` 和 `extended.history`。本月、总流量分别返回 `from/to/totals/coverage/status`；峰值按指标返回 `{value,date}`，日期为站点时区的 `YYYY-MM-DD`，并列时取最近日期。历史来源为已发布事实与可用旧汇总，`history.scope=available_published_history`，起点不等于原始明细保留期。总 UV 使用跨历史集合去重；总跳出率和平均时长使用总跳出次数、总时长除以总会话量。
 

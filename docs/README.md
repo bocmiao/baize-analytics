@@ -19,6 +19,8 @@
 | 任务 | 入口 |
 | --- | --- |
 | 配置隐私、同意与数据保留 | [隐私说明（英文）](en/privacy.md) |
+| 配置地域、运营商、独立 IP 和流量预测 | [流量数据配置](TRAFFIC_DATA_SETUP.md) · [报表范围](51LA_ALIGNMENT.md) |
+| 接入服务器蜘蛛访问日志 | [签名上报、重试与查询](spider-log-ingest.md) |
 | 使用 MCP 或导入搜索数据 | [MCP](mcp.md) · [手动搜索导入](MANUAL_SEARCH_IMPORT.md) |
 | 备份、恢复与迁移 | [迁移与恢复](migration.md) · [Node 原生维护](release-native-ops.md) · [Lite 维护](lite-deployment.md) |
 | 从 Lite 迁移到 Node 标准版 | [Lite → 标准版](lite-migration.md) |

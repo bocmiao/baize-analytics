@@ -6,7 +6,7 @@ import type {AppContext} from './context.js';
 import {classifyBotUA,type BotDecision} from './bot-filter.js';
 import {lockSite,transaction} from './db.js';
 import {anonymizeIP,canonical,hashToken,HttpError,matchesCIDR} from './security.js';
-import {networkIPIdentity,normalizeNetworkIP} from './network-ip.js';
+import {networkIPIdentity,normalizeNetworkIP,summarizeIPIdentities} from './network-ip.js';
 
 const DAY=86400000;
 export const BOT_VISIT_MAX_RETENTION_DAYS=90;
@@ -161,15 +161,19 @@ export async function registerBotVisitLog(app:FastifyInstance,ctx:AppContext){
    const where=`site_id=$1 AND visited_at>=($2::date::timestamp AT TIME ZONE $4)
     AND visited_at<(($3::date+1)::timestamp AT TIME ZONE $4) AND expires_at>now()
     AND visited_at>=now()-($7::int*interval '1 day') AND ($5::text IS NULL OR engine=$5) AND ($6::text IS NULL OR source=$6)`;
-   const totals=(await client.query(`SELECT count(*)::int visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen FROM bot_visit_log WHERE ${where}`,params)).rows[0];
-   const summary=(await client.query(`SELECT engine,category,count(*)::int visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen
+   const totals=(await client.query(`SELECT count(*)::int visits,count(ip_identity)::int known_ip_visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen FROM bot_visit_log WHERE ${where}`,params)).rows[0];
+   const summary=(await client.query(`SELECT engine,category,count(*)::int visits,count(ip_identity)::int known_ip_visits,count(DISTINCT ip_identity)::int ips,count(DISTINCT path)::int urls,max(visited_at) last_seen
     FROM bot_visit_log WHERE ${where} GROUP BY engine,category ORDER BY visits DESC,engine,category`,params)).rows;
    const rows=(await client.query(`SELECT id,source,visited_at,engine,category,reason,rule_id,path,ip_prefix FROM bot_visit_log WHERE ${where}
     ORDER BY visited_at DESC,id DESC,source LIMIT $8 OFFSET $9`,[...params,q.limit,(q.page-1)*q.limit])).rows;
    const privacy=site.privacy_mode==='daily_salt';
+   // Historical/restored data may predate the mode guard. Missing identities
+   // are unknown, not zero; daily-salt responses never reveal retained prefixes.
+   const metrics=(row:Record<string,unknown>)=>{const {known_ip_visits:known,...visible}=row;return {...visible,...summarizeIPIdentities(Number(row.visits),Number(known),Number(row.ips),privacy)};};
+   const publicTotals=metrics(totals);
    return {from:q.from,to:q.to,timezone:site.timezone,page:q.page,limit:q.limit,total:totals.visits,
-    pages:Math.ceil(totals.visits/q.limit),rows,totals:{...totals,ips:privacy?null:totals.ips},
-    summary:summary.map(row=>({...row,ips:privacy?null:row.ips})),ipStatus:privacy?'unsupported_in_this_mode':'complete',
+    pages:Math.ceil(totals.visits/q.limit),rows:privacy?rows.map(row=>({...row,ip_prefix:null})):rows,totals:publicTotals,
+    summary:summary.map(metrics),ipStatus:publicTotals.ipStatus,ipCoverage:publicTotals.ipCoverage,knownIps:publicTotals.knownIps,
     coverage:BOT_VISIT_COVERAGE,retentionDays:retentionDays(site)};
   });
  });

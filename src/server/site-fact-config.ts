@@ -23,5 +23,8 @@ export async function invalidateSiteFactConfiguration(client:PoolClient,siteId:s
  return {relational:true,unavailableHours:marked.rowCount??0};
 }
 export async function siteHasHistoricalIdentity(client:PoolClient,siteId:string):Promise<boolean>{
+ // Filtered bot requests do not create event_keys, but their retained identities
+ // must still prevent a site from mixing standard and daily-salt modes.
+ if((await client.query('SELECT 1 FROM bot_visit_log WHERE site_id=$1 LIMIT 1',[siteId])).rowCount)return true;
  const result=await client.query(`SELECT EXISTS(SELECT 1 FROM event_keys WHERE site_id=$1) OR EXISTS(SELECT 1 FROM canonical_event_members WHERE site_id=$1) OR EXISTS(SELECT 1 FROM analytics_fact_runs WHERE site_id=$1 AND status='published' AND source_events>0) OR EXISTS(SELECT 1 FROM analytics_carry_heads WHERE site_id=$1) OR EXISTS(SELECT 1 FROM analytics_session_contribution_heads WHERE site_id=$1) OR EXISTS(SELECT 1 FROM analytics_session_event_headers h JOIN analytics_fact_runs r ON r.id=h.run_id WHERE r.site_id=$1 AND r.status IN('staging','ready','published')) OR EXISTS(SELECT 1 FROM visitor_first_seen WHERE site_id=$1) OR EXISTS(SELECT 1 FROM identity_bindings WHERE site_id=$1) OR EXISTS(SELECT 1 FROM replay_chunk_keys WHERE site_id=$1) OR EXISTS(SELECT 1 FROM stats_hourly WHERE site_id=$1) OR EXISTS(SELECT 1 FROM stats_daily WHERE site_id=$1) OR EXISTS(SELECT 1 FROM history_manifests WHERE site_id=$1 AND status='published') AS present`,[siteId]);return Boolean(result.rows[0].present);
 }

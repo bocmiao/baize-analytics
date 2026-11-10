@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {buildForecastHistory,buildTrafficForecast,type ForecastDay,type ForecastInput,type ForecastTotals} from '../../src/server/traffic-forecast.js';
+import {buildForecastHistory,buildTrafficForecast,forecastCalendar,type ForecastDay,type ForecastInput,type ForecastTotals} from '../../src/server/traffic-forecast.js';
 import type {AnalyticsEvent} from '../../src/server/analytics-core.js';
 
 const totals=(value:number|null):ForecastTotals=>({pv:value,uv:value,ips:value,sessions:value});
@@ -48,9 +48,35 @@ describe('transparent daily traffic forecast',()=>{
  it('prefers same weekdays once three complete weekday samples exist',()=>{
   const result=forecast({history:[day('2026-11-03'),day('2026-10-27'),day('2026-10-20'),day('2026-11-09',1000,50)]});expect(result.pv).toBe(100);expect(result.details.pv.sampleDates).toEqual(['2026-10-20','2026-10-27','2026-11-03']);
  });
+ it('keeps independent identities and sessions below PV despite different valid historical growth factors',()=>{
+  // The history is possible: 900 early pageviews from ten identities, then
+  // 100 later pageviews from ninety new identities/sessions.
+  const samples=['2026-11-07','2026-11-08','2026-11-09'].map(date=>({...day(date),totals:{pv:1000,uv:100,ips:100,sessions:100},sameTimeTotals:{pv:900,uv:10,ips:10,sessions:10}}));
+  const result=forecast({history:samples});expect(result.pv).toBe(75);
+  for(const key of ['uv','ips','sessions'] as const){
+   expect(result[key]).toBe(75);expect(result.details[key]).toMatchObject({constraint:'at_most_pageviews',unconstrainedValue:260,confidence:'low'});
+   const interval=result.details[key].interval!;expect(interval.lower).toBeGreaterThanOrEqual(50);expect(interval.lower).toBeLessThanOrEqual(result[key]!);expect(interval.upper).toBeGreaterThanOrEqual(result[key]!);expect(interval.lower).toBeLessThanOrEqual(result.details.pv.interval!.lower);expect(interval.upper).toBeLessThanOrEqual(result.details.pv.interval!.upper);
+  }
+ });
+ it('constrains an identity range even when its point estimate already lies below PV',()=>{
+  const result=forecast({history:[{...day('2026-11-09'),totals:{pv:1000,uv:1000,ips:1000,sessions:1000},sameTimeTotals:{pv:900,uv:900,ips:900,sessions:900}},{...day('2026-11-08'),totals:{pv:1000,uv:10,ips:10,sessions:10},sameTimeTotals:{pv:900,uv:10,ips:10,sessions:10}},{...day('2026-11-07'),totals:{pv:1000,uv:10,ips:10,sessions:10},sameTimeTotals:{pv:900,uv:10,ips:10,sessions:10}}]});
+  expect(result.pv).toBe(75);expect(result.uv).toBe(50);expect(result.details.uv).toMatchObject({constraint:'at_most_pageviews',unconstrainedValue:50});expect(result.details.uv.interval!.upper).toBe(result.details.pv.interval!.upper);expect(result.details.uv.interval!.lower).toBe(50);
+ });
 });
 
 describe('forecast raw history',()=>{
+ it('uses the earliest repeated midnight and retains Havana\'s first hour',()=>{
+  const bounds=forecastCalendar('2026-11-01T04:30:00Z','America/Havana');expect(bounds).toMatchObject({dayStart:'2026-11-01T04:00:00.000Z',dayEnd:'2026-11-02T05:00:00.000Z'});
+  expect(buildForecastHistory([page('first-hour','2026-11-01T04:15:00Z')],{...bounds,historyFrom:bounds.historyStart,historyCoverage:1}).today.totals.pv).toBe(1);
+  expect(buildTrafficForecast({...bounds,today:{totals:totals(1),coverage:1}}).elapsedFraction).toBe(0.5/25);
+ });
+ it('shares the repeated and missing historical clock policy with overview same-time periods',()=>{
+  for(const [asOf,before,after,wanted] of [['2026-11-02T06:30:00Z','2026-11-01T05:15:00Z','2026-11-01T06:15:00Z','2026-11-01T05:30:00.000Z'],['2026-03-09T06:30:00Z','2026-03-08T07:15:00Z','2026-03-08T07:45:00Z','2026-03-08T07:30:00.000Z']] as const){
+   const bounds=forecastCalendar(asOf,'America/New_York'),events=[page('before',before),page('after',after)];expect(bounds.yesterdayCutoff).toBe(wanted);
+   const actual=buildForecastHistory(events,{...bounds,historyFrom:bounds.historyStart,historyCoverage:1});expect(actual.yesterdaySameTime!.totals.pv).toBe(events.filter(event=>+new Date(event.ts)<Date.parse(bounds.yesterdayCutoff)).length);expect(actual.yesterdaySameTime!.totals.pv).toBe(1);
+  }
+  expect(forecastCalendar('2026-03-08T05:30:00Z','America/Havana')).toMatchObject({dayStart:'2026-03-08T05:00:00.000Z',dayEnd:'2026-03-09T04:00:00.000Z'});
+ });
  it('deduplicates pageviews and computes same-time UV/IP independently from the full-day totals',()=>{
   const first=page('a','2026-11-09T01:00:00Z','one'),later=page('b','2026-11-09T08:00:00Z','one'),other=page('c','2026-11-09T09:00:00Z','two',ip('b'));
   const result=history([first,first,later,other,page('today','2026-11-10T03:00:00Z'),page('future','2026-11-10T05:00:00Z')]);

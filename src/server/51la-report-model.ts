@@ -3,7 +3,7 @@ import {networkIPLabel,publicIPKey,summarizeIPIdentities,validIPIdentity,type IP
 
 export interface TrafficModelOptions {
  from:string;to:string;timezone:string;privacy:boolean;timeoutMs:number;
- filters?:ContentFilters;firstSeen:ReadonlyMap<string,string>;sessionContextComplete?:boolean;trendDimensions?:readonly string[];trendLabel?:string;
+ filters?:ContentFilters;firstSeen:ReadonlyMap<string,string>;sessionContextComplete?:boolean;trendDimensions?:readonly string[];trendLabel?:string;trendLabels?:readonly string[];
 }
 export type VisitorType='new'|'returning'|'unknown';
 export interface VisitorCounts {new:number|null;returning:number|null;unknown:number|null;status:string}
@@ -99,12 +99,27 @@ export function buildTrafficReport(input:AnalyticsEvent[],options:TrafficModelOp
  if(options.sessionContextComplete===false)rows.entry=[];
  // Only requested dimensions are materialized: at most 3 × 5 leaders per day.
  const trendKeys=[...new Set(options.trendDimensions||['channel','page','visitorType'])].filter((key):key is typeof dimensions[number]=>dimensions.includes(key as typeof dimensions[number])).slice(0,3);
+ const requestedLabels=options.trendLabel!==undefined?[options.trendLabel]:options.trendLabels?[...new Set(options.trendLabels)].slice(0,5):undefined;
+ const calendarDays:string[]=[];
+ const finalDay=dayOf(new Date(Math.max(from,to-1)),options.timezone);
+ for(let date=firstDay;date<=finalDay&&calendarDays.length<368;date=new Date(Date.parse(date+'T12:00:00Z')+86400000).toISOString().slice(0,10))calendarDays.push(date);
+ const completeIPs=!options.privacy&&total.knownIPPages===total.pv;
+ const emptyMetric=(label:string,multipleDays:boolean,day=firstDay)=>{const value=metric(label,blank(),options,multipleDays,day);return completeIPs||options.privacy?value:{...value,ips:null,knownIps:null,ipCoverage:0,ipStatus:'incomplete_data' as const};};
  const dimensionTrend=Object.fromEntries(trendKeys.map(key=>{
-  const leaders=new Set(options.trendLabel!==undefined?[...groups[key].keys()].filter(label=>key==='ip'?publicIPKey(label)===options.trendLabel:label===options.trendLabel):key==='visitorType'?['new','returning','unknown']:[...groups[key]].sort((a,b)=>b[1].pv-a[1].pv||a[0].localeCompare(b[0])).slice(0,5).map(([label])=>label));
+  if(key==='entry'&&options.sessionContextComplete===false)return [key,[]];
+  const keys=requestedLabels??(key==='visitorType'?['new','returning','unknown']:[...groups[key]].sort((a,b)=>b[1].pv-a[1].pv||a[0].localeCompare(b[0])).slice(0,5).map(([label])=>key==='ip'?publicIPKey(label)!:label));
+  const selected=keys.map(value=>{const source=key==='ip'?[...groups[key].keys()].find(label=>publicIPKey(label)===value)??null:value;return {source,label:key==='ip'?(source?networkIPLabel(ipDetails.get(source)!.dimensions):null)||`IP · ${value.slice(0,12)}`:value,...key==='ip'?{ipKey:value}:{}};});
+  const leaders=new Set(selected.map(item=>item.source).filter((label):label is string=>label!==null));
   const trend=new Map<string,Accumulator>();
   const labelFor=(event:AnalyticsEvent)=>key==='visitorType'?visitorType(event.visitor_id,dayOf(event.ts,options.timezone),options.firstSeen,options.privacy):dimension(event,key,options);
   if(key!=='entry')for(const event of pages){const label=labelFor(event);if(label!==null&&leaders.has(label)){const time=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([time,label])),event,time);}}
   for(const session of sessions){const entry=session.events.find(e=>e.type==='pageview')!,label=key==='entry'?entry.path:labelFor(entry);if(label===null||!leaders.has(label))continue;const time=dayOf(entry.ts,options.timezone);addSession(get(trend,JSON.stringify([time,label])),session);if(key==='entry')for(const event of session.events)if(event.type==='pageview'){const pageDay=dayOf(event.ts,options.timezone);addPage(get(trend,JSON.stringify([pageDay,label])),event,pageDay);}}
+  // Explicit comparisons retain the same requested groups and every calendar
+  // position. Only known empty buckets become zero; absent IP identities remain unknown.
+  if(options.trendDimensions||requestedLabels){
+   if(requestedLabels)for(const item of selected){if(key==='ip'&&!completeIPs&&item.source===null)continue;if(!rows[key].some(row=>key==='ip'?'ipKey' in row&&row.ipKey===item.ipKey:row.label===item.label))rows[key].push({...emptyMetric(item.label,multiDay),...item.ipKey?{ipKey:item.ipKey}:{}});}
+   return [key,calendarDays.flatMap(time=>selected.flatMap(item=>{const value=item.source===null?undefined:trend.get(JSON.stringify([time,item.source]));if(!value&&key==='ip'&&!completeIPs)return [];return [{time,...(value?metric(item.label,value,options,false,time):emptyMetric(item.label,false,time)),...item.ipKey?{ipKey:item.ipKey}:{}}];}))];
+  }
   return [key,[...trend].map(([id,value])=>{const [time,label]=JSON.parse(id) as [string,string];return {time,...metric(key==='ip'?networkIPLabel(ipDetails.get(label)!.dimensions)||'IP':label,value,options,false,time),...(key==='ip'?{ipKey:publicIPKey(label)}:{})};}).sort((a,b)=>a.time.localeCompare(b.time)||a.label.localeCompare(b.label))];
  }));
  return {groups:rows,days:dayRows,hours:hourRows,dimensionTrend,totals:metric('全部',total,options,multiDay),visitors:visitorCounts(pages,options),engagement:options.sessionContextComplete===false?{depth:[],duration:[]}:{depth,duration},visits};
