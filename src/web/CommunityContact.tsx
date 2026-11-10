@@ -15,15 +15,9 @@ export function CommunityContact({placement='menu'}:{placement?:'menu'|'footer'}
  },[feedback]);
  async function copyGroup(){
   let copied=false;
-  try{await navigator.clipboard.writeText(QQ_GROUP);copied=true;}catch{
-   // NAS HTTP pages may not expose the Clipboard API.
-   const input=document.createElement('textarea');
-   const previousFocus=document.activeElement as HTMLElement|null;
-   input.value=QQ_GROUP;input.readOnly=true;input.tabIndex=-1;
-   input.style.cssText='position:fixed;inset:0 auto auto 0;width:1px;height:1px;opacity:0;pointer-events:none';
-   document.body.append(input);
-   try{input.focus({preventScroll:true});input.select();copied=document.execCommand('copy');}catch{copied=false;}finally{input.remove();previousFocus?.focus({preventScroll:true});}
-  }
+  // Only report success when the browser's Clipboard API confirms the write.
+  // Plain HTTP and denied clipboard access use the visible, selectable number.
+  try{await navigator.clipboard.writeText(QQ_GROUP);copied=true;}catch{copied=false;}
   setFeedback(copied?'copied':'manual');
   if(!copied&&numberRef.current){
    const range=document.createRange();range.selectNodeContents(numberRef.current);
