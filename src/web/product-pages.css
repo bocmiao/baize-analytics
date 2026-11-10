@@ -2,7 +2,7 @@
 html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
 .workspace #workspace-main{min-width:0}
 .workspace :is(.settings-panel,.product-records,.record-management){min-width:0}
-.workspace .product-settings{display:grid;gap:20px;max-width:1100px}
+.workspace .product-settings{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:1100px}
 .workspace .product-settings>.panel{margin:0}
 .workspace .product-settings>.settings-panel>h2{margin-bottom:20px}
 .workspace :is(.settings-form,.connector-form,.segment-filters){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px;align-items:start;max-width:960px}
@@ -42,6 +42,19 @@ html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
 .workspace pre{background:var(--surface-2);color:var(--fg);border:1px solid var(--border);border-radius:8px;padding:16px;line-height:1.7;font-size:12px}
 .workspace :is(.settings-layout,.settings-panel,.connector-form) small{font-size:12px;color:var(--fg-2);line-height:1.6}
 .workspace .product-records:empty{display:none}
+.workspace .notice{display:block;border-left-width:1px}
+.workspace .notice::before{display:inline-flex;margin-right:8px;vertical-align:-2px}
+.workspace .empty-state{background:transparent;border:0;border-radius:0;min-height:0;padding:28px 16px;text-align:center}
+.workspace .empty-state::before{display:none}
+.workspace .product-records:has(.replay-viewer)>h2{display:none}
+.workspace .product-records>.replay-viewer{padding:0;border:0;box-shadow:none;margin:0}
+.workspace .workspace-toolbar{position:relative}
+.workspace .workspace-toolbar>.analysis-filters{padding:0;margin:0;border:0;background:transparent;flex:none}
+.workspace .workspace-toolbar>.analysis-filters>summary{min-height:36px;padding:6px 12px;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.workspace .workspace-toolbar>.analysis-filters[open]>summary{margin:0;color:var(--accent);border-color:var(--accent)}
+.workspace .workspace-toolbar>.analysis-filters>summary::after{display:none}
+.workspace .workspace-toolbar>.analysis-filters>.segment-filters{position:absolute;top:calc(100% + 10px);right:0;z-index:25;width:min(760px,100%);max-width:100%;padding:24px;margin:0;box-sizing:border-box;background:var(--surface);border-radius:12px;box-shadow:var(--shadow-pop)}
+.auth>.brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;color:var(--fg)}
 .workspace #workspace-main>.panel:has(>.segment-filters){padding:12px 18px;margin-block:0 20px;background:transparent}
 .workspace #workspace-main>.panel:has(>.segment-filters)[open]{background:var(--surface);padding:18px}
 .workspace .segment-filters{margin-top:20px}
@@ -83,6 +96,18 @@ html{scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}
  .workspace .product-settings{gap:16px}
 }
 @media(max-width:767px){
+ .workspace .workspace-toolbar>.analysis-filters>summary{min-height:44px}
+ .workspace .workspace-toolbar>.analysis-filters>.segment-filters{padding:20px;max-height:70dvh;overflow:auto}
+ .workspace .traffic-workspace .dense-metric-strip{grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
+ .workspace .traffic-workspace .dense-metric-strip>div{grid-column:span 2;padding:12px 8px;border:0}
+ .workspace .traffic-workspace .dense-metric-strip>div:nth-child(n+4){grid-column:span 3}
+ .workspace .traffic-workspace .dense-metric-strip:has(>div:nth-child(6)):not(:has(>div:nth-child(7)))>div{grid-column:span 2}
+ .workspace .traffic-workspace .dense-metric-strip:has(>div:nth-child(4)):not(:has(>div:nth-child(5)))>div{grid-column:span 3}
+ .workspace .traffic-workspace .dense-metric-strip strong{font-size:20px}
+ .workspace .traffic-workspace .dense-tabs{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:thin;overscroll-behavior-x:contain}
+ .workspace .traffic-workspace .dense-tabs button{flex:0 0 auto;white-space:nowrap}
+ .workspace .geography-explorer .segment-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}
+ .workspace .geography-explorer .segment-filters>button{grid-column:1/-1}
  .workspace :is(.settings-form,.connector-form,.segment-filters){grid-template-columns:minmax(0,1fr);max-width:100%;gap:18px}
  .workspace :is(.settings-form,.connector-form,.segment-filters) :is(input,select,textarea){font-size:16px}
  .workspace :is(.settings-form,.connector-form,.segment-filters)>button{justify-self:stretch}
