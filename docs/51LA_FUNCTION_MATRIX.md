@@ -81,13 +81,13 @@
 
 | 功能 | 前端入口 | 后端 / 采集实现 | 验证与口径 |
 | --- | --- | --- | --- |
-| 表格导出、站点导出 | `DenseTable`、数据管理 | CSV、export jobs | 已接入；新增配置纳入完整站点导出，原始事件范围遵守保留期 |
+| 日期筛选表格导出、访问明细导出、整站导出 | `DenseTable`、`VisitsReport`、数据管理 | 前端 CSV、visits.csv、export jobs | 表格导出当前日期 / 筛选的已加载全表；访问明细由服务端导出完整筛选范围；后台整站导出是保留期快照，不随顶部日期筛选；均有明确容量上限 |
 | 分享密码、失效、撤销 | `ShareEditor` | governance share_links | 已接入；本轮真实 HTTP / PG 验证，包括旧长密码兼容 [T5] |
 | 只读统计看板 | `SharedDashboard` | `projectSharedReport` | 本轮新增总览、逐小时趋势、来源、设备、地域、热门页面；汇总白名单不输出身份 [T5] |
 | iframe 图表 | `ShareEditor` | `renderSharedEmbed` | 本轮支持五种真实图表，CSP 域名限制保留；密码/撤销/归档验证通过 [T5] |
 | 成员与账号间授权 | `InviteEditor`、成员设置 | memberships、invites、scoped tokens | 已接入；白泽本地账号体系，不接 51.LA 账号；站点停用后的新授权关闭 |
 | OpenAPI 密钥与权限 | token 设置 | 站点限定 read/write/admin REST | 已接入；已有 NAS 401/403/撤销验证，不输出可恢复原密钥 |
-| 定时报表与通知 | report / schedule 配置 | governance-worker、通知队列 | 既有能力；计划仍由站点权限约束，停用站点暂停产生新任务 |
+| 保存报表与定时通知 | `SavedReport`、`ReportSchedule`、`GovernanceRecordManagement` | report definitions、governance-worker、通知队列 | 保存查询按固定日期重放；推送计划按日 / 周 / 月滚动周期应用保存的筛选；支持删除计划 / 渠道 / 告警并撤销未发送任务，停用站点暂停新任务 |
 | 保留期、访客删除与恢复保护 | 数据管理 | retention、tombstones、backup restore | 既有能力；本轮新增功能沿用删除、身份和站点隔离规则 |
 | 手机与平板 | 工作区抽屉、表格局部滚动 | 与桌面共用 API | 本轮组件已适配；320 / 375 / 768 / 桌面及实际操作以新部署验收为准 |
 
@@ -100,7 +100,9 @@
 - **[T3] 事件与热图**：11 个定向 unit 文件共 68 项通过；NAS `tests/integration/advanced-functions.test.ts` 7 项通过，覆盖 collector → 事件参数 UV → 热图日期 / 元素 → 暂停 / 删除拒绝 → IPv4 / IPv6 过滤 → read token 权限 → 完整 JSON 导出下载。tracker 构建及 7 个分发变体版权与 gzip 往返 2 项通过。本地证据 `.baize/nas/advanced-functions-20261110/`。实际浏览器圈选和叠图需在部署后另验。
 - **[T4] 生命周期与蜘蛛趋势**：NAS `tests/integration/site-lifecycle.test.ts` 4 项和 `bot-visit-log.test.ts` 10 项通过，包含站点管理、采集停用、授权竞态和蜘蛛趋势。本地证据 `.baize/nas/site-lifecycle/`。
 - **[T5] 分享**：`tests/unit/shared-dashboard.test.ts` 8 项通过；NAS 上 `tests/integration/shared-dashboard.test.ts` 3 项和 `legacy-share-password.test.ts` 1 项通过。覆盖所有五种嵌入、真实汇总、身份隔离、CSP、密码、有效期、撤销和归档。本地证据 `.baize/nas/shared-dashboard/`。
-- 新增分享、目录和推广文件通过定向 ESLint，完整 `npm run typecheck` 通过。Linux 全量 unit 首次 792 项中 781 项通过；补齐测试容器的 Git / 进程工具及权限环境后，定向重跑 31 项通过，原 9 项环境问题消除。仍有 2 项历史 SQL 的 CRLF / LF 文本校验差异，未改写已应用迁移；不能将这轮记录描述为单次全量通过。本地证据 `.baize/nas/completion-unit-linux-20261110/` 与 `.baize/nas/unit-env-recheck-20261110/`。最终构建和浏览器验收以最终源码版本的记录为准。
+- 新增文件通过定向 ESLint，完整 `npm run typecheck` 通过。Linux 全量 unit 在补齐隔离容器工具、校验合法迁移换行变体并增加篡改拒绝回归后，**135 个文件、797 项一次通过**；历史迁移 SQL 字节和数据库已应用校验值未改。本地证据 `.baize/nas/completion-unit-linux-final-20261110/`，处理说明见 [历史迁移换行兼容](validation/HISTORY_MIGRATION_LINE_ENDINGS_20261110.md)。最终构建和浏览器验收以最终源码版本的记录为准。
+
+- **[T6] 删除管理**：NAS `tests/integration/governance-resource-deletion.test.ts` 5 项通过，验证匿名 / 只读 / 跨站权限、计划和告警任务撤销、已保存报表删除关联计划与任务、通知渠道关联清理及已发送记录保留；原 3 站事件摘要前后相同。本地证据 `.baize/nas/governance-resource-deletion/`。设置页的安装检查与移除入口已移到实际渲染分支，回收站保留在站点列表。
 
 ## 实现差异
 
